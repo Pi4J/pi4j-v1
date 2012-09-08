@@ -1,0 +1,15 @@
+Simple GPIO Control using Pi4J.
+
+  The following example demonstrates the simple control of a GPIO pin on the Raspberry Pi.\
+
+* Source Code
+  
+  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/io/example}}
+
+%{snippet|id=control-gpio-snippet|file=src/test/java/com/pi4j/io/example/ControlGpioExample.java}
+
+* Wiring Diagram
+
+  The following circuit can be used in conjunction with this sample code.
+  
+[../images/gpio-control-example.png]

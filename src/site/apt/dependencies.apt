@@ -1,5 +1,6 @@
 Dependencies
 
   Pi4J implements a JNI wrapper of the WiringPi library developed by Gordon Henderson.  The WiringPi library must be installed prior to using Pi4J.  More information and the installation instructions for WiringPi can be found here:\
-  {https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}}
+  {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}}
   
+[./images/dependencies.png]

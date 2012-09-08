@@ -1,0 +1,18 @@
+GPIO State Listener Example using Pi4J.
+
+  The following example demonstrates how to setup a listener for GPIO pin state changes on the Raspberry Pi.  
+  This listener implementation is far more efficient than constantly polling and querying for the the GPIO pin state.  
+  The listener implementation is based on GPIO hardware interrupts not state polling.
+
+* Source Code 
+   
+  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/io/example}}
+
+%{snippet|id=listen-gpio-snippet|file=src/test/java/com/pi4j/io/example/ListenGpioExample.java}
+
+* Wiring Diagram
+
+  The following circuit can be used in conjunction with this sample code.
+  
+[../images/gpio-listener-example.png]
+

@@ -7,9 +7,18 @@
 	</skin>
 	<bannerLeft>
 		<name>Pi4J</name>
-		<src>/images/logos/pi4j-header-small.png</src>
+		<src>/images/logos/pi4j-header-small3.png</src>
 		<href>http://www.pi4j.com/</href>
 	</bannerLeft>
+	<bannerRight>
+		<name>Pi4J</name>
+		<src>/images/logos/trademarks.png</src>
+		<href>http://www.raspberrypi.org/</href>
+	</bannerRight>
+	<poweredBy>
+		<logo name="RaspberryPi" href="http://www.raspberrypi.org/"
+			img="/images/logos/raspberrypi.png"  target="_blank" />
+	</poweredBy>
 	<body>
 		<links>
 			<item name="Pi4J Home" href="http://www.pi4j.com/" />
@@ -25,8 +34,8 @@
 			<item name="Usage" href="usage.html" />
 		</menu>
 		<menu name="Examples">
-			<item name="Control GPIO" href="example/example.html" />
-			<item name="Listen for GPIO Events" href="example/example.html" />
+			<item name="Control GPIO" href="example/control.html" />
+			<item name="Listen for GPIO Events" href="example/listener.html" />
 			<item name="Trigger GPIO on Events" href="example/example.html" />
 			<item name="Serial Communication" href="example/example.html" />
 		</menu>
