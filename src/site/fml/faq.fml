@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+
+  <part id="general">
+    <title>General</title>
+
+    <faq id="permissions">
+      <question>
+        What level of permissions is required to run software using Pi4J?
+      </question>
+      <answer>
+        <p>Software using the Pi4J library must be run with ROOT level permissions.</p>
+      </answer>
+    </faq>
+    
+  </part>
+
+  <part id="install">
+
+    <title>Installation</title>
+
+    <faq id="how-install">
+      <question>
+        How do I install Pi4J?
+      </question>
+      <answer>
+        <p>TODO</p>
+      </answer>
+    </faq>
+
+  </part>
+
+</faqs>

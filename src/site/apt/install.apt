@@ -1,0 +1,23 @@
+Installation
+
+* Dependencies
+
+** Install JRE/JDK
+  
+  If you have not already installed a Java runtime environment, please see the following article for a complete set of installation insructions for installing the Oracle JDK.\
+  {{http://www.savagehomeautomation.com/pi-jdk}}
+
+** Install WiringPi Native Library
+
+  Pi4J depends on the WiringPi native library by Gordon Henderson.  Please see the following page for instructions on downloading and installing WiringPi.\
+  {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}} 
+
+* Pi4J
+
+** Install Pi4J Native Library
+
+  This project is still under development and has not been released yet.\ 
+  
+** Install Pi4J Java Library
+
+  This project is still under development and has not been released yet.\ 

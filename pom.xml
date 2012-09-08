@@ -17,8 +17,7 @@
 	<!-- SOURCE CONTROL -->
 	<scm>
 		<url>https://github.com/Pi4J/pi4j.git</url>
-		<connection>https://github.com/Pi4J/pi4j.git</connection>
-		<developerConnection>Robert Savage</developerConnection>
+		<connection>git@github.com:Pi4J/pi4j.git</connection>
 	</scm>
 
 	<!-- ISSUE MANAGEMENT -->
@@ -36,20 +35,20 @@
 	</properties>
 
 	<!-- BUILD PROFILES -->
-	<profiles>	
-				
-		<!-- Robert Savage --> 
+	<profiles>
+
+		<!-- PROFILE : Robert Savage -->
 		<profile>
 			<id>savage</id>
 			<properties>
 				<scp.host>10.1.1.161</scp.host> <!-- IP address of Raspberry Pi -->
 			</properties>
-		    <activation>
-		        <property>
+			<activation>
+				<property>
 					<name>env.MAVEN_PROFILE</name>
-        			<value>savage</value>
-		        </property>
-		    </activation>			
+					<value>savage</value>
+				</property>
+			</activation>
 		</profile>
 	</profiles>
 
@@ -58,16 +57,45 @@
 		<finalName>pi4j</finalName>
 		<plugins>
 
-			<!-- Java 7 SE -->
+			<!-- JAVA 7 SE -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 				</configuration>
+			</plugin>
+
+			<!-- INCLUDE SOURCE JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- INCLUDE JAVADOC JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Generate .h header files for JNI wrapper -->
@@ -177,6 +205,55 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
+			<!-- ATTACH COMPILED NATIVE LIBRARY -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/libpi4j.so</file>
+									<type>so</type>
+									<classifier>libpi4j</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- GENERATE SITE DOCUMENTATION -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<reportPlugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.8</version>
+							<configuration>
+								<verbose>true</verbose>
+								<linksource>true</linksource>
+								<name>JavaDocs</name>
+								<description>JavaDoc API documentation</description>
+								<outputName>javadoc/index</outputName>
+							</configuration>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 </project>
