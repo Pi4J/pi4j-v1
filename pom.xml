@@ -1,0 +1,182 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.pi4j</groupId>
+	<artifactId>pi4j</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Pi4J</name>
+	<description>Java Library for the Raspberry Pi</description>
+	<url>http://www.pi4j.com</url>
+
+	<!-- ORGANIZATION -->
+	<organization>
+		<name>Pi4J</name>
+		<url>http://www.pi4j.com</url>
+	</organization>
+
+	<!-- SOURCE CONTROL -->
+	<scm>
+		<url>https://github.com/Pi4J/pi4j.git</url>
+		<connection>https://github.com/Pi4J/pi4j.git</connection>
+		<developerConnection>Robert Savage</developerConnection>
+	</scm>
+
+	<!-- ISSUE MANAGEMENT -->
+	<issueManagement>
+		<url>https://github.com/Pi4J/pi4j/issues</url>
+		<system>github</system>
+	</issueManagement>
+
+	<!-- BUILD PROPERTIES -->
+	<properties>
+		<scp.user>pi</scp.user>
+		<scp.password>raspberry</scp.password>
+		<scp.port>22</scp.port>
+		<scp.dirCopyTo>/home/pi/pi4j-temp</scp.dirCopyTo>
+	</properties>
+
+	<!-- BUILD PROFILES -->
+	<profiles>	
+				
+		<!-- Robert Savage --> 
+		<profile>
+			<id>savage</id>
+			<properties>
+				<scp.host>10.1.1.161</scp.host> <!-- IP address of Raspberry Pi -->
+			</properties>
+		    <activation>
+		        <property>
+					<name>env.MAVEN_PROFILE</name>
+        			<value>savage</value>
+		        </property>
+		    </activation>			
+		</profile>
+	</profiles>
+
+	<!-- BUILD INSTRUCTIONS -->
+	<build>
+		<finalName>pi4j</finalName>
+		<plugins>
+
+			<!-- Java 7 SE -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+
+			<!-- Generate .h header files for JNI wrapper -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<version>1.0-alpha-7</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>javah-generate</id>
+						<phase>package</phase>
+						<goals>
+							<goal>javah</goal>
+						</goals>
+						<configuration>
+							<!-- trigger javah execution -->
+							<javahClassNames>
+								<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.GpioInterrupt</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.GpioUtil</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Serial</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Lcd</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Shift</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.SoftPwm</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Spi</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Gertboard</javahClassName>
+								<javahClassName>com.pi4j.wiringpi.Nes</javahClassName>
+							</javahClassNames>
+
+							<!-- enable additional javah interface in dependencies list -->
+							<javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
+
+							<!-- specify the output directory for generated header files -->
+							<javahOutputDirectory>src/main/native</javahOutputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- copy the native source files and compile them with gcc on the RaspberyPi 
+				platform -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-native-so</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+
+								<!-- ensure the target directory is empty on the Raspberry Pi -->
+								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+									password="${scp.password}" trust="true" failonerror="true"
+									verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
+
+								<!-- ensure the target directory exists on the Raspberry Pi -->
+								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+									password="${scp.password}" trust="true" failonerror="false"
+									verbose="true" command="mkdir --parents ${scp.dirCopyTo}/*" />
+
+								<!-- copy all the necessary source files to the Raspberry Pi -->
+								<scp todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}"
+									port="${scp.port}" trust="true" verbose="true" failonerror="true">
+									<fileset dir="${project.build.directory}">
+										<include name="${project.build.finalName}.jar" />
+									</fileset>
+									<fileset dir="src/main/native" />
+								</scp>
+
+								<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
+									Pi platform -->
+								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+									password="${scp.password}" trust="true" failonerror="true"
+									verbose="true"
+									command="cd /home/pi/pi4j-temp; make clean; make all; sudo make install" />
+
+								<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
+								<scp
+									file="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}/libpi4j.so"
+									todir="${project.build.directory}" port="${scp.port}" trust="true"
+									verbose="true" failonerror="true">
+								</scp>
+
+								<!-- remove the temporary target directory from the Raspberry Pi -->
+								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+									password="${scp.password}" trust="true" failonerror="true"
+									verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
+
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.7.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.42</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
