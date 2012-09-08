@@ -33,9 +33,14 @@ public class ControlGpioExample
 
         Thread.sleep(5000);
 
-        // toggle the current state of gpio pin #4
+        // toggle the current state of gpio pin #4 (should turn on)
         gpio.toggleState(GpioPin.GPIO_04);
 
+        Thread.sleep(5000);
+
+        // toggle the current state of gpio pin #4  (should turn off)
+        gpio.toggleState(GpioPin.GPIO_04);
+        
         Thread.sleep(5000);
 
         // turn on gpio pin #4 for 1 second and then off
