@@ -176,6 +176,18 @@ public interface Serial
 
     /**
      * <p>
+     * This method is called to submit a string of data with trailing CR + LF characters to the
+     * serial port transmit buffer.
+     * </p>
+     * 
+     * @param data <p>
+     *            A string of data to be transmitted.
+     *            </p>
+     */
+    void writeln(String data);
+
+    /**
+     * <p>
      * This method is called to submit a string of formatted data to the serial port transmit
      * buffer.
      * </p>
@@ -189,6 +201,22 @@ public interface Serial
      *            </p>
      */
     void write(String data, String... args);
+
+    /**
+     * <p>
+     * This method is called to submit a string of formatted data with trailing CR + LF characters
+     * to the serial port transmit buffer.
+     * </p>
+     * 
+     * @param data <p>
+     *            A string of formatted data to be transmitted.
+     *            </p>
+     * @param args <p>
+     *            A series of arguments that can be included for the format string variable
+     *            replacements.
+     *            </p>
+     */
+    void writeln(String data, String... args);
 
     /**
      * <p>

@@ -216,6 +216,21 @@ public class SerialImpl implements Serial
             position += length;
         }
     }
+    
+    /**
+     * <p>
+     * This method is called to submit a string of data with trailing CR + LF characters to the
+     * serial port transmit buffer.
+     * </p>
+     * 
+     * @param data <p>
+     *            A string of data to be transmitted.
+     *            </p>
+     */
+    public void writeln(String data)
+    {
+        write(data + "\r\n");
+    }
 
     /**
      * <p>
@@ -236,6 +251,25 @@ public class SerialImpl implements Serial
         write(String.format(data, (Object[]) args));
     }
 
+    /**
+     * <p>
+     * This method is called to submit a string of formatted data with trailing CR + LF characters
+     * to the serial port transmit buffer.
+     * </p>
+     * 
+     * @param data <p>
+     *            A string of formatted data to be transmitted.
+     *            </p>
+     * @param args <p>
+     *            A series of arguments that can be included for the format string variable
+     *            replacements.
+     *            </p>
+     */
+    public void writeln(String data, String... args)
+    {
+        write(data + "\r\n", args);
+    }
+    
     /**
      * <p>
      * This method is called to determine if and how many bytes are available on the serial received
