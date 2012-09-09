@@ -21,8 +21,8 @@
 	</poweredBy>
 	<body>
 		<links>
-			<item name="Pi4J Home" href="http://www.pi4j.com/" />
-			<item name="Pi4J @ Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
+			<item name="Home" href="http://www.pi4j.com/" />
+			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>
 			<item name="Wiki" href="https://github.com/Pi4J/pi4j/wiki/" target="pi4j-github"/>
 			<item name="Blog" href="http://www.savagehomeautomation.com/" target="_blank"/>
