@@ -32,6 +32,7 @@
 		<scp.password>raspberry</scp.password>
 		<scp.port>22</scp.port>
 		<scp.dirCopyTo>/home/pi/pi4j-temp</scp.dirCopyTo>
+		<scp.host>10.1.1.161</scp.host> <!-- IP address of Raspberry Pi -->
 	</properties>
 
 	<!-- BUILD PROFILES -->
@@ -85,18 +86,18 @@
 			</plugin>
 
 			<!-- INCLUDE JAVADOC JAR -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-javadoc-plugin</artifactId> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>attach-javadocs</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>jar</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 
 			<!-- Generate .h header files for JNI wrapper -->
 			<plugin>
