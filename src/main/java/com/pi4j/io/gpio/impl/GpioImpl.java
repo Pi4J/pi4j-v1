@@ -462,6 +462,18 @@ public class GpioImpl implements Gpio, GpioInterruptListener
         listeners.addElement(listener);
     }
 
+    public synchronized void addListener(GpioListener[] listeners)
+    {
+        for(GpioListener listener : listeners)
+            addListener(listener);
+    }
+
+    public synchronized void addListener(List<GpioListener> listeners)
+    {
+        for(GpioListener listener : listeners)
+            addListener(listener);
+    }
+    
     /**
      * 
      * @param listener
@@ -469,6 +481,24 @@ public class GpioImpl implements Gpio, GpioInterruptListener
     public synchronized void removeListener(GpioListener listener)
     {
         listeners.removeElement(listener);
+    }
+    
+    public synchronized void removeListener(GpioListener[] listeners)
+    {
+        for(GpioListener listener : listeners)
+            removeListener(listener);
+    }
+
+    public synchronized void removeListener(List<GpioListener> listeners)
+    {
+        for(GpioListener listener : listeners)
+            removeListener(listener);
+    }
+    
+    public synchronized void removeAllListeners()
+    {
+        for(GpioListener listener : this.listeners)
+            removeListener(listener);       
     }
 
     /**
@@ -480,6 +510,18 @@ public class GpioImpl implements Gpio, GpioInterruptListener
         triggers.addElement(trigger);
     }
 
+    public synchronized void addTrigger(List<GpioTrigger> triggers)
+    {
+        for(GpioTrigger trigger : triggers)
+            addTrigger(trigger);
+    }
+
+    public synchronized void addTrigger(GpioTrigger[] triggers)
+    {
+        for(GpioTrigger trigger : triggers)
+            addTrigger(trigger);
+    }
+    
     /**
      * 
      * @param trigger
@@ -489,6 +531,23 @@ public class GpioImpl implements Gpio, GpioInterruptListener
         triggers.removeElement(trigger);
     }    
 
+    public synchronized void removeTrigger(List<GpioTrigger> triggers)
+    {
+        for(GpioTrigger trigger : triggers)
+            removeTrigger(trigger);
+    }
+
+    public synchronized void removeTrigger(GpioTrigger[] triggers)
+    {
+        for(GpioTrigger trigger : triggers)
+            removeTrigger(trigger);
+    }
+    
+    public synchronized void removeAllTriggers()
+    {
+        for(GpioTrigger trigger : this.triggers)
+            removeTrigger(trigger);
+    }
     
     public void setup(GpioPin pin, GpioPinDirection direction, GpioPinEdge edge, GpioPinResistor resistance)
     {

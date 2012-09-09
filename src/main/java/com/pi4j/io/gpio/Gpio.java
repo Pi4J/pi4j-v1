@@ -67,15 +67,27 @@ public interface Gpio
     void setPwmValue(List<GpioPin> pins, int value);
 
     void addListener(GpioListener listener);
+    void addListener(GpioListener[] listeners);
+    void addListener(List<GpioListener> listeners);
+    
     //void addListener(GpioListener listener, GpioPin pin);
     //void addListener(GpioListener listener, GpioPin pins[]);
     //void addListener(GpioListener listener, List<GpioPin> pins);
     
     void removeListener(GpioListener listener);
-
+    void removeListener(GpioListener[] listeners);
+    void removeListener(List<GpioListener> listeners);
+    void removeAllListeners();
+    
     void addTrigger(GpioTrigger trigger);
+    void addTrigger(GpioTrigger[] triggers);
+    void addTrigger(List<GpioTrigger> triggers);
+    
     void removeTrigger(GpioTrigger trigger);    
-
+    void removeTrigger(GpioTrigger[] triggers);
+    void removeTrigger(List<GpioTrigger> triggers);
+    void removeAllTriggers();
+    
     void setup(GpioPin pin, GpioPinDirection direction, GpioPinEdge edge, GpioPinResistor resistance);    
     void setup(GpioPin pins[], GpioPinDirection direction, GpioPinEdge edge, GpioPinResistor resistance);
     void setup(List<GpioPin> pins, GpioPinDirection direction, GpioPinEdge edge, GpioPinResistor resistance);
