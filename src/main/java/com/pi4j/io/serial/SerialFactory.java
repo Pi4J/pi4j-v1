@@ -51,7 +51,7 @@ public class SerialFactory
      * <h1>Create New Serial instance</h1>
      * 
      * @return <p>
-     *         Return a new Serial impl instance.
+     *         Return a new Serial implementation instance.
      *         </p>
      */
     public static Serial createInstance()

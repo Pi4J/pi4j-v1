@@ -45,5 +45,13 @@ package com.pi4j.io.serial;
  */
 public interface SerialDataListener extends java.util.EventListener
 {
+    /**
+     * <p>
+     * This is the event callback method that will be invoked when new serial data is received.
+     * </p>
+     * 
+     * @see #SerialDataEvent
+     * @param event
+     */
     void dataReceived(SerialDataEvent event);
 }
