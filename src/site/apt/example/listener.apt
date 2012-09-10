@@ -16,3 +16,25 @@ GPIO State Listener Example using Pi4J.
   
 [../images/gpio-listener-example.png]
 
+* Compile
+  
+  First, copy the <ListenGpioExample.java> source file to a directory on the RaspberryPi.\
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp /usr/share/java/pi4j.jar -d ListenGpioExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.ListenGpioExample>>>
+  
+* Output
+
+  You should see the following message on the console each time the momentary button is pressed:
+  
+  <<< --> GPIO PIN STATE CHANGE: 4 = HIGH >>>
+  
+  and this message on the console each time the momentary button is released:
+  
+  <<< --> GPIO PIN STATE CHANGE: 4 = LOW >>>

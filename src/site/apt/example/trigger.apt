@@ -16,3 +16,27 @@ GPIO Triggers Example using Pi4J.
   
 [../images/gpio-trigger-example.png]
 
+* Compile
+  
+  First, copy the <TriggerGpioExample.java> source file to a directory on the RaspberryPi.\
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp /usr/share/java/pi4j.jar -d TriggerGpioExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.TriggerGpioExample>>>
+  
+* Output
+
+  The LED attached to GPIO pin 21 should turn ON when the momentary button is pressed and OFF when the button is released.
+  
+  The LED attached to GPIO pin 22 should turn ON when the momentary button is pressed and OFF when the button is released.
+  
+  The LED attached to GPIO pin 23 should turn ON for 1 second when the momentary button is pressed.   The button release has no effect on this LED.
+
+  The following message should be displayed on the console each time the momentary button is pressed and again when released.
+    
+  <<< --> GPIO TRIGGER CALLBACK RECEIVED >>>

@@ -13,3 +13,44 @@ Simple GPIO Control using Pi4J.
   The following circuit can be used in conjunction with this sample code.
   
 [../images/gpio-control-example.png]
+
+* Compile
+  
+  First, copy the <ControlGpioExample.java> source file to a directory on the RaspberryPi.\
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp /usr/share/java/pi4j.jar -d ControlGpioExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.ControlGpioExample>>>
+  
+* Output
+
+  You should see the attached LED perform as follows:
+  
+[../images/pinon.png] 
+  
+  Turn ON for 5 seconds
+
+[../images/pinoff.png] 
+  
+  Turn OFF for 5 seconds
+
+[../images/pinon.png] 
+  
+  Turn ON for 5 seconds
+
+[../images/pinoff.png] 
+  
+  Turn OFF for 5 seconds
+
+[../images/pinon.png] 
+  
+  Turn ON for 1 second
+
+[../images/pinoff.png] 
+  
+  Turn OFF

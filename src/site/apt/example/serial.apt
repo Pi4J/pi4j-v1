@@ -21,3 +21,31 @@ Serial Communication Example using Pi4J.
   
 [../images/serial-example.png]
 
+* Compile
+  
+  First, copy the <SerialExample.java> source file to a directory on the RaspberryPi.\
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp /usr/share/java/pi4j.jar -d SerialExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.SerialExample>>>
+  
+* Output
+
+  To test this program you will need to connect your computer via serial cable and use a serial communications tool such as Hyperterminal or Indigo Terminal Emulator.  
+  Establish a connection using baud rate 34800 with parity set to NONE, data bits to 8 and stop bits to 1. (38400,N,8,1)  
+  Once connected you should see the following data displayed in the terminal software:
+  
+  <<<
+  CURRENT TIME: <Date/Time>\
+  Second Line\
+  Third Line\
+  >>>  
+
+  This data should be repeated every second.
+  
+  You can also submit data from the terminal software and that data should be displayed on the Raspberry Pi's console. 

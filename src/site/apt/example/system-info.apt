@@ -8,4 +8,35 @@ System Information Example using Pi4J.
 
 %{snippet|id=system-info-snippet|file=src/test/java/com/pi4j/example/SystemInfoExample.java}
 
+* Compile
+  
+  First, copy the <SystemInfoExample.java> source file to a directory on the RaspberryPi.\
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp /usr/share/java/pi4j.jar -d SystemInfoExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.SystemInfoExample>>>
+  
+* Output
+
+  You should see the program output information similar to this listing below:
+  <<<
+  Serial Number     :  0000000043a7b903\
+  CPU Revision      :  7\
+  CPU Architecture  :  7\
+  CPU Part          :  0xb76\
+  MIPS              :  697.95\
+  Processor         :  ARMv6-compatible processor rev 7 (v6l)\
+  Hardware Revision :  0002\
+  Hostname          :  raspberrypi\
+  IP Addresses      :  10.1.1.194\
+  IP Addresses      :  10.1.1.161\
+  FQDN              :  raspberrypi.mydomain.local\
+  Nameserver        :  10.1.1.1\
+  >>>
+
 
