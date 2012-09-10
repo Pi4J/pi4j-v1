@@ -21,11 +21,11 @@ package com.pi4j.wiringpi;
  * 
  * <p>
  * WiringPi includes a software-driven PWM handler capable of outputting a PWM signal on any of the
- * Raspberry Pi’s GPIO pins.
+ * Raspberry Pi's GPIO pins.
  * </p>
  * 
  * <p>
- * There are some limitations… To maintain a low CPU usage, the minimum pulse width is 100uS. That
+ * There are some limitations. To maintain a low CPU usage, the minimum pulse width is 100uS. That
  * combined with the default suggested range of 100 gives a PWM frequency of 100Hz. You can lower
  * the range to get a higher frequency, at the expense of resolution, or increase to get more
  * resolution, but that will lower the frequency. If you change the pulse-width in the drive code,

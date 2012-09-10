@@ -80,7 +80,7 @@ public class GpioUtil
      * constants instructs the edge detection to be disabled.
      * </p>
      * 
-     * @see #edge(int,int)
+     * @see #setEdgeDetection(int,int)
      */
     public static final int EDGE_NONE = 0;
 
@@ -92,7 +92,7 @@ public class GpioUtil
      * changing from LOW to HIGH or HIGH to LOW.
      * </p>
      * 
-     * @see #edge(int,int)
+     * @see #setEdgeDetection(int,int)
      */
     public static final int EDGE_BOTH = 1;
 
@@ -104,7 +104,7 @@ public class GpioUtil
      * from LOW to HIGH.
      * </p>
      * 
-     * @see #edge(int,int)
+     * @see #setEdgeDetection(int,int)
      */
     public static final int EDGE_RISING = 2;
 
@@ -116,7 +116,7 @@ public class GpioUtil
      * from HIGH to LOW.
      * </p>
      * 
-     * @see #edge(int,int)
+     * @see #setEdgeDetection(int,int)
      */
     public static final int EDGE_FALLING = 3;
 

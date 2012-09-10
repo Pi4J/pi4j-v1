@@ -22,7 +22,7 @@ package com.pi4j.wiringpi;
  * <p>
  * WiringPi includes a shift library which more or less mimics the one in the Arduino system. This
  * allows you to shift 8-bit data values out of the Pi, or into the Pi from devices such as
- * shift-registers (e.g. 74×595) and so-on, although it can also be used in some bit-banging
+ * shift-registers (e.g. 74,595) and so-on, although it can also be used in some bit-banging
  * scenarios.
  * </p>
  * 
@@ -83,7 +83,7 @@ public class Shift
      * <p>
      * The shifts an 8-bit data value val out with the data being sent out on dPin and the clock
      * being sent out on the cPin. order is as above. Data is clocked out on the rising or falling
-     * edge – ie. dPin is set, then cPin is taken high then low – repeated for the 8 bits.
+     * edge; ie. dPin is set, then cPin is taken high then low and repeated for the 8 bits.
      * </p>
      * 
      * @see <a

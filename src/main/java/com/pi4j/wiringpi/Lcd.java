@@ -28,16 +28,16 @@ package com.pi4j.wiringpi;
  * The library is simple to use in your own programs, however wiring the displays up may be
  * challenging, so do take care. It is possible to wire up more than one display! In 8-bit mode, the
  * first display needs 10 GPIO pins and each additional display needs just one more pin, so with a
- * maximum of 17 GPIO pins, that’s 8 displays. If you move to using a 4-bit interface (trivial in
- * the code), then it’s 4 more displays – 12 LCDs! However I suspect the rest of the wiring might be
- * somewhat challenging… Wiring is described at the end of the this page.
+ * maximum of 17 GPIO pins, that's 8 displays. If you move to using a 4-bit interface (trivial in
+ * the code), then it's 4 more displays and 12 LCDs! However I suspect the rest of the wiring might be
+ * somewhat challenging. Wiring is described at the end of the this page.
  * </p>
  * 
  * <p>
  * The LCD display can be either a 5V display or a 3,3v display, however if we are using a 5V
  * display then we must make absolutely sure the display can never write data back to the Raspberry
- * Pi, otherwise it will present 5V on the Pi’s GPIO pins which will not be good. At best you’ll
- * destroy the pin drivers, at worst you’ll destroy your Pi.
+ * Pi, otherwise it will present 5V on the Pi's GPIO pins which will not be good. At best you'll
+ * destroy the pin drivers, at worst you'll destroy your Pi.
  * </p>
  * 
  * <p>
@@ -122,7 +122,7 @@ public class Lcd
      * @param d5
      * @param d6
      * @param d7
-     * @return
+     * @return return value
      */
     public static native int lcdInit(int rows, int cols, int bits, int rs, int strb, int d0,
             int d1, int d2, int d3, int d4, int d5, int d6, int d7);

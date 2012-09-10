@@ -40,10 +40,10 @@ import com.pi4j.io.serial.SerialDataListener;
  * </blockquote>
  * </p>
  * 
- * @see #Serial
- * @see #SerialDataEvent
- * @see #SerialDataListener
- * @see #SerialFactory
+ * @see #com.pi4j.io.serial.Serial
+ * @see #com.pi4j.io.serial.SerialDataEvent
+ * @see #com.pi4j.io.serial.SerialDataListener
+ * @see #com.pi4j.io.serial.SerialFactory
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
@@ -293,8 +293,8 @@ public class SerialImpl implements Serial
      * events.
      * </p>
      * 
-     * @see #SerialListener
-     * @see #SerialDataEvent
+     * @see #com.pi4j.io.serial.SerialDataListener
+     * @see #com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener <p>
      *            A class instance that implements the SerialListener interface.
@@ -322,8 +322,9 @@ public class SerialImpl implements Serial
      * events.
      * </p>
      * 
-     * @see #SerialListener
-     * @see #SerialDataEvent
+     * @see #com.pi4j.io.serial.SerialDataListener
+     * @see #com.pi4j.io.serial.SerialDataEvent
+
      * 
      * @param listener <p>
      *            A class instance that implements the SerialListener interface.

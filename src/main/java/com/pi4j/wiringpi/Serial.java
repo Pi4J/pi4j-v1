@@ -139,7 +139,7 @@ public class Serial
      * @param fd <p>
      *            The file descriptor of the serial port.
      *            </p>
-     * @param c <p>
+     * @param data <p>
      *            The character to transmit to the serial port.
      *            </p>
      */
@@ -161,7 +161,7 @@ public class Serial
      * @param fd <p>
      *            The file descriptor of the serial port.
      *            </p>
-     * @param s <p>
+     * @param data <p>
      *            The data string to transmit to the serial port.
      *            </p>
      */

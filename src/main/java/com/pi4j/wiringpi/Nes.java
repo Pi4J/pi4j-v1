@@ -66,7 +66,7 @@ public class Nes
      * @param dPin
      * @param cPin
      * @param lPin
-     * @return
+     * @return return value
      */
     public static native int setupNesJoystick(int dPin, int cPin, int lPin);
 
@@ -78,7 +78,7 @@ public class Nes
      * </p>
      * 
      * @param joystick
-     * @return
+     * @return return value
      */
     public static native int readNesJoystick(int joystick);
 }

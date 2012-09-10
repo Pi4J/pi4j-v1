@@ -137,8 +137,8 @@ public class GpioInterrupt
      * changes.
      * </p>
      * 
-     * @see #GpioInterruptListener
-     * @see #GpioInterruptEvent
+     * @see #com.pi4j.wiringpi.GpioInterruptListener
+     * @see #com.pi4j.wiringpi.GpioInterruptEvent
      * 
      * @param listener <p>
      *            A class instance that implements the GpioInterruptListener interface.
@@ -157,8 +157,8 @@ public class GpioInterrupt
      * changes.
      * </p>
      * 
-     * @see #GpioInterruptListener
-     * @see #GpioInterruptEvent
+     * @see #com.pi4j.wiringpi.GpioInterruptListener
+     * @see #com.pi4j.wiringpi.GpioInterruptEvent
      * 
      * @param listener <p>
      *            A class instance that implements the GpioInterruptListener interface.

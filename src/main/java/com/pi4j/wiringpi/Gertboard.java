@@ -40,7 +40,7 @@ package com.pi4j.wiringpi;
  * 
  * <p>
  * To use in a program, first you need to make sure that the 5 SPI jumpers are present on the
- * Gertboard (there are 7 in total, 5 for the SPI, 2 to connect the serial to the ATmega) – the
+ * Gertboard (there are 7 in total, 5 for the SPI, 2 to connect the serial to the ATmega), the
  * photo below shows all 7 jumpers in-place.
  * </p>
  * 

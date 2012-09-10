@@ -37,9 +37,7 @@ import com.pi4j.io.gpio.impl.GpioImpl;
  * </blockquote>
  * </p>
  * 
- * @see #Serial
- * @see #SerialDataEvent
- * @see #SerialDataListener
+ * @see #com.pi4j.io.gpio.Gpio
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a

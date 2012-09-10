@@ -97,7 +97,7 @@ public class GpioImpl implements Gpio, GpioInterruptListener
     /**
      * 
      * @param pin
-     * @return
+     * @return <p>A value of 'true' is returned if the requested pin is exported.</p> 
      */
     public boolean isExported(GpioPin pin)
     {

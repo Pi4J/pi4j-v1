@@ -27,7 +27,7 @@ package com.pi4j.wiringpi;
  * 
  * <p>
  * The main difference is that unlike the Arduino system, the main loop of the program is not
- * provided for you – you need to write it yourself. This is often desirable in a Linux system
+ * provided for you and you need to write it yourself. This is often desirable in a Linux system
  * anyway as it can give you access to command-line arguments and so on. See the examples page for
  * some simple examples and a Makefile to use.
  * </p>
@@ -199,7 +199,7 @@ public class Gpio
      * 
      * <p>
      * <b><i>Also note that some functions (noted below) have no effect when using this mode as
-     * they’re not currently possible to action unless called with root privileges.</i></b>
+     * they're not currently possible to action unless called with root privileges.</i></b>
      * </p>
      * 
      * @see <a
@@ -499,9 +499,9 @@ public class Gpio
      * <p>
      * This attempts to shift your program (or thread in a multi-threaded program) to a higher
      * priority and enables a real-time scheduling. The priority parameter should be from 0 (the
-     * Default) to 99 (the maximum). This won’t make your program go any faster, but it will give it
+     * Default) to 99 (the maximum). This won't make your program go any faster, but it will give it
      * a bigger slice of time when other programs are running. The priority parameter works relative
-     * to others – so you can make one program priority 1 and another priority 2 and it will have
+     * to others and so you can make one program priority 1 and another priority 2 and it will have
      * the same effect as setting one to 10 and the other to 90 (as long as no other programs are
      * running with elevated priorities)
      * </p>
@@ -532,7 +532,7 @@ public class Gpio
      * <h1>[Interrupts]</h1>
      * 
      * With a newer kernel patched with the GPIO interrupt handling code, you can now wait for an
-     * interrupt in your program. This frees up the processor to do other tasks while you’re waiting
+     * interrupt in your program. This frees up the processor to do other tasks while you're waiting
      * for that interrupt. The GPIO can be set to interrupt on a rising, falling or both edges of
      * the incoming signal.
      * 
@@ -586,7 +586,7 @@ public class Gpio
      * <h1>Concurrent Processing (multi-threading)</h1>
      * 
      * wiringPi has a simplified interface to the Linux implementation of Posix threads, as well as
-     * a (simplified) mechanisms to access mutex’s (Mutual exclusions)
+     * a (simplified) mechanisms to access mutexs (Mutual exclusions)
      * 
      * Using these functions you can create a new process (a function inside your main program)
      * which runs concurrently with your main program and using the mutex mechanisms, safely pass

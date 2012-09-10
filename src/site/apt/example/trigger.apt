@@ -1,0 +1,18 @@
+GPIO Triggers Example using Pi4J.
+
+  The following example demonstrates how to setup GPIO triggers.  GPIO Triggers listen for pin state changes and then perform some action on on alternate GPIO pin or perform a callback to a user specified method.  
+  Pi4J includes several built in pre-defined trigger implementation classes or you can create your own trigger by implementing the GpioTrigger interface.  
+  Triggers are based on the GPIO listener implementation and rely on GPIO hardware interrupts not state polling.
+
+* Source Code 
+   
+  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/io/example}}
+
+%{snippet|id=trigger-gpio-snippet|file=src/test/java/com/pi4j/io/example/TriggerGpioExample.java}
+
+* Wiring Diagram
+
+  The following circuit can be used in conjunction with this sample code.
+  
+[../images/gpio-trigger-example.png]
+
