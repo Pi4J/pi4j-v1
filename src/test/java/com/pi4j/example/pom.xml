@@ -1,0 +1,12 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<dependencies>
+<!-- START SNIPPET: maven-dependency-snippet -->
+<dependency>
+	<groupId>com.pi4j</groupId>
+	<artifactId>pi4j</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+</dependency>	
+<!-- END SNIPPET: maven-dependency-snippet -->
+	</dependencies>
+</project>
