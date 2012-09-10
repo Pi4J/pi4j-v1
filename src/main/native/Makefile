@@ -8,7 +8,7 @@ TARGET=libpi4j.so
 #DEBUG	= -g -O0
 DEBUG	= -O3
 CC	= gcc
-INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include
+INCLUDE	= -I. -I/$(JAVA_HOME)/include -I/usr/local/include -I. -I/$(JAVA_HOME)/include/linux -I/usr/local/include/linux
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
 
 LIBS    = -L/usr/local/lib -lwiringPi

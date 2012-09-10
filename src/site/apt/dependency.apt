@@ -4,3 +4,5 @@ Dependencies
   {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}}
   
 [./images/dependencies.png]
+
+  Additional compile-time dependency information can be found here:  {{{./dependency-info.html}Dependency Information Report}} 
