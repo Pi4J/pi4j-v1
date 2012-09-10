@@ -70,7 +70,7 @@ public class TriggerGpioExample
         gpio.setup(GpioPin.GPIO_04, GpioPinDirection.IN, GpioPinEdge.BOTH,
                    GpioPinResistor.PULL_DOWN);
 
-        // setup gpio pins #21,23,23 as an output pins and make sure they are all LOW at startup
+        // setup gpio pins #21,22,23 as an output pins and make sure they are all LOW at startup
         GpioPin[] pins = { GpioPin.GPIO_21, GpioPin.GPIO_22, GpioPin.GPIO_23 };
         gpio.setup(pins, GpioPinDirection.OUT);
         gpio.setLow(pins);
