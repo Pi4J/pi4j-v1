@@ -6,9 +6,9 @@ GPIO Triggers Example using Pi4J.
 
 * Source Code 
    
-  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/io/example}}
+  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/example}}
 
-%{snippet|id=trigger-gpio-snippet|file=src/test/java/com/pi4j/io/example/TriggerGpioExample.java}
+%{snippet|id=trigger-gpio-snippet|file=src/test/java/com/pi4j/example/TriggerGpioExample.java}
 
 * Wiring Diagram
 

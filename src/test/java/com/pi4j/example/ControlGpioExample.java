@@ -1,5 +1,5 @@
 // START SNIPPET: control-gpio-snippet
-package com.pi4j.io.example;
+package com.pi4j.example;
 
 import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioFactory;

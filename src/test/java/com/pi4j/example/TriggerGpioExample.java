@@ -1,5 +1,5 @@
 // START SNIPPET: trigger-gpio-snippet
-package com.pi4j.io.example;
+package com.pi4j.example;
 
 import java.util.concurrent.Callable;
 

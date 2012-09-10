@@ -41,6 +41,7 @@
 			<item name="Listen for GPIO Events" href="example/listener.html" />
 			<item name="Trigger GPIO on Events" href="example/trigger.html" />
 			<item name="Serial Communication" href="example/serial.html" />
+			<item name="System/Network Information" href="example/system-info.html" />
 		</menu>
 		<menu ref="reports" />
 	</body>
