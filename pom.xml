@@ -7,12 +7,44 @@
 	<name>Pi4J</name>
 	<description>Java Library for the Raspberry Pi</description>
 	<url>http://www.pi4j.com</url>
+	<inceptionYear>2012</inceptionYear>
 
 	<!-- ORGANIZATION -->
 	<organization>
 		<name>Pi4J</name>
 		<url>http://www.pi4j.com</url>
 	</organization>
+	
+	<!-- LICENSE -->
+   <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>	
+	
+	<!-- DEVELOPERS/CONTRIBUTORS -->
+	<developers>
+		<developer>
+			<name>Robert Savage</name>
+			<email>robert@pi4j.com</email>
+			<url>http://robertsavage.me</url>
+			<organizationUrl>http://www.savagehomeautomation.com</organizationUrl>
+			<roles>
+				<role>sponsor</role>
+				<role>developer</role>
+			</roles>
+		</developer>		
+		<developer>
+			<name>Chris Walzl</name>
+			<email>chris@pi4j.com</email>
+			<roles>
+				<role>sponsor</role>
+				<role>developer</role>
+			</roles>
+		</developer>		
+	</developers>
 
 	<!-- SOURCE CONTROL -->
 	<scm>

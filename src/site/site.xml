@@ -29,7 +29,7 @@
 		</links>
 		<menu name="Pi4J">
 			<item name="Welcome" href="index.html" />
-			<item name="Contributors" href="contributors.html" />
+			<item name="The Team" href="team-list.html" />
 			<item name="FAQ" href="faq.html" />
 			<item name="Dependencies" href="dependency.html" />
 			<item name="Release Notes" href="release-notes.html" />
