@@ -1,0 +1,23 @@
+Serial Communication Example using Pi4J.
+
+  The following example demonstrates how to transmit and receive data using the Raspberry Pi serial port.
+  \
+  (A complete article on building and installing a serial port on the Raspberry Pi is available here:\ 
+  {{http://www.savagehomeautomation.com/projects/raspberry-pi-installing-a-rs232-serial-port.html}})
+
+* Source Code 
+   
+  The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/io/example}}
+
+%{snippet|id=serial-snippet|file=src/test/java/com/pi4j/io/example/SerialExample.java}
+
+* Wiring Diagram
+
+  The circuit below illustrates a RS232 serial port connected to the Raspberry Pi's GPIO header.\
+  The following circuit can be used in conjunction with this sample code.\
+  \
+  (A complete article on building and installing a serial port on the Raspberry Pi is available here:\ 
+  {{http://www.savagehomeautomation.com/projects/raspberry-pi-installing-a-rs232-serial-port.html}})
+  
+[../images/serial-example.png]
+
