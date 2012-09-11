@@ -7,8 +7,8 @@ import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.SystemInfo;
 
 /**
- * This example code demonstrates how to access soem of the system information and network
- * information form the Raspberry Pi.
+ * This example code demonstrates how to access a few of the system information properties and
+ * network information from the Raspberry Pi.
  * 
  * @author Robert Savage
  */

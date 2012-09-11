@@ -29,12 +29,14 @@
 		</links>
 		<menu name="Pi4J">
 			<item name="Welcome" href="index.html" />
+			<item name="The Team" href="team-list.html" />
 			<item name="FAQ" href="faq.html" />
-			<item name="Dependencies" href="dependencies.html" />
+			<item name="Dependencies" href="dependency.html" />
 			<item name="Release Notes" href="release-notes.html" />
 			<item name="Download" href="download.html" />
 			<item name="Installation" href="install.html" />
 			<item name="Usage" href="usage.html" />
+			<item name="JavaDoc" href="apidocs/index.html" target="pi4j-javadoc"/>
 		</menu>
 		<menu name="Examples">
 			<item name="Control GPIO" href="example/control.html" />

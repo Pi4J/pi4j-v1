@@ -7,17 +7,49 @@
 	<name>Pi4J</name>
 	<description>Java Library for the Raspberry Pi</description>
 	<url>http://www.pi4j.com</url>
+	<inceptionYear>2012</inceptionYear>
 
 	<!-- ORGANIZATION -->
 	<organization>
 		<name>Pi4J</name>
 		<url>http://www.pi4j.com</url>
 	</organization>
+	
+	<!-- LICENSE -->
+   <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>	
+	
+	<!-- DEVELOPERS/CONTRIBUTORS -->
+	<developers>
+		<developer>
+			<name>Robert Savage</name>
+			<email>robert@pi4j.com</email>
+			<url>http://robertsavage.me</url>
+			<organizationUrl>http://www.savagehomeautomation.com</organizationUrl>
+			<roles>
+				<role>sponsor</role>
+				<role>developer</role>
+			</roles>
+		</developer>		
+		<developer>
+			<name>Chris Walzl</name>
+			<email>chris@pi4j.com</email>
+			<roles>
+				<role>sponsor</role>
+				<role>developer</role>
+			</roles>
+		</developer>		
+	</developers>
 
 	<!-- SOURCE CONTROL -->
 	<scm>
 		<url>https://github.com/Pi4J/pi4j.git</url>
-		<connection>git@github.com:Pi4J/pi4j.git</connection>
+		<connection>scm:git@github.com:Pi4J/pi4j.git</connection>
 	</scm>
 
 	<!-- ISSUE MANAGEMENT -->
@@ -28,28 +60,50 @@
 
 	<!-- BUILD PROPERTIES -->
 	<properties>
+		<!-- Disable scp of Pi4j to Raspberry Pi by default -->
+		<scp.transfer>false</scp.transfer> 
 		<scp.user>pi</scp.user>
 		<scp.password>raspberry</scp.password>
 		<scp.port>22</scp.port>
 		<scp.dirCopyTo>/home/pi/pi4j-temp</scp.dirCopyTo>
-		<scp.host>10.1.1.161</scp.host> <!-- IP address of Raspberry Pi -->
+		<!-- IP address of Raspberry Pi -->
+		<scp.host>10.1.1.161</scp.host>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-
 		<!-- PROFILE : Robert Savage -->
 		<profile>
 			<id>savage</id>
 			<properties>
-				<scp.host>10.1.1.161</scp.host> <!-- IP address of Raspberry Pi -->
+				<!-- IP address of Raspberry Pi -->
+				<scp.host>10.1.1.161</scp.host> 
+				<!-- enable scp of Pi4j to Raspberry Pi -->	
+				<scp.transfer>true</scp.transfer>
 			</properties>
 			<activation>
 				<property>
 					<name>env.MAVEN_PROFILE</name>
 					<value>savage</value>
+				</property>
+			</activation>
+		</profile>
+		
+		<!-- PROFILE : Chris Walzl -->
+		<profile>
+			<id>cwalzl</id>
+			<properties>
+				<!-- Hostname of Raspberry Pi -->
+				<scp.host>raspberrypi</scp.host> 
+				<!-- enable scp of Pi4j to Raspberry Pi -->	
+				<scp.transfer>true</scp.transfer>
+			</properties>
+			<activation>
+				<property>
+					<name>env.MAVEN_PROFILE</name>
+					<value>cwalzl</value>
 				</property>
 			</activation>
 		</profile>
@@ -152,45 +206,52 @@
 						</goals>
 						<configuration>
 							<tasks>
-
-								<!-- ensure the target directory is empty on the Raspberry Pi -->
-								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-									password="${scp.password}" trust="true" failonerror="true"
-									verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
-
-								<!-- ensure the target directory exists on the Raspberry Pi -->
-								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-									password="${scp.password}" trust="true" failonerror="false"
-									verbose="true" command="mkdir --parents ${scp.dirCopyTo}/*" />
-
-								<!-- copy all the necessary source files to the Raspberry Pi -->
-								<scp todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}"
-									port="${scp.port}" trust="true" verbose="true" failonerror="true">
-									<fileset dir="${project.build.directory}">
-										<include name="${project.build.finalName}.jar" />
-									</fileset>
-									<fileset dir="src/main/native" />
-								</scp>
-
-								<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
-									Pi platform -->
-								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-									password="${scp.password}" trust="true" failonerror="true"
-									verbose="true"
-									command="cd /home/pi/pi4j-temp; make clean; make all; sudo make install" />
-
-								<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
-								<scp
-									file="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}/libpi4j.so"
-									todir="${project.build.directory}" port="${scp.port}" trust="true"
-									verbose="true" failonerror="true">
-								</scp>
-
-								<!-- remove the temporary target directory from the Raspberry Pi -->
-								<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-									password="${scp.password}" trust="true" failonerror="true"
-									verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
-
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+								<if>
+									<equals arg1="${scp.transfer}" arg2="true" />
+								<then>	
+									<!-- ensure the target directory is empty on the Raspberry Pi -->
+									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+										password="${scp.password}" trust="true" failonerror="true"
+										verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
+	
+									<!-- ensure the target directory exists on the Raspberry Pi -->
+									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+										password="${scp.password}" trust="true" failonerror="false"
+										verbose="true" command="mkdir --parents ${scp.dirCopyTo}/*" />
+	
+									<!-- copy all the necessary source files to the Raspberry Pi -->
+									<scp todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}"
+										port="${scp.port}" trust="true" verbose="true" failonerror="true">
+										<fileset dir="${project.build.directory}">
+											<include name="${project.build.finalName}.jar" />
+										</fileset>
+										<fileset dir="src/main/native" />
+									</scp>
+	
+									<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
+										Pi platform -->
+									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+										password="${scp.password}" trust="true" failonerror="true"
+										verbose="true"
+										command="cd /home/pi/pi4j-temp; make clean; make all; sudo make install" />
+	
+									<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
+									<scp
+										file="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}/libpi4j.so"
+										todir="${project.build.directory}" port="${scp.port}" trust="true"
+										verbose="true" failonerror="true">
+									</scp>
+	
+									<!-- remove the temporary target directory from the Raspberry Pi -->
+									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
+										password="${scp.password}" trust="true" failonerror="true"
+										verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
+								</then>		
+								<else>
+                                    <echo>SCP transfer of Pi4J has been disabled.</echo>
+                                </else>
+								</if>
 							</tasks>
 						</configuration>
 					</execution>
@@ -205,6 +266,11 @@
 						<groupId>com.jcraft</groupId>
 						<artifactId>jsch</artifactId>
 						<version>0.1.42</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>20020829</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -252,6 +318,47 @@
 								<description>JavaDoc API documentation</description>
 								<outputName>javadoc/index</outputName>
 							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.5.1</version>
+							<reportSets>
+								<reportSet>
+									<reports>										
+										<report>summary</report>
+										<report>project-team</report>
+										<report>license</report>
+										<report>scm</report>
+										<report>issue-tracking</report>
+										<report>plugins</report>																				
+										<report>dependency-info</report>
+										<report>dependency-management</report>
+										<report>plugin-management</report>										
+										<report>distribution-management</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>taglist-maven-plugin</artifactId>
+							<version>2.4</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+							<version>2.12.3</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.7.1</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<version>2.3</version>
 						</plugin>
 					</reportPlugins>
 				</configuration>
