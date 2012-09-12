@@ -4,8 +4,8 @@ package com.pi4j.example;
 import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinDirection;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinState;
 
 /**
  * This example code demonstrates how to perform simple state
@@ -20,31 +20,28 @@ public class ControlGpioExample
         // create gpio controller
         Gpio gpio = GpioFactory.createInstance();
         
-        // setup gpio pin #4 as an output pin  
-        gpio.setup(GpioPin.GPIO_04, GpioPinDirection.OUT);
+        // provision gpio pin #4 as an output pin and turn on
+        GpioPin pin = gpio.provisionOuputPin(Pin.GPIO_04, "MyLED", PinState.HIGH);
         
-        // turn on gpio pin #4
-        gpio.setState(GpioPin.GPIO_04, GpioPinState.HIGH);
-
         Thread.sleep(5000);
         
         // turn off gpio pin #4
-        gpio.setState(GpioPin.GPIO_04, GpioPinState.LOW);
+        pin.low();
 
         Thread.sleep(5000);
 
         // toggle the current state of gpio pin #4 (should turn on)
-        gpio.toggleState(GpioPin.GPIO_04);
+        pin.toggle();
 
         Thread.sleep(5000);
 
         // toggle the current state of gpio pin #4  (should turn off)
-        gpio.toggleState(GpioPin.GPIO_04);
+        pin.toggle();
         
         Thread.sleep(5000);
 
         // turn on gpio pin #4 for 1 second and then off
-        gpio.pulse(GpioPin.GPIO_04, 1000);        
+        pin.pulse(1000);
     }
 }
 //END SNIPPET: control-gpio-snippet

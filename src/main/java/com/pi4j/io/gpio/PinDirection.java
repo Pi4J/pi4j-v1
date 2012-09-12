@@ -1,16 +1,14 @@
 package com.pi4j.io.gpio;
 
-public enum GpioPinEdge
+public enum PinDirection
 {
-    NONE(0, "none"), 
-    BOTH(1, "both"),
-    RISING(2, "rising"), 
-    FALLING(3, "falling");
+    IN(0, "in"), 
+    OUT(1, "out");
 
     private int value;
     private String name = null;
 
-    private GpioPinEdge(int value, String name)
+    private PinDirection(int value, String name)
     {
         this.value = value;
         this.name = name;
@@ -29,17 +27,16 @@ public enum GpioPinEdge
     @Override
     public String toString()
     {
-        return name;        
+        return name.toUpperCase();        
     }    
     
-    public static GpioPinEdge getEdge(int edge)
+    public static PinDirection getDirection(int direction)
     {
-        for (GpioPinEdge item : GpioPinEdge.values())
+        for (PinDirection item : PinDirection.values())
         {
-            if (item.getValue() == edge)
+            if (item.getValue() == direction)
                 return item;
         }
         return null;
-    }     
+    }    
 }
-

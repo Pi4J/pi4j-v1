@@ -1,14 +1,15 @@
 package com.pi4j.io.gpio;
 
-public enum GpioPinDirection
+public enum PinMode
 {
-    IN(0, "in"), 
-    OUT(1, "out");
+    INPUT(0, "input"), 
+    OUTPUT(1, "output"),
+    PWM_OUTPUT(2, "pwm_output");
 
     private int value;
     private String name = null;
 
-    private GpioPinDirection(int value, String name)
+    private PinMode(int value, String name)
     {
         this.value = value;
         this.name = name;
@@ -28,15 +29,5 @@ public enum GpioPinDirection
     public String toString()
     {
         return name.toUpperCase();        
-    }    
-    
-    public static GpioPinDirection getDirection(int direction)
-    {
-        for (GpioPinDirection item : GpioPinDirection.values())
-        {
-            if (item.getValue() == direction)
-                return item;
-        }
-        return null;
     }    
 }

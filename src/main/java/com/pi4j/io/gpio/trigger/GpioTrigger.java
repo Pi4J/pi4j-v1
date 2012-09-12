@@ -1,13 +1,16 @@
 package com.pi4j.io.gpio.trigger;
 
-import com.pi4j.io.gpio.Gpio;
+import java.util.List;
+
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 
 public interface GpioTrigger
 {
-    boolean hasPin(GpioPin pin);
-    boolean hasPinState(GpioPinState state);
-    void invoke(Gpio gpio, GpioPin pin, GpioPinState state);
+    void addPinState(PinState state);
+    void addPinState(PinState[] states);
+    void addPinState(List<PinState> states);
+    boolean hasPinState(PinState state);
+    void invoke(GpioPin pin, PinState state);
 }

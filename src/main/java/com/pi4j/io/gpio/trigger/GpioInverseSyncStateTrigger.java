@@ -5,29 +5,29 @@ import java.util.List;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioSyncStateTrigger extends GpioTriggerBase
+public class GpioInverseSyncStateTrigger extends GpioTriggerBase
 {
     private GpioPin targetPin;
 
-    public GpioSyncStateTrigger(GpioPin targetPin)
+    public GpioInverseSyncStateTrigger(GpioPin targetPin)
     {
         super();
         this.targetPin = targetPin;
     }
     
-    public GpioSyncStateTrigger(PinState state, GpioPin targetPin)
+    public GpioInverseSyncStateTrigger(PinState state, GpioPin targetPin)
     {
         super(state);
         this.targetPin = targetPin;
     }
 
-    public GpioSyncStateTrigger(PinState[] states, GpioPin targetPin)
+    public GpioInverseSyncStateTrigger(PinState[] states, GpioPin targetPin)
     {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioSyncStateTrigger(List<PinState> states, GpioPin targetPin)
+    public GpioInverseSyncStateTrigger(List<PinState> states, GpioPin targetPin)
     {
         super(states);
         this.targetPin = targetPin;
@@ -48,7 +48,10 @@ public class GpioSyncStateTrigger extends GpioTriggerBase
     {
         if(targetPin != null)
         {
-            targetPin.setState(state);
+            if(state == PinState.HIGH)
+                targetPin.setState(PinState.LOW);
+            else
+                targetPin.setState(PinState.HIGH);
         }
     }
 }

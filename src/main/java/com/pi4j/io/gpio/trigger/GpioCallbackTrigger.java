@@ -3,46 +3,34 @@ package com.pi4j.io.gpio.trigger;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 public class GpioCallbackTrigger extends GpioTriggerBase
 {
     private Callable<Void> callback;
     
-    public GpioCallbackTrigger() 
+    public GpioCallbackTrigger(Callable<Void> callback)
     {
         super();
-    }
-    
-    public GpioCallbackTrigger(GpioPin pin, GpioPinState state, Callable<Void> callback)
-    {
-        super(pin,state);
         this.callback = callback;
     }
 
-    public GpioCallbackTrigger(GpioPin pin, GpioPinState[] states, Callable<Void> callback)
+    public GpioCallbackTrigger(PinState state, Callable<Void> callback)
     {
-        super(pin,states);
+        super(state);
         this.callback = callback;
     }
 
-    public GpioCallbackTrigger(GpioPin pin, List<GpioPinState> states, Callable<Void> callback)
+    public GpioCallbackTrigger(PinState[] states, Callable<Void> callback)
     {
-        super(pin,states);
-        this.callback = callback;
-    }
-    
-    public GpioCallbackTrigger(GpioPin[] pins, GpioPinState[] states, Callable<Void> callback)
-    {
-        super(pins,states);
+        super(states);
         this.callback = callback;
     }
 
-    public GpioCallbackTrigger(List<GpioPin> pins, List<GpioPinState> states, Callable<Void> callback)
+    public GpioCallbackTrigger(List<PinState> states, Callable<Void> callback)
     {
-        super(pins,states);
+        super(states);
         this.callback = callback;
     }
     
@@ -52,7 +40,7 @@ public class GpioCallbackTrigger extends GpioTriggerBase
     }
 
     @Override
-    public void invoke(Gpio gpio, GpioPin pin, GpioPinState state)
+    public void invoke(GpioPin pin, PinState state)
     {        
         if(callback != null)
         {

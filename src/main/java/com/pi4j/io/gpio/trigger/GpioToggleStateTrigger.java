@@ -2,46 +2,46 @@ package com.pi4j.io.gpio.trigger;
 
 import java.util.List;
 
-import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 public class GpioToggleStateTrigger extends GpioTriggerBase
 {
     private GpioPin targetPin;
-    
-    public GpioToggleStateTrigger() 
+
+    public GpioToggleStateTrigger(PinState state, GpioPin targetPin)
     {
         super();
-    }
-    
-    public GpioToggleStateTrigger(GpioPin pin, GpioPinState state, GpioPin targetPin)
-    {
-        super(pin,state);
-        this.targetPin = targetPin;
-    }
-
-    public GpioToggleStateTrigger(GpioPin pin, GpioPinState[] states, GpioPin targetPin)
-    {
-        super(pin,states);
-        this.targetPin = targetPin;
-    }
-
-    public GpioToggleStateTrigger(GpioPin pin, List<GpioPinState> states, GpioPin targetPin)
-    {
-        super(pin,states);
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(GpioPin[] pins, GpioPinState[] states, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin pin, PinState state, GpioPin targetPin)
     {
-        super(pins,states);
+        super(state);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(List<GpioPin> pins, List<GpioPinState> states, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin pin, PinState[] states, GpioPin targetPin)
     {
-        super(pins,states);
+        super(states);
+        this.targetPin = targetPin;
+    }
+
+    public GpioToggleStateTrigger(GpioPin pin, List<PinState> states, GpioPin targetPin)
+    {
+        super(states);
+        this.targetPin = targetPin;
+    }
+    
+    public GpioToggleStateTrigger(GpioPin[] pins, PinState[] states, GpioPin targetPin)
+    {
+        super(states);
+        this.targetPin = targetPin;
+    }
+
+    public GpioToggleStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPin targetPin)
+    {
+        super(states);
         this.targetPin = targetPin;
     }
     
@@ -56,11 +56,11 @@ public class GpioToggleStateTrigger extends GpioTriggerBase
     }
     
     @Override
-    public void invoke(Gpio gpio, GpioPin pin, GpioPinState state)
+    public void invoke(GpioPin pin, PinState state)
     {
         if(targetPin != null)
         {
-            gpio.toggleState(targetPin);
+            targetPin.toggle();
         }
     }
 }

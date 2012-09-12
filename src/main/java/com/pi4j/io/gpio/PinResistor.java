@@ -1,6 +1,6 @@
 package com.pi4j.io.gpio;
 
-public enum GpioPinResistor
+public enum PinResistor
 {
     OFF(0, "off"),
     PULL_DOWN(1, "down"),
@@ -9,7 +9,7 @@ public enum GpioPinResistor
     private int value;
     private String name = null;
 
-    private GpioPinResistor(int value, String name)
+    private PinResistor(int value, String name)
     {
         this.value = value;
         this.name = name;

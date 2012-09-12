@@ -16,7 +16,7 @@
  */
 package com.pi4j.io.gpio;
 
-import com.pi4j.io.gpio.impl.GpioImpl;
+import com.pi4j.io.gpio.impl.GpioController;
 
 /**
  * <h1>GPIO Factory</h1>
@@ -54,6 +54,6 @@ public class GpioFactory
      */
     public static Gpio createInstance()
     {
-        return new GpioImpl();
+        return new GpioController();
     }
 }

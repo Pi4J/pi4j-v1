@@ -3,95 +3,55 @@ package com.pi4j.io.gpio.trigger;
 import java.util.List;
 import java.util.Vector;
 
-import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 public abstract class GpioTriggerBase implements GpioTrigger
 {
-
-    private Vector<GpioPin> pins = new Vector<GpioPin>();
-    private Vector<GpioPinState> states = new Vector<GpioPinState>();
+    private Vector<PinState> states = new Vector<PinState>();
 
     public GpioTriggerBase()
     {
+        addPinState(PinState.allStates());
     }
     
-    public GpioTriggerBase(GpioPin pin, GpioPinState state)
+    public GpioTriggerBase(PinState state)
     {
-        addPin(pin);
         addPinState(state);
     }
 
-    public GpioTriggerBase(GpioPin pin, GpioPinState[] states)
+    public GpioTriggerBase(PinState[] states)
     {
-        addPin(pin);
         addPinState(states);
     }
 
-    public GpioTriggerBase(GpioPin pin, List<GpioPinState> states)
+    public GpioTriggerBase(List<PinState> states)
     {
-        addPin(pin);
-        addPinState(states);
-    }
-    
-    public GpioTriggerBase(GpioPin[] pins, GpioPinState[] states)
-    {
-        addPin(pins);
-        addPinState(states);
-    }
-
-    public GpioTriggerBase(List<GpioPin> pins, List<GpioPinState> states)
-    {
-        addPin(pins);
         addPinState(states);
     }
     
-    public void addPin(GpioPin pin)
-    {
-        if(!pins.contains(pin))
-            pins.add(pin);
-    }
-
-    public void addPin(GpioPin[] pins)
-    {
-        for(GpioPin pin : pins)
-            addPin(pin);
-    }
-
-    public void addPin(List<GpioPin> pins)
-    {
-        for(GpioPin pin : pins)
-            addPin(pin);
-    }
-    
-    public void addPinState(GpioPinState state)
+    public void addPinState(PinState state)
     {
         if(!states.contains(state))
             states.add(state);
     }
 
-    public void addPinState(GpioPinState[] states)
+    public void addPinState(PinState[] states)
     {
-        for(GpioPinState state : states)
+        for(PinState state : states)
             addPinState(state);
     }
 
-    public void addPinState(List<GpioPinState> states)
+    public void addPinState(List<PinState> states)
     {
-        for(GpioPinState state : states)
+        for(PinState state : states)
             addPinState(state);
     }
     
-    public boolean hasPin(GpioPin pin)
-    {
-        return pins.contains(pin);
-    }
-
-    public boolean hasPinState(GpioPinState state)
+    public boolean hasPinState(PinState state)
     {
         return states.contains(state);
     }
 
-    public abstract void invoke(Gpio gpio, GpioPin pin, GpioPinState state);
+    public abstract void invoke(GpioPin pin, PinState state);
 }

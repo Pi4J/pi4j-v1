@@ -1,6 +1,6 @@
 package com.pi4j.io.gpio;
 
-public enum GpioPinState
+public enum PinState
 {
     LOW(0, "HIGH"), 
     HIGH(1, "LOW"); 
@@ -8,7 +8,7 @@ public enum GpioPinState
     private int value;
     private String name = null;
 
-    private GpioPinState(int value, String name)
+    private PinState(int value, String name)
     {
         this.value = value;
         this.name = name;
@@ -30,9 +30,9 @@ public enum GpioPinState
         return name;        
     }    
     
-    public static GpioPinState getState(int state)
+    public static PinState getState(int state)
     {
-        for (GpioPinState item : GpioPinState.values())
+        for (PinState item : PinState.values())
         {
             if (item.getValue() == state)
                 return item;
@@ -40,16 +40,16 @@ public enum GpioPinState
         return null;
     }
     
-    public static GpioPinState getState(boolean state)
+    public static PinState getState(boolean state)
     {
         if(state == true)
-            return GpioPinState.HIGH;
+            return PinState.HIGH;
         else
-            return GpioPinState.LOW;
+            return PinState.LOW;
     }        
 
-    public static GpioPinState[] allStates()
+    public static PinState[] allStates()
     {
-        return GpioPinState.values();
+        return PinState.values();
     }    
 }

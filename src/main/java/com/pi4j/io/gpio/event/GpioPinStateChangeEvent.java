@@ -3,13 +3,13 @@ package com.pi4j.io.gpio.event;
 import java.util.EventObject;
 
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 public class GpioPinStateChangeEvent extends EventObject
 {
     static final long serialVersionUID = 1L;
     private GpioPin pin;
-    private GpioPinState state;
+    private PinState state;
 
     /**
      * <h1>Default event constructor</h1>
@@ -24,7 +24,7 @@ public class GpioPinStateChangeEvent extends EventObject
      *            New GPIO pin state.
      *            </p>
      */
-    public GpioPinStateChangeEvent(Object obj, GpioPin pin, GpioPinState state)
+    public GpioPinStateChangeEvent(Object obj, GpioPin pin, PinState state)
     {
         super(obj);
         this.pin = pin;
@@ -54,7 +54,7 @@ public class GpioPinStateChangeEvent extends EventObject
      *         GPIO pin state (HIGH, LOW)
      *         </p>
      */
-    public GpioPinState getState()
+    public PinState getState()
     {
         return state;
     }

@@ -1,104 +1,86 @@
+/*
+ * **********************************************************************
+ * This file is part of the pi4j project: http://www.pi4j.com/
+ * 
+ * pi4j is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
+ * General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * pi4j is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License along with pi4j. If not,
+ * see <http://www.gnu.org/licenses/>.
+ * **********************************************************************
+ */
 package com.pi4j.io.gpio;
 
-public enum GpioPin
+import java.util.List;
+import java.util.Map;
+
+import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.trigger.GpioTrigger;
+
+public interface GpioPin
 {
-    GPIO_00(0, "GPIO 0", "SDA"), // HEADER PIN 03
-    GPIO_01(1, "GPIO 1", "SCL"), // HEADER PIN 05
-    GPIO_04(4, "GPIO 4", "GPCLK0"), // HEADER PIN 07
-    GPIO_07(7, "GPIO 7", "CE1"), // HEADER PIN 26
-    GPIO_08(8, "GPIO 8", "CE0"), // HEADER PIN 24
-    GPIO_09(9, "GPIO 9", "MISO"), // HEADER PIN 21
-    GPIO_10(10, "GPIO 10", "MOSI"), // HEADER PIN 19
-    GPIO_11(11, "GPIO 11", "SCKL"), // HEADER PIN 23
-    GPIO_14(14, "GPIO 14", "TXD"), // HEADER PIN 08
-    GPIO_15(15, "GPIO 15", "RXD"), // HEADER PIN 10
-    GPIO_17(17, "GPIO 17"), // HEADER PIN 11
-    GPIO_18(18, "GPIO 18", "PCM_CLK"), // HEADER PIN 12
-    GPIO_21(21, "GPIO 21", "PCM_DOUT"), // HEADER PIN 13
-    GPIO_22(22, "GPIO 22"), // HEADER PIN 15
-    GPIO_23(23, "GPIO 23"), // HEADER PIN 16
-    GPIO_24(24, "GPIO 24"), // HEADER PIN 18
-    GPIO_25(25, "GPIO 25"); // HEADER PIN 22
-
-    private int value;
-    private String name = null;
-    private String altFunction = null;
-
-    private GpioPin(int value, String name, String altFunction)
-    {
-        this.value = value;
-        this.name = name;
-        this.altFunction = altFunction;
-    }
-
-    private GpioPin(int value, String name)
-    {
-        this.value = value;
-        this.name = name;
-    }
-
-    public int getValue()
-    {
-        return value;
-    }
-
-    public String getValueString()
-    {
-        return Integer.toString(value);
-    }
+    Pin getPin();
     
-    public String getName()
-    {
-        return name;
-    }
+    void setName(String name);
+    String getName();
 
-    public String getAltFunction()
-    {
-        return altFunction;
-    }
+    void setProperty(String key, String value);
+    boolean hasProperty(String key);
+    String getProperty(String key);
+    Map<String,String> getProperties();
+    void removeProperty(String key);
+    void clearProperties();
+    
+    void export(PinDirection direction);
+    void unexport();
+    boolean isExported();
+    
+    void setDirection(PinDirection direction);
+    PinDirection getDirection();
+    
+    void setEdge(PinEdge edge);
 
-    public boolean hasAltFunction()
-    {
-        return (altFunction != null && !altFunction.isEmpty());
-    }
+    PinEdge getEdge();
 
-    @Override
-    public String toString()
-    {
-        if (hasAltFunction())
-            return name + " (" + altFunction + ")";
-        else
-            return name;
-    }
+    void setMode(PinMode mode);
+    PinMode getMode();
+    
+    void setPullResistor(PinResistor resistance);
+    PinResistor getPullResistor();
 
-    public static GpioPin[] allPins()
-    {
-        return GpioPin.values();
-    }
+    void high();
+    void low();    
+    void toggle();
+    void pulse(long milliseconds);
+    void setState(PinState state);
+    boolean isHigh();
+    boolean isLow();
+    PinState getState();
+    
+    void setPwmValue(int value);
 
-    public static GpioPin getPin(int pinNumber)
-    {
-        for (GpioPin pin : GpioPin.values())
-        {
-            if (pin.getValue() == pinNumber)
-                return pin;
-        }
-        return null;
-    }
-
-    public static GpioPin getPin(String pinName)
-    {
-        for (GpioPin pin : GpioPin.values())
-        {
-            if (pin.getValueString().equalsIgnoreCase(pinName.trim()))
-                return pin;
-
-            else if (pin.getName().equalsIgnoreCase(pinName.trim()))
-                return pin;
-            
-            else if (pin.hasAltFunction() && pin.getAltFunction().equalsIgnoreCase(pinName.trim()))
-                return pin;
-        }
-        return null;
-    }
+    GpioListener[] getListeners();
+    void addListener(GpioListener listener);
+    void addListener(GpioListener[] listeners);
+    void addListener(List<GpioListener> listeners);
+    
+    void removeListener(GpioListener listener);
+    void removeListener(GpioListener[] listeners);
+    void removeListener(List<GpioListener> listeners);
+    void removeAllListeners();
+    
+    GpioTrigger[] getTriggers();
+    void addTrigger(GpioTrigger trigger);
+    void addTrigger(GpioTrigger[] triggers);
+    void addTrigger(List<GpioTrigger> triggers);
+    
+    void removeTrigger(GpioTrigger trigger);    
+    void removeTrigger(GpioTrigger[] triggers);
+    void removeTrigger(List<GpioTrigger> triggers);
+    void removeAllTriggers();
 }

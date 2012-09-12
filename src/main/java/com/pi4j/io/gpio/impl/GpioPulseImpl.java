@@ -8,17 +8,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
 
-public class GpioPulse 
+public class GpioPulseImpl 
 {
     @SuppressWarnings("rawtypes")
     private static ConcurrentHashMap<GpioPin, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPin, ScheduledFuture>();
     private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 
-    public synchronized static void execute(Gpio gpio, GpioPin pin, long milliseconds)
+    public synchronized static void execute(GpioPin pin, long milliseconds)
     {        
         // first determine if an existing pulse job is already scheduled for this pin
         if(tasks.containsKey(pin))
@@ -30,11 +28,11 @@ public class GpioPulse
         }
 
         // set the high state
-        gpio.setState(pin, GpioPinState.HIGH);
+        pin.high();
 
         // create future job to return the pin to the low state
         ScheduledFuture<?> scheduledFuture =        
-            scheduledExecutorService.schedule(new GpioPulseOff(gpio, pin), milliseconds, TimeUnit.MILLISECONDS);
+            scheduledExecutorService.schedule(new GpioPulseOffImpl(pin), milliseconds, TimeUnit.MILLISECONDS);
         
         // add the new scheduled job to the tasks map
         tasks.put(pin, scheduledFuture);

@@ -2,54 +2,42 @@ package com.pi4j.io.gpio.trigger;
 
 import java.util.List;
 
-import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinState;
+import com.pi4j.io.gpio.PinState;
 
 public class GpioPulseStateTrigger extends GpioTriggerBase
 {
     private GpioPin targetPin;
     private long milliseconds = 1000;
-    
-    public GpioPulseStateTrigger() 
+
+    public GpioPulseStateTrigger(GpioPin targetPin, long milliseconds)
     {
         super();
-    }
-    
-    public GpioPulseStateTrigger(GpioPin pin, GpioPinState state, GpioPin targetPin, long milliseconds)
-    {
-        super(pin,state);
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
-
-    public GpioPulseStateTrigger(GpioPin pin, GpioPinState[] states, GpioPin targetPin, long milliseconds)
-    {
-        super(pin,states);
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
-
-    public GpioPulseStateTrigger(GpioPin pin, List<GpioPinState> states, GpioPin targetPin, long milliseconds)
-    {
-        super(pin,states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
     
-    public GpioPulseStateTrigger(GpioPin[] pins, GpioPinState[] states, GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(PinState state, GpioPin targetPin, long milliseconds)
     {
-        super(pins,states);
+        super(state);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
 
-    public GpioPulseStateTrigger(List<GpioPin> pins, List<GpioPinState> states, GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(PinState[] states, GpioPin targetPin, long milliseconds)
     {
-        super(pins,states);
+        super(states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
+
+    public GpioPulseStateTrigger(List<PinState> states, GpioPin targetPin, long milliseconds)
+    {
+        super(states);
+        this.targetPin = targetPin;
+        this.milliseconds = milliseconds;
+    }
+    
     
     public void setTargetPin(GpioPin pin)
     {
@@ -62,11 +50,11 @@ public class GpioPulseStateTrigger extends GpioTriggerBase
     }
 
     @Override
-    public void invoke(Gpio gpio, GpioPin pin, GpioPinState state)
+    public void invoke(GpioPin pin, PinState state)
     {
         if(targetPin != null)
         {
-            gpio.pulse(targetPin, milliseconds);
+            targetPin.pulse(milliseconds);
         }
     }
 }
