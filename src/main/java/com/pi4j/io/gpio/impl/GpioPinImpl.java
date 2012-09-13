@@ -156,7 +156,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public PinMode getMode()
     {
-        // TODO Auto-generated method stub
+        // TODO Implement Mode getter method
         return null;
     }
 
@@ -169,7 +169,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public PinResistor getPullResistor()
     {
-        // TODO Auto-generated method stub
+        // TODO Implement pull resistor getter method
         return null;
     }
 
