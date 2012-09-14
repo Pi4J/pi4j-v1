@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi Gertboard Library</h1>
  * 
@@ -69,10 +71,10 @@ public class Gertboard
     public static final int SPI_A2D = 0;
     public static final int SPI_D2A = 1;
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

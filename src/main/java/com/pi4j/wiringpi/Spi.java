@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi SPI Library</h1>
  * 
@@ -67,10 +69,10 @@ package com.pi4j.wiringpi;
  */
 public class Spi
 {
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

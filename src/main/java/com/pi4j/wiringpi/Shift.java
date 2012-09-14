@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi Shift Library</h1>
  * 
@@ -49,10 +51,10 @@ public class Shift
     public static final int LSBFIRST = 0;
     public static final int MSBFIRST = 1;
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

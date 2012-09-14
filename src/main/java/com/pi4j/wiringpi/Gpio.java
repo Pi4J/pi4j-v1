@@ -16,6 +16,16 @@
  */
 package com.pi4j.wiringpi;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi GPIO Control</h1>
  * 
@@ -139,10 +149,10 @@ public class Gpio
      */
     public static final int PUD_UP = 2;
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
@@ -598,4 +608,20 @@ public class Gpio
     // public static native int piThreadCreate(void fn, int timeout);
     // public static native void piLock(int key);
     // public static native void piUnlock(int key);
+
+    // private static class Hook extends Thread
+    // {
+    // File libfile;
+    //
+    // public Hook(File libfile)
+    // {
+    // this.libfile = libfile;
+    // }
+    // public void run()
+    // {
+    // if(libfile.exists())
+    // libfile.deleteOnExit()
+    // System.out.println( "Running Clean Up..." );
+    // }
+    // }
 }

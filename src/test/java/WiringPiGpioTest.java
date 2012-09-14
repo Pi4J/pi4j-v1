@@ -1,3 +1,4 @@
+import com.pi4j.io.serial.Serial;
 import com.pi4j.wiringpi.Gpio;
 
 public class WiringPiGpioTest

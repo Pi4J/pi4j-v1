@@ -10,7 +10,7 @@
 	<inceptionYear>2012</inceptionYear>
 	
 	<!-- TODO: complete JavaDoc code documentation -->
-	<!-- TODO: create Maven repository and deploy SNAPHOST artifact -->
+	<!-- TODO: create Maven repository and deploy SNAPSHOT artifact -->
 	<!-- TODO: add distribution section to POM -->
 	<!-- TODO: update FAQ content -->
 	<!-- TODO: add release notes -->
@@ -19,6 +19,7 @@
 	<!-- TODO: create installer script for Pi platform -->
 	<!-- TODO: add content to readme file -->
 	<!-- TODO: change project license to a friendlier license with attribution -->
+	<!-- TODO: add exit state for GPIO -->
 
 	<!-- ORGANIZATION -->
 	<organization>
@@ -123,6 +124,17 @@
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
 		<finalName>pi4j</finalName>
+		
+		<resources>
+	        <resource>
+	            <directory>${project.build.directory}</directory>
+	            <includes>
+	                <include>libpi4j.so</include>
+	            </includes>
+	            <targetPath>lib</targetPath>
+	        </resource>
+	    </resources>
+	    		
 		<plugins>
 
 			<!-- JAVA 7 SE -->

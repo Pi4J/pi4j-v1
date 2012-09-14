@@ -18,6 +18,8 @@ package com.pi4j.wiringpi;
 
 import java.util.Vector;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>GpioInterrupt Monitoring Class</h1>
  * 
@@ -48,10 +50,10 @@ public class GpioInterrupt
     private static Vector<GpioInterruptListener> listeners = new Vector<GpioInterruptListener>();
     private Object lock;
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

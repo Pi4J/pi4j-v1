@@ -156,7 +156,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public PinMode getMode()
     {
-        // TODO Implement Mode getter method
+        // TODO Implement pin mode getter method
         return null;
     }
 

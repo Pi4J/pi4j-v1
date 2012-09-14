@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi Serial Port Communication</h1>
  * 
@@ -59,10 +61,10 @@ public class Serial
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

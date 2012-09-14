@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi Software PWM Library</h1>
  * 
@@ -69,10 +71,10 @@ package com.pi4j.wiringpi;
  */
 public class SoftPwm
 {
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**

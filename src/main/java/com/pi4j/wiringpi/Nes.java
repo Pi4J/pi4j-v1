@@ -16,6 +16,8 @@
  */
 package com.pi4j.wiringpi;
 
+import com.pi4j.util.NativeLibraryLoader;
+
 /**
  * <h1>WiringPi NES Controller Library</h1>
  * 
@@ -50,10 +52,10 @@ public class Nes
     public static final int PULSE_TIME = 25;
     public static final int MAX_NES_JOYSTICKS = 8;
 
-    // Load the platform library
     static
     {
-        System.loadLibrary("pi4j");
+        // Load the platform library
+        NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
