@@ -2,19 +2,28 @@ Usage
 
 %{toc|section=0|fromDepth=2|toDepth=3}
 
+
 * Import Pi4J Packages
 
-  TODO: add more usage documentation 
+  To implement Pi4J, you will need to include a number of Pi4J packages into your project classes.  The following list includes the majority of the Pi4J imports that you would need.  You probably will not require all of these imports in your project, you can remove any unused imports. 
+  
+%{snippet|id=usage-import-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java} 
+
 
 * Create Controller Instance
 
-  TODO: add more usage documentation 
+  Before interacting with Pi4J, you must first create a new GPIO controller instance.  The <GpioFactory> includes a <createInstance> method to create the GPIO controller.  Your project should only instantiate a single GPIO controller instance and that instance should be shared across your project.  
+
+%{snippet|id=usage-create-controller-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java} 
  
+
 * Pin Numbering
 
   Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\    
   P14J implements the same pin number scheme as the Wiring Pi project.  
   More information about the WiringPi pin number scheme can be found here: {{https://projects.drogon.net/raspberry-pi/wiringpi/pins/}}
+  
+  Pi4J provides a {{{./apidocs/index.html?com/pi4j/io/gpio/Pin.html}Pin}} enumeration that is used to manage the accessible GPIO pins. 
   
 
 [./images/p1header.png]
@@ -32,16 +41,60 @@ Usage
 
 * Provision Pins
 
-  TODO: add more usage documentation 
+  To access a GPIO pin, you must first provision the pin.\
+  Provisioning configures the pin based on how you intend to use it.  Provisioning can automatically export the pin, set its direction, and setup any edge detection for interrupt based events.
+  
+  The following example demonstrates how to provision an INPUT pin.  Input pins are pins that your program will monitor for state change or interrogate state when needed.  Input pins are used for switches, sensors, etc.    
+
+%{snippet|id=usage-provision-input-pin-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
+  The following example demonstrates how to provision an OUTPUT pin.\
+  Output pins are pins that your program will control state changes.  Output pins are used for controlling relays, LEDs, transistors, etc.    
+
+%{snippet|id=usage-provision-output-pin-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
 
 * Control Pin State
 
-  TODO: add more usage documentation 
+  P14J provides a number of convenience method for controlling or writing a state to a GPIO pin.\
+  The examples below demonstrate a few of the controlling methods you can invoke on a GPIO pin.  
+
+%{snippet|id=usage-control-pin-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
+  A complete example project demonstrating the control of GPIO pins is provided {{{./example/control.html}here}}.
+
 
 * Read Pin State
 
-  TODO: add more usage documentation 
+  P14J provides a number of convenience method for reading/interrogating the current state to a GPIO pin.\
+  The examples below demonstrate a few of the reading methods you can invoke on a GPIO pin.  
+
+%{snippet|id=usage-read-pin-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
 
 * Listen for Pin Changes
 
-  TODO: add more usage documentation 
+  Pi4J provides an implementation for monitoring GPIO pin interrupts.  This is a far more efficient method for actively monitoring pin states versus constantly polling and interrogating the pin state.
+  
+  You must create a class that implements the <GpioListener> interface.  This interface simply contain a single method <pinStateChanged(GpioPinStateChangeEvent event)> that is used to notify the listener class when a pin change event has occurred.\
+  The following snippet demonstrates a simple listener implementation:      
+
+%{snippet|id=usage-listener-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
+  To setup your listener, you must register the listener with a pin and instantiate your listener impl.
+
+%{snippet|id=usage-register-listener-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+
+  A complete example project demonstrating the listening for GPIO pin state changes is provided {{{./example/listener.html}here}}.
+
+  
+* Pin Triggers
+
+  P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\     
+  The following snippet demonstrates a simple ''follow-me' trigger implementation:      
+
+%{snippet|id=usage-trigger-snippet|file=src/test/java/com/pi4j/example/UsageGpioExample.java}
+ 
+  A complete example project demonstrating the GPIO pin triggers is provided {{{./example/trigger.html}here}}.\
+  (This example includes all available provided triggers.)
+  
