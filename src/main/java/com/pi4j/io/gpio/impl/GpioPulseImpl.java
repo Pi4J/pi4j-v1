@@ -42,10 +42,13 @@ public class GpioPulseImpl
 {
     @SuppressWarnings("rawtypes")
     private static ConcurrentHashMap<GpioPin, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPin, ScheduledFuture>();
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
+    private static ScheduledExecutorService scheduledExecutorService;
 
     public synchronized static void execute(GpioPin pin, long milliseconds)
     {        
+        if(scheduledExecutorService == null || scheduledExecutorService.isShutdown())
+            scheduledExecutorService = Executors.newScheduledThreadPool(5);
+        
         // first determine if an existing pulse job is already scheduled for this pin
         if(tasks.containsKey(pin))
         {
@@ -76,12 +79,20 @@ public class GpioPulseImpl
                         {   
                             ScheduledFuture task = item.getValue(); 
                             if(task.isCancelled() || task.isDone())
+                            {
                                 tasks.remove(item.getKey());
+                                
+                                // shutdown service if no tasks remain
+                                //if(tasks.size() <= 0)
+                                  //  scheduledExecutorService.shutdown();
+                            }
                         }
                         return null;
                     }
                 },
                 (milliseconds  + 500),
-                TimeUnit.MILLISECONDS);   
+                TimeUnit.MILLISECONDS);  
+        
+        scheduledExecutorService.shutdown();
     }     
 }

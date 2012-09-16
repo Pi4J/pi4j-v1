@@ -57,6 +57,9 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  */
 public class GpioFactory
 {
+    // we only allow a single controller to exists
+    private static Gpio controller = null;
+    
     /**
      * <h1>Create New Serial instance</h1>
      * 
@@ -66,6 +69,11 @@ public class GpioFactory
      */
     public static Gpio createInstance()
     {
-        return new GpioControllerImpl();
+        // if a controller has not been created, then create a new instance
+        if(controller == null)
+            controller = new GpioControllerImpl();
+
+        // else return a copy of the existing controller
+        return controller;
     }
 }

@@ -72,7 +72,7 @@ public class Gpio
      * </p>
      * <i>(Note this is not the maximum pin count on the Pi GPIO header.)</i>
      */
-    public static final int NUM_PINS = 17;
+    public static final int NUM_PINS = 20;
 
     /**
      * <h1>GPIO PIN DIRECTION</h1>
@@ -593,6 +593,48 @@ public class Gpio
      */
     public static native int waitForInterrupt(int pin, int timeout);
 
+    /**
+     * <h1>[Hardware]</h1>
+     * 
+     * <p>
+     * <b>extern int piBoardRev(void);</b>
+     * </p>
+     * 
+     * <p>
+     * This method provides the board revision as determined by the wiringPi library. 
+     * </p>
+     * 
+     * @see <a
+     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
+     * @return <p>
+     *         The return value represents the major board revision version. 
+     *         A -1 will be returned if the board revision cannot be determined.
+     *         </p>
+     */
+    public static native int piBoardRev();
+
+    
+    /**
+     * <h1>[Hardware]</h1>
+     * 
+     * <p>
+     * <b>extern int wpiPinToGpio(int wpiPin);</b>
+     * </p>
+     * 
+     * <p>
+     * This method provides the edge GPIO pin number for the requested wiringPi pin number. 
+     * </p>
+     * 
+     * @see <a
+     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
+     * @return <p>
+     *         The return value represents the RaspberryPi GPIO (edge) pin number. 
+     *         A -1 will be returned for an invalid pin number.
+     *         </p>
+     */
+    public static native int wpiPinToGpio(int wpiPin);
+                                                     
+    
     /**
      * --------------------------------------------------------------------------------------------
      * lets not use native code for threading in Java; that could get you into some trouble.

@@ -52,6 +52,8 @@ public class TriggerGpioExample
 {
     public static void main(String[] args) throws InterruptedException
     {
+        System.out.println("<--Pi4J--> GPIO Trigger Example ... started.");
+
         // create gpio controller
         Gpio gpio = GpioFactory.createInstance();
 
@@ -62,6 +64,9 @@ public class TriggerGpioExample
                                                   PinEdge.BOTH,
                                                   PinResistor.PULL_DOWN);
 
+        System.out.println(" ... complete the GPIO #02 circuit and see the triggers take effect.");
+
+        
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
         GpioPin myLed[] =
           { 
