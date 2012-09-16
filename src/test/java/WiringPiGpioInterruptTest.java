@@ -1,7 +1,34 @@
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Java Library
+ * FILENAME      :  WiringPiGpioInterruptTest.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioInterrupt;
 import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioInterruptEvent;
+import com.pi4j.wiringpi.GpioUtil;
 
 public class WiringPiGpioInterruptTest
 {
@@ -14,25 +41,35 @@ public class WiringPiGpioInterruptTest
         GpioInterrupt.addListener(lsnr);
 
         // setup wiring pi
-        if (Gpio.wiringPiSetupGpio() == -1)
+        if (Gpio.wiringPiSetup() == -1)
         {
             System.out.println(" ==>> GPIO SETUP FAILED");
             return;
         }
 
-        // configure GPIO 14 as an OUTPUT; 
-        Gpio.pinMode(25, Gpio.OUTPUT);
-        Gpio.pinMode(18, Gpio.OUTPUT);
+        // export all the GPIO pins that we will be using
+        GpioUtil.export(0, GpioUtil.DIRECTION_IN);
+        GpioUtil.export(7, GpioUtil.DIRECTION_IN);
+        GpioUtil.export(5, GpioUtil.DIRECTION_OUT);
+        GpioUtil.export(6, GpioUtil.DIRECTION_OUT);
         
-        // configure GPIO 4 as an INPUT pin; enable it for callbacks
-        Gpio.pinMode(4, Gpio.INPUT);
-        Gpio.pullUpDnControl(4, Gpio.PUD_DOWN);        
-        GpioInterrupt.enablePinStateChangeCallback(4);
+        // set the edge state on the pins we will be listening for
+        GpioUtil.setEdgeDetection(0, GpioUtil.EDGE_BOTH);
+        GpioUtil.setEdgeDetection(7, GpioUtil.EDGE_BOTH);
+        
+        // configure GPIO pins 5, 6 as an OUTPUT;
+        Gpio.pinMode(5, Gpio.OUTPUT);
+        Gpio.pinMode(6, Gpio.OUTPUT);
 
-        // configure GPIO 17 as an INPUT pin; enable it for callbacks
-        Gpio.pinMode(17, Gpio.INPUT);
-        Gpio.pullUpDnControl(17, Gpio.PUD_DOWN);        
-        GpioInterrupt.enablePinStateChangeCallback(17);
+        // configure GPIO 0 as an INPUT pin; enable it for callbacks
+        Gpio.pinMode(0, Gpio.INPUT);
+        Gpio.pullUpDnControl(0, Gpio.PUD_DOWN);        
+        GpioInterrupt.enablePinStateChangeCallback(0);
+        
+        // configure GPIO 7 as an INPUT pin; enable it for callbacks
+        Gpio.pinMode(7, Gpio.INPUT);
+        Gpio.pullUpDnControl(7, Gpio.PUD_DOWN);        
+        GpioInterrupt.enablePinStateChangeCallback(7);
 
         // continuously loop to prevent program from exiting
         for (;;)
@@ -48,13 +85,13 @@ class GpioTestInterruptListener implements GpioInterruptListener
     {
         System.out.println("Raspberry Pi PIN [" + event.getPin() +"] is in STATE [" + event.getState() + "]");
         
-        if(event.getPin() == 4)
+        if(event.getPin() == 7)
         {
-            Gpio.digitalWrite(25, event.getStateValue());
+            Gpio.digitalWrite(6, event.getStateValue());
         }
-        if(event.getPin() == 17)
+        if(event.getPin() == 0)
         {
-            Gpio.digitalWrite(18, event.getStateValue());
+            Gpio.digitalWrite(5, event.getStateValue());
         }
     }
 }

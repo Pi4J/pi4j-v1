@@ -7,17 +7,20 @@ Installation
   If you have not already installed a Java runtime environment, please see the following article for a complete set of installation insructions for installing the Oracle JDK.\
   {{http://www.savagehomeautomation.com/pi-jdk}}
 
-** Install WiringPi Native Library
+** WiringPi Native Library
 
-  Pi4J depends on the WiringPi native library by Gordon Henderson.  Please see the following page for instructions on downloading and installing WiringPi.\
-  {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}} 
+  Pi4J depends on the WiringPi native library by Gordon Henderson.  Please see the following page for more information on WiringPi.\
+  {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}}
+  
+  No installation is required for Wiring Pi.  Wiring Pi is embedded in the Pi4J native library.   
 
 * Pi4J
 
-** Install Pi4J Native Library
+** Install Pi4J
 
-  This project is still under development and has not been released yet.\ 
+  Just download and copy the pi4j.jar file and make sure it is included in the classpath for your Java project.\
+  You can use the following command on the Raspberry Pi's console to download the latest pi4j.jar:
   
-** Install Pi4J Java Library
-
-  This project is still under development and has not been released yet.\ 
+  <<<wget http://pi4j.com/pi4j.jar>>>
+   
+  

@@ -1,4 +1,47 @@
 Usage 
 
-  This project is still under development and has not been released yet.\ 
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Import Pi4J Packages
+
+  TODO: add more usage documentation 
+
+* Create Controller Instance
+
+  TODO: add more usage documentation 
+ 
+* Pin Numbering
+
+  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\    
+  P14J implements the same pin number scheme as the Wiring Pi project.  
+  More information about the WiringPi pin number scheme can be found here: {{https://projects.drogon.net/raspberry-pi/wiringpi/pins/}}
   
+
+[./images/p1header.png]
+
+  {{{./images/p1header-large.png}(click here for hi-resolution image)}}
+   
+  \ 
+   
+   NOTE: The P5 header is only available on board revisions 2.0 and newer.
+
+[./images/p5header.png]
+
+  {{{./images/p5header-large.png}(click here for hi-resolution image)}}
+
+
+* Provision Pins
+
+  TODO: add more usage documentation 
+
+* Control Pin State
+
+  TODO: add more usage documentation 
+
+* Read Pin State
+
+  TODO: add more usage documentation 
+
+* Listen for Pin Changes
+
+  TODO: add more usage documentation 

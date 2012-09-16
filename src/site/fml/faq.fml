@@ -13,7 +13,34 @@
         What level of permissions is required to run software using Pi4J?
       </question>
       <answer>
+        <p></p>
         <p>Software using the Pi4J library must be run with ROOT level permissions.</p>
+      </answer>
+    </faq>
+
+    <faq id="pin-numbering">
+      <question>
+        Why does Pi4J use a pin numbering scheme that does not match the Raspberry Pi GPIO pins numbers?
+      </question>
+      <answer>
+        <p></p>
+        <p>Pi4J implements an abstract pin number scheme to help isolate consuming program from hardware changes on the Raspberry PI boards.  Pi4J implements the exact same pin number scheme as the WiringPi project. (<a href="https://projects.drogon.net/raspberry-pi/wiringpi/pins/" target="_blank">Click here for more details</a>).  The GPIO pin changes that occurred between board revisions 1 and 2 serve as a perfect example as to why an abstract pin number scheme is warranted.</p>
+        <p>Click <a href="usage.html#Pin_Numbering">here</a> to see the pin numbering scheme used by Pi4J.</p>
+      </answer>
+    </faq>
+    
+  </part>
+
+  <part id="license">
+    <title>Licensing</title>
+
+    <faq id="license">
+      <question>
+        The project license requires attribution on all derived works, is a commercial attribution free license available?
+      </question>
+      <answer>
+        <p></p>
+        <p>Yes, a commercial non-attribution license is available.  Please <a href="team-list.html">contact us</a> for more information.</p>
       </answer>
     </faq>
     
@@ -28,7 +55,8 @@
         How do I install Pi4J?
       </question>
       <answer>
-        <p>TODO</p>
+        <p></p>
+        <p>Click <a href="install.html">here</a> to see the Pi4J installation instructions.</p>
       </answer>
     </faq>
 

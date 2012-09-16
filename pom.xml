@@ -1,16 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.pi4j</groupId>
+
+	<!-- MAVEN ARTIFACT INFORMATION -->
 	<artifactId>pi4j</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Pi4J</name>
-	<description>Java Library for the Raspberry Pi</description>
-	<url>http://www.pi4j.com</url>
-	<inceptionYear>2012</inceptionYear>
-	
+	<name>Pi4J :: Java Library</name>
+	<description>Pi4J Java Library for the Raspberry Pi</description>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>com.pi4j</groupId>
+		<artifactId>parent</artifactId>
+		<relativePath>../parent</relativePath>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
 	<!-- TODO: complete JavaDoc code documentation -->
 	<!-- TODO: create Maven repository and deploy SNAPSHOT artifact -->
+	<!-- TODO: perform Maven deploy of SNAPSHOT artifact -->
 	<!-- TODO: add distribution section to POM -->
 	<!-- TODO: update FAQ content -->
 	<!-- TODO: add release notes -->
@@ -20,260 +26,124 @@
 	<!-- TODO: add content to readme file -->
 	<!-- TODO: change project license to a friendlier license with attribution -->
 	<!-- TODO: add exit state for GPIO -->
+	<!-- TODO: validate thread terminate for GPIO pulse -->
+	<!-- TODO: validate thread terminate for GPIO listener -->
 
-	<!-- ORGANIZATION -->
-	<organization>
-		<name>Pi4J</name>
-		<url>http://www.pi4j.com</url>
-	</organization>
-	
-	<!-- LICENSE -->
-   <licenses>
-        <license>
-            <name>GNU Lesser General Public License, Version 3</name>
-            <url>http://www.gnu.org/licenses/lgpl.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>	
-	
-	<!-- DEVELOPERS/CONTRIBUTORS -->
-	<developers>
-		<developer>
-			<name>Robert Savage</name>
-			<email>robert@pi4j.com</email>
-			<url>http://robertsavage.me</url>
-			<organizationUrl>http://www.savagehomeautomation.com</organizationUrl>
-			<roles>
-				<role>sponsor</role>
-				<role>developer</role>
-			</roles>
-		</developer>		
-		<developer>
-			<name>Chris Walzl</name>
-			<email>chris@pi4j.com</email>
-			<roles>
-				<role>sponsor</role>
-				<role>developer</role>
-			</roles>
-		</developer>		
-	</developers>
+	<!-- DEPENDENCIES -->
+<!-- 	<dependencies> -->
 
-	<!-- SOURCE CONTROL -->
-	<scm>
-		<url>https://github.com/Pi4J/pi4j.git</url>
-		<connection>scm:git@github.com:Pi4J/pi4j.git</connection>
-	</scm>
+<!-- we define the pi4j Java project as a dependency so that the .H header  
+     files can be generated based on the Java native wrapper classes --> 
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.pi4j</groupId> -->
+<!-- 			<artifactId>libpi4j</artifactId> -->
+<!-- 			<type>so</type> -->
+<!-- 			<version>${project.version}</version> -->
+<!-- 		</dependency> -->
 
-	<!-- ISSUE MANAGEMENT -->
-	<issueManagement>
-		<url>https://github.com/Pi4J/pi4j/issues</url>
-		<system>github</system>
-	</issueManagement>
-
-	<!-- BUILD PROPERTIES -->
-	<properties>
-		<!-- Disable scp of Pi4j to Raspberry Pi by default -->
-		<scp.transfer>false</scp.transfer> 
-		<scp.user>pi</scp.user>
-		<scp.password>raspberry</scp.password>
-		<scp.port>22</scp.port>
-		<scp.dirCopyTo>/home/pi/pi4j-temp</scp.dirCopyTo>
-		<!-- IP address of Raspberry Pi -->
-		<scp.host>10.1.1.161</scp.host>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
-
-	<!-- BUILD PROFILES -->
-	<profiles>
-		<!-- PROFILE : Robert Savage -->
-		<profile>
-			<id>savage</id>
-			<properties>
-				<!-- IP address of Raspberry Pi -->
-				<scp.host>10.1.1.161</scp.host> 
-				<!-- enable scp of Pi4j to Raspberry Pi -->	
-				<scp.transfer>true</scp.transfer>
-			</properties>
-			<activation>
-				<property>
-					<name>env.MAVEN_PROFILE</name>
-					<value>savage</value>
-				</property>
-			</activation>
-		</profile>
-		
-		<!-- PROFILE : Chris Walzl -->
-		<profile>
-			<id>cwalzl</id>
-			<properties>
-				<!-- Hostname of Raspberry Pi -->
-				<scp.host>raspberrypi</scp.host> 
-				<!-- enable scp of Pi4j to Raspberry Pi -->	
-				<scp.transfer>true</scp.transfer>
-			</properties>
-			<activation>
-				<property>
-					<name>env.MAVEN_PROFILE</name>
-					<value>cwalzl</value>
-				</property>
-			</activation>
-		</profile>
-	</profiles>
+<!-- 	</dependencies> -->
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
 		<finalName>pi4j</finalName>
-		
+
 		<resources>
-	        <resource>
-	            <directory>${project.build.directory}</directory>
-	            <includes>
-	                <include>libpi4j.so</include>
-	            </includes>
-	            <targetPath>lib</targetPath>
-	        </resource>
-	    </resources>
-	    		
+			<resource>
+				<directory>${project.build.directory}/lib</directory>
+				<includes>
+					<include>libpi4j.so</include>
+				</includes>
+				<targetPath>lib</targetPath>
+			</resource>
+		</resources>
+
 		<plugins>
 
 			<!-- JAVA 7 SE -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<showDeprecation>true</showDeprecation>
-					<showWarnings>true</showWarnings>
-				</configuration>
 			</plugin>
 
 			<!-- INCLUDE SOURCE JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- INCLUDE JAVADOC JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
-			<!-- Generate .h header files for JNI wrapper -->
+			<!-- GENERATE LICENSE HEADERS IN SOURCE FILES -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>native-maven-plugin</artifactId>
-				<version>1.0-alpha-7</version>
-				<extensions>true</extensions>
+				<artifactId>license-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- RETREIVE THE JNI NATIVE LIBRARY DEPENDENCY -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.5.1</version>
 				<executions>
 					<execution>
-						<id>javah-generate</id>
-						<phase>package</phase>
+						<id>copy</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>javah</goal>
+							<goal>copy</goal>
 						</goals>
 						<configuration>
-							<!-- trigger javah execution -->
-							<javahClassNames>
-								<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.GpioInterrupt</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.GpioUtil</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Serial</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Lcd</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Shift</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.SoftPwm</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Spi</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Gertboard</javahClassName>
-								<javahClassName>com.pi4j.wiringpi.Nes</javahClassName>
-							</javahClassNames>
-
-							<!-- enable additional javah interface in dependencies list -->
-							<javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>
-
-							<!-- specify the output directory for generated header files -->
-							<javahOutputDirectory>src/main/native</javahOutputDirectory>
+							<artifactItems>
+								<!-- we define the libpi4j native project as a dependency so that 
+									native library can be included in the final packaged pi4j.jar -->
+								<artifactItem>
+									<groupId>com.pi4j</groupId>
+									<artifactId>libpi4j</artifactId>
+									<version>${project.version}</version>
+									<type>so</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+									<destFileName>libpi4j.so</destFileName>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- copy the native source files and compile them with gcc on the RaspberyPi 
-				platform -->
+			
+			
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
+
+					<!-- copy the compiled JAR file to the Raspberry Pi platform 
+						platform -->
 					<execution>
-						<id>build-native-so</id>
-						<phase>package</phase>
+						<id>transfer-compiled-pi4j-jar</id>
+						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
 							<tasks>
-								<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+									classpathref="maven.plugin.classpath" />
 								<if>
 									<equals arg1="${scp.transfer}" arg2="true" />
-								<then>	
-									<!-- ensure the target directory is empty on the Raspberry Pi -->
-									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-										password="${scp.password}" trust="true" failonerror="true"
-										verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
-	
-									<!-- ensure the target directory exists on the Raspberry Pi -->
-									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-										password="${scp.password}" trust="true" failonerror="false"
-										verbose="true" command="mkdir --parents ${scp.dirCopyTo}/*" />
-	
-									<!-- copy all the necessary source files to the Raspberry Pi -->
-									<scp todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}"
-										port="${scp.port}" trust="true" verbose="true" failonerror="true">
-										<fileset dir="${project.build.directory}">
-											<include name="${project.build.finalName}.jar" />
-										</fileset>
-										<fileset dir="src/main/native" />
-									</scp>
-	
-									<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
-										Pi platform -->
-									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-										password="${scp.password}" trust="true" failonerror="true"
-										verbose="true"
-										command="cd /home/pi/pi4j-temp; make clean; make all; sudo make install" />
-	
-									<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
-									<scp
-										file="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}/libpi4j.so"
-										todir="${project.build.directory}" port="${scp.port}" trust="true"
-										verbose="true" failonerror="true">
-									</scp>
-	
-									<!-- remove the temporary target directory from the Raspberry Pi -->
-									<sshexec host="${scp.host}" port="${scp.port}" username="${scp.user}"
-										password="${scp.password}" trust="true" failonerror="true"
-										verbose="true" command="rm --recursive --force ${scp.dirCopyTo}" />
-								</then>		
-								<else>
-                                    <echo>SCP transfer of Pi4J has been disabled.</echo>
-                                </else>
+									<then>
+										<!-- copy the JAR file to the Raspberry Pi -->
+										<scp
+											file="${project.build.directory}/${project.build.finalName}.jar"
+											todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirCopyTo}"
+											port="${scp.port}" trust="true" verbose="true" failonerror="true">
+										</scp>
+									</then>
+									<else>
+										<echo>SCP transfer of Pi4J has been disabled.</echo>
+									</else>
 								</if>
 							</tasks>
 						</configuration>
@@ -296,38 +166,12 @@
 						<version>20020829</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-
-			<!-- ATTACH COMPILED NATIVE LIBRARY -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>attach-artifacts</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${project.build.directory}/libpi4j.so</file>
-									<type>so</type>
-									<classifier>libpi4j</classifier>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			</plugin>			
 
 			<!-- GENERATE SITE DOCUMENTATION -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
 				<configuration>
 					<reportPlugins>
 						<plugin>
@@ -348,16 +192,16 @@
 							<version>2.5.1</version>
 							<reportSets>
 								<reportSet>
-									<reports>										
+									<reports>
 										<report>summary</report>
 										<report>project-team</report>
 										<report>license</report>
 										<report>scm</report>
 										<report>issue-tracking</report>
-										<report>plugins</report>																				
+										<report>plugins</report>
 										<report>dependency-info</report>
 										<report>dependency-management</report>
-										<report>plugin-management</report>										
+										<report>plugin-management</report>
 										<report>distribution-management</report>
 									</reports>
 								</reportSet>
@@ -383,10 +227,77 @@
 							<artifactId>maven-jxr-plugin</artifactId>
 							<version>2.3</version>
 						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.9.1</version>
+						</plugin>
+						<!-- <plugin> -->
+						<!-- <groupId>org.apache.maven.plugins</groupId> -->
+						<!-- <artifactId>maven-linkcheck-plugin</artifactId> -->
+						<!-- <version>1.1</version> -->
+						<!-- </plugin> -->
 					</reportPlugins>
 				</configuration>
 			</plugin>
-
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											license-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.3,)
+										</versionRange>
+										<goals>
+											<goal>
+												update-project-license
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.5.1,)
+										</versionRange>
+										<goals>
+											<goal>copy</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

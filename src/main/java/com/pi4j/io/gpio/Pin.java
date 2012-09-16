@@ -1,24 +1,56 @@
 package com.pi4j.io.gpio;
 
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Java Library
+ * FILENAME      :  Pin.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+
 public enum Pin
 {
-    GPIO_00(0, "GPIO 0", "SDA"), // HEADER PIN 03
-    GPIO_01(1, "GPIO 1", "SCL"), // HEADER PIN 05
-    GPIO_04(4, "GPIO 4", "GPCLK0"), // HEADER PIN 07
-    GPIO_07(7, "GPIO 7", "CE1"), // HEADER PIN 26
-    GPIO_08(8, "GPIO 8", "CE0"), // HEADER PIN 24
-    GPIO_09(9, "GPIO 9", "MISO"), // HEADER PIN 21
-    GPIO_10(10, "GPIO 10", "MOSI"), // HEADER PIN 19
-    GPIO_11(11, "GPIO 11", "SCKL"), // HEADER PIN 23
-    GPIO_14(14, "GPIO 14", "TXD"), // HEADER PIN 08
-    GPIO_15(15, "GPIO 15", "RXD"), // HEADER PIN 10
-    GPIO_17(17, "GPIO 17"), // HEADER PIN 11
-    GPIO_18(18, "GPIO 18", "PCM_CLK"), // HEADER PIN 12
-    GPIO_21(21, "GPIO 21", "PCM_DOUT"), // HEADER PIN 13
-    GPIO_22(22, "GPIO 22"), // HEADER PIN 15
-    GPIO_23(23, "GPIO 23"), // HEADER PIN 16
-    GPIO_24(24, "GPIO 24"), // HEADER PIN 18
-    GPIO_25(25, "GPIO 25"); // HEADER PIN 22
+    GPIO_00(0, "GPIO 0"),             // P1 HEADER PIN 11
+    GPIO_01(1, "GPIO 1","PCM_CLK"),   // P1 HEADER PIN 12
+    GPIO_02(2, "GPIO 2", "PCM_DOUT"), // P1 HEADER PIN 13
+    GPIO_03(3, "GPIO 3"),             // P1 HEADER PIN 15
+    GPIO_04(4, "GPIO 4"),             // P1 HEADER PIN 16
+    GPIO_05(5, "GPIO 5"),             // P1 HEADER PIN 18
+    GPIO_06(6, "GPIO 6"),             // P1 HEADER PIN 22
+    GPIO_07(7, "GPIO 7", "GPCLK0"),   // P1 HEADER PIN 07
+    GPIO_08(8, "GPIO 8", "SDA0"),     // P1 HEADER PIN 03
+    GPIO_09(9, "GPIO 9", "SCL0"),     // P1 HEADER PIN 05
+    GPIO_10(10, "GPIO 10", "CE0"),    // P1 HEADER PIN 24
+    GPIO_11(11, "GPIO 11", "CE1"),    // P1 HEADER PIN 26
+    GPIO_12(12, "GPIO 12", "MOSI"),   // P1 HEADER PIN 19
+    GPIO_13(13, "GPIO 13", "MISO"),   // P1 HEADER PIN 21
+    GPIO_14(14, "GPIO 14", "SCLK"),   // P1 HEADER PIN 23
+    GPIO_15(15, "GPIO 15", "TxD"),    // P1 HEADER PIN 08
+    GPIO_16(16, "GPIO 16", "RxD"),    // P1 HEADER PIN 10
+    GPIO_17(17, "GPIO 17"),           // P5 HEADER PIN 3
+    GPIO_18(18, "GPIO 18"),           // P5 HEADER PIN 4 
+    GPIO_19(19, "GPIO 19"),           // P5 HEADER PIN 5
+    GPIO_20(20, "GPIO 20");           // P5 HEADER PIN 6
 
     private int value;
     private String name = null;

@@ -1,4 +1,31 @@
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Java Library
+ * FILENAME      :  WiringPiGpioTest.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.GpioUtil;
 
 public class WiringPiGpioTest
 {
@@ -39,12 +66,18 @@ public class WiringPiGpioTest
         }
 
         // set GPIO 4 as the input trigger 
+        GpioUtil.export(7, GpioUtil.DIRECTION_IN);
+        GpioUtil.setEdgeDetection(7, GpioUtil.EDGE_BOTH);
         Gpio.pinMode (7, Gpio.INPUT) ;  
         Gpio.pullUpDnControl(7, Gpio.PUD_DOWN);        
 
         // set all other GPIO as outputs
         for (pin = 0; pin < 7; ++pin)
+        {
+            // export all the GPIO pins that we will be using
+            GpioUtil.export(pin, GpioUtil.DIRECTION_OUT);            
             Gpio.pinMode(pin, Gpio.OUTPUT);
+        }
         
         dataPtr = 0;
         for (;;)

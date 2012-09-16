@@ -5,6 +5,13 @@ Serial Communication Example using Pi4J.
   (A complete article on building and installing a serial port on the Raspberry Pi is available here:\ 
   {{http://www.savagehomeautomation.com/projects/raspberry-pi-installing-a-rs232-serial-port.html}})
 
+* Prerequisites 
+
+  By default, the serial port on the Raspberry Pi is configured as a console port for communicating with the Linux OS shell.  
+  If you want to use the serial port in a software program, you must disable the OS from using this port.  
+  Please see this blog article by  Clayton Smith for step-by-step instructions on how to disable the OS console for this port: 
+  {{http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/}}
+
 * Source Code 
    
   The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/example}}
@@ -21,18 +28,26 @@ Serial Communication Example using Pi4J.
   
 [../images/serial-example.png]
 
-* Compile
+  {{{../images/serial-example-large.png}(click here for hi-resolution image)}}
+
+* Download
   
   First, copy the <SerialExample.java> source file to a directory on the RaspberryPi.\
+  You can use the following command on the Pi's console or SSH terminal to download the example source file directly to your Pi:
+  
+  <<<wget https://raw.github.com/Pi4J/pi4j/master/src/test/java/com/pi4j/example/SerialExample.java>>>
+
+* Compile
+  
   Next, use the following command to compile this example program:
   
-  <<<javac -cp /usr/share/java/pi4j.jar -d SerialExample.java>>>
+  <<<javac -cp pi4j.jar -d . SerialExample.java>>>
   
 * Execute
   
   The following command will run this example program:
   
-  <<<sudo java -Djava.library.path=/usr/local/lib -classpath .:/usr/share/java/pi4j.jar com.pi4j.example.SerialExample>>>
+  <<<sudo java -classpath .:pi4j.jar com.pi4j.example.SerialExample>>>
   
 * Output
 
@@ -47,5 +62,7 @@ Serial Communication Example using Pi4J.
   >>>  
 
   This data should be repeated every second.
-  
+
+[../images/serial-screenshot.png]
+  \
   You can also submit data from the terminal software and that data should be displayed on the Raspberry Pi's console. 

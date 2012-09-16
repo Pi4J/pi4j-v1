@@ -11,7 +11,7 @@
 		<href>http://www.pi4j.com/</href>
 	</bannerLeft>
 	<bannerRight>
-		<name>Pi4J</name>
+		<name>The Pi4J Project</name>
 		<src>/images/logos/trademarks.png</src>
 		<href>http://www.raspberrypi.org/</href>
 	</bannerRight>
@@ -46,6 +46,10 @@
 			<item name="Serial Communication" href="example/serial.html" />
 			<item name="System/Network Information" href="example/system-info.html" />
 		</menu>
-		<menu ref="reports" />
+		<menu name="Project Development">
+			<item name="Project Information" href="project-info.html" />
+			<item name="Project Reports" href="project-reports.html" />
+		</menu>		
+<!-- 		<menu ref="reports" /> -->
 	</body>
 </project>

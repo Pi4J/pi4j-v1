@@ -7,3 +7,27 @@ Under Construction
   Please note that this project is still under construction and is not yet ready for general consumption.
   
 [./images/under-construction.png]
+
+Features
+
+  * Export & unexport GPIO pins
+   
+  * Configure GPIO pin direction
+   
+  * Configure GPIO pin edge detection
+   
+  * Control/write GPIO pin states 
+    
+  * Pulse GPIO pin state
+   
+  * Read GPIO pin states
+  
+  * Listen for GPIO pin state changes (interrupt-based; not polling)
+      
+  * Triggers for automation based on pin state changes
+  
+  * Send & receive data via RS232 serial communication
+          
+  * Wrapper classes for direct access to WiringPi Library from Java
+  
+
