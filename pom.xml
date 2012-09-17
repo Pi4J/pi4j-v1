@@ -22,10 +22,8 @@
 	<!-- TODO: add release notes -->
 	<!-- TODO: complete site documentation -->
 	<!-- TODO: add unit tests -->
-	<!-- TODO: create installer script for Pi platform -->
 	<!-- TODO: add content to readme file -->
 	<!-- TODO: change project license to a friendlier license with attribution -->
-	<!-- TODO: add exit state for GPIO -->
 	<!-- TODO: validate thread terminate for GPIO listener -->
 
 	<!-- BUILD INSTRUCTIONS -->

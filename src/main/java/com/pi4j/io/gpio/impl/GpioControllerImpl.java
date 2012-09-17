@@ -13,26 +13,25 @@ package com.pi4j.io.gpio.impl;
  * %%
  * Copyright (C) 2012 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a copy of the License
+ * at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  * #L%
  */
-
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.pi4j.io.gpio.Gpio;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinDirection;
 import com.pi4j.io.gpio.PinEdge;
@@ -46,7 +45,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioControllerImpl implements Gpio
 {
-    private Map<Pin,GpioPin> pins = new ConcurrentHashMap<Pin,GpioPin>();
+    private Map<Pin, GpioPin> pins = new ConcurrentHashMap<Pin, GpioPin>();
 
     /**
      * Default Constructor
@@ -56,9 +55,12 @@ public class GpioControllerImpl implements Gpio
         // set wiringPi interface for internal use
         // we will use the WiringPi pin number scheme with the wiringPi library
         com.pi4j.wiringpi.Gpio.wiringPiSetup();
+        
+        // register shutdown callback hook class
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());        
     }
-    
-    public Map<Pin,GpioPin> getPins()
+
+    public Map<Pin, GpioPin> getPins()
     {
         return pins;
     }
@@ -70,11 +72,11 @@ public class GpioControllerImpl implements Gpio
 
     public GpioPin getPin(Pin pin)
     {
-        if(pins.containsKey(pin))
+        if (pins.containsKey(pin))
             return pins.get(pin);
         return null;
     }
-    
+
     /**
      * 
      */
@@ -96,9 +98,9 @@ public class GpioControllerImpl implements Gpio
     public void export(Pin pin, PinDirection direction)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         // export the pin
         pins.get(pin).export(direction);
     }
@@ -114,7 +116,6 @@ public class GpioControllerImpl implements Gpio
             export(pin, direction);
     }
 
-
     /**
      * 
      * @param pin
@@ -123,9 +124,9 @@ public class GpioControllerImpl implements Gpio
     public void export(GpioPin pin, PinDirection direction)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         // export the pin
         pin.export(direction);
     }
@@ -139,20 +140,21 @@ public class GpioControllerImpl implements Gpio
     {
         for (GpioPin pin : pins)
             export(pin, direction);
-    }    
-    
-    
+    }
+
     /**
      * 
      * @param pin
-     * @return <p>A value of 'true' is returned if the requested pin is exported.</p> 
+     * @return <p>
+     *         A value of 'true' is returned if the requested pin is exported.
+     *         </p>
      */
     public boolean isExported(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         // return the pin exported state
         return pins.get(pin).isExported();
     }
@@ -160,18 +162,20 @@ public class GpioControllerImpl implements Gpio
     /**
      * 
      * @param pin
-     * @return <p>A value of 'true' is returned if the requested pin is exported.</p> 
+     * @return <p>
+     *         A value of 'true' is returned if the requested pin is exported.
+     *         </p>
      */
     public boolean isExported(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         // return the pin exported state
         return pin.isExported();
     }
-    
+
     /**
      * 
      * @param pin
@@ -179,9 +183,9 @@ public class GpioControllerImpl implements Gpio
     public void unexport(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         // unexport the pin
         pins.get(pin).unexport();
     }
@@ -203,9 +207,9 @@ public class GpioControllerImpl implements Gpio
     public void unexport(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         // unexport the pin
         pins.get(pin).unexport();
     }
@@ -228,9 +232,9 @@ public class GpioControllerImpl implements Gpio
     public void setDirection(Pin pin, PinDirection direction)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         // set the pin direction
         pins.get(pin).setDirection(direction);
     }
@@ -254,9 +258,9 @@ public class GpioControllerImpl implements Gpio
     public void setDirection(GpioPin pin, PinDirection direction)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         // set the pin direction
         pins.get(pin).setDirection(direction);
     }
@@ -280,13 +284,12 @@ public class GpioControllerImpl implements Gpio
     public PinDirection getDirection(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         return pins.get(pin).getDirection();
     }
 
-    
     /**
      * 
      * @param pin
@@ -295,13 +298,12 @@ public class GpioControllerImpl implements Gpio
     public PinDirection getDirection(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         return pin.getDirection();
     }
 
-    
     /**
      * 
      * @param pin
@@ -310,7 +312,7 @@ public class GpioControllerImpl implements Gpio
     public void setEdge(Pin pin, PinEdge edge)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         pins.get(pin).setEdge(edge);
@@ -335,7 +337,7 @@ public class GpioControllerImpl implements Gpio
     public void setEdge(GpioPin pin, PinEdge edge)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         pin.setEdge(edge);
@@ -360,7 +362,7 @@ public class GpioControllerImpl implements Gpio
     public PinEdge getEdge(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // return pin edge setting
@@ -375,13 +377,13 @@ public class GpioControllerImpl implements Gpio
     public PinEdge getEdge(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // return pin edge setting
         return pin.getEdge();
     }
-    
+
     /**
      * 
      * @param pin
@@ -390,7 +392,7 @@ public class GpioControllerImpl implements Gpio
     public void setMode(Pin pin, PinMode mode)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin mode
@@ -416,7 +418,7 @@ public class GpioControllerImpl implements Gpio
     public void setMode(GpioPin pin, PinMode mode)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin mode
@@ -442,7 +444,7 @@ public class GpioControllerImpl implements Gpio
     public void setPullResistor(Pin pin, PinResistor resistance)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin pull resistance
@@ -468,7 +470,7 @@ public class GpioControllerImpl implements Gpio
     public void setPullResistor(GpioPin pin, PinResistor resistance)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin pull resistance
@@ -485,8 +487,7 @@ public class GpioControllerImpl implements Gpio
         for (GpioPin pin : pins)
             setPullResistor(pin, resistance);
     }
-    
-    
+
     /**
      * 
      * @param pin
@@ -495,7 +496,7 @@ public class GpioControllerImpl implements Gpio
     public void setState(Pin pin, PinState state)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin state
@@ -512,7 +513,7 @@ public class GpioControllerImpl implements Gpio
         for (Pin pin : pins)
             setState(pin, state);
     }
-    
+
     /**
      * 
      * @param pin
@@ -521,7 +522,7 @@ public class GpioControllerImpl implements Gpio
     public void setState(GpioPin pin, PinState state)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin state
@@ -538,17 +539,17 @@ public class GpioControllerImpl implements Gpio
         for (GpioPin pin : pins)
             setState(pin, state);
     }
-    
+
     public void high(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin state high
         pins.get(pin).high();
     }
-    
+
     public void high(Pin pins[])
     {
         for (Pin pin : pins)
@@ -558,28 +559,29 @@ public class GpioControllerImpl implements Gpio
     public void high(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin state high
         pin.high();
     }
-    
+
     public void high(GpioPin pins[])
     {
         for (GpioPin pin : pins)
             high(pin);
     }
-    
+
     public void low(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin state low
         pins.get(pin).low();
     }
+
     public void low(Pin pins[])
     {
         for (Pin pin : pins)
@@ -589,7 +591,7 @@ public class GpioControllerImpl implements Gpio
     public void low(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin state low
@@ -602,7 +604,6 @@ public class GpioControllerImpl implements Gpio
             low(pin);
     }
 
-
     /**
      * 
      * @param pin
@@ -611,7 +612,7 @@ public class GpioControllerImpl implements Gpio
     public void toggle(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // toggle pin state
@@ -637,7 +638,7 @@ public class GpioControllerImpl implements Gpio
     public void toggle(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // toggle pin state
@@ -658,7 +659,7 @@ public class GpioControllerImpl implements Gpio
     public void pulse(Pin pin, long milliseconds)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // toggle pin state
@@ -674,7 +675,7 @@ public class GpioControllerImpl implements Gpio
     public void pulse(GpioPin pin, long milliseconds)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // toggle pin state
@@ -686,7 +687,7 @@ public class GpioControllerImpl implements Gpio
         for (GpioPin pin : pins)
             pulse(pin, milliseconds);
     }
-    
+
     /**
      * 
      * @param pin
@@ -695,7 +696,7 @@ public class GpioControllerImpl implements Gpio
     public PinState getState(Pin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // return pin state
@@ -710,13 +711,13 @@ public class GpioControllerImpl implements Gpio
     public PinState getState(GpioPin pin)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // return pin state
         return pin.getState();
     }
-    
+
     /**
      * 
      * @param pin
@@ -725,7 +726,7 @@ public class GpioControllerImpl implements Gpio
     public void setPwmValue(Pin pin, int value)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
 
         // set pin PWM value
@@ -751,7 +752,7 @@ public class GpioControllerImpl implements Gpio
     public void setPwmValue(GpioPin pin, int value)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
 
         // set pin PWM value
@@ -769,7 +770,6 @@ public class GpioControllerImpl implements Gpio
             setPwmValue(pin, value);
     }
 
-
     /**
      * 
      * @param listener
@@ -777,58 +777,57 @@ public class GpioControllerImpl implements Gpio
     public synchronized void addListener(Pin pin, GpioListener listener)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
+
         getPin(pin).addListener(listener);
     }
 
     public synchronized void addListener(Pin pin, GpioListener[] listeners)
     {
-        for(GpioListener listener : listeners)
+        for (GpioListener listener : listeners)
             addListener(pin, listener);
     }
 
     public synchronized void addListener(GpioPin pin, GpioListener listener)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
+
         pin.addListener(listener);
     }
 
     public synchronized void addListener(GpioPin pin, GpioListener[] listeners)
     {
-        for(GpioListener listener : listeners)
+        for (GpioListener listener : listeners)
             addListener(pin, listener);
     }
-    
 
     public synchronized void addListener(Pin pins[], GpioListener listener)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             addListener(pin, listener);
     }
 
     public synchronized void addListener(Pin pins[], GpioListener[] listeners)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             addListener(pin, listeners);
     }
 
     public synchronized void addListener(GpioPin pins[], GpioListener listener)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             addListener(pin, listener);
     }
 
     public synchronized void addListener(GpioPin pins[], GpioListener[] listeners)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             addListener(pin, listeners);
-    }    
-    
+    }
+
     /**
      * 
      * @param listener
@@ -836,65 +835,63 @@ public class GpioControllerImpl implements Gpio
     public synchronized void removeListener(Pin pin, GpioListener listener)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
-        getPin(pin).removeListener(listener);        
+
+        getPin(pin).removeListener(listener);
     }
-    
+
     public synchronized void removeListener(Pin pin, GpioListener[] listeners)
     {
-        for(GpioListener listener : listeners)
-            removeListener(pin ,listener);
+        for (GpioListener listener : listeners)
+            removeListener(pin, listener);
     }
 
     public synchronized void removeListener(GpioPin pin, GpioListener listener)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
-        pin.removeListener(listener);        
+
+        pin.removeListener(listener);
     }
-    
+
     public synchronized void removeListener(GpioPin pin, GpioListener[] listeners)
     {
-        for(GpioListener listener : listeners)
-            removeListener(pin ,listener);
-    }
-    
-    public synchronized void removeListener(Pin pins[], GpioListener listener)
-    {
-        for(Pin pin : pins)
+        for (GpioListener listener : listeners)
             removeListener(pin, listener);
     }
-    
+
+    public synchronized void removeListener(Pin pins[], GpioListener listener)
+    {
+        for (Pin pin : pins)
+            removeListener(pin, listener);
+    }
+
     public synchronized void removeListener(Pin pins[], GpioListener[] listeners)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             removeListener(pin, listeners);
     }
 
     public synchronized void removeListener(GpioPin pins[], GpioListener listener)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             removeListener(pin, listener);
     }
-    
+
     public synchronized void removeListener(GpioPin pins[], GpioListener[] listeners)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             removeListener(pin, listeners);
     }
-    
-   
+
     public synchronized void removeAllListeners()
     {
-        for(GpioPin pin : this.pins.values())
+        for (GpioPin pin : this.pins.values())
             pin.removeAllListeners();
     }
 
-    
     /**
      * 
      * @param trigger
@@ -902,58 +899,56 @@ public class GpioControllerImpl implements Gpio
     public synchronized void addTrigger(Pin pin, GpioTrigger trigger)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
-        getPin(pin).addTrigger(trigger);        
+
+        getPin(pin).addTrigger(trigger);
     }
 
     public synchronized void addTrigger(Pin pin, GpioTrigger[] triggers)
     {
-        for(GpioTrigger trigger : triggers)
+        for (GpioTrigger trigger : triggers)
             addTrigger(pin, trigger);
     }
 
     public synchronized void addTrigger(GpioPin pin, GpioTrigger trigger)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
-        pin.addTrigger(trigger);        
+
+        pin.addTrigger(trigger);
     }
 
     public synchronized void addTrigger(GpioPin pin, GpioTrigger[] triggers)
     {
-        for(GpioTrigger trigger : triggers)
+        for (GpioTrigger trigger : triggers)
             addTrigger(pin, trigger);
     }
 
-
     public synchronized void addTrigger(Pin pins[], GpioTrigger trigger)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             addTrigger(pin, trigger);
     }
 
     public synchronized void addTrigger(Pin pins[], GpioTrigger[] triggers)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             addTrigger(pin, triggers);
     }
 
     public synchronized void addTrigger(GpioPin pins[], GpioTrigger trigger)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             addTrigger(pin, trigger);
     }
 
     public synchronized void addTrigger(GpioPin pins[], GpioTrigger[] triggers)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             addTrigger(pin, triggers);
     }
-    
 
     /**
      * 
@@ -962,81 +957,79 @@ public class GpioControllerImpl implements Gpio
     public synchronized void removeTrigger(Pin pin, GpioTrigger trigger)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsKey(pin))
+        if (!pins.containsKey(pin))
             throw new GpioPinNotProvisionedException(pin);
-        
-        getPin(pin).removeTrigger(trigger);        
-    }    
+
+        getPin(pin).removeTrigger(trigger);
+    }
 
     public synchronized void removeTrigger(Pin pin, GpioTrigger[] triggers)
     {
-        for(GpioTrigger trigger : triggers)
+        for (GpioTrigger trigger : triggers)
             removeTrigger(pin, trigger);
     }
 
     public synchronized void removeTrigger(GpioPin pin, GpioTrigger trigger)
     {
         // ensure the requested pin has been provisioned
-        if(!pins.containsValue(pin))
+        if (!pins.containsValue(pin))
             throw new GpioPinNotProvisionedException(pin.getPin());
-        
-        pin.removeTrigger(trigger);        
-    }    
+
+        pin.removeTrigger(trigger);
+    }
 
     public synchronized void removeTrigger(GpioPin pin, GpioTrigger[] triggers)
     {
-        for(GpioTrigger trigger : triggers)
+        for (GpioTrigger trigger : triggers)
             removeTrigger(pin, trigger);
     }
-    
+
     public synchronized void removeTrigger(Pin pins[], GpioTrigger trigger)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             removeTrigger(pin, trigger);
-    }    
+    }
 
     public synchronized void removeTrigger(Pin pins[], GpioTrigger[] triggers)
     {
-        for(Pin pin : pins)
+        for (Pin pin : pins)
             removeTrigger(pin, triggers);
     }
 
     public synchronized void removeTrigger(GpioPin pins[], GpioTrigger trigger)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             removeTrigger(pin, trigger);
-    }    
+    }
 
     public synchronized void removeTrigger(GpioPin pins[], GpioTrigger[] triggers)
     {
-        for(GpioPin pin : pins)
+        for (GpioPin pin : pins)
             removeTrigger(pin, triggers);
     }
-    
-    
+
     public synchronized void removeAllTriggers()
     {
-        for(GpioPin pin : this.pins.values())
+        for (GpioPin pin : this.pins.values())
             pin.removeAllTriggers();
     }
-
 
     public GpioPin provisionInputPin(Pin pin, String name, PinEdge edge, PinResistor resistance)
     {
         // if an existing pin has been previously created, then throw an error
-        if(pins.containsKey(pin))
+        if (pins.containsKey(pin))
             throw new GpioPinExistsException(pin);
-        
+
         // create new GPIO pin instance
         GpioPin gpioPin = new GpioPinImpl(this, pin);
-        
+
         // set the gpio pin name
-        if(name != null)
+        if (name != null)
             gpioPin.setName(name);
 
         // export this pin as IN
         gpioPin.export(PinDirection.IN);
-        
+
         // set the gpio mode
         gpioPin.setMode(PinMode.INPUT);
 
@@ -1047,14 +1040,14 @@ public class GpioControllerImpl implements Gpio
         // set the gpio pull resistor
         if (resistance != null)
             gpioPin.setPullResistor(resistance);
-        
+
         // add this new pin instance to the managed collection
         pins.put(pin, gpioPin);
 
         // return new new pin instance
         return gpioPin;
     }
-    
+
     public GpioPin provisionInputPin(Pin pin, String name, PinEdge edge)
     {
         return provisionInputPin(pin, name, edge, null);
@@ -1064,33 +1057,72 @@ public class GpioControllerImpl implements Gpio
     {
         return provisionInputPin(pin, name, null);
     }
-    
+
     public GpioPin provisionOuputPin(Pin pin, String name, PinState defaultState)
     {
         // if an existing pin has been previously created, then throw an error
-        if(pins.containsKey(pin))
+        if (pins.containsKey(pin))
             throw new GpioPinExistsException(pin);
-        
+
         // create new GPIO pin instance
-        GpioPin gpioPin = new GpioPinImpl(this, pin); 
+        GpioPin gpioPin = new GpioPinImpl(this, pin);
 
         // set the gpio pin name
-        if(name != null)
+        if (name != null)
             gpioPin.setName(name);
-        
+
         // export this pin as IN
         gpioPin.export(PinDirection.OUT);
-        
+
         // set the gpio mode
         gpioPin.setMode(PinMode.OUTPUT);
-        
+
         // add this new pin instance to the managed collection
         pins.put(pin, gpioPin);
-        
-        if(defaultState != null)
+
+        if (defaultState != null)
             gpioPin.setState(defaultState);
 
         // return new new pin instance
-        return gpioPin;        
+        return gpioPin;
+    }
+
+    /**
+     * This class is used to perform any configured shutdown actions
+     * on the provisioned GPIO pins
+     * 
+     * @author Robert Savage
+     *
+     */
+    private class ShutdownHook extends Thread
+    {        
+        public void run()
+        {
+            for (GpioPin pin : pins.values())
+            {
+                GpioPinShutdown shutdownOptions = pin.getShutdownOptions(); 
+                if(shutdownOptions != null)
+                {
+                    // get shutdown option configuration 
+                    PinState state = shutdownOptions.getState();
+                    PinDirection direction = shutdownOptions.getDirection();
+                    PinEdge edge = shutdownOptions.getEdge();
+                    PinResistor resistance = shutdownOptions.getPullResistor();
+                    Boolean unexport = shutdownOptions.getUnexport();
+                    
+                    // perform shutdown actions
+                    if(state != null)
+                        pin.setState(state);
+                    if(resistance != null)
+                        pin.setPullResistor(resistance);
+                    if(edge != null)
+                        pin.setEdge(edge);
+                    if(direction != null)
+                        pin.setDirection(direction);
+                    if(unexport != null && unexport == Boolean.TRUE)
+                        pin.unexport();
+                }
+            }
+        }
     }
 }

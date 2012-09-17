@@ -95,4 +95,12 @@ public interface GpioPin
     void removeTrigger(GpioTrigger[] triggers);
     void removeTrigger(List<GpioTrigger> triggers);
     void removeAllTriggers();
+    
+    GpioPinShutdown getShutdownOptions();
+    void setShutdownOptions(GpioPinShutdown options);
+    void setShutdownOptions(Boolean unexport);
+    void setShutdownOptions(Boolean unexport, PinState state);
+    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge);
+    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge, PinResistor resistance);
+    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge, PinResistor resistance, PinDirection direction);
 }

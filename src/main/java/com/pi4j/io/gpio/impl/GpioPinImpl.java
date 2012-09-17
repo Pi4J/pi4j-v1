@@ -40,6 +40,7 @@ import com.pi4j.io.gpio.PinDirection;
 import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
@@ -50,6 +51,7 @@ public class GpioPinImpl implements GpioPin
     private String name = null;
     private Pin pin;
     private GpioPinListenerImpl monitor;
+    private GpioPinShutdownImpl shutdownOptions;
     private Map<String, String> properties = new ConcurrentHashMap<>();
     private Vector<GpioListener> listeners = new Vector<GpioListener>();
     private Vector<GpioTrigger> triggers = new Vector<GpioTrigger>();
@@ -59,6 +61,7 @@ public class GpioPinImpl implements GpioPin
         //this.gpio = gpio;
         this.pin = pin;
         monitor = new GpioPinListenerImpl(this);
+        shutdownOptions = new GpioPinShutdownImpl();
     }
 
     @Override
@@ -375,5 +378,57 @@ public class GpioPinImpl implements GpioPin
             return String.format("\"%s\" <%s>", name, pin.toString());
         else
             return pin.toString();
+    }
+
+    @Override
+    public GpioPinShutdown getShutdownOptions()
+    {
+        return shutdownOptions;
+    }
+
+    @Override
+    public void setShutdownOptions(GpioPinShutdown options)
+    {
+        shutdownOptions.setUnexport(options.getUnexport());
+        shutdownOptions.setState(options.getState());
+        shutdownOptions.setEdge(options.getEdge());
+        shutdownOptions.setDirection(options.getDirection());
+        shutdownOptions.setPullResistor(options.getPullResistor());        
+    }
+
+    @Override
+    public void setShutdownOptions(Boolean unexport)
+    {
+        setShutdownOptions(unexport, null);
+    }
+    
+    @Override
+    public void setShutdownOptions(Boolean unexport, PinState state)
+    {
+        setShutdownOptions(unexport, state, null);
+    }
+
+    @Override
+    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge)
+    {
+        setShutdownOptions(unexport, state, edge, null);
+    }
+
+    @Override
+    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge,
+            PinResistor resistance)
+    {
+        setShutdownOptions(unexport, state, edge, resistance, null);
+    }
+
+    @Override
+    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge,
+            PinResistor resistance, PinDirection direction)
+    {
+        shutdownOptions.setUnexport(unexport);
+        shutdownOptions.setState(state);
+        shutdownOptions.setEdge(edge);
+        shutdownOptions.setDirection(direction);
+        shutdownOptions.setPullResistor(resistance);        
     }
 }
