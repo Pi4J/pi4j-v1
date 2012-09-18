@@ -6,7 +6,7 @@ Simple GPIO Control using Pi4J.
   
   The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/example}}
 
-%{snippet|id=control-gpio-snippet|file=src/test/java/com/pi4j/example/ControlGpioExample.java}
+%{snippet|id=control-gpio-snippet|file=pi4j-example/src/main/java/com/pi4j/example/ControlGpioExample.java}
 
 * Wiring Diagram
 

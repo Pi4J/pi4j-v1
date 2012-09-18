@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- MAVEN ARTIFACT INFORMATION -->
+	<artifactId>pi4j-example</artifactId>
+	<name>Pi4J :: Java Examples</name>
+	<description>Pi4J Java Examples using the Pi4J Library</description>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>com.pi4j</groupId>
+		<artifactId>pi4j-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<!-- DEPENDENCIES -->
+	<dependencies>
+<!-- START SNIPPET: maven-dependency-snippet -->
+<dependency>
+	<groupId>com.pi4j</groupId>
+	<artifactId>pi4j-core</artifactId>
+	<version>${project.version}</version>
+</dependency>
+<!-- END SNIPPET: maven-dependency-snippet -->
+	</dependencies>
+
+	<!-- BUILD INSTRUCTIONS -->
+	<build>
+		<plugins>
+
+			<!-- JAVA 7 SE -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<!-- INCLUDE SOURCE JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+
+			<!-- INCLUDE JAVADOC JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+
+			<!-- GENERATE LICENSE HEADERS IN SOURCE FILES -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+
+	</build>
+</project>

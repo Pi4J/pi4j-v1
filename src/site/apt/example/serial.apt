@@ -16,7 +16,7 @@ Serial Communication Example using Pi4J.
    
   The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/example}}
 
-%{snippet|id=serial-snippet|file=src/test/java/com/pi4j/example/SerialExample.java}
+%{snippet|id=serial-snippet|file=pi4j-example/src/main/java/com/pi4j/example/SerialExample.java}
 
 * Wiring Diagram
 

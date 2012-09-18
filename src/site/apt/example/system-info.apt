@@ -6,7 +6,7 @@ System Information Example using Pi4J.
    
   The source code for this example is included in the github repository: {{https://github.com/Pi4J/pi4j/tree/master/src/test/java/com/pi4j/example}}
 
-%{snippet|id=system-info-snippet|file=src/test/java/com/pi4j/example/SystemInfoExample.java}
+%{snippet|id=system-info-snippet|file=pi4j-example/src/main/java/com/pi4j/example/SystemInfoExample.java}
 
 * Download
   
