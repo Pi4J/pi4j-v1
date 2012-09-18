@@ -6,13 +6,9 @@
 *.ear
 
 /target
-/.project
 /.settings
 /pi4j-core/.settings
 /pi4j-core/.classpath
-/pi4j-core/.project
 /pi4j-example/.settings
 /pi4j-example/.classpath
-/pi4j-example/.project
 /pi4j-native/.settings
-/pi4j-native/.project
