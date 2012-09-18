@@ -12,3 +12,8 @@
 /pi4j-example/.settings
 /pi4j-example/.classpath
 /pi4j-native/.settings
+
+/.project
+/pi4j-native/.project
+/pi4j-core/.project
+/pi4j-example/.project
