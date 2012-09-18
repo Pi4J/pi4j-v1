@@ -25,12 +25,14 @@
 	<!-- TODO: add content to readme file -->
 	<!-- TODO: change project license to a friendlier license with attribution -->
 	<!-- TODO: validate thread terminate for GPIO listener -->
+	<!-- TODO: add versioning -->
+	<!-- TODO: bundlize me -->	
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
 		<finalName>pi4j</finalName>
 
-		<!-- EMBED THE NATIVE JIN LIBRARY -->
+		<!-- EMBED THE NATIVE JNI LIBRARY -->
 		<resources>
 			<resource>
 				<directory>${project.build.directory}/lib</directory>
