@@ -55,4 +55,20 @@
 		</plugins>
 
 	</build>
+	
+	<!-- MAVEN REPOSITORIES -->
+<!-- START SNIPPET: maven-repository-snippet -->
+<repositories>
+	<repository>
+		<id>oss-snapshots-repo</id>
+		<name>Sonatype OSS Maven Repository</name>
+		<url>https://oss.sonatype.org/content/groups/public</url>
+		<snapshots>
+			<enabled>true</enabled>
+			<updatePolicy>newer</updatePolicy>
+		</snapshots>
+	</repository>
+</repositories>
+<!-- END SNIPPET: maven-repository-snippet -->
+
 </project>
