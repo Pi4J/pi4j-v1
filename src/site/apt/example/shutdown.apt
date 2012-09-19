@@ -1,0 +1,51 @@
+GPIO Shutdown using Pi4J.
+
+  If is highly likely that your program should return the GPIO pins states to a known fixed state any time the user application is exited.  
+  The following example demonstrates how to configure the shutdown behavior that will be applied to the GPIO pins when the Java application terminates.
+
+* Source Code
+  
+  The source code for this example is included in the github repository:\
+  {{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/com/pi4j/example/ShutdownGpioExample.java}}
+
+%{snippet|id=shutdown-gpio-snippet|file=pi4j-example/src/main/java/com/pi4j/example/ShutdownGpioExample.java}
+
+* Wiring Diagram
+
+  The following circuit can be used in conjunction with this sample code.
+  
+[../images/gpio-control-example.png]
+
+  {{{../images/gpio-control-example-large.png}(click here for hi-resolution image)}}
+
+* Download
+  
+  First, copy the <ShutdownGpioExample.java> source file to a directory on the RaspberryPi.\
+  You can use the following command on the Pi's console or SSH terminal to download the example source file directly to your Pi:
+  
+  <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/com/pi4j/example/ShutdownGpioExample.java>>>
+
+* Compile
+  
+  Next, use the following command to compile this example program:
+  
+  <<<javac -cp pi4j.jar -d . ShutdownGpioExample.java>>>
+  
+* Execute
+  
+  The following command will run this example program:
+  
+  <<<sudo java -classpath .:pi4j.jar com.pi4j.example.ShutdownGpioExample>>>
+  
+* Output
+
+  You should see the attached LED perform as follows:
+  
+[../images/pinon.png] 
+  
+  Turn ON
+
+[../images/pinoff.png] 
+  
+  Turn OFF after 10 seconds when the program automatically exists.\
+  Turn OFF if the user terminates the program using CTRL-C prior to the 10 second timeout. 
