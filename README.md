@@ -1,9 +1,6 @@
 ==========================================================================
- Pi4J :: Java library for Raspberry Pi
+ Pi4J :: Java library for Raspberry Pi               http://www.pi4j.com/
 ==========================================================================
- More information about this project can be found here:  
- http://www.pi4j.com/
- 
  Copyright (C) 2012 Pi4J
  
  Licensed under the Apache License, Version 2.0 (the "License");

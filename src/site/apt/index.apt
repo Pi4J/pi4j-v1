@@ -23,6 +23,8 @@ Features
   * Read GPIO pin states
   
   * Listen for GPIO pin state changes (interrupt-based; not polling)
+  
+  * Automatically set GPIO states on program termination
       
   * Triggers for automation based on pin state changes
   
