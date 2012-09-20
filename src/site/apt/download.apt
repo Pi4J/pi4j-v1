@@ -1,21 +1,27 @@
 Download 
-
-  You can download the compiled pi4j.jar file here:\
-  {{{./pi4j.jar}Download pi4j.jar Java Library}}
-
-Maven Repository
-
-  Pi4J will be deployed to Maven Central when version 1.0 is released.\
   
-  Snapshots will be hosted in the followibng Sonatype OSS repository.
+  You can use any of the following methods to download the Pi4J library.
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Direct Download
+
+  You can download the compiled Pi4J library JARs directly here:\
+  {{https://github.com/Pi4J/pi4j/downloads}}
+
+* Maven Repository
+
+  Pi4J release builds will be deployed to Maven Central when version 1.0 is released.\
+  
+  Snapshots will be hosted in the following Sonatype OSS repository.  To download SNAPSHOT builds in your Maven project, you must include the following repository definition in your POM.XML file.
     
 %{snippet|id=maven-repository-snippet|file=pi4j-example/pom.xml}
 
-  The following dependency is all that is needed to include Pi4J. 
+  The following dependency is all that is needed to include Pi4J in your Maven project. 
   
 %{snippet|id=maven-dependency-snippet|file=pi4j-example/pom.xml}
 
-Source Repository 
+* Source Repository 
 
   This project is provided as open source software and is hosted at GitHub:\
   {{https://github.com/Pi4J/pi4j}}

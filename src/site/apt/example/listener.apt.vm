@@ -11,6 +11,24 @@ GPIO State Listener Example using Pi4J.
 
 %{snippet|id=listen-gpio-snippet|file=pi4j-example/src/main/java/com/pi4j/example/ListenGpioExample.java}
 
+* JavaDoc
+
+  The following JavaDoc links are the primary interfaces used to listen for GPIO state changes:
+
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/GpioFactory.html}com.pi4j.io.gpio.GpioFactory}}
+  
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/Gpio.html}com.pi4j.io.gpio.Gpio}}
+  
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/GpioPin.html}com.pi4j.io.gpio.GpioPin}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/PinEdge.html}com.pi4j.io.gpio.PinEdge}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/PinResistor.html}com.pi4j.io.gpio.PinResistor}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/event/GpioListener.html}com.pi4j.io.gpio.event.GpioListener}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/gpio/event/GpioPinStateChangeEvent.html}com.pi4j.io.gpio.event.GpioPinStateChangeEvent}}
+  
 * Wiring Diagram
 
   The following circuit can be used in conjunction with this sample code.
@@ -26,17 +44,21 @@ GPIO State Listener Example using Pi4J.
   
   <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/com/pi4j/example/ListenGpioExample.java>>>
 
+  If you have not already downloaded the Pi4J library JAR to the RaspberryPi, then you can use the following command on the Pi's console or SSH terminal to download the Pi4J JAR file.
+
+  <<<wget https://github.com/downloads/Pi4J/pi4j/pi4j-core-${project.version}.jar>>>
+
 * Compile
   
   Next, use the following command to compile this example program:
   
-  <<<javac -cp pi4j.jar -d . ListenGpioExample.java>>>
+  <<<javac -cp pi4j-core-${project.version}.jar -d . ListenGpioExample.java>>>
   
 * Execute
   
   The following command will run this example program:
   
-  <<<sudo java -classpath .:pi4j.jar com.pi4j.example.ListenGpioExample>>>
+  <<<sudo java -classpath .:pi4j-core-${project.version}.jar com.pi4j.example.ListenGpioExample>>>
   
 * Output
 

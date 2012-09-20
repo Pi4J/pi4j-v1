@@ -2,13 +2,14 @@ Welcome to Pi4J!
 
   This project is intended to provide a bridge between the native libraries and Java for full access to the Raspberry Pi.
 
-Under Construction
+* Project Status
   
-  Please note that this project is still under construction and is not yet ready for general consumption.
+  Please note that this project is currently under development and only SNAPSHOT builds are available at this time.\
+  The functionality is reasonable stable but some documentation and development tasks have not yet been completed.
   
-[./images/under-construction.png]
-
-Features
+  Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.     
+  
+* Features
 
   * Export & unexport GPIO pins
    
@@ -24,12 +25,29 @@ Features
   
   * Listen for GPIO pin state changes (interrupt-based; not polling)
   
-  * Automatically set GPIO states on program termination
+  * Automatically set GPIO states on program termination (GPIO shutdown)
       
   * Triggers for automation based on pin state changes
   
-  * Send & receive data via RS232 serial communication
+  * Send & receive data via RS232 serial communication 
+  
+  * Access system information and network information from the Raspberry Pi   
           
   * Wrapper classes for direct access to WiringPi Library from Java
   
+* Getting Started
 
+  To get started using the Pi4J library, please see the {{{./usage.html}Usage}} page and review each of the examples below to explore the functionality provided by the Pi4j library.
+  
+  * {{{./example/control.html}Control GPIO}}
+    
+  * {{{./example/listener.html}Listen for GPIO Events}}
+    
+  * {{{./example/shutdown.html}Shutdown GPIO}}
+    
+  * {{{./example/trigger.html}Trigger GPIO on Events}}
+    
+  * {{{./example/serial.html}Serial Communication}}
+  
+  * {{{./example/system-info.html}System/Network Information}}  
+   

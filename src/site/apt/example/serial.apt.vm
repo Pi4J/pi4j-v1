@@ -19,6 +19,19 @@ Serial Communication Example using Pi4J.
 
 %{snippet|id=serial-snippet|file=pi4j-example/src/main/java/com/pi4j/example/SerialExample.java}
 
+* JavaDoc
+
+  The following JavaDoc links are the primary interfaces used to communicate via the Pi's serial ports:
+
+  * {{{../apidocs/index.html?com/pi4j/io/serial/SerialFactory.html}com.pi4j.io.serial.SerialFactory}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/serial/Serial.html}com.pi4j.io.serial.Serial}}
+  
+  * {{{../apidocs/index.html?com/pi4j/io/serial/SerialDataEvent.html}com.pi4j.io.serial.SerialDataEvent}}
+
+  * {{{../apidocs/index.html?com/pi4j/io/serial/SerialDataListener.html}com.pi4j.io.serial.SerialDataListener}}
+  
+
 * Wiring Diagram
 
   The circuit below illustrates a RS232 serial port connected to the Raspberry Pi's GPIO header.\
@@ -38,17 +51,21 @@ Serial Communication Example using Pi4J.
   
   <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/com/pi4j/example/SerialExample.java>>>
 
+  If you have not already downloaded the Pi4J library JAR to the RaspberryPi, then you can use the following command on the Pi's console or SSH terminal to download the Pi4J JAR file.
+
+  <<<wget https://github.com/downloads/Pi4J/pi4j/pi4j-core-${project.version}.jar>>>
+
 * Compile
   
   Next, use the following command to compile this example program:
   
-  <<<javac -cp pi4j.jar -d . SerialExample.java>>>
+  <<<javac -cp pi4j-core-${project.version}.jar -d . SerialExample.java>>>
   
 * Execute
   
   The following command will run this example program:
   
-  <<<sudo java -classpath .:pi4j.jar com.pi4j.example.SerialExample>>>
+  <<<sudo java -classpath .:pi4j-core-${project.version}.jar com.pi4j.example.SerialExample>>>
   
 * Output
 

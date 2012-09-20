@@ -9,6 +9,14 @@ System Information Example using Pi4J.
 
 %{snippet|id=system-info-snippet|file=pi4j-example/src/main/java/com/pi4j/example/SystemInfoExample.java}
 
+* JavaDoc
+
+  The following JavaDoc links are the primary interfaces used to access system and network information:
+
+  * {{{../apidocs/index.html?com/pi4j/system/NetworkInfo.html}com.pi4j.system.NetworkInfo}}
+
+  * {{{../apidocs/index.html?com/pi4j/system/SystemInfo.html}com.pi4j.system.SystemInfo}}
+
 * Download
   
   First, copy the <SystemInfoExample.java> source file to a directory on the RaspberryPi.\
@@ -16,17 +24,21 @@ System Information Example using Pi4J.
   
   <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/com/pi4j/example/SystemInfoExample.java>>>
 
+  If you have not already downloaded the Pi4J library JAR to the RaspberryPi, then you can use the following command on the Pi's console or SSH terminal to download the Pi4J JAR file.
+
+  <<<wget https://github.com/downloads/Pi4J/pi4j/pi4j-core-${project.version}.jar>>>
+
 * Compile
   
   Next, use the following command to compile this example program:
   
-  <<<javac -cp pi4j.jar -d . SystemInfoExample.java>>>
+  <<<javac -cp pi4j-core-${project.version}.jar -d . SystemInfoExample.java>>>
   
 * Execute
   
   The following command will run this example program:
   
-  <<<sudo java -classpath .:pi4j.jar com.pi4j.example.SystemInfoExample>>>
+  <<<sudo java -classpath .:pi4j-core-${project.version}.jar com.pi4j.example.SystemInfoExample>>>
   
 * Output
 

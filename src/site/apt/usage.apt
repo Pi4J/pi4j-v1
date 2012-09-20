@@ -87,6 +87,18 @@ Usage
 
   A complete example project demonstrating the listening for GPIO pin state changes is provided {{{./example/listener.html}here}}.
 
+
+* Pin Shutdown
+
+  Pi4J provides an implementation to automatically set GPIO pin states when the application is terminated.  This is useful to ensure that the GPIO pins states are not active or leaving some activity engaged if the program is shutdown. 
+  
+  You can simply use the <setShutdownOptions> method on the <GpioPin> instance to configure the desired shutdown behavior to be applied.
+  The following snippet demonstrates a simple GPIO pin shutdown configuration implementation:      
+
+%{snippet|id=usage-shutdown-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+
+  A complete example project demonstrating the GPIO pin shutdown configuration is provided {{{./example/shutdown.html}here}}.
+
   
 * Pin Triggers
 
@@ -97,4 +109,18 @@ Usage
  
   A complete example project demonstrating the GPIO pin triggers is provided {{{./example/trigger.html}here}}.\
   (This example includes all available provided triggers.)
+  
+
+* Serial Communication
+
+  P14J provides a simplified API to send and receive data using a serial port of the Raspberry's Pi.\
+  The following example project demonstrates implementing serial communication:\
+  {{{./example/serial.html}Serial Communication Example}}.
+  
+
+* System Information
+
+  P14J provides an API to access system and network information from the Raspberry's Pi.\
+  The following example project demonstrates accessing system and network information:\
+  {{{./example/system-info.html}System Information Example}}.
   

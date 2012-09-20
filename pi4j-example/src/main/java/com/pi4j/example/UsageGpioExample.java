@@ -79,6 +79,13 @@ public class UsageGpioExample
                                                PinState.LOW); // PIN STARTUP STATE
         // END SNIPPET: usage-provision-output-pin-snippet
 
+        // START SNIPPET: usage-shutdown-pin-snippet
+        // configure the pin shutdown behavior; these settings will be 
+        // automatically applied to the pin when the application is terminated
+        // ensure that the LED is turned OFF when the application is shutdown
+        myLed.setShutdownOptions(true, PinState.LOW, PinEdge.NONE, PinResistor.OFF);
+        // END SNIPPET: usage-shutdown-pin-snippet
+        
         // START SNIPPET: usage-control-pin-snippet
         // explicitly set a state on the pin object
         myLed.setState(PinState.HIGH);

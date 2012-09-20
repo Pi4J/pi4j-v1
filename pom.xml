@@ -61,19 +61,45 @@
 		<system>github</system>
 	</issueManagement>
 
+	<!-- DISTRIBUTION REPOSITORIES -->
+	<distributionManagement>
+		<downloadUrl>http://www.pi4j.com/download.html</downloadUrl>
+		<repository>
+			<id>sonatype-oss-staging</id>
+			<name>Sonatype Open Source Maven Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype-oss-snapshots</id>
+			<name>Sonatype Open Source Maven Snapshots Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<!-- PROJECT MODULES -->
+	<modules>
+		<module>pi4j-core</module>
+		<module>pi4j-example</module>
+	</modules>
+
 	<!-- BUILD PROPERTIES -->
 	<properties>
 
-		<!-- RASPBERRY PI PROPERTIES -->
-		<scp.host>10.1.1.161</scp.host>
-		<scp.transfer>false</scp.transfer>
-		<scp.user>pi</scp.user>
-		<scp.password>raspberry</scp.password>
-		<scp.port>22</scp.port>
-		<scp.dirBuildTemp>/home/pi/pi4j-temp</scp.dirBuildTemp>
-		<scp.dirCopyTo>/home/pi/test</scp.dirCopyTo>
+		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
+		<pi.host>raspberrypi</pi.host>
+		<pi.port>22</pi.port>
+		<pi.user>pi</pi.user>
+		<pi.password>raspberry</pi.password>
 
-		<!-- ENCODING PROPERTIES -->
+		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
+		<pi.remoteBuild>false</pi.remoteBuild>
+		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
+
+		<!-- SETTINGS FOR REMOTELY COPYING DISTRIBUTION JAR TO RASPBERRY PI -->
+		<pi.transfer>false</pi.transfer>
+		<pi.dirCopyTo>/home/pi/test</pi.dirCopyTo>
+
+		<!-- PROJECT ENCODING PROPERTIES -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -88,10 +114,11 @@
 		<profile>
 			<id>savage</id>
 			<properties>
-				<!-- IP address of Raspberry Pi -->
-				<scp.host>10.1.1.161</scp.host>
+				<!-- IP address/Hostname of Raspberry Pi -->
+				<pi.host>10.1.1.161</pi.host>
 				<!-- enable scp of Pi4j to Raspberry Pi -->
-				<scp.transfer>true</scp.transfer>
+				<pi.transfer>false</pi.transfer>
+				<pi.remoteBuild>false</pi.remoteBuild>
 			</properties>
 			<activation>
 				<property>
@@ -105,10 +132,11 @@
 		<profile>
 			<id>cwalzl</id>
 			<properties>
-				<!-- Hostname of Raspberry Pi -->
-				<scp.host>raspberrypi</scp.host>
+				<!-- IP address/Hostname of Raspberry Pi -->
+				<pi.host>raspberrypi</pi.host>
 				<!-- enable scp of Pi4j to Raspberry Pi -->
-				<scp.transfer>true</scp.transfer>
+				<pi.transfer>true</pi.transfer>
+				<pi.remoteBuild>false</pi.remoteBuild>
 			</properties>
 			<activation>
 				<property>
@@ -118,62 +146,15 @@
 			</activation>
 		</profile>
 
-		<!-- PROFILE : deploy-site -->
+		<!-- SPECIAL PROFILE TO BUILD JNI NATIVE LIBRARY -->
 		<profile>
-			<id>deploy-site</id>
-			<build>
-				<plugins>
-					<!-- DEPLOY GITHUB SITE DOCUMENTATION -->
-					<plugin>
-						<groupId>com.github.github</groupId>
-						<artifactId>site-maven-plugin</artifactId>
-						<version>0.7</version>
-						<inherited>false</inherited>
-						<configuration>
-							<repositoryOwner>Pi4J</repositoryOwner>
-							<repositoryName>pi4j</repositoryName>
-							<message>Generating site content for ${project.version}</message>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>site</goal>
-								</goals>
-								<phase>site</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
+			<id>native</id>
+			<modules>
+				<module>pi4j-native</module>
+			</modules>
 		</profile>
 
 	</profiles>
-
-	<!-- PROJECT MODULES -->
-	<modules>
-		<module>pi4j-native</module>
-		<module>pi4j-core</module>
-		<module>pi4j-example</module>
-	</modules>
-
-	<!-- DISTRIBUTION REPOSITORIES -->
-	<distributionManagement>
-		<downloadUrl>http://www.pi4j.com/download.html</downloadUrl>
-		<repository>
-			<id>sonatype-oss-staging-repo</id>
-			<name>Sonatype Open Source Maven Repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-		<snapshotRepository>
-			<id>sonatype-oss-snapshot-repo</id>
-			<name>Sonatype Open Source Maven Snapshots Repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<site>
-			<id>github</id>
-			<url>git:gh-pages://git@github.com:Pi4J/pi4j.git</url>
-		</site>
-	</distributionManagement>
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
@@ -280,12 +261,38 @@
 							<artifactId>maven-checkstyle-plugin</artifactId>
 							<version>2.9.1</version>
 						</plugin>
-						<!-- <plugin> -->
-						<!-- <groupId>org.apache.maven.plugins</groupId> -->
-						<!-- <artifactId>maven-linkcheck-plugin</artifactId> -->
-						<!-- <version>1.1</version> -->
-						<!-- </plugin> -->
 					</reportPlugins>
+				</configuration>
+			</plugin>
+
+			<!-- DEPLOY GITHUB SITE DOCUMENTATION -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.7</version>
+				<inherited>false</inherited>
+				<configuration>
+					<repositoryOwner>Pi4J</repositoryOwner>
+					<repositoryName>pi4j</repositoryName>
+					<message>Generating site content for ${project.version}</message>
+				</configuration>
+			</plugin>
+
+			<!-- DEPLOY DOWNLOADABLE ARTIFACTS TO GITHUB -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>downloads-maven-plugin</artifactId>
+				<version>0.5</version>
+				<configuration>
+					<description>${project.version} build of the Pi4J Library for the
+						Raspberry Pi</description>
+					<override>true</override>
+					<repositoryOwner>Pi4J</repositoryOwner>
+					<repositoryName>pi4j</repositoryName>
+					<includeAttached>true</includeAttached>
+					<includes>
+						<include>pi4j-core*</include>
+					</includes>
 				</configuration>
 			</plugin>
 
@@ -423,30 +430,19 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
-		<!-- GITHUB DEPLOYMENT EXTENSION -->
-		<extensions>
-			<extension>
-				<groupId>ar.com.synergian</groupId>
-				<artifactId>wagon-git</artifactId>
-				<version>0.1.4</version>
-			</extension>
-		</extensions>
 	</build>
 
-	<!-- DEPENDENCY REPOSITORIES -->
-	<pluginRepositories>
-		<pluginRepository>
-			<id>synergian-private</id>
-			<name>Synergian Private Releases</name>
-			<url>https://raw.github.com/synergian/wagon-git/releases</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<!-- MAVEN REPOSITORIES -->
 	<repositories>
 		<repository>
-			<id>synergian-private</id>
-			<name>Synergian Private Releases</name>
-			<url>https://raw.github.com/synergian/wagon-git/releases/ar/com/synergian/wagon-git</url>
+			<id>oss-snapshots-repo</id>
+			<name>Sonatype OSS Maven Repository</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
 		</repository>
 	</repositories>
+
 </project>

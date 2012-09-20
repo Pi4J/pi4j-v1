@@ -11,7 +11,7 @@
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-	</parent>	
+	</parent>
 
 	<!-- BUILD PROFILES -->
 	<profiles>
@@ -127,54 +127,39 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
-									classpathref="maven.plugin.classpath" />
-								<if>
-									<equals arg1="${scp.transfer}" arg2="true" />
-									<then>
-										<!-- ensure the target directory is empty on the Raspberry Pi -->
-										<sshexec host="${scp.host}" port="${scp.port}"
-											username="${scp.user}" password="${scp.password}" trust="true"
-											failonerror="true" verbose="true"
-											command="rm --recursive --force ${scp.dirBuildTemp}" />
+								<!-- ensure the target directory is empty on the Raspberry Pi -->
+								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
+									password="${pi.password}" trust="true" failonerror="true"
+									verbose="true" command="rm --recursive --force ${pi.dirBuildTemp}" />
 
-										<!-- ensure the target directory exists on the Raspberry Pi -->
-										<sshexec host="${scp.host}" port="${scp.port}"
-											username="${scp.user}" password="${scp.password}" trust="true"
-											failonerror="false" verbose="true"
-											command="mkdir --parents ${scp.dirBuildTemp}/*" />
+								<!-- ensure the target directory exists on the Raspberry Pi -->
+								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
+									password="${pi.password}" trust="true" failonerror="false"
+									verbose="true" command="mkdir --parents ${pi.dirBuildTemp}/*" />
 
-										<!-- copy all the necessary source files to the Raspberry Pi -->
-										<scp
-											todir="${scp.user}:${scp.password}@${scp.host}:${scp.dirBuildTemp}"
-											port="${scp.port}" trust="true" verbose="true" failonerror="true">
-											<fileset dir="src/main/native" />
-										</scp>
+								<!-- copy all the necessary source files to the Raspberry Pi -->
+								<scp todir="${pi.user}:${pi.password}@${pi.host}:${pi.dirBuildTemp}"
+									port="${pi.port}" trust="true" verbose="true" failonerror="true">
+									<fileset dir="src/main/native" />
+								</scp>
 
-										<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
-											Pi platform -->
-										<sshexec host="${scp.host}" port="${scp.port}"
-											username="${scp.user}" password="${scp.password}" trust="true"
-											failonerror="true" verbose="true"
-											command="cd /home/pi/pi4j-temp; make clean; make all" />
+								<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
+									Pi platform -->
+								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
+									password="${pi.password}" trust="true" failonerror="true"
+									verbose="true" command="cd /home/pi/pi4j-temp; make clean; make all" />
 
-										<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
-										<scp
-											file="${scp.user}:${scp.password}@${scp.host}:${scp.dirBuildTemp}/libpi4j.so"
-											todir="${project.build.directory}/" port="${scp.port}" trust="true"
-											verbose="true" failonerror="true">
-										</scp>
+								<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
+								<scp
+									file="${pi.user}:${pi.password}@${pi.host}:${pi.dirBuildTemp}/libpi4j.so"
+									todir="${project.build.directory}/" port="${pi.port}" trust="true"
+									verbose="true" failonerror="true">
+								</scp>
 
-										<!-- remove the temporary target directory from the Raspberry Pi -->
-										<sshexec host="${scp.host}" port="${scp.port}"
-											username="${scp.user}" password="${scp.password}" trust="true"
-											failonerror="true" verbose="true"
-											command="rm --recursive --force ${scp.dirBuildTemp}" />
-									</then>
-									<else>
-										<echo>SCP transfer of Pi4J has been disabled.</echo>
-									</else>
-								</if>
+								<!-- remove the temporary target directory from the Raspberry Pi -->
+								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
+									password="${pi.password}" trust="true" failonerror="true"
+									verbose="true" command="rm --recursive --force ${pi.dirBuildTemp}" />
 							</tasks>
 						</configuration>
 					</execution>
@@ -222,10 +207,11 @@
 			</plugin>
 
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
