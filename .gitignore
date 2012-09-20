@@ -17,3 +17,6 @@
 /pi4j-native/.project
 /pi4j-core/.project
 /pi4j-example/.project
+/pi4j-core/target
+/pi4j-example/target
+/pi4j-native/target
