@@ -25,6 +25,18 @@
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/../</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>LICENSE.txt</include>
+					<include>NOTICE.txt</include>
+					<include>README.md</include>
+				</includes>
+			</resource>
+		</resources>
+	
 		<plugins>
 
 			<!-- JAVA 7 SE -->
