@@ -5,7 +5,11 @@ Welcome to Pi4J!
 * Project Status
   
   Please note that this project is currently under development and only SNAPSHOT builds are available at this time.\
-  The functionality is reasonable stable but some documentation and development tasks have not yet been completed.
+  The functionality is reasonable stable but some documentation and development tasks have not yet been completed.\
+  The API is fairly well defined; however, is subject to minor change until a release build is produced.
+  
+  You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad or ulgy.  (Well maybe keep the ugly feedback to a minimum.)
+  
   
   Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.     
   
