@@ -1,9 +1,15 @@
 ==========================================================================
  Pi4J :: Java library for Raspberry Pi
 ==========================================================================
- PROJECT WEBSITE:  http://www.pi4j.com/
+
+## PROJECT INFORMATION
+
+ Project website: (http://www.pi4j.com/)
+ Released builds are available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j).
 
  Copyright (C) 2012 Pi4J
+
+## LICENSE
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,10 +23,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  
-==========================================================================
- RELEASES
-==========================================================================
+## RELEASES
 
- 2012-09-18 :: 0.0.1-SNAPSHOT
-
- - initial ALPHA release
+ * 2012-09-19 :: 0.0.1-SNAPSHOT
+   *  initial ALPHA release
+ 
