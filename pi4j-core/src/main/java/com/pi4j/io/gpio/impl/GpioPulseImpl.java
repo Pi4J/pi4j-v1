@@ -36,15 +36,16 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.Pin;
 
 public class GpioPulseImpl
 {
     @SuppressWarnings("rawtypes")
-    private static ConcurrentHashMap<GpioPin, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPin, ScheduledFuture>();
+    private static ConcurrentHashMap<Pin, ScheduledFuture> tasks = new ConcurrentHashMap<Pin, ScheduledFuture>();
     private static ScheduledExecutorService scheduledExecutorService;
 
-    public synchronized static void execute(GpioPin pin, long milliseconds)
+    public synchronized static void execute(GpioController gpio, Pin pin, long milliseconds)
     {
         if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
@@ -59,11 +60,11 @@ public class GpioPulseImpl
         }
 
         // set the high state
-        pin.high();
+        gpio.high(pin);
 
         // create future job to return the pin to the low state
         ScheduledFuture<?> scheduledFuture = scheduledExecutorService
-            .schedule(new GpioPulseOffImpl(pin), milliseconds, TimeUnit.MILLISECONDS);
+            .schedule(new GpioPulseOffImpl(gpio, pin), milliseconds, TimeUnit.MILLISECONDS);
 
         // add the new scheduled job to the tasks map
         tasks.put(pin, scheduledFuture);
@@ -75,7 +76,7 @@ public class GpioPulseImpl
         {
             public Object call() throws Exception
             {
-                for (Entry<GpioPin, ScheduledFuture> item : tasks.entrySet())
+                for (Entry<Pin, ScheduledFuture> item : tasks.entrySet())
                 {
                     ScheduledFuture task = item.getValue();
                     if (task.isCancelled() || task.isDone())

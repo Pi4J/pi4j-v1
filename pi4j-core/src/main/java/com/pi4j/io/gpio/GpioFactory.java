@@ -34,7 +34,7 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * <h1>GPIO Factory</h1>
  * 
  * <p>
- * This factory class provides a static method to create new 'Gpio' instances.
+ * This factory class provides a static method to create new 'GpioController' instances.
  * </p>
  * 
  * <p>
@@ -58,16 +58,16 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
 public class GpioFactory
 {
     // we only allow a single controller to exists
-    private static Gpio controller = null;
+    private static GpioController controller = null;
     
     /**
-     * <h1>Create New Serial instance</h1>
+     * <h1>Create New GPIO Controller instance</h1>
      * 
      * @return <p>
-     *         Return a new Serial impl instance.
+     *         Return a new GpioController impl instance.
      *         </p>
      */
-    public static Gpio createInstance()
+    public static GpioController getInstance()
     {
         // if a controller has not been created, then create a new instance
         if(controller == null)

@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  Gpio.java  
+ * FILENAME      :  GpioController.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,11 +28,15 @@ package com.pi4j.io.gpio;
  */
 
 
+import java.util.Collection;
+
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-public interface Gpio
+public interface GpioController
 {
+    boolean hasPin(Pin pin);
+    
     void export(Pin pin, PinDirection direction);
     void export(Pin pins[], PinDirection direction);
     void export(GpioPin pin, PinDirection direction);
@@ -88,6 +92,11 @@ public interface Gpio
     void setState(GpioPin pin, PinState state);
     void setState(GpioPin pins[], PinState state);
 
+    void setState(Pin pin, boolean state);
+    void setState(Pin pins[], boolean state);
+    void setState(GpioPin pin, boolean state);
+    void setState(GpioPin pins[], boolean state);
+    
     void toggle(Pin pin);
     void toggle(Pin pins[]);
     void toggle(GpioPin pin);
@@ -126,19 +135,11 @@ public interface Gpio
     
     void removeAllListeners();
     
-    void addTrigger(Pin pin, GpioTrigger trigger);
-    void addTrigger(Pin pin, GpioTrigger[] triggers);
-    void addTrigger(Pin pins[], GpioTrigger trigger);
-    void addTrigger(Pin pins[], GpioTrigger[] triggers);
     void addTrigger(GpioPin pin, GpioTrigger trigger);
     void addTrigger(GpioPin pin, GpioTrigger[] triggers);
     void addTrigger(GpioPin pins[], GpioTrigger trigger);
     void addTrigger(GpioPin pins[], GpioTrigger[] triggers);
     
-    void removeTrigger(Pin pin, GpioTrigger trigger);    
-    void removeTrigger(Pin pin, GpioTrigger[] triggers);
-    void removeTrigger(Pin pins[], GpioTrigger trigger);    
-    void removeTrigger(Pin pins[], GpioTrigger[] triggers);
     void removeTrigger(GpioPin pin, GpioTrigger trigger);    
     void removeTrigger(GpioPin pin, GpioTrigger[] triggers);
     void removeTrigger(GpioPin pins[], GpioTrigger trigger);    
@@ -150,4 +151,7 @@ public interface Gpio
     GpioPin provisionInputPin(Pin pin, String name, PinEdge edge);
     GpioPin provisionInputPin(Pin pin, String name);
     GpioPin provisionOuputPin(Pin pin, String name, PinState defaultState);
+    boolean isProvisioned(Pin pin);
+    GpioPin getProvisionedPin(Pin pin);
+    Collection<GpioPin> getProvisionedPins();
 }

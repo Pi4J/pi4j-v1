@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio.impl;
+package com.pi4j.io.gpio.service;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPulseOffImpl.java  
+ * PROJECT       :  Pi4J :: OSGi Service
+ * FILENAME      :  GpioService.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,21 +29,7 @@ package com.pi4j.io.gpio.impl;
 
 
 import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.Pin;
 
-public class GpioPulseOffImpl implements Runnable
+public interface GpioService extends GpioController
 {
-    private GpioController gpio;
-    private Pin pin;
-    
-    public GpioPulseOffImpl(GpioController gpio, Pin pin)
-    {
-        this.gpio = gpio;
-        this.pin = pin;        
-    }
-
-    public void run()
-    {
-        gpio.low(pin);
-    }
 }

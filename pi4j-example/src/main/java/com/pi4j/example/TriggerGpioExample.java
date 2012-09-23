@@ -31,7 +31,7 @@ package com.pi4j.example;
 
 import java.util.concurrent.Callable;
 
-import com.pi4j.io.gpio.Gpio;
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
@@ -55,7 +55,7 @@ public class TriggerGpioExample
         System.out.println("<--Pi4J--> GPIO Trigger Example ... started.");
 
         // create gpio controller
-        Gpio gpio = GpioFactory.createInstance();
+        GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state changes)

@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio.impl;
+package com.pi4j.system.service;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPulseOffImpl.java  
+ * PROJECT       :  Pi4J :: OSGi Service
+ * FILENAME      :  NetworkInformationService.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,22 +28,14 @@ package com.pi4j.io.gpio.impl;
  */
 
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.Pin;
+import java.io.IOException;
 
-public class GpioPulseOffImpl implements Runnable
+public interface NetworkInformationService 
 {
-    private GpioController gpio;
-    private Pin pin;
-    
-    public GpioPulseOffImpl(GpioController gpio, Pin pin)
-    {
-        this.gpio = gpio;
-        this.pin = pin;        
-    }
-
-    public void run()
-    {
-        gpio.low(pin);
-    }
+    String getHostname() throws IOException, InterruptedException;
+    String getFQDN() throws IOException, InterruptedException;
+    String[] getIPAddresses() throws IOException, InterruptedException;
+    String getIPAddress() throws IOException, InterruptedException;
+    String[] getFQDNs() throws IOException, InterruptedException;
+    String[] getNameservers() throws IOException, InterruptedException;
 }

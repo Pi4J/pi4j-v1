@@ -26,7 +26,7 @@
  */
 import java.util.concurrent.Callable;
 
-import com.pi4j.io.gpio.Gpio;
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
@@ -50,7 +50,7 @@ public class GpioTest
         GpioTestListener listener = new GpioTestListener();
 
         // create gpio controller
-        Gpio gpio = GpioFactory.createInstance();
+        GpioController gpio = GpioFactory.getInstance();
 
         // setup gpio pin #07 as an input pin whose biased to ground and receives +3VDC to be
         // triggered

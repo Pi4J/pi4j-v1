@@ -26,5 +26,14 @@
 ## RELEASES
 
  * 2012-09-19 :: 0.0.1-SNAPSHOT
-   *  initial ALPHA release
+   *  Initial ALPHA release
+   
+ * 2012-09-23 :: 0.0.2-SNAPSHOT
+   *  Refactored Gpio interface to permit methods using Pin argument to function without requiring a GpioPin to first be provisioned
+   *  Added OSGi manifest 
+   *  Optimized GPIO interrupt thread handling to only be created if GpioPin listeners or triggers have been registered.
+   *  Now disabling/stopping GPIO interrupt native thread monitoring if all GpioPin listeners or triggers are unregistered.
+   *  Added additional convenience methods in GpioPin interface for evaluating state, direction, resistance, mode, etc. 
+   *  There were two Gpio classes; renamed one to GpioController to avoid confusion.
+   *  Added OSGi service project to export Pi4J GPIO as an OSGi service.  
  

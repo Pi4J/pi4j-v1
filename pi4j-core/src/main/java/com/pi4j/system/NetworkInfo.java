@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkInfo
+public class NetworkInfo 
 { 
     private static String[] executeCommand(String command) throws IOException, InterruptedException
     {

@@ -42,6 +42,16 @@ public enum PinState
         this.name = name;
     }
 
+    public boolean isHigh()
+    {
+        return (this == HIGH);
+    }
+
+    public boolean isLow()
+    {
+        return (this == LOW);
+    }
+    
     public int getValue()
     {
         return value;

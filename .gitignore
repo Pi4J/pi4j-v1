@@ -21,3 +21,7 @@
 /pi4j-example/target
 /pi4j-native/target
 /pi4j-core/target
+/pi4j-service/.project
+/pi4j-service/.classpath
+/pi4j-service/.settings
+/pi4j-service/target

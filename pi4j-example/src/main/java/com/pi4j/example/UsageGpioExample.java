@@ -29,7 +29,7 @@ package com.pi4j.example;
 import java.util.concurrent.Callable;
 
 // START SNIPPET: usage-import-snippet
-import com.pi4j.io.gpio.Gpio;
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
@@ -59,7 +59,7 @@ public class UsageGpioExample
     {
         // START SNIPPET: usage-create-controller-snippet
         // create gpio controller instance
-        Gpio gpio = GpioFactory.createInstance();
+        GpioController gpio = GpioFactory.getInstance();
         // END SNIPPET: usage-create-controller-snippet
 
         // START SNIPPET: usage-provision-input-pin-snippet

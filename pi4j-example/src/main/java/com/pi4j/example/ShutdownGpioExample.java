@@ -30,7 +30,7 @@ package com.pi4j.example;
 
 
 
-import com.pi4j.io.gpio.Gpio;
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
@@ -51,7 +51,7 @@ public class ShutdownGpioExample
         System.out.println("<--Pi4J--> GPIO Shutdown Example ... started.");
         
         // create gpio controller
-        Gpio gpio = GpioFactory.createInstance();
+        GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
         GpioPin pin = gpio.provisionOuputPin(Pin.GPIO_01, "MyLED", PinState.HIGH);
