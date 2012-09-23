@@ -52,7 +52,7 @@ public class GpioPinImpl implements GpioPin
     private Pin pin;
     private GpioPinListenerImpl monitor;
     private GpioPinShutdownImpl shutdownOptions;
-    private Map<String, String> properties = new ConcurrentHashMap<>();
+    private Map<String, String> properties = new ConcurrentHashMap<String, String>();
     private Vector<GpioListener> listeners = new Vector<GpioListener>();
     private Vector<GpioTrigger> triggers = new Vector<GpioTrigger>();
 

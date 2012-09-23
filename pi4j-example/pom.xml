@@ -40,7 +40,7 @@
 
 		<plugins>
 
-			<!-- JAVA 7 SE -->
+			<!-- JAVA COMPILER -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
