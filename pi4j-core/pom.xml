@@ -36,7 +36,7 @@
 				</includes>
 			</resource>
 		</resources>
-	
+
 		<plugins>
 
 			<!-- JAVA COMPILER -->
@@ -115,6 +115,51 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!-- OSGi BUNDLE -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>
+							com.pi4j.wiringpi.*,
+							com.pi4j.system.*,
+							com.pi4j.io.serial,
+							com.pi4j.io.gpio,
+							com.pi4j.io.gpio.event,
+							com.pi4j.io.gpio.exception,
+							com.pi4j.io.gpio.trigger
+						</Export-Package>
+						<Private-Package>
+							com.pi4j.io.gpio.impl,
+							com.pi4j.io.serial.impl,
+							com.pi4j.util
+						</Private-Package>
+					</instructions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- INCLUDE OSGi MANIFEST IN JAR -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
 			</plugin>
 
 			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASBERRY PI -->
@@ -236,6 +281,25 @@
 										</versionRange>
 										<goals>
 											<goal>add-resource</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.felix
+										</groupId>
+										<artifactId>
+											maven-bundle-plugin
+										</artifactId>
+										<versionRange>
+											[2.3.7,)
+										</versionRange>
+										<goals>
+											<goal>manifest</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
