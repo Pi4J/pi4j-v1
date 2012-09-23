@@ -26,9 +26,12 @@
 ## RELEASES
 
  * 2012-09-19 :: 0.0.1-SNAPSHOT
+ 
    *  Initial ALPHA release
+ 
    
  * 2012-09-23 :: 0.0.2-SNAPSHOT
+ 
    *  Refactored Gpio interface to permit methods using Pin argument to function without requiring a GpioPin to first be provisioned
    *  Added OSGi manifest 
    *  Optimized GPIO interrupt thread handling to only be created if GpioPin listeners or triggers have been registered.
