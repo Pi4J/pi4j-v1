@@ -124,7 +124,7 @@ public class GpioPinImpl implements GpioPin
     public void export(PinDirection direction)
     {
         // export the pin
-        gpio.export(pin, direction);
+        gpio.export(direction, pin);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void setDirection(PinDirection direction)
     {
-        gpio.setDirection(pin, direction);
+        gpio.setDirection(direction, pin);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void setEdge(PinEdge edge)
     {
-        gpio.setEdge(pin, edge);
+        gpio.setEdge(edge, pin);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void setMode(PinMode mode)
     {
-        gpio.setMode(pin, mode);
+        gpio.setMode(mode, pin);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void setPullResistor(PinResistor resistance)
     {
-        gpio.setPullResistor(pin, resistance);
+        gpio.setPullResistor(resistance, pin);
     }
 
     @Override
@@ -235,19 +235,19 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void pulse(long milliseconds)
     {
-        gpio.pulse(pin, milliseconds);
+        gpio.pulse(milliseconds, pin);
     }
 
     @Override
     public void setState(PinState state)
     {
-        gpio.setState(pin, state);
+        gpio.setState(state, pin);
     }
 
     @Override
     public void setState(boolean state)
     {
-        gpio.setState(pin, state);
+        gpio.setState(state, pin);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class GpioPinImpl implements GpioPin
     @Override
     public void setPwmValue(int value)
     {
-        gpio.setPwmValue(pin, value);
+        gpio.setPwmValue(value, pin);
     }
 
     private synchronized void updateInterruptListener()
@@ -313,19 +313,18 @@ public class GpioPinImpl implements GpioPin
      * 
      * @param listener
      */
-    public synchronized void addListener(GpioListener listener)
+    public synchronized void addListener(GpioListener... listener)
     {
-        listeners.addElement(listener);
+        if(listener == null || listener.length == 0)
+            throw new IllegalArgumentException("Missing listener argument.");
+        
+        for (GpioListener lsnr : listener)
+            listeners.addElement(lsnr);
+        
         updateInterruptListener();
     }
 
-    public synchronized void addListener(GpioListener[] listeners)
-    {
-        for (GpioListener listener : listeners)
-            addListener(listener);
-    }
-
-    public synchronized void addListener(List<GpioListener> listeners)
+    public synchronized void addListener(List<? extends GpioListener> listeners)
     {
         for (GpioListener listener : listeners)
             addListener(listener);
@@ -340,19 +339,18 @@ public class GpioPinImpl implements GpioPin
         return listeners.toArray(new GpioListener[0]);
     }
 
-    public synchronized void removeListener(GpioListener listener)
+    public synchronized void removeListener(GpioListener... listener)
     {
-        listeners.removeElement(listener);
+        if(listener == null || listener.length == 0)
+            throw new IllegalArgumentException("Missing listener argument.");
+        
+        for (GpioListener lsnr : listener)
+            listeners.removeElement(lsnr);
+        
         updateInterruptListener();
     }
 
-    public synchronized void removeListener(GpioListener[] listeners)
-    {
-        for (GpioListener listener : listeners)
-            removeListener(listener);
-    }
-
-    public synchronized void removeListener(List<GpioListener> listeners)
+    public synchronized void removeListener(List<? extends GpioListener> listeners)
     {
         for (GpioListener listener : listeners)
             removeListener(listener);
@@ -373,19 +371,18 @@ public class GpioPinImpl implements GpioPin
         return triggers.toArray(new GpioTrigger[0]);
     }
 
-    public synchronized void addTrigger(GpioTrigger trigger)
+    public synchronized void addTrigger(GpioTrigger... trigger)
     {
-        triggers.addElement(trigger);
+        if(trigger == null || trigger.length == 0)
+            throw new IllegalArgumentException("Missing trigger argument.");
+        
+        for (GpioTrigger trgr : trigger)
+            triggers.addElement(trgr);
+        
         updateInterruptListener();
     }
 
-    public synchronized void addTrigger(List<GpioTrigger> triggers)
-    {
-        for (GpioTrigger trigger : triggers)
-            addTrigger(trigger);
-    }
-
-    public synchronized void addTrigger(GpioTrigger[] triggers)
+    public synchronized void addTrigger(List<? extends GpioTrigger> triggers)
     {
         for (GpioTrigger trigger : triggers)
             addTrigger(trigger);
@@ -395,19 +392,18 @@ public class GpioPinImpl implements GpioPin
      * 
      * @param trigger
      */
-    public synchronized void removeTrigger(GpioTrigger trigger)
+    public synchronized void removeTrigger(GpioTrigger... trigger)
     {
-        triggers.removeElement(trigger);
+        if(trigger == null || trigger.length == 0)
+            throw new IllegalArgumentException("Missing trigger argument.");
+
+        for (GpioTrigger trgr : trigger)
+            triggers.removeElement(trgr);
+        
         updateInterruptListener();
     }
 
-    public synchronized void removeTrigger(List<GpioTrigger> triggers)
-    {
-        for (GpioTrigger trigger : triggers)
-            removeTrigger(trigger);
-    }
-
-    public synchronized void removeTrigger(GpioTrigger[] triggers)
+    public synchronized void removeTrigger(List<? extends GpioTrigger> triggers)
     {
         for (GpioTrigger trigger : triggers)
             removeTrigger(trigger);

@@ -257,7 +257,7 @@ public interface Serial
      *            A class instance that implements the SerialListener interface.
      *            </p>
      */
-    void addListener(SerialDataListener listener);
+    void addListener(SerialDataListener... listener);
 
     /**
      * <h1>Remove Serial Event Listener</h1>
@@ -274,5 +274,5 @@ public interface Serial
      *            A class instance that implements the SerialListener interface.
      *            </p>
      */
-    void removeListener(SerialDataListener listener);
+    void removeListener(SerialDataListener... listener);
 }

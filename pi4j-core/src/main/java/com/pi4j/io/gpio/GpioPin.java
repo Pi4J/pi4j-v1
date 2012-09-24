@@ -83,23 +83,19 @@ public interface GpioPin
     void setPwmValue(int value);
 
     GpioListener[] getListeners();
-    void addListener(GpioListener listener);
-    void addListener(GpioListener[] listeners);
-    void addListener(List<GpioListener> listeners);
+    void addListener(GpioListener... listener);
+    void addListener(List<? extends GpioListener> listeners);
     
-    void removeListener(GpioListener listener);
-    void removeListener(GpioListener[] listeners);
-    void removeListener(List<GpioListener> listeners);
+    void removeListener(GpioListener... listener);
+    void removeListener(List<? extends GpioListener> listeners);
     void removeAllListeners();
     
     GpioTrigger[] getTriggers();
-    void addTrigger(GpioTrigger trigger);
-    void addTrigger(GpioTrigger[] triggers);
-    void addTrigger(List<GpioTrigger> triggers);
+    void addTrigger(GpioTrigger... trigger);
+    void addTrigger(List<? extends GpioTrigger> triggers);
     
-    void removeTrigger(GpioTrigger trigger);    
-    void removeTrigger(GpioTrigger[] triggers);
-    void removeTrigger(List<GpioTrigger> triggers);
+    void removeTrigger(GpioTrigger... trigger);    
+    void removeTrigger(List<? extends GpioTrigger> triggers);
     void removeAllTriggers();
     
     GpioPinShutdown getShutdownOptions();

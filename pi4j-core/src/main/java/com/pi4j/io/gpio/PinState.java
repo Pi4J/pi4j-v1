@@ -30,8 +30,8 @@ package com.pi4j.io.gpio;
 
 public enum PinState
 {
-    LOW(0, "HIGH"), 
-    HIGH(1, "LOW"); 
+    LOW(0, "LOW"), 
+    HIGH(1, "HIGH"); 
 
     private int value;
     private String name = null;

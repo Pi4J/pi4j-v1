@@ -26,6 +26,7 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,14 +62,28 @@ public class GpioControllerImpl implements GpioController
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());        
     }
 
-    public boolean hasPin(Pin pin)
+    public boolean hasPin(Pin... pin)
     {
-        return (com.pi4j.wiringpi.Gpio.wpiPinToGpio(pin.getValue()) >= 0); 
+        for(Pin p : pin)
+        {
+            if(com.pi4j.wiringpi.Gpio.wpiPinToGpio(p.getValue()) < 0)
+                return false;
+        }
+        return true; 
     }
 
-    public boolean isProvisioned(Pin pin)
+    public boolean isProvisioned(Pin... pin)
     {
-        return pins.containsKey(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for(Pin p : pin)
+        {
+            if(!pins.containsKey(p))
+                return false;
+        }
+        
+        return true;
     }
     
     public GpioPin getProvisionedPin(Pin pin)
@@ -78,9 +93,20 @@ public class GpioControllerImpl implements GpioController
         return null;
     }
 
-    public Collection<GpioPin> getProvisionedPins()
+    public Collection<GpioPin> getProvisionedPins(Pin... pin)
     {
-        return pins.values();
+        // if no argument is provided, return all pins
+        if(pin == null || pin.length == 0)
+            return pins.values();
+        
+        ArrayList<GpioPin> result = new ArrayList<GpioPin>();
+        for(Pin p : pin)
+        {
+           if(pins.containsKey(p))
+            result.add(pins.get(p)); 
+        }
+
+        return result;
     }
     
     /**
@@ -104,47 +130,57 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param direction
      */
-    public void export(Pin pin, PinDirection direction)
+    public void export(PinDirection direction, Pin... pin)
     {
-     // export the pin
-        com.pi4j.wiringpi.GpioUtil.export(pin.getValue(), direction.getValue());
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param direction
-     */
-    public void export(Pin pins[], PinDirection direction)
-    {
-        for (Pin pin : pins)
-            export(pin, direction);
-    }
-
-    /**
-     * 
-     * @param pin
-     * @param direction
-     */
-    public void export(GpioPin pin, PinDirection direction)
-    {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // export the pin
-        pin.export(direction);
+        for (Pin p : pin)
+            com.pi4j.wiringpi.GpioUtil.export(p.getValue(), direction.getValue());
     }
 
     /**
      * 
-     * @param pins
+     * @param pin
      * @param direction
      */
-    public void export(GpioPin pins[], PinDirection direction)
+    public void export(PinDirection direction, GpioPin... pin)
     {
-        for (GpioPin pin : pins)
-            export(pin, direction);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // export the pin
+            p.export(direction);
+        }
+    }
+
+
+    /**
+     * 
+     * @param pin
+     * @return <p>
+     *         A value of 'true' is returned if the requested pin is exported.
+     *         </p>
+     */
+    public boolean isExported(Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        // return the pin exported state
+        for(Pin p : pin)
+        {
+            if(!com.pi4j.wiringpi.GpioUtil.isExported(p.getValue()))
+                return false;                
+        }
+        return true;
     }
 
     /**
@@ -154,71 +190,58 @@ public class GpioControllerImpl implements GpioController
      *         A value of 'true' is returned if the requested pin is exported.
      *         </p>
      */
-    public boolean isExported(Pin pin)
+    public boolean isExported(GpioPin... pin)
     {
-        // return the pin exported state
-        return com.pi4j.wiringpi.GpioUtil.isExported(pin.getValue());
-    }
-
-    /**
-     * 
-     * @param pin
-     * @return <p>
-     *         A value of 'true' is returned if the requested pin is exported.
-     *         </p>
-     */
-    public boolean isExported(GpioPin pin)
-    {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for(GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(pin))
+                throw new GpioPinNotProvisionedException(p.getPin());
+            
+            if(!p.isExported())
+                return false;
+        }
 
         // return the pin exported state
-        return pin.isExported();
+        return true;
     }
 
     /**
      * 
      * @param pin
      */
-    public void unexport(Pin pin)
+    public void unexport(Pin... pin)
     {
-        // unexport the pin
-        com.pi4j.wiringpi.GpioUtil.unexport(pin.getValue());
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        // unexport the pins
+        for (Pin p : pin)
+            com.pi4j.wiringpi.GpioUtil.unexport(p.getValue());
     }
 
-    /**
-     * 
-     * @param pins
-     */
-    public void unexport(Pin pins[])
-    {
-        for (Pin pin : pins)
-            unexport(pin);
-    }
 
     /**
      * 
      * @param pin
      */
-    public void unexport(GpioPin pin)
+    public void unexport(GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // unexport the pin
-        pins.get(pin).unexport();
-    }
-
-    /**
-     * 
-     * @param pins
-     */
-    public void unexport(GpioPin pins[])
-    {
-        for (GpioPin pin : pins)
-            unexport(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+            
+            // unexport the pin
+            pins.get(p).unexport();            
+        }
     }
 
     /**
@@ -226,47 +249,36 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param direction
      */
-    public void setDirection(Pin pin, PinDirection direction)
+    public void setDirection(PinDirection direction, Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set the pin direction
-        com.pi4j.wiringpi.GpioUtil.setDirection(pin.getValue(), direction.getValue());
+        for (Pin p : pin)
+            com.pi4j.wiringpi.GpioUtil.setDirection(p.getValue(), direction.getValue());
     }
 
-    /**
-     * 
-     * @param pins
-     * @param direction
-     */
-    public void setDirection(Pin pins[], PinDirection direction)
-    {
-        for (Pin pin : pins)
-            setDirection(pin, direction);
-    }
 
     /**
      * 
      * @param pin
      * @param direction
      */
-    public void setDirection(GpioPin pin, PinDirection direction)
+    public void setDirection(PinDirection direction, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
-        // set the pin direction
-        pins.get(pin).setDirection(direction);
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param direction
-     */
-    public void setDirection(GpioPin pins[], PinDirection direction)
-    {
-        for (GpioPin pin : pins)
-            setDirection(pin, direction);
+        for (GpioPin p : pin)
+        {        
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set the pin direction
+            pins.get(p).setDirection(direction);
+        }
     }
 
     /**
@@ -297,25 +309,44 @@ public class GpioControllerImpl implements GpioController
         return pin.getDirection();
     }
     
+    public boolean isDirection(PinDirection direction, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (Pin p : pin)
+        {
+            if(getDirection(p) != direction)
+                return false;
+        }
+        return true;        
+    }
+
+    public boolean isDirection(PinDirection direction, GpioPin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (GpioPin p : pin)
+        {
+            if(!p.isDirection(direction))
+                return false;
+        }
+        return true;        
+    }    
+    
     /**
      * 
      * @param pin
      * @param edge
      */
-    public void setEdge(Pin pin, PinEdge edge)
+    public void setEdge(PinEdge edge, Pin... pin)
     {
-        com.pi4j.wiringpi.GpioUtil.setEdgeDetection(pin.getValue(), edge.getValue());
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param edge
-     */
-    public void setEdge(Pin pins[], PinEdge edge)
-    {
-        for (Pin pin : pins)
-            setEdge(pin, edge);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (Pin p : pin)
+            com.pi4j.wiringpi.GpioUtil.setEdgeDetection(p.getValue(), edge.getValue());
     }
 
     /**
@@ -323,26 +354,21 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param edge
      */
-    public void setEdge(GpioPin pin, PinEdge edge)
+    public void setEdge(PinEdge edge, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
-        pin.setEdge(edge);
+        for (GpioPin p : pin)
+        {        
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setEdge(edge);
+        }
     }
-
-    /**
-     * 
-     * @param pins
-     * @param edge
-     */
-    public void setEdge(GpioPin pins[], PinEdge edge)
-    {
-        for (GpioPin pin : pins)
-            setEdge(pin, edge);
-    }
-
+    
     /**
      * 
      * @param pin
@@ -373,26 +399,46 @@ public class GpioControllerImpl implements GpioController
         return pin.getEdge();
     }
 
+    public boolean isEdge(PinEdge edge, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (Pin p : pin)
+        {
+            if(getEdge(p) != edge)
+                return false;
+        }
+        return true;                
+    }
+
+    public boolean isEdge(PinEdge edge, GpioPin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (GpioPin p : pin)
+        {
+            if(!p.isEdge(edge))
+                return false;
+        }
+        return true;     
+    }
+
+    
     /**
      * 
      * @param pin
      * @param mode
      */
-    public void setMode(Pin pin, PinMode mode)
+    public void setMode(PinMode mode, Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin mode
-        com.pi4j.wiringpi.Gpio.pinMode(pin.getValue(), mode.getValue());
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param mode
-     */
-    public void setMode(Pin pins[], PinMode mode)
-    {
-        for (Pin pin : pins)
-            setMode(pin, mode);
+        for (Pin p : pin)
+            com.pi4j.wiringpi.Gpio.pinMode(p.getValue(), mode.getValue());
     }
 
     /**
@@ -400,25 +446,20 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param mode
      */
-    public void setMode(GpioPin pin, PinMode mode)
+    public void setMode(PinMode mode, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin mode
-        pins.get(pin).setMode(mode);
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param mode
-     */
-    public void setMode(GpioPin pins[], PinMode mode)
-    {
-        for (GpioPin pin : pins)
-            setMode(pin, mode);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(pin))
+                throw new GpioPinNotProvisionedException(p.getPin());
+            
+            // set pin mode
+            pins.get(p).setMode(mode);        
+        }
     }
 
     /**
@@ -426,21 +467,14 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param resistance
      */
-    public void setPullResistor(Pin pin, PinResistor resistance)
+    public void setPullResistor(PinResistor resistance, Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin pull resistance
-        com.pi4j.wiringpi.Gpio.pullUpDnControl(pin.getValue(), resistance.getValue());
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param resistance
-     */
-    public void setPullResistor(Pin pins[], PinResistor resistance)
-    {
-        for (Pin pin : pins)
-            setPullResistor(pin, resistance);
+        for (Pin p : pin)
+            com.pi4j.wiringpi.Gpio.pullUpDnControl(p.getValue(), resistance.getValue());
     }
 
     /**
@@ -448,25 +482,36 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param resistance
      */
-    public void setPullResistor(GpioPin pin, PinResistor resistance)
+    public void setPullResistor(PinResistor resistance, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin pull resistance
-        pins.get(pin).setPullResistor(resistance);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin pull resistance
+            pins.get(p).setPullResistor(resistance);
+        }
     }
+
 
     /**
      * 
-     * @param pins
-     * @param resistance
+     * @param pin
+     * @param state
      */
-    public void setPullResistor(GpioPin pins[], PinResistor resistance)
+    public void setState(PinState state, Pin... pin)
     {
-        for (GpioPin pin : pins)
-            setPullResistor(pin, resistance);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        // set pin state
+        for (Pin p : pin)
+            com.pi4j.wiringpi.Gpio.digitalWrite(p.getValue(), state.getValue());
     }
 
     /**
@@ -474,43 +519,14 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void setState(Pin pin, PinState state)
+    public void setState(boolean state, Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin state
-        com.pi4j.wiringpi.Gpio.digitalWrite(pin.getValue(), state.getValue());
-    }
-
-    /**
-     * 
-     * @param pin
-     * @param state
-     */
-    public void setState(Pin pin, boolean state)
-    {
-        // set pin state
-        com.pi4j.wiringpi.Gpio.digitalWrite(pin.getValue(), state);
-    }
-    
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void setState(Pin pins[], PinState state)
-    {
-        for (Pin pin : pins)
-            setState(pin, state);
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void setState(Pin pins[], boolean state)
-    {
-        for (Pin pin : pins)
-            setState(pin, state);
+        for (Pin p : pin)
+            com.pi4j.wiringpi.Gpio.digitalWrite(p.getValue(), state);
     }
     
     /**
@@ -518,14 +534,20 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void setState(GpioPin pin, PinState state)
+    public void setState(PinState state, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin state
-        pin.setState(state);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin state
+            p.setState(state);
+        }
     }
 
     /**
@@ -533,93 +555,124 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void setState(GpioPin pin, boolean state)
+    public void setState(boolean state, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin state
-        pin.setState(state);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin state
+            p.setState(state);
+        }
     }
     
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void setState(GpioPin pins[], PinState state)
+    public void high(Pin... pin)
     {
-        for (GpioPin pin : pins)
-            setState(pin, state);
-    }
-
-
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void setState(GpioPin pins[], boolean state)
-    {
-        for (GpioPin pin : pins)
-            setState(pin, state);
-    }
-    
-    public void high(Pin pin)
-    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin state high
-        setState(pin, PinState.HIGH);
+        for (Pin p : pin)
+            setState(PinState.HIGH, p);
     }
 
-    public void high(Pin pins[])
-    {
-        for (Pin pin : pins)
-            high(pin);
-    }
 
-    public void high(GpioPin pin)
+    public void high(GpioPin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin state high
-        pin.high();
+        for (GpioPin p : pin)
+        {
+            if (!pins.containsValue(pin))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin state high
+            p.high();        
+        }
     }
 
-    public void high(GpioPin pins[])
+    public void low(Pin... pin)
     {
-        for (GpioPin pin : pins)
-            high(pin);
-    }
-
-    public void low(Pin pin)
-    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin state low
-        setState(pin, PinState.LOW);
+        for (Pin p : pin)
+            setState(PinState.LOW, p);
     }
 
-    public void low(Pin pins[])
-    {
-        for (Pin pin : pins)
-            low(pin);
-    }
 
-    public void low(GpioPin pin)
+    public void low(GpioPin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
+        for (GpioPin p : pin)
+        {
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+            
+            // set pin state low
+            p.low();            
+        }
+    }
+        
+    public boolean isHigh(Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (Pin p : pin)
+        {
+            if(getState(p).isLow())
+                return false;
+        }
+        return true;        
+    }
+    public boolean isHigh(GpioPin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
-        // set pin state low
-        pin.low();
+        for (GpioPin p : pin)
+        {
+            if(p.isLow())
+                return false;
+        }
+        return true;        
     }
 
-    public void low(GpioPin pins[])
+    public boolean isLow(Pin... pin)
     {
-        for (GpioPin pin : pins)
-            low(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (Pin p : pin)
+        {
+            if(getState(p).isHigh())
+                return false;
+        }
+        return true;                
+    }
+    public boolean isLow(GpioPin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (GpioPin p : pin)
+        {
+            if(p.isHigh())
+                return false;
+        }
+        return true;                
     }
 
     /**
@@ -627,24 +680,19 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void toggle(Pin pin)
+    public void toggle(Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // toggle pin state
-        if (getState(pin) == PinState.HIGH)
-            setState(pin, PinState.LOW);
-        else
-            setState(pin, PinState.HIGH);
-    }
-
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void toggle(Pin pins[])
-    {
-        for (Pin pin : pins)
-            toggle(pin);
+        for (Pin p : pin)
+        {
+            if (getState(p) == PinState.HIGH)
+                setState(PinState.LOW, p);
+            else
+                setState(PinState.HIGH, p);
+        }
     }
 
     /**
@@ -652,54 +700,49 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void toggle(GpioPin pin)
+    public void toggle(GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // toggle pin state
+            p.toggle();
+        }
+    }
+
+
+    public void pulse(long milliseconds, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // toggle pin state
-        pin.toggle();
+        for (Pin p : pin)
+            GpioPulseImpl.execute(this, p, milliseconds);
     }
 
-    /**
-     * 
-     * @param pins
-     * @param state
-     */
-    public void toggle(GpioPin pins[])
+    public void pulse(long milliseconds, GpioPin... pin)
     {
-        for (GpioPin pin : pins)
-            toggle(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // toggle pin state
+            pins.get(p).pulse(milliseconds);
+        }
     }
 
-    public void pulse(Pin pin, long milliseconds)
-    {
-        // toggle pin state
-        GpioPulseImpl.execute(this, pin, milliseconds);
-    }
-
-    public void pulse(Pin pins[], long milliseconds)
-    {
-        for (Pin pin : pins)
-            pulse(pin, milliseconds);
-    }
-
-    public void pulse(GpioPin pin, long milliseconds)
-    {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // toggle pin state
-        pins.get(pin).pulse(milliseconds);
-    }
-
-    public void pulse(GpioPin pins[], long milliseconds)
-    {
-        for (GpioPin pin : pins)
-            pulse(pin, milliseconds);
-    }
 
     /**
      * 
@@ -715,6 +758,34 @@ public class GpioControllerImpl implements GpioController
             state = PinState.getState(ret);
         return state;
     }
+    
+    
+    public boolean isState(PinState state, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (Pin p : pin)
+        {
+            if(getState(p) != state)
+                return false;
+        }
+        return true;                
+    }
+
+    public boolean isState(PinState state, GpioPin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
+        for (GpioPin p : pin)
+        {
+            if(!p.isState(state))
+                return false;
+        }
+        return true;     
+    }
+    
 
     /**
      * 
@@ -736,163 +807,147 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param value
      */
-    public void setPwmValue(Pin pin, int value)
+    public void setPwmValue(int value, Pin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         // set pin PWM value
-        com.pi4j.wiringpi.Gpio.pwmWrite(pin.getValue(), value);
+        for (Pin p : pin)
+            com.pi4j.wiringpi.Gpio.pwmWrite(p.getValue(), value);
     }
 
-    /**
-     * 
-     * @param pins
-     * @param value
-     */
-    public void setPwmValue(Pin pins[], int value)
-    {
-        for (Pin pin : pins)
-            setPwmValue(pin, value);
-    }
 
     /**
      * 
      * @param pin
      * @param value
      */
-    public void setPwmValue(GpioPin pin, int value)
+    public void setPwmValue(int value, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        // set pin PWM value
-        pin.setPwmValue(value);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin PWM value
+            p.setPwmValue(value);
+        }        
     }
 
-    /**
-     * 
-     * @param pins
-     * @param value
-     */
-    public void setPwmValue(GpioPin pins[], int value)
-    {
-        for (GpioPin pin : pins)
-            setPwmValue(pin, value);
-    }
 
     /**
      * 
      * @param listener
      */
-    public synchronized void addListener(Pin pin, GpioListener listener)
+    public synchronized void addListener(GpioListener listener, Pin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
-        getProvisionedPin(pin).addListener(listener);
+        for (Pin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p);
+    
+            getProvisionedPin(p).addListener(listener);
+        }
     }
 
-    public synchronized void addListener(Pin pin, GpioListener[] listeners)
+
+    public synchronized void addListener(GpioListener listener, GpioPin... pin)
     {
-        for (GpioListener listener : listeners)
-            addListener(pin, listener);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());        
+    
+            p.addListener(listener);
+        }
     }
 
-    public synchronized void addListener(GpioPin pin, GpioListener listener)
+    public synchronized void addListener(GpioListener[] listeners, Pin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        pin.addListener(listener);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioListener listener: listeners)
+            addListener(listener, pin);
     }
 
-    public synchronized void addListener(GpioPin pin, GpioListener[] listeners)
+    public synchronized void addListener(GpioListener[] listeners, GpioPin... pin)
     {
-        for (GpioListener listener : listeners)
-            addListener(pin, listener);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioListener listener: listeners)
+            addListener(listener, pin);
     }
 
-    public synchronized void addListener(Pin pins[], GpioListener listener)
-    {
-        for (Pin pin : pins)
-            addListener(pin, listener);
-    }
-
-    public synchronized void addListener(Pin pins[], GpioListener[] listeners)
-    {
-        for (Pin pin : pins)
-            addListener(pin, listeners);
-    }
-
-    public synchronized void addListener(GpioPin pins[], GpioListener listener)
-    {
-        for (GpioPin pin : pins)
-            addListener(pin, listener);
-    }
-
-    public synchronized void addListener(GpioPin pins[], GpioListener[] listeners)
-    {
-        for (GpioPin pin : pins)
-            addListener(pin, listeners);
-    }
 
     /**
      * 
      * @param listener
      */
-    public synchronized void removeListener(Pin pin, GpioListener listener)
+    public synchronized void removeListener(GpioListener listener, Pin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
 
-        getProvisionedPin(pin).removeListener(listener);
+        for (Pin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p);
+    
+            getProvisionedPin(p).removeListener(listener);
+        }
     }
 
-    public synchronized void removeListener(Pin pin, GpioListener[] listeners)
+    public synchronized void removeListener(GpioListener listener, GpioPin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsKey(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.removeListener(listener);            
+        }
+    }
+
+    public synchronized void removeListener(GpioListener[] listeners, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         for (GpioListener listener : listeners)
-            removeListener(pin, listener);
+        {
+            removeListener(listener, pin);
+        }
     }
 
-    public synchronized void removeListener(GpioPin pin, GpioListener listener)
+    public synchronized void removeListener(GpioListener[] listeners, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsKey(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        pin.removeListener(listener);
-    }
-
-    public synchronized void removeListener(GpioPin pin, GpioListener[] listeners)
-    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         for (GpioListener listener : listeners)
-            removeListener(pin, listener);
-    }
-
-    public synchronized void removeListener(Pin pins[], GpioListener listener)
-    {
-        for (Pin pin : pins)
-            removeListener(pin, listener);
-    }
-
-    public synchronized void removeListener(Pin pins[], GpioListener[] listeners)
-    {
-        for (Pin pin : pins)
-            removeListener(pin, listeners);
-    }
-
-    public synchronized void removeListener(GpioPin pins[], GpioListener listener)
-    {
-        for (GpioPin pin : pins)
-            removeListener(pin, listener);
-    }
-
-    public synchronized void removeListener(GpioPin pins[], GpioListener[] listeners)
-    {
-        for (GpioPin pin : pins)
-            removeListener(pin, listeners);
+        {
+            removeListener(listener, pin);
+        }
     }
 
     public synchronized void removeAllListeners()
@@ -905,62 +960,56 @@ public class GpioControllerImpl implements GpioController
      * 
      * @param trigger
      */
-    public synchronized void addTrigger(GpioPin pin, GpioTrigger trigger)
+    public synchronized void addTrigger(GpioTrigger trigger, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        pin.addTrigger(trigger);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.addTrigger(trigger);
+        }        
     }
 
-    public synchronized void addTrigger(GpioPin pin, GpioTrigger[] triggers)
+    public synchronized void addTrigger(GpioTrigger[] triggers, GpioPin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+
         for (GpioTrigger trigger : triggers)
-            addTrigger(pin, trigger);
+            addTrigger(trigger, pin);
     }
-
-    public synchronized void addTrigger(GpioPin pins[], GpioTrigger trigger)
-    {
-        for (GpioPin pin : pins)
-            addTrigger(pin, trigger);
-    }
-
-    public synchronized void addTrigger(GpioPin pins[], GpioTrigger[] triggers)
-    {
-        for (GpioPin pin : pins)
-            addTrigger(pin, triggers);
-    }
-
+    
     /**
      * 
      * @param trigger
      */
-    public synchronized void removeTrigger(GpioPin pin, GpioTrigger trigger)
+    public synchronized void removeTrigger(GpioTrigger trigger, GpioPin... pin)
     {
-        // ensure the requested pin has been provisioned
-        if (!pins.containsValue(pin))
-            throw new GpioPinNotProvisionedException(pin.getPin());
-
-        pin.removeTrigger(trigger);
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPin p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.removeTrigger(trigger);
+        }
     }
 
-    public synchronized void removeTrigger(GpioPin pin, GpioTrigger[] triggers)
+    public synchronized void removeTrigger(GpioTrigger[] triggers, GpioPin... pin)
     {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
         for (GpioTrigger trigger : triggers)
-            removeTrigger(pin, trigger);
-    }
-
-    public synchronized void removeTrigger(GpioPin pins[], GpioTrigger trigger)
-    {
-        for (GpioPin pin : pins)
-            removeTrigger(pin, trigger);
-    }
-
-    public synchronized void removeTrigger(GpioPin pins[], GpioTrigger[] triggers)
-    {
-        for (GpioPin pin : pins)
-            removeTrigger(pin, triggers);
+            removeTrigger(trigger, pin);
     }
 
     public synchronized void removeAllTriggers()

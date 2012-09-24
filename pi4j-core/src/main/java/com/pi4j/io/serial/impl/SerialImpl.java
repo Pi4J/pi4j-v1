@@ -312,10 +312,16 @@ public class SerialImpl implements Serial
      *            A class instance that implements the SerialListener interface.
      *            </p>
      */
-    public synchronized void addListener(SerialDataListener listener)
+    public synchronized void addListener(SerialDataListener... listener)
     {
-        // add the new listener to the list of listeners
-        listeners.addElement(listener);
+        if(listener == null || listener.length == 0)
+            throw new IllegalArgumentException("Missing listener argument.");
+        
+        for(SerialDataListener lsnr : listener)
+        {
+            // add the new listener to the list of listeners
+            listeners.addElement(lsnr);
+        }
 
         // if there is not a current listening monitor thread running,
         // then lets start it now
@@ -342,10 +348,16 @@ public class SerialImpl implements Serial
      *            A class instance that implements the SerialListener interface.
      *            </p>
      */
-    public synchronized void removeListener(SerialDataListener listener)
+    public synchronized void removeListener(SerialDataListener... listener)
     {
-        // remove the listener from the list of listeners
-        listeners.removeElement(listener);
+        if(listener == null || listener.length == 0)
+            throw new IllegalArgumentException("Missing listener argument.");
+        
+        for(SerialDataListener lsnr : listener)
+        {
+            // remove the listener from the list of listeners
+            listeners.removeElement(lsnr);
+        }
 
         // if there are not more listeners, then exit and destroy
         // the monitor thread now
