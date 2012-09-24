@@ -36,7 +36,7 @@ import com.pi4j.io.gpio.PinState;
 
 public abstract class GpioTriggerBase implements GpioTrigger
 {
-    private Vector<PinState> states = new Vector<PinState>();
+    private List<PinState> states = new Vector<PinState>();
 
     public GpioTriggerBase()
     {
@@ -58,19 +58,19 @@ public abstract class GpioTriggerBase implements GpioTrigger
         addPinState(states);
     }
     
-    public void addPinState(PinState state)
+    public void addPinState(PinState... state)
     {
-        if(!states.contains(state))
-            states.add(state);
+        if(state == null || state.length == 0)
+            throw new IllegalArgumentException("Missing pin state argument.");
+        
+        for(PinState s : state)
+        {
+            if(!states.contains(s))
+                states.add(s);
+        }
     }
 
-    public void addPinState(PinState[] states)
-    {
-        for(PinState state : states)
-            addPinState(state);
-    }
-
-    public void addPinState(List<PinState> states)
+    public void addPinState(List<? extends PinState> states)
     {
         for(PinState state : states)
             addPinState(state);

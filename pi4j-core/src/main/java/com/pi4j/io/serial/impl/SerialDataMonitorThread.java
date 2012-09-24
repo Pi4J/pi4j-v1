@@ -28,7 +28,9 @@ package com.pi4j.io.serial.impl;
  */
 
 
+import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
@@ -66,9 +68,9 @@ import com.pi4j.io.serial.SerialDataListener;
 public class SerialDataMonitorThread extends Thread
 {
     public static final int DELAY = 100; // milliseconds
-    boolean exiting = false;
-    Serial serial;
-    private Vector<SerialDataListener> listeners;
+    private boolean exiting = false;
+    private final Serial serial;
+    private final List<SerialDataListener> listeners;
 
     /**
      * <p>
@@ -84,7 +86,7 @@ public class SerialDataMonitorThread extends Thread
      *            A collection of class instances that implement the SerialListener interface.
      *            </p>
      */
-    public SerialDataMonitorThread(Serial serial, Vector<SerialDataListener> listeners)
+    public SerialDataMonitorThread(Serial serial, CopyOnWriteArrayList<SerialDataListener> listeners)
     {
         this.serial = serial;
         this.listeners = listeners;
@@ -105,10 +107,9 @@ public class SerialDataMonitorThread extends Thread
      * This method is called when this monitoring thread starts
      * </p>
      */
-    @SuppressWarnings("unchecked")
     public void run()
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         while (!exiting)
         {
@@ -124,17 +125,13 @@ public class SerialDataMonitorThread extends Thread
                         buffer.append(serial.read());
 
                     // when done reading, emit the event if there are any listeners
-                    if (listeners.size() > 0)
+                    if (!listeners.isEmpty())
                     {
-                        // create a cloned copy of the listeners
-                        Vector<SerialDataListener> dataCopy;
-                        dataCopy = (Vector<SerialDataListener>) listeners.clone();
-
-                        // iterate over the listeners and send teh data events
-                        for (int i = 0; i < dataCopy.size(); i++)
+                        // iterate over the listeners and send the data events
+                        SerialDataEvent event = new SerialDataEvent(serial, buffer.toString());
+                        for (SerialDataListener sdl : listeners)
                         {
-                            SerialDataEvent event = new SerialDataEvent(serial, buffer.toString());
-                            ((SerialDataListener) dataCopy.elementAt(i)).dataReceived(event);
+                            sdl.dataReceived(event);
                         }
                     }
                 }

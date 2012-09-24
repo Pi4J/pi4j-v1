@@ -26,9 +26,9 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.pi4j.io.gpio.GpioController;
@@ -47,13 +47,13 @@ public class GpioPinImpl implements GpioPin
 {
     private GpioController gpio;
     private String name = null;
-    private Pin pin;
+    private final Pin pin;
     private GpioPinListenerImpl monitor;
-    private GpioPinShutdownImpl shutdownOptions;
-    private Map<String, String> properties = new ConcurrentHashMap<String, String>();
-    private Vector<GpioListener> listeners = new Vector<GpioListener>();
-    private Vector<GpioTrigger> triggers = new Vector<GpioTrigger>();
-
+    private final GpioPinShutdownImpl shutdownOptions;
+    private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
+    private final List<GpioListener> listeners = new ArrayList<GpioListener>();
+    private final List<GpioTrigger> triggers = new ArrayList<GpioTrigger>();
+    
     public GpioPinImpl(GpioController gpio, Pin pin)
     {
         this.gpio = gpio;
@@ -304,7 +304,6 @@ public class GpioPinImpl implements GpioPin
 
                 // destroy monitor instance
                 monitor = null;
-                ;
             }
         }
     }
@@ -319,7 +318,7 @@ public class GpioPinImpl implements GpioPin
             throw new IllegalArgumentException("Missing listener argument.");
         
         for (GpioListener lsnr : listener)
-            listeners.addElement(lsnr);
+            listeners.add(lsnr);
         
         updateInterruptListener();
     }
@@ -345,7 +344,7 @@ public class GpioPinImpl implements GpioPin
             throw new IllegalArgumentException("Missing listener argument.");
         
         for (GpioListener lsnr : listener)
-            listeners.removeElement(lsnr);
+            listeners.remove(lsnr);
         
         updateInterruptListener();
     }
@@ -377,7 +376,7 @@ public class GpioPinImpl implements GpioPin
             throw new IllegalArgumentException("Missing trigger argument.");
         
         for (GpioTrigger trgr : trigger)
-            triggers.addElement(trgr);
+            triggers.add(trgr);
         
         updateInterruptListener();
     }
@@ -398,7 +397,7 @@ public class GpioPinImpl implements GpioPin
             throw new IllegalArgumentException("Missing trigger argument.");
 
         for (GpioTrigger trgr : trigger)
-            triggers.removeElement(trgr);
+            triggers.remove(trgr);
         
         updateInterruptListener();
     }

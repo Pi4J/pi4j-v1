@@ -33,8 +33,8 @@ public enum PinDirection
     IN(0, "in"), 
     OUT(1, "out");
 
-    private int value;
-    private String name = null;
+    private final int value;
+    private final String name;
 
     private PinDirection(int value, String name)
     {

@@ -42,7 +42,7 @@ import com.pi4j.io.gpio.Pin;
 public class GpioPulseImpl
 {
     @SuppressWarnings("rawtypes")
-    private static ConcurrentHashMap<Pin, ScheduledFuture> tasks = new ConcurrentHashMap<Pin, ScheduledFuture>();
+    private static final ConcurrentHashMap<Pin, ScheduledFuture> tasks = new ConcurrentHashMap<Pin, ScheduledFuture>();
     private static ScheduledExecutorService scheduledExecutorService;
 
     public synchronized static void execute(GpioController gpio, Pin pin, long milliseconds)

@@ -52,9 +52,9 @@ public enum Pin
     GPIO_19(19, "GPIO 19"),           // P5 HEADER PIN 5
     GPIO_20(20, "GPIO 20");           // P5 HEADER PIN 6
 
-    private int value;
-    private String name = null;
-    private String altFunction = null;
+    private final int value;
+    private final String name ;
+    private final String altFunction;
 
     private Pin(int value, String name, String altFunction)
     {
@@ -65,8 +65,7 @@ public enum Pin
 
     private Pin(int value, String name)
     {
-        this.value = value;
-        this.name = name;
+        this(value,name, null);
     }
 
     public int getValue()

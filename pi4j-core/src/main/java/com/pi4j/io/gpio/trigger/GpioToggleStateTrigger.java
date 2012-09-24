@@ -35,7 +35,7 @@ import com.pi4j.io.gpio.PinState;
 
 public class GpioToggleStateTrigger extends GpioTriggerBase
 {
-    private GpioPin targetPin;
+    private final GpioPin targetPin;
 
     public GpioToggleStateTrigger(PinState state, GpioPin targetPin)
     {
@@ -73,11 +73,6 @@ public class GpioToggleStateTrigger extends GpioTriggerBase
         this.targetPin = targetPin;
     }
     
-    public void setTargetPin(GpioPin pin)
-    {
-        targetPin = pin;
-    }
-
     public GpioPin getTargetPin()
     {
         return targetPin;

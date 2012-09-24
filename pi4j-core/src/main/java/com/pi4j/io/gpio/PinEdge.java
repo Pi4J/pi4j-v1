@@ -35,8 +35,8 @@ public enum PinEdge
     RISING(2, "rising"), 
     FALLING(3, "falling");
 
-    private int value;
-    private String name = null;
+    private final int value;
+    private final String name;
 
     private PinEdge(int value, String name)
     {

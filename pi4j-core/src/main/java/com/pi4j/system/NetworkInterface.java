@@ -30,18 +30,19 @@ package com.pi4j.system;
 
 public class NetworkInterface
 {
-    private String linkEncap;
-    private String ipAddress;
-    private String macAddress;
-    private String broadcastAddress;
-    private String subnetMask;
-    private String mtu;
-    private String metric;
+    private final String linkEncap;
+    private final String ipAddress;
+    private final String macAddress;
+    private final String broadcastAddress;
+    private final String subnetMask;
+    private final String mtu;
+    private final String metric;
     
     public NetworkInterface(String linkEncap,String macAddress,String ipAddress,String broadcastAddress,String subnetMask,String mtu,String metric)
     {
         this.linkEncap = linkEncap;
         this.ipAddress = ipAddress;
+        this.macAddress = macAddress;
         this.broadcastAddress = broadcastAddress;
         this.subnetMask = subnetMask;
         this.mtu = mtu;

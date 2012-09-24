@@ -47,7 +47,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioControllerImpl implements GpioController
 {
-    private Map<Pin, GpioPin> pins = new ConcurrentHashMap<Pin, GpioPin>();
+    private final Map<Pin, GpioPin> pins = new ConcurrentHashMap<Pin, GpioPin>();
 
     /**
      * Default Constructor

@@ -34,8 +34,8 @@ public enum PinMode
     OUTPUT(1, "output"),
     PWM_OUTPUT(2, "pwm_output");
 
-    private int value;
-    private String name = null;
+    private final int value;
+    private final String name;
 
     private PinMode(int value, String name)
     {

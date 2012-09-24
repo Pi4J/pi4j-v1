@@ -36,7 +36,7 @@ import com.pi4j.io.gpio.PinState;
 
 public class GpioCallbackTrigger extends GpioTriggerBase
 {
-    private Callable<Void> callback;
+    private final Callable<Void> callback;
     
     public GpioCallbackTrigger(Callable<Void> callback)
     {
@@ -62,11 +62,6 @@ public class GpioCallbackTrigger extends GpioTriggerBase
         this.callback = callback;
     }
     
-    public void setCallback(Callable<Void> callback)
-    {
-        this.callback = callback;
-    }
-
     @Override
     public void invoke(GpioPin pin, PinState state)
     {        

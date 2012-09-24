@@ -60,7 +60,7 @@ import java.util.EventObject;
 public class SerialDataEvent extends EventObject
 {
     private static final long serialVersionUID = 1L;
-    private String data;
+    private final String data;
 
     /**
      * <h1>Default event constructor</h1>

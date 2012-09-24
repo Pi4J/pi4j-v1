@@ -36,8 +36,8 @@ import com.pi4j.io.gpio.PinState;
 public class GpioPinStateChangeEvent extends EventObject
 {
     static final long serialVersionUID = 1L;
-    private GpioPin pin;
-    private PinState state;
+    private final GpioPin pin;
+    private final PinState state;
 
     /**
      * <h1>Default event constructor</h1>
