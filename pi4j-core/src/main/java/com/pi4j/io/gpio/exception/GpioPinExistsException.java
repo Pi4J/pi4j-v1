@@ -37,7 +37,7 @@ public class GpioPinExistsException extends RuntimeException
      */
     private static final long serialVersionUID = 1171484082578232353L;
 
-    private Pin pin;
+    private final Pin pin;
 
     public GpioPinExistsException(Pin pin)
     {

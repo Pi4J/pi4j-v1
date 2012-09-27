@@ -33,8 +33,8 @@ public enum PinState
     LOW(0, "LOW"), 
     HIGH(1, "HIGH"); 
 
-    private int value;
-    private String name = null;
+    private final int value;
+    private final String name;
 
     private PinState(int value, String name)
     {

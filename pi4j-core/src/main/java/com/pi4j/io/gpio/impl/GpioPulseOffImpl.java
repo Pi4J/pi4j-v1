@@ -33,8 +33,8 @@ import com.pi4j.io.gpio.Pin;
 
 public class GpioPulseOffImpl implements Runnable
 {
-    private GpioController gpio;
-    private Pin pin;
+    private final GpioController gpio;
+    private final Pin pin;
     
     public GpioPulseOffImpl(GpioController gpio, Pin pin)
     {

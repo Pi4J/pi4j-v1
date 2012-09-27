@@ -38,7 +38,7 @@ import com.pi4j.wiringpi.GpioInterruptListener;
 
 public class GpioPinListenerImpl implements GpioInterruptListener
 {
-    private GpioPin pin;
+    private final GpioPin pin;
     
     public GpioPinListenerImpl(GpioPin pin)
     {

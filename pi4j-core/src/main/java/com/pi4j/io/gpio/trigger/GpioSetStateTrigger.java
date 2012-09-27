@@ -35,8 +35,8 @@ import com.pi4j.io.gpio.PinState;
 
 public class GpioSetStateTrigger extends GpioTriggerBase
 {
-    private GpioPin targetPin;
-    private PinState targetPinState;
+    private final GpioPin targetPin;
+    private final PinState targetPinState;
 
     public GpioSetStateTrigger(GpioPin targetPin, PinState targetPinState)
     {
@@ -66,19 +66,9 @@ public class GpioSetStateTrigger extends GpioTriggerBase
         this.targetPinState = targetPinState;
     }
     
-    public void setTargetPin(GpioPin pin)
-    {
-        targetPin = pin;
-    }
-
     public GpioPin getTargetPin()
     {
         return targetPin;
-    }
-
-    public void setTargetPinState(PinState state)
-    {
-        targetPinState = state;
     }
 
     public PinState getTargetPinState()

@@ -35,8 +35,8 @@ import com.pi4j.io.gpio.PinState;
 
 public class GpioPulseStateTrigger extends GpioTriggerBase
 {
-    private GpioPin targetPin;
-    private long milliseconds = 1000;
+    private final GpioPin targetPin;
+    private final long milliseconds;
 
     public GpioPulseStateTrigger(GpioPin targetPin, long milliseconds)
     {
@@ -66,12 +66,6 @@ public class GpioPulseStateTrigger extends GpioTriggerBase
         this.milliseconds = milliseconds;
     }
     
-    
-    public void setTargetPin(GpioPin pin)
-    {
-        targetPin = pin;
-    }
-
     public GpioPin getTargetPin()
     {
         return targetPin;

@@ -34,8 +34,8 @@ public enum PinResistor
     PULL_DOWN(1, "down"),
     PULL_UP(2, "up"); 
 
-    private int value;
-    private String name = null;
+    private final int value;
+    private final String name;
 
     private PinResistor(int value, String name)
     {

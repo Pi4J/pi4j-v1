@@ -29,6 +29,7 @@ package com.pi4j.io.serial.impl;
 
 
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataListener;
@@ -64,7 +65,7 @@ import com.pi4j.io.serial.SerialDataListener;
 public class SerialImpl implements Serial
 {
     private int fileDescriptor = -1;
-    private Vector<SerialDataListener> listeners = new Vector<SerialDataListener>();
+    private final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<SerialDataListener>();
     private SerialDataMonitorThread monitor;
 
     /**
@@ -314,14 +315,9 @@ public class SerialImpl implements Serial
      */
     public synchronized void addListener(SerialDataListener... listener)
     {
-        if(listener == null || listener.length == 0)
-            throw new IllegalArgumentException("Missing listener argument.");
-        
+        // add the new listener to the list of listeners
         for(SerialDataListener lsnr : listener)
-        {
-            // add the new listener to the list of listeners
-            listeners.addElement(lsnr);
-        }
+            listeners.add(lsnr);
 
         // if there is not a current listening monitor thread running,
         // then lets start it now
@@ -350,14 +346,9 @@ public class SerialImpl implements Serial
      */
     public synchronized void removeListener(SerialDataListener... listener)
     {
-        if(listener == null || listener.length == 0)
-            throw new IllegalArgumentException("Missing listener argument.");
-        
+        // remove the listener from the list of listeners
         for(SerialDataListener lsnr : listener)
-        {
-            // remove the listener from the list of listeners
-            listeners.removeElement(lsnr);
-        }
+            listeners.remove(lsnr);
 
         // if there are not more listeners, then exit and destroy
         // the monitor thread now
