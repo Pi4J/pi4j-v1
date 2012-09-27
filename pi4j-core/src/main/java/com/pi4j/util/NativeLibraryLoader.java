@@ -29,7 +29,9 @@ package com.pi4j.util;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -87,36 +89,126 @@ public class NativeLibraryLoader
                     // open the resource file stream
                     InputStream inputStream = resourceUrl.openStream();
 
+                    // get the system temporary directory path
+                    File tempDirectory = new File(System.getProperty("java.io.tmpdir"));
+                    
+                    // check to see if the temporary path exists
+                    if(!tempDirectory.exists())
+                    {
+                        // TODO: change this to a logger instead of sysout
+                        System.out.println("WARNING:  The Java system path [" + tempDirectory.getAbsolutePath() + "] does not exist.");
+                        
+                        // instead of the system defined temporary path, let just use the application path
+                        tempDirectory = new File("");
+                    }
+                    
                     // create a temporary file to copy the native library content to
-                    File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
-                    OutputStream outputStream = new FileOutputStream(tempFile);
-
-                    // ensure that this temporary file is removed when the program exits
-                    tempFile.deleteOnExit();
-
-                    // copy the library file content
-                    while ((byteCount = inputStream.read(buffer)) >= 0)
-                        outputStream.write(buffer, 0, byteCount);
-
-                    // close the streams
-                    outputStream.close();
-                    inputStream.close();
-
-                    // load the new temporary library file
-                    System.load(tempFile.getAbsolutePath());
+                    File tempFile = new File(tempDirectory.getAbsolutePath() + "/" + fileName);
+                    
+                    // make sure that this temporary file does not exist; if it does then delete it
+                    if(tempFile.exists())
+                    {
+                        // TODO: change this to a logger instead of sysout
+                        System.out.println("WARNING:  The temporary file already exists [" + tempFile.getAbsolutePath() + "]; attempting to delete it now.");                        
+                        tempFile.delete();
+                    }
+                    
+                    OutputStream outputStream = null;
+                    
+                    try
+                    {
+                        // create the new file
+                        outputStream = new FileOutputStream(tempFile);
+                    }
+                    catch(FileNotFoundException fnfe)
+                    {
+                        // TODO: change this to a logger instead of sysout
+                        System.out.println("ERROR:  The temporary file [" + tempFile.getAbsolutePath() + "] cannot be created; it is a directory, not a file.");
+                        fnfe.printStackTrace();
+                        throw(fnfe);
+                    }
+                    catch(SecurityException se)
+                    {
+                        // TODO: change this to a logger instead of sysout
+                        System.out.println("ERROR:  The temporary file [" + tempFile.getAbsolutePath() + "] cannot be created; a security exception was detected. " + se.getMessage());
+                        se.printStackTrace();
+                        throw(se);
+                    }
+                    
+                    if(outputStream != null)
+                    {
+                        try
+                        {
+                            // ensure that this temporary file is removed when the program exits
+                            tempFile.deleteOnExit();
+                        }
+                        catch(SecurityException dse)
+                        {
+                            // TODO: change this to a logger instead of sysout
+                            System.out.println("ERROR:  The temporary file [" + tempFile.getAbsolutePath() + "] cannot be flagged for removal on program termination; a security exception was detected. " + dse.getMessage());
+                            dse.printStackTrace();
+                        }
+    
+                        try
+                        {
+                            // copy the library file content
+                            while ((byteCount = inputStream.read(buffer)) >= 0)
+                                outputStream.write(buffer, 0, byteCount);
+                            
+                            // flush all write data from stream 
+                            outputStream.flush();
+                            
+                            // close the output stream
+                            outputStream.close();                            
+                        }
+                        catch(IOException ioe)
+                        {
+                            // TODO: change this to a logger instead of sysout
+                            System.out.println("ERROR:  The temporary file [" + tempFile.getAbsolutePath() + "] could not be written to; an IO exception was detected. " + ioe.getMessage());
+                            ioe.printStackTrace();
+                            throw(ioe);                            
+                        }
+    
+                        // close the input stream
+                        inputStream.close();
+    
+                        try
+                        {
+                            // load the new temporary library file
+                            System.load(tempFile.getAbsolutePath());
+                        }
+                        catch(SecurityException libse)
+                        {
+                            // TODO: change this to a logger instead of sysout
+                            System.out.println("ERROR:  The native library file [" + tempFile.getAbsolutePath() + "] could not be loaded due to a security exception; " + libse.getMessage());
+                            libse.printStackTrace();
+                            throw(libse);                            
+                        }
+                        catch(UnsatisfiedLinkError ule)
+                        {
+                            // TODO: change this to a logger instead of sysout
+                            System.out.println("ERROR:  The native library file [" + tempFile.getAbsolutePath() + "] could not be loaded due to an unsatisfied link error; " + ule.getMessage());
+                            ule.printStackTrace();
+                            throw(ule);                                                        
+                        }
+                        catch(NullPointerException npe)
+                        {
+                            // TODO: change this to a logger instead of sysout
+                            System.out.println("ERROR:  The native library file [" + tempFile.getAbsolutePath() + "] could not be loaded due to an invalid file path; " + npe.getMessage());
+                            npe.printStackTrace();
+                            throw(npe);                                                        
+                        }
+                    }                    
                 }
                 catch (Exception ex)
                 {
+                    ex.printStackTrace();
+
                     // library load failed, remove from tracking collection
                     loadedLibraries.remove(libraryName);
 
-                    throw (new UnsatisfiedLinkError(
-                            "["
-                                    + libraryName
-                                    + ":"
-                                    + fileName
-                                    + "] Library could not be found on library path or embedded in JAR.\r\n"
-                                    + ex.getMessage()));
+                    // TODO: change this to a logger instead of sysout
+                    System.out.println("ERROR:  The native library [" + libraryName + " : " + fileName + "] could not found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
                 }
             }
         }
