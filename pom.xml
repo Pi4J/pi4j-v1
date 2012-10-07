@@ -117,7 +117,7 @@
 				<!-- IP address/Hostname of Raspberry Pi -->
 				<pi.host>10.1.1.161</pi.host>
 				<!-- enable scp of Pi4j to Raspberry Pi -->
-				<pi.transfer>false</pi.transfer>
+				<pi.transfer>true</pi.transfer>
 			</properties>
 			<activation>
 				<property>
