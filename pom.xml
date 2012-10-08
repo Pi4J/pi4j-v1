@@ -91,6 +91,7 @@
 		<pi.port>22</pi.port>
 		<pi.user>pi</pi.user>
 		<pi.password>raspberry</pi.password>
+		<pi.abi>hard-float</pi.abi>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
 		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
@@ -115,7 +116,7 @@
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host>10.1.1.161</pi.host>
+				<pi.host>10.1.1.186</pi.host>
 				<!-- enable scp of Pi4j to Raspberry Pi -->
 				<pi.transfer>true</pi.transfer>
 			</properties>
@@ -150,6 +151,15 @@
 			<modules>
 				<module>pi4j-native</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>native-soft-float</id>
+			<modules>
+				<module>pi4j-native</module>
+			</modules>
+			<properties>
+				<pi.abi>soft-float</pi.abi>
+			</properties>
 		</profile>
 
 	</profiles>
