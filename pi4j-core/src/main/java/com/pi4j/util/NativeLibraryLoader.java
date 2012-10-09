@@ -168,7 +168,7 @@ public class NativeLibraryLoader
                                     + libraryName
                                     + " : "
                                     + fileName
-                                    + "] could not found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
+                                    + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
                     }
                 }
                 catch (Exception ex_hard_float)
@@ -185,7 +185,7 @@ public class NativeLibraryLoader
                                 + libraryName
                                 + " : "
                                 + fileName
-                                + "] could not found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
+                                + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
                 }                
             }
         }
