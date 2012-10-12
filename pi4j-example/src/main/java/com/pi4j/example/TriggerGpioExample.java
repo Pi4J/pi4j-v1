@@ -34,10 +34,9 @@ import java.util.concurrent.Callable;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
 import com.pi4j.io.gpio.trigger.GpioPulseStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
@@ -58,11 +57,9 @@ public class TriggerGpioExample
         GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        // (configure pin edge to both rising and falling to get notified for HIGH and LOW state changes)
-        GpioPin myButton = gpio.provisionInputPin(Pin.GPIO_02, 
+        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
                                                   "MyButton", 
-                                                  PinEdge.BOTH,
-                                                  PinResistor.PULL_DOWN);
+                                                  PinPullResistance.PULL_DOWN);
 
         System.out.println(" ... complete the GPIO #02 circuit and see the triggers take effect.");
 
@@ -70,9 +67,9 @@ public class TriggerGpioExample
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
         GpioPin myLed[] =
           { 
-            gpio.provisionOuputPin(Pin.GPIO_04, "LED #1", PinState.LOW),
-            gpio.provisionOuputPin(Pin.GPIO_05, "LED #2", PinState.LOW),
-            gpio.provisionOuputPin(Pin.GPIO_06, "LED #3", PinState.LOW) 
+            gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04, "LED #1", PinState.LOW),
+            gpio.provisionDigitalOuputPin(RaspiPin.GPIO_05, "LED #2", PinState.LOW),
+            gpio.provisionDigitalOuputPin(RaspiPin.GPIO_06, "LED #3", PinState.LOW) 
           };
 
         // create a gpio control trigger on the input pin ; when the input goes HIGH, also set gpio pin #04 to HIGH

@@ -1,5 +1,7 @@
 package com.pi4j.io.gpio;
 
+import java.util.EnumSet;
+
 /*
  * #%L
  * **********************************************************************
@@ -67,4 +69,9 @@ public enum PinDirection
         }
         return null;
     }    
+    
+    public static EnumSet<PinDirection> all()
+    {
+        return EnumSet.of(PinDirection.IN, PinDirection.OUT);
+    }
 }

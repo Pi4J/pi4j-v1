@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinShutdown.java  
+ * FILENAME      :  GpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,14 +28,27 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinShutdown
+public interface GpioProvider
 {
-    void setUnexport(Boolean unexport);
-    Boolean getUnexport();
-    void setMode(PinMode mode);
-    PinMode getMode();
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    void setState(PinState state);
-    PinState getState();
+    String getName();
+    
+    void initialize();
+    
+    boolean hasPin(Pin pin);
+    
+    void export(Pin pin, PinMode mode);
+    boolean isExported(Pin pin);
+    void unexport(Pin pin);
+
+    void setMode(Pin pin, PinMode mode);
+    PinMode getMode(Pin pin);    
+        
+    void setPullResistance(Pin pin, PinPullResistance resistance);
+    PinPullResistance getPullResistance(Pin pin);
+
+    void setState(Pin pin, PinState state);
+    PinState getState(Pin pin);
+    
+    void setValue(Pin pin, int value);
+    int getValue(Pin pin);    
 }

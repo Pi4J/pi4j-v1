@@ -32,12 +32,11 @@ import java.util.concurrent.Callable;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinDirection;
-import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
 import com.pi4j.io.gpio.trigger.GpioPulseStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
@@ -66,24 +65,23 @@ public class UsageGpioExample
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
         // changes)
-        GpioPin myButton = gpio.provisionInputPin(Pin.GPIO_02,            // PIN NUMBER
-                                                  "MyButton",             // PIN FRIENDLY NAME
-                                                  PinEdge.BOTH,           // PIN EDGE DETECTION
-                                                  PinResistor.PULL_DOWN); // PIN RESISTANCE
+        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
+                                                         "MyButton",                   // PIN FRIENDLY NAME
+                                                         PinPullResistance.PULL_DOWN); // PIN RESISTANCE
 
         // END SNIPPET: usage-provision-input-pin-snippet
         // START SNIPPET: usage-provision-output-pin-snippet
         // provision gpio pins #04 as an output pin and make sure is is set to LOW at startup
-        GpioPin myLed = gpio.provisionOuputPin(Pin.GPIO_04,   // PIN NUMBER
-                                               "My LED",      // PIN FRIENDLY NAME
-                                               PinState.LOW); // PIN STARTUP STATE
+        GpioPin myLed = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04,   // PIN NUMBER
+                                                      "My LED",           // PIN FRIENDLY NAME
+                                                      PinState.LOW);      // PIN STARTUP STATE
         // END SNIPPET: usage-provision-output-pin-snippet
 
         // START SNIPPET: usage-shutdown-pin-snippet
         // configure the pin shutdown behavior; these settings will be 
         // automatically applied to the pin when the application is terminated
         // ensure that the LED is turned OFF when the application is shutdown
-        myLed.setShutdownOptions(true, PinState.LOW, PinEdge.NONE, PinResistor.OFF);
+        myLed.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
         // END SNIPPET: usage-shutdown-pin-snippet
         
         // START SNIPPET: usage-control-pin-snippet

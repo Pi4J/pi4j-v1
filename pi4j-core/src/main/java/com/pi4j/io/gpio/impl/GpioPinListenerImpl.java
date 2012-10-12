@@ -51,7 +51,7 @@ public class GpioPinListenerImpl implements GpioInterruptListener
     {
         // only process listeners and triggers if the received interrupt event
         // matches the pin number being tracked my this class instance 
-        if (this.pin.getPin().getValue() == event.getPin())
+        if (this.pin.getPin().getAddress() == event.getPin())
         {
             PinState state = PinState.getState(event.getState());
 

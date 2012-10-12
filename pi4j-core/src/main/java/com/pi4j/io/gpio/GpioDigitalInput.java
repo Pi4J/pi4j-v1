@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  PinResistor.java  
+ * FILENAME      :  GpioDigitalInput.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,35 +27,18 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-
-public enum PinResistor
+public interface GpioDigitalInput
 {
-    OFF(0, "off"),
-    PULL_DOWN(1, "down"),
-    PULL_UP(2, "up"); 
+    void setEdge(PinEdge edge);
+    PinEdge getEdge();
+    boolean isEdge(PinEdge edge);
 
-    private final int value;
-    private final String name;
+    void setPullResistor(PinPullResistance resistance);
+    PinPullResistance getPullResistor();
+    boolean isPullResistor(PinPullResistance resistance);
 
-    private PinResistor(int value, String name)
-    {
-        this.value = value;
-        this.name = name;
-    }
-
-    public int getValue()
-    {
-        return value;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return name.toUpperCase();        
-    }    
+    boolean isHigh();
+    boolean isLow();
+    PinState getState();
+    boolean isState(PinState state);
 }

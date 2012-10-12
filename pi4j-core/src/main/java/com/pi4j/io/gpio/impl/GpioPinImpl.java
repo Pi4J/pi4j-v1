@@ -33,11 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinDirection;
-import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioListener;
@@ -45,8 +44,9 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioPinImpl implements GpioPin
 {
-    private GpioController gpio;
+    private final GpioController gpio;
     private String name = null;
+    private final GpioProvider provider;
     private final Pin pin;
     private GpioPinListenerImpl monitor;
     private final GpioPinShutdownImpl shutdownOptions;
@@ -54,9 +54,10 @@ public class GpioPinImpl implements GpioPin
     private final List<GpioListener> listeners = new ArrayList<GpioListener>();
     private final List<GpioTrigger> triggers = new ArrayList<GpioTrigger>();
     
-    public GpioPinImpl(GpioController gpio, Pin pin)
+    public GpioPinImpl(GpioController gpio, GpioProvider provider, Pin pin)
     {
         this.gpio = gpio;
+        this.provider = provider;
         this.pin = pin;
         shutdownOptions = new GpioPinShutdownImpl();
     }
@@ -67,6 +68,12 @@ public class GpioPinImpl implements GpioPin
         return this.pin;
     }
 
+    @Override
+    public GpioProvider getProvider()
+    {
+        return this.provider;
+    }
+    
     @Override
     public void setName(String name)
     {
@@ -121,72 +128,35 @@ public class GpioPinImpl implements GpioPin
     }
 
     @Override
-    public void export(PinDirection direction)
+    public void export(PinMode mode)
     {
         // export the pin
-        gpio.export(direction, pin);
+        provider.export(pin, mode);
     }
 
     @Override
     public void unexport()
     {
         // unexport the pin
-        gpio.unexport(pin);
+        provider.unexport(pin);
     }
 
     @Override
     public boolean isExported()
     {
-        return gpio.isExported(pin);
-    }
-
-    @Override
-    public void setDirection(PinDirection direction)
-    {
-        gpio.setDirection(direction, pin);
-    }
-
-    @Override
-    public PinDirection getDirection()
-    {
-        return gpio.getDirection(pin);
-    }
-
-    @Override
-    public boolean isDirection(PinDirection direction)
-    {
-        return (getDirection() == direction);
-    }
-
-    @Override
-    public void setEdge(PinEdge edge)
-    {
-        gpio.setEdge(edge, pin);
-    }
-
-    @Override
-    public PinEdge getEdge()
-    {
-        return gpio.getEdge(pin);
-    }
-
-    @Override
-    public boolean isEdge(PinEdge edge)
-    {
-        return (getEdge() == edge);
+        return provider.isExported(pin);
     }
 
     @Override
     public void setMode(PinMode mode)
     {
-        gpio.setMode(mode, pin);
+        provider.setMode(pin, mode);
     }
 
     @Override
     public PinMode getMode()
     {
-        // TODO Implement pin mode getter method
-        return null;
+        return provider.getMode(pin);
     }
 
     @Override
@@ -196,58 +166,60 @@ public class GpioPinImpl implements GpioPin
     }
 
     @Override
-    public void setPullResistor(PinResistor resistance)
+    public void setPullResistance(PinPullResistance resistance)
     {
-        gpio.setPullResistor(resistance, pin);
+        provider.setPullResistance(pin, resistance);
     }
 
     @Override
-    public PinResistor getPullResistor()
+    public PinPullResistance getPullResistance()
     {
-        // TODO Implement pull resistor getter method
-        return null;
+        return provider.getPullResistance(pin);
     }
 
     @Override
-    public boolean isPullResistor(PinResistor resistance)
+    public boolean isPullResistance(PinPullResistance resistance)
     {
-        return (getPullResistor() == resistance);
+        return (getPullResistance() == resistance);
     }
 
     @Override
     public void high()
     {
-        gpio.high(pin);
+        setState(PinState.HIGH);
     }
 
     @Override
     public void low()
     {
-        gpio.low(pin);
+        setState(PinState.LOW);
     }
 
     @Override
     public void toggle()
     {
-        gpio.toggle(pin);
+        if (getState() == PinState.HIGH)
+            setState(PinState.LOW);
+        else
+            setState(PinState.HIGH);
     }
 
     @Override
     public void pulse(long milliseconds)
     {
-        gpio.pulse(milliseconds, pin);
+        GpioPulseImpl.execute(gpio, pin, milliseconds);
     }
 
     @Override
     public void setState(PinState state)
     {
-        gpio.setState(state, pin);
+        provider.setState(pin, state);
     }
 
     @Override
     public void setState(boolean state)
     {
-        gpio.setState(state, pin);
+        provider.setState(pin, (state) ? PinState.HIGH : PinState.LOW);
     }
 
     @Override
@@ -275,10 +247,16 @@ public class GpioPinImpl implements GpioPin
     }
 
     @Override
-    public void setPwmValue(int value)
+    public void setValue(int value)
     {
-        gpio.setPwmValue(value, pin);
+        provider.setValue(pin, value);
     }
+    
+    @Override
+    public int getValue()
+    {
+        return provider.getValue(pin);
+    }    
 
     private synchronized void updateInterruptListener()
     {
@@ -291,7 +269,7 @@ public class GpioPinImpl implements GpioPin
     
                 // setup interrupt listener native thread and enable callbacks
                 com.pi4j.wiringpi.GpioInterrupt.addListener(monitor);
-                com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getValue());
+                com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
             }
         }
         else
@@ -300,7 +278,7 @@ public class GpioPinImpl implements GpioPin
             {
                 // remove interrupt listener, disable native thread and callbacks
                 com.pi4j.wiringpi.GpioInterrupt.removeListener(monitor);
-                com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getValue());
+                com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
 
                 // destroy monitor instance
                 monitor = null;
@@ -434,8 +412,7 @@ public class GpioPinImpl implements GpioPin
     {
         shutdownOptions.setUnexport(options.getUnexport());
         shutdownOptions.setState(options.getState());
-        shutdownOptions.setEdge(options.getEdge());
-        shutdownOptions.setDirection(options.getDirection());
+        shutdownOptions.setMode(options.getMode());
         shutdownOptions.setPullResistor(options.getPullResistor());
     }
 
@@ -452,26 +429,17 @@ public class GpioPinImpl implements GpioPin
     }
 
     @Override
-    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge)
+    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance)
     {
-        setShutdownOptions(unexport, state, edge, null);
+        setShutdownOptions(unexport, state, resistance, null);
     }
 
     @Override
-    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge,
-            PinResistor resistance)
-    {
-        setShutdownOptions(unexport, state, edge, resistance, null);
-    }
-
-    @Override
-    public void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge,
-            PinResistor resistance, PinDirection direction)
+    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, PinMode mode)
     {
         shutdownOptions.setUnexport(unexport);
         shutdownOptions.setState(state);
-        shutdownOptions.setEdge(edge);
-        shutdownOptions.setDirection(direction);
+        shutdownOptions.setMode(mode);
         shutdownOptions.setPullResistor(resistance);
     }
 }

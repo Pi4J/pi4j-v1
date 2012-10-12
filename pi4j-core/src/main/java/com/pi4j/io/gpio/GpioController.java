@@ -29,7 +29,6 @@ package com.pi4j.io.gpio;
 
 
 import java.util.Collection;
-
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
@@ -37,61 +36,34 @@ public interface GpioController
 {
     boolean hasPin(Pin... pin);
     
-    void export(PinDirection direction, Pin... pin);
-    void export(PinDirection direction, GpioPin... pin);
-    
+    void export(PinMode mode, Pin... pin);
+    void export(PinMode mode, GpioPin... pin);
     boolean isExported(Pin... pin);
     boolean isExported(GpioPin... pin);
-    
     void unexport(Pin... pin);
     void unexport(GpioPin... pin);
     void unexportAll();
 
-    void setDirection(PinDirection direction, Pin... pin);
-    void setDirection(PinDirection direction, GpioPin... pin);
-    
-    PinDirection getDirection(Pin pin);
-    PinDirection getDirection(GpioPin pin);
-    
-    boolean isDirection(PinDirection direction, Pin... pin);
-    boolean isDirection(PinDirection direction, GpioPin... pin);
-    
-    void setEdge(PinEdge edge, Pin... pin);
-    void setEdge(PinEdge edge, GpioPin... pin);
-    
-    PinEdge getEdge(Pin pin);
-    PinEdge getEdge(GpioPin pin);
-    
-    boolean isEdge(PinEdge edge, Pin... pin);
-    boolean isEdge(PinEdge edge, GpioPin... pin);
-
     void setMode(PinMode mode, Pin... pin);
     void setMode(PinMode mode, GpioPin... pin);
+    PinMode getMode(Pin pin);
+    PinMode getMode(GpioPin pin);    
+    boolean isMode(PinMode mode, Pin... pin);
+    boolean isMode(PinMode mode, GpioPin... pin);
 
-    // TODO: implement get and is mode methods
-    //PinMode getMode(Pin... pin);    
-    //PinMode getMode(GpioPin... pin);    
-    //boolean isMode(PinMode mode, Pin... pin);
-    //boolean isMode(PinMode mode, GpioPin... pin);
-        
-    void setPullResistor(PinResistor resistance, Pin... pin);
-    void setPullResistor(PinResistor resistance, GpioPin... pin);
-    
-    // TODO: implement get and is pull resistor methods
-    //PinResistor getPullResistor(Pin pin);
-    //PinResistor getPullResistor(GpioPin pin);
-    //boolean isPullResistor(PinResistor resistance, Pin... pin);
-    //boolean isPullResistor(PinResistor resistance, GpioPin... pin);
+    void setPullResistance(PinPullResistance resistance, Pin... pin);
+    void setPullResistance(PinPullResistance resistance, GpioPin... pin);    
+    PinPullResistance getPullResistance(Pin pin);
+    PinPullResistance getPullResistance(GpioPin pin);
+    boolean isPullResistance(PinPullResistance resistance, Pin... pin);
+    boolean isPullResistance(PinPullResistance resistance, GpioPin... pin);
 
     void high(Pin... pin);
     void high(GpioPin... pin);
-
-    void low(Pin... pin);
-    void low(GpioPin... pin);
-
     boolean isHigh(Pin... pin);
     boolean isHigh(GpioPin... pin);
-
+    void low(Pin... pin);
+    void low(GpioPin... pin);
     boolean isLow(Pin... pin);
     boolean isLow(GpioPin... pin);
     
@@ -99,21 +71,20 @@ public interface GpioController
     void setState(PinState state, GpioPin... pin);
     void setState(boolean state, Pin... pin);
     void setState(boolean state, GpioPin... pin);
-    
     boolean isState(PinState state, Pin... pin);
     boolean isState(PinState state, GpioPin... pin);
-    
-    void toggle(Pin... pin);
-    void toggle(GpioPin... pin);
-
-    void pulse(long milliseconds, Pin... pin);
-    void pulse(long milliseconds, GpioPin... pin);
-    
     PinState getState(Pin pin);
     PinState getState(GpioPin pin);
     
-    void setPwmValue(int value, Pin... pin);
-    void setPwmValue(int value, GpioPin... pin);
+    void toggle(Pin... pin);
+    void toggle(GpioPin... pin);
+    void pulse(long milliseconds, Pin... pin);
+    void pulse(long milliseconds, GpioPin... pin);
+    
+    void setValue(int value, Pin... pin);
+    void setValue(int value, GpioPin... pin);
+    int getValue(Pin pin);
+    int getValue(GpioPin pin);
 
     void addListener(GpioListener listener, Pin... pin);
     void addListener(GpioListener[] listeners, Pin... pin);
@@ -131,10 +102,20 @@ public interface GpioController
     void removeTrigger(GpioTrigger[] triggers, GpioPin... pin);
     void removeAllTriggers();
     
-    GpioPin provisionInputPin(Pin pin, String name, PinEdge edge, PinResistor resistance);
-    GpioPin provisionInputPin(Pin pin, String name, PinEdge edge);
-    GpioPin provisionInputPin(Pin pin, String name);
-    GpioPin provisionOuputPin(Pin pin, String name, PinState defaultState);
+    GpioPin provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);
+    GpioPin provisionDigitalInputPin(Pin pin, String name);
+    GpioPin provisionDigitalOuputPin(Pin pin, String name, PinState defaultState);
+    GpioPin provisionDigitalOuputPin(Pin pin, String name);
+
+    GpioPin provisionAnalogInputPin(Pin pin, String name);    
+    GpioPin provisionAnalogOuputPin(Pin pin, String name, int defaultValue);
+    GpioPin provisionAnalogOuputPin(Pin pin, String name);
+
+    GpioPin provisionPwmOutputPin(Pin pin, String name, int defaultValue);
+    GpioPin provisionPwmOutputPin(Pin pin, String name);
+    
+    GpioPin provisionPin(Pin pin, String name, PinMode mode);
+    
     boolean isProvisioned(Pin... pin);
     GpioPin getProvisionedPin(Pin pin);
     Collection<GpioPin> getProvisionedPins(Pin... pin);

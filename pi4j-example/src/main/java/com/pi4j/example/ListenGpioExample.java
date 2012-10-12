@@ -32,9 +32,8 @@ package com.pi4j.example;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.event.GpioPinStateChangeEvent;
 
@@ -54,8 +53,7 @@ public class ListenGpioExample
         GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        // (configure pin edge to both rising and falling to get notified for HIGH and LOW state changes)
-        GpioPin myButton = gpio.provisionInputPin(Pin.GPIO_02, "MyButton", PinEdge.BOTH, PinResistor.PULL_DOWN);
+        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
         myButton.addListener(new GpioExampleListener());

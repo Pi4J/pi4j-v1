@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pi4j</groupId>
 	<artifactId>pi4j-parent</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>Pi4J :: Parent POM</name>
 	<description>Parent Maven POM for the Pi4J Project</description>
 	<url>http://www.pi4j.com</url>
@@ -81,6 +81,7 @@
 		<module>pi4j-core</module>
 		<module>pi4j-example</module>
 		<module>pi4j-service</module>
+		<module>pi4j-gpio-extension</module>
 	</modules>
 
 	<!-- BUILD PROPERTIES -->

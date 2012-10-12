@@ -29,10 +29,9 @@ import java.util.concurrent.Callable;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.event.GpioPinStateChangeEvent;
 import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
@@ -54,16 +53,15 @@ public class GpioTest
 
         // setup gpio pin #07 as an input pin whose biased to ground and receives +3VDC to be
         // triggered
-        GpioPin inputPin = gpio.provisionInputPin(Pin.GPIO_07, "Test-Input", PinEdge.BOTH,
-                                                  PinResistor.PULL_DOWN);
+        GpioPin inputPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, "Test-Input", PinPullResistance.PULL_DOWN);
 
         // add gpio listener
         inputPin.addListener(listener);
 
         // setup gpio pin #04, #05, #06 as output pins
-        GpioPin pinLed1 = gpio.provisionOuputPin(Pin.GPIO_04, "LED-One", PinState.LOW);
-        GpioPin pinLed2 = gpio.provisionOuputPin(Pin.GPIO_05, "LED-Two", PinState.HIGH);
-        GpioPin pinLed3 = gpio.provisionOuputPin(Pin.GPIO_06, "LED-Three", PinState.LOW);
+        GpioPin pinLed1 = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04, "LED-One", PinState.LOW);
+        GpioPin pinLed2 = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_05, "LED-Two", PinState.HIGH);
+        GpioPin pinLed3 = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_06, "LED-Three", PinState.LOW);
 
         // create gpio triggers
         inputPin.addTrigger(new GpioSetStateTrigger(PinState.HIGH, pinLed1, PinState.HIGH));

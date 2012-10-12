@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.io.gpio.exception;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinShutdown.java  
+ * FILENAME      :  InvalidPinException.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,14 +28,24 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinShutdown
+import com.pi4j.io.gpio.Pin;
+
+public class InvalidPinException extends RuntimeException
 {
-    void setUnexport(Boolean unexport);
-    Boolean getUnexport();
-    void setMode(PinMode mode);
-    PinMode getMode();
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    void setState(PinState state);
-    PinState getState();
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5101222911651959182L;
+    private final Pin pin;
+
+    public InvalidPinException(Pin pin)
+    {
+        super("Invalid pin exception; this pin [" + pin.getName() + "] is not supported by GPIO provider [" + pin.getProvider() + "]");
+        this.pin = pin;
+    }
+
+    public Pin getPin()
+    {
+        return pin;
+    }
 }

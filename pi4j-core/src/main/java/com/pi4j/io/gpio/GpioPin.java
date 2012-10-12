@@ -36,6 +36,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public interface GpioPin
 {
+    GpioProvider getProvider();
     Pin getPin();
     
     void setName(String name);
@@ -48,26 +49,17 @@ public interface GpioPin
     void removeProperty(String key);
     void clearProperties();
     
-    void export(PinDirection direction);
+    void export(PinMode mode);
     void unexport();
     boolean isExported();
     
-    void setDirection(PinDirection direction);
-    PinDirection getDirection();
-    boolean isDirection(PinDirection direction);
-    
-    void setEdge(PinEdge edge);
-
-    PinEdge getEdge();
-    boolean isEdge(PinEdge edge);
-
     void setMode(PinMode mode);
     PinMode getMode();
     boolean isMode(PinMode mode);
     
-    void setPullResistor(PinResistor resistance);
-    PinResistor getPullResistor();
-    boolean isPullResistor(PinResistor resistance);
+    void setPullResistance(PinPullResistance resistance);
+    PinPullResistance getPullResistance();
+    boolean isPullResistance(PinPullResistance resistance);
 
     void high();
     void low();    
@@ -80,7 +72,8 @@ public interface GpioPin
     PinState getState();
     boolean isState(PinState state);
     
-    void setPwmValue(int value);
+    void setValue(int value);
+    int getValue();
 
     GpioListener[] getListeners();
     void addListener(GpioListener... listener);
@@ -102,7 +95,6 @@ public interface GpioPin
     void setShutdownOptions(GpioPinShutdown options);
     void setShutdownOptions(Boolean unexport);
     void setShutdownOptions(Boolean unexport, PinState state);
-    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge);
-    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge, PinResistor resistance);
-    void setShutdownOptions(Boolean unexport, PinState state, PinEdge edge, PinResistor resistance, PinDirection direction);
+    void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance);
+    void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, PinMode mode);
 }

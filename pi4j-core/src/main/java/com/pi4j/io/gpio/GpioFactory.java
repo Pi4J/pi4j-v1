@@ -28,7 +28,12 @@ package com.pi4j.io.gpio;
  */
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
+
 import com.pi4j.io.gpio.impl.GpioControllerImpl;
+import com.pi4j.io.gpio.impl.GpioProviderWrapper;
 
 /**
  * <h1>GPIO Factory</h1>
@@ -59,6 +64,24 @@ public class GpioFactory
 {
     // we only allow a single controller to exists
     private static GpioController controller = null;
+
+    /**
+     * <h1>Get a list of the GPIO Providers on the system</h1>
+     * 
+     * @return <p>list of GpioProviders</p>
+     */
+    public static Map<String, GpioProvider> getProviders()
+    {
+        Map<String, GpioProvider> providers = new HashMap<String, GpioProvider>();
+
+        // lookup all GpioProviders using the service loader
+        ServiceLoader<GpioProvider> serviceLoader = ServiceLoader.load(GpioProvider.class);
+        for (GpioProvider provider : serviceLoader) 
+            providers.put(provider.getName(), new GpioProviderWrapper(provider));
+        
+        // return the listing of providers
+        return providers;
+    }
     
     /**
      * <h1>Create New GPIO Controller instance</h1>

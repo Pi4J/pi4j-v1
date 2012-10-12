@@ -27,18 +27,16 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
-import com.pi4j.io.gpio.PinDirection;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.PinState;
 
 public class GpioPinShutdownImpl implements GpioPinShutdown
 {
     Boolean unexport = null;
-    PinDirection direction = null;
-    PinEdge edge = null;
-    PinResistor resistance = null;
+    PinMode mode = null;
+    PinPullResistance resistance = null;
     PinState state = null;
 
     @Override
@@ -54,37 +52,25 @@ public class GpioPinShutdownImpl implements GpioPinShutdown
     }
 
     @Override
-    public void setDirection(PinDirection direction)
+    public void setMode(PinMode mode)
     {
-        this.direction = direction;
+        this.mode = mode;
     }
 
     @Override
-    public PinDirection getDirection()
+    public PinMode getMode()
     {
-        return direction;
+        return mode;
     }
 
     @Override
-    public void setEdge(PinEdge edge)
-    {
-        this.edge = edge;
-    }
-
-    @Override
-    public PinEdge getEdge()
-    {
-        return edge;
-    }
-
-    @Override
-    public void setPullResistor(PinResistor resistance)
+    public void setPullResistor(PinPullResistance resistance)
     {
         this.resistance = resistance;
     }
 
     @Override
-    public PinResistor getPullResistor()
+    public PinPullResistance getPullResistor()
     {
         return resistance;
     }

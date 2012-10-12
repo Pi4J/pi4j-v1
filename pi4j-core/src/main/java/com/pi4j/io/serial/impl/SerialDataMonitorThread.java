@@ -29,7 +29,6 @@ package com.pi4j.io.serial.impl;
 
 
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.pi4j.io.serial.Serial;

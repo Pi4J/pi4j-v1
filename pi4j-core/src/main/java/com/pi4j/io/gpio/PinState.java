@@ -1,5 +1,7 @@
 package com.pi4j.io.gpio;
 
+import java.util.EnumSet;
+
 /*
  * #%L
  * **********************************************************************
@@ -90,4 +92,9 @@ public enum PinState
     {
         return PinState.values();
     }    
+    
+    public static EnumSet<PinState> all()
+    {
+        return EnumSet.of(PinState.HIGH, PinState.LOW);
+    }        
 }

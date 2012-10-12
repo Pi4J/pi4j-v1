@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.io.gpio.exception;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinShutdown.java  
+ * FILENAME      :  UnsupportedPinPullResistanceException.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,14 +28,32 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinShutdown
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinPullResistance;
+
+public class UnsupportedPinPullResistanceException extends RuntimeException
 {
-    void setUnexport(Boolean unexport);
-    Boolean getUnexport();
-    void setMode(PinMode mode);
-    PinMode getMode();
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    void setState(PinState state);
-    PinState getState();
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6065621786188662862L;
+    private final Pin pin;
+    private final PinPullResistance resistance;
+
+    public UnsupportedPinPullResistanceException(Pin pin, PinPullResistance resistance)
+    {
+        super("This GPIO pin [" + pin.getName() + "] does not support the pull resistance specified [" + resistance.getName() + "]");        
+        this.pin = pin;
+        this.resistance = resistance;
+    }
+
+    public Pin getPin()
+    {
+        return pin;
+    }
+    
+    public PinPullResistance getPullResistance()
+    {
+        return resistance;
+    }
 }

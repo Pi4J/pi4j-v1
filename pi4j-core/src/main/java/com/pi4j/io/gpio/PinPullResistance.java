@@ -1,11 +1,13 @@
 package com.pi4j.io.gpio;
 
+import java.util.EnumSet;
+
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinShutdown.java  
+ * FILENAME      :  PinPullResistance.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,14 +30,41 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinShutdown
+public enum PinPullResistance
 {
-    void setUnexport(Boolean unexport);
-    Boolean getUnexport();
-    void setMode(PinMode mode);
-    PinMode getMode();
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    void setState(PinState state);
-    PinState getState();
+    OFF(0, "off"),
+    PULL_DOWN(1, "down"),
+    PULL_UP(2, "up"); 
+
+    private final int value;
+    private final String name;
+
+    private PinPullResistance(int value, String name)
+    {
+        this.value = value;
+        this.name = name;
+    }
+
+    public int getValue()
+    {
+        return value;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name.toUpperCase();        
+    }    
+    
+    public static EnumSet<PinPullResistance> all()
+    {
+        return EnumSet.of(PinPullResistance.OFF, 
+                          PinPullResistance.PULL_DOWN,
+                          PinPullResistance.PULL_UP);
+    }     
 }

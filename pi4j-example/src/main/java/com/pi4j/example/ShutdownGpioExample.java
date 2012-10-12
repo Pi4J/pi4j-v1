@@ -33,10 +33,9 @@ package com.pi4j.example;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinResistor;
+import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 
 /**
  * This example code demonstrates how to perform simple state
@@ -54,11 +53,11 @@ public class ShutdownGpioExample
         GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPin pin = gpio.provisionOuputPin(Pin.GPIO_01, "MyLED", PinState.HIGH);
+        GpioPin pin = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
         
         // configure the pin shutdown behavior; these settings will be 
         // automatically applied to the pin when the application is terminated
-        pin.setShutdownOptions(true, PinState.LOW, PinEdge.NONE, PinResistor.OFF);
+        pin.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
         
         System.out.println("--> GPIO state should be: ON");
         System.out.println("    This program will automatically terminate in 10 seconds,");
