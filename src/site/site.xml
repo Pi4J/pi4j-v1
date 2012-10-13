@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="Maven">
+<project name="The Pi4J Project">
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
 		<artifactId>maven-fluido-skin</artifactId>
@@ -20,6 +20,31 @@
 			img="/images/logos/raspberrypi.png"  target="_blank" />
 	</poweredBy>
 	<body>
+		<head>
+			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
+			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
+			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012 Pi4J. All Rights Reserved."/>
+			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
+			<META NAME="ROBOTS" CONTENT="ALL"/> 
+			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmer's full IO control to a Raspberry Pi"/>
+			<META NAME="AUTHOR" CONTENT="Robert Savage"/>
+			
+			<!-- GOOGLE ANALYTICS SCRIPT -->
+			<script type="text/javascript">
+			
+			  var _gaq = _gaq || [];
+			  _gaq.push(['_setAccount', 'UA-35332834-1']);
+			  _gaq.push(['_setDomainName', 'pi4j.com']);
+			  _gaq.push(['_trackPageview']);
+			
+			  (function() {
+			    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			  })();
+			
+			</script>
+		</head>
 		<links>
 			<item name="Home" href="http://www.pi4j.com/" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
