@@ -140,6 +140,18 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void setValue(Pin pin, int value)
     {
+        throw new RuntimeException("This GPIO provider does not support analog pins.");
+    }
+
+    @Override
+    public int getValue(Pin pin)
+    {
+        throw new RuntimeException("This GPIO provider does not support analog pins.");
+    }
+
+    @Override
+    public void setPwm(Pin pin, int value)
+    {
         PinMode mode = getMode(pin);
 
         if(mode == PinMode.PWM_OUTPUT)
@@ -148,12 +160,12 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
         }
         else
         {
-            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setValue(" + value + ")");
+            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
         }
     }
 
     @Override
-    public int getValue(Pin pin)
+    public int getPwm(Pin pin)
     {
         // TODO implement actual pin value getter in native impl
         throw new RuntimeException("NOT IMPLEMENTED");

@@ -33,7 +33,8 @@ import java.util.concurrent.Callable;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
@@ -57,21 +58,21 @@ public class TriggerGpioExample
         GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
+        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
                                                   "MyButton", 
                                                   PinPullResistance.PULL_DOWN);
-
+        
         System.out.println(" ... complete the GPIO #02 circuit and see the triggers take effect.");
 
         
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
-        GpioPin myLed[] =
+        GpioPinDigitalOutput myLed[] =
           { 
             gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04, "LED #1", PinState.LOW),
             gpio.provisionDigitalOuputPin(RaspiPin.GPIO_05, "LED #2", PinState.LOW),
             gpio.provisionDigitalOuputPin(RaspiPin.GPIO_06, "LED #3", PinState.LOW) 
           };
-
+        
         // create a gpio control trigger on the input pin ; when the input goes HIGH, also set gpio pin #04 to HIGH
         myButton.addTrigger(new GpioSetStateTrigger(PinState.HIGH, myLed[0], PinState.HIGH));
 

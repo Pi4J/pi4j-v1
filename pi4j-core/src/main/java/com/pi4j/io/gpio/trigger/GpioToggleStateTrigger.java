@@ -31,49 +31,50 @@ package com.pi4j.io.gpio.trigger;
 import java.util.List;
 
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
 public class GpioToggleStateTrigger extends GpioTriggerBase
 {
-    private final GpioPin targetPin;
+    private final GpioPinDigitalOutput targetPin;
 
-    public GpioToggleStateTrigger(PinState state, GpioPin targetPin)
+    public GpioToggleStateTrigger(PinState state, GpioPinDigitalOutput targetPin)
     {
         super();
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(GpioPin pin, PinState state, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin pin, PinState state, GpioPinDigitalOutput targetPin)
     {
         super(state);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(GpioPin pin, PinState[] states, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin pin, PinState[] states, GpioPinDigitalOutput targetPin)
     {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(GpioPin pin, List<PinState> states, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin pin, List<PinState> states, GpioPinDigitalOutput targetPin)
     {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(GpioPin[] pins, PinState[] states, GpioPin targetPin)
+    public GpioToggleStateTrigger(GpioPin[] pins, PinState[] states, GpioPinDigitalOutput targetPin)
     {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPin targetPin)
+    public GpioToggleStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPinDigitalOutput targetPin)
     {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioPin getTargetPin()
+    public GpioPinDigitalOutput getTargetPin()
     {
         return targetPin;
     }

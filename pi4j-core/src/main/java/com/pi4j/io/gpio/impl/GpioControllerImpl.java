@@ -32,8 +32,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinAnalog;
+import com.pi4j.io.gpio.GpioPinAnalogInput;
+import com.pi4j.io.gpio.GpioPinAnalogOutput;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.GpioPinDigital;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
@@ -424,62 +431,6 @@ public class GpioControllerImpl implements GpioController
     }
     
 
-    /**
-     * 
-     * @param pin
-     * @param state
-     */
-    public void setState(PinState state, Pin... pin)
-    {
-        if(pin == null || pin.length == 0)
-            throw new IllegalArgumentException("Missing pin argument.");
-        
-        // set pin state
-        for (Pin p : pin)
-            getPinProvider(p).setState(p, state);
-    }
-
-    /**
-     * 
-     * @param pin
-     * @param state
-     */
-    public void setState(boolean state, Pin... pin)
-    {
-        setState((state) ? PinState.HIGH : PinState.LOW, pin);
-    }
-    
-    /**
-     * 
-     * @param pin
-     * @param state
-     */
-    public void setState(PinState state, GpioPin... pin)
-    {
-        if(pin == null || pin.length == 0)
-            throw new IllegalArgumentException("Missing pin argument.");
-        
-        for (GpioPin p : pin)
-        {
-            // ensure the requested pin has been provisioned
-            if (!pins.containsValue(p))
-                throw new GpioPinNotProvisionedException(p.getPin());
-    
-            // set pin state
-            p.setState(state);
-        }
-    }
-
-    /**
-     * 
-     * @param pin
-     * @param state
-     */
-    public void setState(boolean state, GpioPin... pin)
-    {
-        setState((state) ? PinState.HIGH : PinState.LOW, pin);
-    }
-    
     public void high(Pin... pin)
     {
         if(pin == null || pin.length == 0)
@@ -491,13 +442,13 @@ public class GpioControllerImpl implements GpioController
     }
 
 
-    public void high(GpioPin... pin)
+    public void high(GpioPinDigitalOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
         
         // ensure the requested pin has been provisioned
-        for (GpioPin p : pin)
+        for (GpioPinDigitalOutput p : pin)
         {
             if (!pins.containsValue(pin))
                 throw new GpioPinNotProvisionedException(p.getPin());
@@ -518,13 +469,13 @@ public class GpioControllerImpl implements GpioController
     }
 
 
-    public void low(GpioPin... pin)
+    public void low(GpioPinDigitalOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
         
         // ensure the requested pin has been provisioned
-        for (GpioPin p : pin)
+        for (GpioPinDigitalOutput p : pin)
         {
             if (!pins.containsValue(p))
                 throw new GpioPinNotProvisionedException(p.getPin());
@@ -546,12 +497,12 @@ public class GpioControllerImpl implements GpioController
         }
         return true;        
     }
-    public boolean isHigh(GpioPin... pin)
+    public boolean isHigh(GpioPinDigital... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
 
-        for (GpioPin p : pin)
+        for (GpioPinDigital p : pin)
         {
             if(p.isLow())
                 return false;
@@ -571,12 +522,12 @@ public class GpioControllerImpl implements GpioController
         }
         return true;                
     }
-    public boolean isLow(GpioPin... pin)
+    public boolean isLow(GpioPinDigital... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
 
-        for (GpioPin p : pin)
+        for (GpioPinDigital p : pin)
         {
             if(p.isHigh())
                 return false;
@@ -609,12 +560,12 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param state
      */
-    public void toggle(GpioPin... pin)
+    public void toggle(GpioPinDigitalOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
 
-        for (GpioPin p : pin)
+        for (GpioPinDigitalOutput p : pin)
         {
             // ensure the requested pin has been provisioned
             if (!pins.containsValue(p))
@@ -636,12 +587,12 @@ public class GpioControllerImpl implements GpioController
             GpioPulseImpl.execute(this, p, milliseconds);
     }
 
-    public void pulse(long milliseconds, GpioPin... pin)
+    public void pulse(long milliseconds, GpioPinDigitalOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
         
-        for (GpioPin p : pin)
+        for (GpioPinDigitalOutput p : pin)
         {
             // ensure the requested pin has been provisioned
             if (!pins.containsKey(p))
@@ -652,6 +603,62 @@ public class GpioControllerImpl implements GpioController
         }
     }
 
+
+    /**
+     * 
+     * @param pin
+     * @param state
+     */
+    public void setState(PinState state, Pin... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        // set pin state
+        for (Pin p : pin)
+            getPinProvider(p).setState(p, state);
+    }
+
+    /**
+     * 
+     * @param pin
+     * @param state
+     */
+    public void setState(boolean state, Pin... pin)
+    {
+        setState((state) ? PinState.HIGH : PinState.LOW, pin);
+    }
+    
+    /**
+     * 
+     * @param pin
+     * @param state
+     */
+    public void setState(PinState state, GpioPinDigitalOutput... pin)
+    {
+        if(pin == null || pin.length == 0)
+            throw new IllegalArgumentException("Missing pin argument.");
+        
+        for (GpioPinDigitalOutput p : pin)
+        {
+            // ensure the requested pin has been provisioned
+            if (!pins.containsValue(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            // set pin state
+            p.setState(state);
+        }
+    }
+
+    /**
+     * 
+     * @param pin
+     * @param state
+     */
+    public void setState(boolean state, GpioPinDigitalOutput... pin)
+    {
+        setState((state) ? PinState.HIGH : PinState.LOW, pin);
+    }
 
     /**
      * 
@@ -678,12 +685,12 @@ public class GpioControllerImpl implements GpioController
         return true;                
     }
 
-    public boolean isState(PinState state, GpioPin... pin)
+    public boolean isState(PinState state, GpioPinDigital... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
 
-        for (GpioPin p : pin)
+        for (GpioPinDigital p : pin)
         {
             if(!p.isState(state))
                 return false;
@@ -697,7 +704,7 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @return
      */
-    public PinState getState(GpioPin pin)
+    public PinState getState(GpioPinDigital pin)
     {
         // ensure the requested pin has been provisioned
         if (!pins.containsValue(pin))
@@ -728,12 +735,12 @@ public class GpioControllerImpl implements GpioController
      * @param pin
      * @param value
      */
-    public void setValue(int value, GpioPin... pin)
+    public void setValue(int value, GpioPinAnalogOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
         
-        for (GpioPin p : pin)
+        for (GpioPinAnalogOutput p : pin)
         {
             // ensure the requested pin has been provisioned
             if (!pins.containsKey(p))
@@ -751,7 +758,7 @@ public class GpioControllerImpl implements GpioController
     }
 
     @Override
-    public int getValue(GpioPin pin)
+    public int getValue(GpioPinAnalog pin)
     {
         return pin.getValue();
     }    
@@ -958,16 +965,16 @@ public class GpioControllerImpl implements GpioController
     }
 
     
-    public GpioPin provisionDigitalInputPin(Pin pin, String name)
+    public GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name)
     {
         // return new new pin instance
-        return provisionPin(pin, name, PinMode.DIGITAL_INPUT);
+        return (GpioPinDigitalInput)provisionPin(pin, name, PinMode.DIGITAL_INPUT);
     }
     
-    public GpioPin provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance)
+    public GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance)
     {
         // create new GPIO pin instance
-        GpioPin gpioPin = provisionDigitalInputPin(pin, name);
+        GpioPinDigitalInput gpioPin = provisionDigitalInputPin(pin, name);
 
         // set the gpio pull resistor
         if (resistance != null)
@@ -977,16 +984,16 @@ public class GpioControllerImpl implements GpioController
         return gpioPin;
     }
     
-    public GpioPin provisionDigitalOuputPin(Pin pin, String name)
+    public GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name)
     {
         // return new new pin instance
-        return provisionPin(pin, name, PinMode.DIGITAL_OUTPUT);
+        return (GpioPinDigitalOutput)provisionPin(pin, name, PinMode.DIGITAL_OUTPUT);
     }
     
-    public GpioPin provisionDigitalOuputPin(Pin pin, String name, PinState defaultState)
+    public GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name, PinState defaultState)
     {
         // create new GPIO pin instance
-        GpioPin gpioPin = provisionDigitalOuputPin(pin, name);
+        GpioPinDigitalOutput gpioPin = provisionDigitalOuputPin(pin, name);
 
         // apply default state
         if (defaultState != null)
@@ -996,22 +1003,22 @@ public class GpioControllerImpl implements GpioController
         return gpioPin;
     }
     
-    public GpioPin provisionAnalogInputPin(Pin pin, String name)
+    public GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name)
     {
         // return new new pin instance
-        return provisionPin(pin, name, PinMode.ANALOG_INPUT);
+        return (GpioPinAnalogInput)provisionPin(pin, name, PinMode.ANALOG_INPUT);
     }
 
-    public GpioPin provisionAnalogOuputPin(Pin pin, String name)
+    public GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name)
     {
         // return new new pin instance
-        return provisionPin(pin, name, PinMode.ANALOG_OUTPUT);
+        return (GpioPinAnalogOutput)provisionPin(pin, name, PinMode.ANALOG_OUTPUT);
     }
     
-    public GpioPin provisionAnalogOuputPin(Pin pin, String name, int defaultValue)
+    public GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, int defaultValue)
     {
         // create new GPIO pin instance
-        GpioPin gpioPin = provisionAnalogOuputPin(pin, name);
+        GpioPinAnalogOutput gpioPin = provisionAnalogOuputPin(pin, name);
 
         // apply default value
         gpioPin.setValue(defaultValue);
@@ -1020,19 +1027,19 @@ public class GpioControllerImpl implements GpioController
         return gpioPin;
     }
 
-    public GpioPin provisionPwmOutputPin(Pin pin, String name)
+    public GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name)
     {
         // return new new pin instance
-        return provisionPin(pin, name, PinMode.PWM_OUTPUT);
+        return (GpioPinPwmOutput)provisionPin(pin, name, PinMode.PWM_OUTPUT);
     }
     
-    public GpioPin provisionPwmOutputPin(Pin pin, String name, int defaultValue)
+    public GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name, int defaultValue)
     {
         // create new GPIO pin instance
-        GpioPin gpioPin = provisionPwmOutputPin(pin, name);
+        GpioPinPwmOutput gpioPin = provisionPwmOutputPin(pin, name);
 
         // apply default value
-        gpioPin.setValue(defaultValue);
+        gpioPin.setPwm(defaultValue);
 
         // return new new pin instance
         return gpioPin;
@@ -1062,15 +1069,22 @@ public class GpioControllerImpl implements GpioController
                     Boolean unexport = shutdownOptions.getUnexport();
                     
                     // perform shutdown actions
-                    if(state != null)
-                        pin.setState(state);
+                    if((state != null) && (pin instanceof GpioPinDigitalOutput))
+                    {                        
+                        ((GpioPinDigitalOutput)pin).setState(state);
+                    }
                     if(resistance != null)
+                    {
                         pin.setPullResistance(resistance);
+                    }
                     if(mode != null)
+                    {
                         pin.setMode(mode);
-
+                    }
                     if(unexport != null && unexport == Boolean.TRUE)
+                    {
                         pin.unexport();
+                    }
                 }
             }
         }

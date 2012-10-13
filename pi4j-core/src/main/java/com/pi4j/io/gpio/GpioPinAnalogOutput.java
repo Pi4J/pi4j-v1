@@ -1,13 +1,11 @@
 package com.pi4j.io.gpio;
 
-import com.pi4j.io.gpio.event.PinListener;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioProvider.java  
+ * FILENAME      :  GpioPinAnalogOutput.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,34 +28,7 @@ import com.pi4j.io.gpio.event.PinListener;
  */
 
 
-public interface GpioProvider
+public interface GpioPinAnalogOutput extends GpioPinAnalog
 {
-    String getName();
-    
-    void initialize();
-    
-    boolean hasPin(Pin pin);
-    
-    void export(Pin pin, PinMode mode);
-    boolean isExported(Pin pin);
-    void unexport(Pin pin);
-
-    void setMode(Pin pin, PinMode mode);
-    PinMode getMode(Pin pin);    
-        
-    void setPullResistance(Pin pin, PinPullResistance resistance);
-    PinPullResistance getPullResistance(Pin pin);
-
-    void setState(Pin pin, PinState state);
-    PinState getState(Pin pin);
-    
-    void setValue(Pin pin, int value);
-    int getValue(Pin pin);    
-
-    void setPwm(Pin pin, int value);
-    int getPwm(Pin pin);    
-    
-    void addListener(Pin pin, PinListener listener);
-    void removeListener(Pin pin, PinListener listener);
-    void removeAllListeners();    
+    void setValue(int value);
 }

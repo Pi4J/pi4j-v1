@@ -59,32 +59,32 @@ public interface GpioController
     boolean isPullResistance(PinPullResistance resistance, GpioPin... pin);
 
     void high(Pin... pin);
-    void high(GpioPin... pin);
+    void high(GpioPinDigitalOutput... pin);
     boolean isHigh(Pin... pin);
-    boolean isHigh(GpioPin... pin);
+    boolean isHigh(GpioPinDigital... pin);
     void low(Pin... pin);
-    void low(GpioPin... pin);
+    void low(GpioPinDigitalOutput... pin);
     boolean isLow(Pin... pin);
-    boolean isLow(GpioPin... pin);
+    boolean isLow(GpioPinDigital... pin);
     
     void setState(PinState state, Pin... pin);
-    void setState(PinState state, GpioPin... pin);
+    void setState(PinState state, GpioPinDigitalOutput... pin);
     void setState(boolean state, Pin... pin);
-    void setState(boolean state, GpioPin... pin);
+    void setState(boolean state, GpioPinDigitalOutput... pin);
     boolean isState(PinState state, Pin... pin);
-    boolean isState(PinState state, GpioPin... pin);
+    boolean isState(PinState state, GpioPinDigital... pin);
     PinState getState(Pin pin);
-    PinState getState(GpioPin pin);
+    PinState getState(GpioPinDigital pin);
     
     void toggle(Pin... pin);
-    void toggle(GpioPin... pin);
+    void toggle(GpioPinDigitalOutput... pin);
     void pulse(long milliseconds, Pin... pin);
-    void pulse(long milliseconds, GpioPin... pin);
+    void pulse(long milliseconds, GpioPinDigitalOutput... pin);
     
     void setValue(int value, Pin... pin);
-    void setValue(int value, GpioPin... pin);
+    void setValue(int value, GpioPinAnalogOutput... pin);
     int getValue(Pin pin);
-    int getValue(GpioPin pin);
+    int getValue(GpioPinAnalog pin);
 
     void addListener(GpioListener listener, Pin... pin);
     void addListener(GpioListener[] listeners, Pin... pin);
@@ -102,17 +102,17 @@ public interface GpioController
     void removeTrigger(GpioTrigger[] triggers, GpioPin... pin);
     void removeAllTriggers();
     
-    GpioPin provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);
-    GpioPin provisionDigitalInputPin(Pin pin, String name);
-    GpioPin provisionDigitalOuputPin(Pin pin, String name, PinState defaultState);
-    GpioPin provisionDigitalOuputPin(Pin pin, String name);
+    GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);
+    GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name);
+    GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name, PinState defaultState);
+    GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name);
 
-    GpioPin provisionAnalogInputPin(Pin pin, String name);    
-    GpioPin provisionAnalogOuputPin(Pin pin, String name, int defaultValue);
-    GpioPin provisionAnalogOuputPin(Pin pin, String name);
+    GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);    
+    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, int defaultValue);
+    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name);
 
-    GpioPin provisionPwmOutputPin(Pin pin, String name, int defaultValue);
-    GpioPin provisionPwmOutputPin(Pin pin, String name);
+    GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name, int defaultValue);
+    GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name);
     
     GpioPin provisionPin(Pin pin, String name, PinMode mode);
     

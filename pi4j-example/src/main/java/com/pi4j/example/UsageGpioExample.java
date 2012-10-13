@@ -32,6 +32,8 @@ import java.util.concurrent.Callable;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinDirection;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
@@ -67,16 +69,16 @@ public class UsageGpioExample
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
         // changes)
-        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
-                                                         "MyButton",                   // PIN FRIENDLY NAME
-                                                         PinPullResistance.PULL_DOWN); // PIN RESISTANCE
+        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
+                                                                     "MyButton",                   // PIN FRIENDLY NAME
+                                                                     PinPullResistance.PULL_DOWN); // PIN RESISTANCE
 
         // END SNIPPET: usage-provision-input-pin-snippet
         // START SNIPPET: usage-provision-output-pin-snippet
         // provision gpio pins #04 as an output pin and make sure is is set to LOW at startup
-        GpioPin myLed = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04,   // PIN NUMBER
-                                                      "My LED",           // PIN FRIENDLY NAME
-                                                      PinState.LOW);      // PIN STARTUP STATE
+        GpioPinDigitalOutput myLed = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04,   // PIN NUMBER
+                                                                   "My LED",           // PIN FRIENDLY NAME
+                                                                   PinState.LOW);      // PIN STARTUP STATE
         // END SNIPPET: usage-provision-output-pin-snippet
 
         // START SNIPPET: usage-shutdown-pin-snippet

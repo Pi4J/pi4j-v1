@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  _GpioDigitalInput.java  
+ * FILENAME      :  GpioPinDigital.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,16 +27,9 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-public interface _GpioDigitalInput
+
+public interface GpioPinDigital extends GpioPin
 {
-    void setEdge(PinEdge edge);
-    PinEdge getEdge();
-    boolean isEdge(PinEdge edge);
-
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    boolean isPullResistor(PinPullResistance resistance);
-
     boolean isHigh();
     boolean isLow();
     PinState getState();

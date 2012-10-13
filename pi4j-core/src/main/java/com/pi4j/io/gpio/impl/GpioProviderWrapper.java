@@ -214,6 +214,18 @@ public class GpioProviderWrapper implements GpioProvider
     }
 
     @Override
+    public void setPwm(Pin pin, int value)
+    {
+        provider.setPwm(pin, value);
+    }
+
+    @Override
+    public int getPwm(Pin pin)
+    {
+        return provider.getPwm(pin);
+    }
+    
+    @Override
     public void addListener(Pin pin, PinListener listener)
     {
         provider.addListener(pin, listener);        

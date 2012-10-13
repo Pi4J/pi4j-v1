@@ -31,42 +31,43 @@ package com.pi4j.io.gpio.trigger;
 import java.util.List;
 
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
 public class GpioPulseStateTrigger extends GpioTriggerBase
 {
-    private final GpioPin targetPin;
+    private final GpioPinDigitalOutput targetPin;
     private final long milliseconds;
 
-    public GpioPulseStateTrigger(GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(GpioPinDigitalOutput targetPin, long milliseconds)
     {
         super();
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
     
-    public GpioPulseStateTrigger(PinState state, GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(PinState state, GpioPinDigitalOutput targetPin, long milliseconds)
     {
         super(state);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
 
-    public GpioPulseStateTrigger(PinState[] states, GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin, long milliseconds)
     {
         super(states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
 
-    public GpioPulseStateTrigger(List<PinState> states, GpioPin targetPin, long milliseconds)
+    public GpioPulseStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin, long milliseconds)
     {
         super(states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
     
-    public GpioPin getTargetPin()
+    public GpioPinDigitalOutput getTargetPin()
     {
         return targetPin;
     }

@@ -62,19 +62,19 @@ public interface GpioPin
     PinPullResistance getPullResistance();
     boolean isPullResistance(PinPullResistance resistance);
 
-    void high();
-    void low();    
-    void toggle();
-    void pulse(long milliseconds);
-    void setState(PinState state);
-    void setState(boolean state);
-    boolean isHigh();
-    boolean isLow();
-    PinState getState();
-    boolean isState(PinState state);
-    
-    void setValue(int value);
-    int getValue();
+//    void high();
+//    void low();    
+//    void toggle();
+//    void pulse(long milliseconds);
+//    void setState(PinState state);
+//    void setState(boolean state);
+//    boolean isHigh();
+//    boolean isLow();
+//    PinState getState();
+//    boolean isState(PinState state);
+//    
+//    void setValue(int value);
+//    int getValue();
 
     Collection<GpioListener> getListeners();
     void addListener(GpioListener... listener);

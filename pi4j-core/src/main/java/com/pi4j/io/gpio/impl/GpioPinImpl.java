@@ -32,8 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.pi4j.io.gpio.GpioPinAnalogInput;
+import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
@@ -43,7 +48,13 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-public class GpioPinImpl implements GpioPin
+public class GpioPinImpl implements GpioPin, 
+                                    GpioPinDigitalInput, 
+                                    GpioPinDigitalOutput, 
+                                    GpioPinAnalogInput, 
+                                    GpioPinAnalogOutput,
+                                    GpioPinPwmOutput
+                                    
 {
     private final GpioController gpio;
     private String name = null;
@@ -259,6 +270,18 @@ public class GpioPinImpl implements GpioPin
         return provider.getValue(pin);
     }    
 
+    @Override
+    public void setPwm(int value)
+    {
+        provider.setPwm(pin, value);
+    }
+    
+    @Override
+    public int getPwm()
+    {
+        return provider.getPwm(pin);
+    }  
+    
     private synchronized void updateInterruptListener()
     {
         if (listeners.size() > 0 || triggers.size() > 0)
