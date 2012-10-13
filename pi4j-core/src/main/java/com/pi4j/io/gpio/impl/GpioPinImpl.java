@@ -27,6 +27,7 @@ package com.pi4j.io.gpio.impl;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -307,9 +308,9 @@ public class GpioPinImpl implements GpioPin
      * 
      * @param listener
      */
-    public synchronized GpioListener[] getListeners()
+    public synchronized Collection<GpioListener> getListeners()
     {
-        return listeners.toArray(new GpioListener[0]);
+        return listeners;
     }
 
     @Override
@@ -354,9 +355,9 @@ public class GpioPinImpl implements GpioPin
      * 
      * @param trigger
      */
-    public synchronized GpioTrigger[] getTriggers()
+    public synchronized Collection<GpioTrigger> getTriggers()
     {
-        return triggers.toArray(new GpioTrigger[0]);
+        return triggers;
     }
 
     public synchronized void addTrigger(GpioTrigger... trigger)

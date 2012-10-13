@@ -28,6 +28,7 @@ package com.pi4j.io.gpio;
  */
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public interface GpioPin
     void setValue(int value);
     int getValue();
 
-    GpioListener[] getListeners();
+    Collection<GpioListener> getListeners();
     void addListener(GpioListener... listener);
     void addListener(List<? extends GpioListener> listeners);
     boolean hasListener(GpioListener... listener);
@@ -83,7 +84,7 @@ public interface GpioPin
     void removeListener(List<? extends GpioListener> listeners);
     void removeAllListeners();
     
-    GpioTrigger[] getTriggers();
+    Collection<GpioTrigger> getTriggers();
     void addTrigger(GpioTrigger... trigger);
     void addTrigger(List<? extends GpioTrigger> triggers);
     
