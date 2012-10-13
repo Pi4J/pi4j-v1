@@ -38,6 +38,8 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinInput;
+import com.pi4j.io.gpio.GpioPinOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
@@ -45,7 +47,7 @@ import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioPinImpl implements GpioPin, 
@@ -53,8 +55,9 @@ public class GpioPinImpl implements GpioPin,
                                     GpioPinDigitalOutput, 
                                     GpioPinAnalogInput, 
                                     GpioPinAnalogOutput,
-                                    GpioPinPwmOutput
-                                    
+                                    GpioPinPwmOutput,
+                                    GpioPinInput,
+                                    GpioPinOutput
 {
     private final GpioController gpio;
     private String name = null;
@@ -63,7 +66,7 @@ public class GpioPinImpl implements GpioPin,
     private GpioEventMonitorImpl monitor;
     private final GpioPinShutdownImpl shutdownOptions;
     private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
-    private final List<GpioListener> listeners = new ArrayList<GpioListener>();
+    private final List<GpioPinListener> listeners = new ArrayList<GpioPinListener>();
     private final List<GpioTrigger> triggers = new ArrayList<GpioTrigger>();
     
     public GpioPinImpl(GpioController gpio, GpioProvider provider, Pin pin)
@@ -310,20 +313,20 @@ public class GpioPinImpl implements GpioPin,
      * 
      * @param listener
      */
-    public synchronized void addListener(GpioListener... listener)
+    public synchronized void addListener(GpioPinListener... listener)
     {
         if(listener == null || listener.length == 0)
             throw new IllegalArgumentException("Missing listener argument.");
         
-        for (GpioListener lsnr : listener)
+        for (GpioPinListener lsnr : listener)
             listeners.add(lsnr);
         
         updateInterruptListener();
     }
 
-    public synchronized void addListener(List<? extends GpioListener> listeners)
+    public synchronized void addListener(List<? extends GpioPinListener> listeners)
     {
-        for (GpioListener listener : listeners)
+        for (GpioPinListener listener : listeners)
             addListener(listener);
     }
 
@@ -331,18 +334,18 @@ public class GpioPinImpl implements GpioPin,
      * 
      * @param listener
      */
-    public synchronized Collection<GpioListener> getListeners()
+    public synchronized Collection<GpioPinListener> getListeners()
     {
         return listeners;
     }
 
     @Override
-    public boolean hasListener(GpioListener... listener)
+    public boolean hasListener(GpioPinListener... listener)
     {
         if(listener == null || listener.length == 0)
             throw new IllegalArgumentException("Missing listener argument.");
         
-        for (GpioListener lsnr : listener)
+        for (GpioPinListener lsnr : listener)
         {
             if(!listeners.contains(lsnr))
                 return false;
@@ -351,26 +354,26 @@ public class GpioPinImpl implements GpioPin,
         return true;
     }
     
-    public synchronized void removeListener(GpioListener... listener)
+    public synchronized void removeListener(GpioPinListener... listener)
     {
         if(listener == null || listener.length == 0)
             throw new IllegalArgumentException("Missing listener argument.");
         
-        for (GpioListener lsnr : listener)
+        for (GpioPinListener lsnr : listener)
             listeners.remove(lsnr);
         
         updateInterruptListener();
     }
 
-    public synchronized void removeListener(List<? extends GpioListener> listeners)
+    public synchronized void removeListener(List<? extends GpioPinListener> listeners)
     {
-        for (GpioListener listener : listeners)
+        for (GpioPinListener listener : listeners)
             removeListener(listener);
     }
     
     public synchronized void removeAllListeners()
     {
-        for (GpioListener listener : this.listeners)
+        for (GpioPinListener listener : this.listeners)
             removeListener(listener);
     }
 

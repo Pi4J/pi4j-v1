@@ -24,10 +24,8 @@
  * limitations under the License.
  * #L%
  */
-import com.pi4j.io.gpio.event.GpioListener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinEvent;
-import com.pi4j.io.gpio.event.PinEventType;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public class GpioRelay
 {
@@ -67,19 +65,13 @@ public class GpioRelay
         }
     }}
 
-class GpioRelayListener implements GpioListener
+class GpioRelayListener implements GpioPinListenerDigital
 {
     @Override
-    public void handleGpioPinEvent(GpioPinEvent event)
+    public void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event)
     {
-        if(event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
-        {
-            // cast to digital state change event
-            GpioPinDigitalStateChangeEvent evt = (GpioPinDigitalStateChangeEvent)event;
-            
-            // display pin state on console
-            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                    + evt.getState());
-        }
+        // display pin state on console
+        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                + event.getState());
     }     
 }

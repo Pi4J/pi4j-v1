@@ -29,7 +29,7 @@ package com.pi4j.io.gpio;
 
 
 import java.util.Collection;
-import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public interface GpioController
@@ -86,20 +86,20 @@ public interface GpioController
     int getValue(Pin pin);
     int getValue(GpioPinAnalog pin);
 
-    void addListener(GpioListener listener, Pin... pin);
-    void addListener(GpioListener[] listeners, Pin... pin);
-    void addListener(GpioListener listener, GpioPin... pin);
-    void addListener(GpioListener[] listeners, GpioPin... pin);
-    void removeListener(GpioListener listener, Pin... pin);
-    void removeListener(GpioListener[] listeners, Pin... pin);
-    void removeListener(GpioListener listener, GpioPin... pin);
-    void removeListener(GpioListener[] listeners, GpioPin... pin);
+    void addListener(GpioPinListener listener, Pin... pin);
+    void addListener(GpioPinListener[] listeners, Pin... pin);
+    void addListener(GpioPinListener listener, GpioPinInput... pin);
+    void addListener(GpioPinListener[] listeners, GpioPinInput... pin);
+    void removeListener(GpioPinListener listener, Pin... pin);
+    void removeListener(GpioPinListener[] listeners, Pin... pin);
+    void removeListener(GpioPinListener listener, GpioPinInput... pin);
+    void removeListener(GpioPinListener[] listeners, GpioPinInput... pin);
     void removeAllListeners();
     
-    void addTrigger(GpioTrigger trigger, GpioPin... pin);
-    void addTrigger(GpioTrigger[] triggers, GpioPin... pin);
-    void removeTrigger(GpioTrigger trigger, GpioPin... pin);    
-    void removeTrigger(GpioTrigger[] triggers, GpioPin... pin);
+    void addTrigger(GpioTrigger trigger, GpioPinInput... pin);
+    void addTrigger(GpioTrigger[] triggers, GpioPinInput... pin);
+    void removeTrigger(GpioTrigger trigger, GpioPinInput... pin);    
+    void removeTrigger(GpioTrigger[] triggers, GpioPinInput... pin);
     void removeAllTriggers();
     
     GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);

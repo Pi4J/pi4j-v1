@@ -31,13 +31,12 @@ package com.pi4j.example;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinEvent;
-import com.pi4j.io.gpio.event.PinEventType;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 /**
  * This example code demonstrates how to setup a listener
@@ -55,13 +54,13 @@ public class ListenGpioExample
         GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPin myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
         myButton.addListener(new GpioExampleListener());
         
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
-
+        
         // keep program running until user aborts (CTRL-C)
         for (;;)
         {
@@ -75,23 +74,17 @@ public class ListenGpioExample
  * with the callback method for event notifications
  * when GPIO pin states change.
  * 
- * @see GpioListener
+ * @see GpioPinListener
  * @author Robert Savage
  */
-class GpioExampleListener implements GpioListener
+class GpioExampleListener implements GpioPinListenerDigital
 {
     @Override
-    public void handleGpioPinEvent(GpioPinEvent event)
+    public void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event)
     {
-        if(event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
-        {
-            // cast to digital state change event
-            GpioPinDigitalStateChangeEvent evt = (GpioPinDigitalStateChangeEvent)event;
-            
-            // display pin state on console
-            System.out.println(" --> GPIO PIN STATE CHANGE: " + evt.getPin() + " = "
-                    + evt.getState());
-        }
+        // display pin state on console
+        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                + event.getState());
     }
 }
 // END SNIPPET: listen-gpio-snippet

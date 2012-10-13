@@ -28,7 +28,7 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinPwmOutput extends GpioPinPwm
+public interface GpioPinPwmOutput extends GpioPinPwm, GpioPinOutput
 {
     void setPwm(int value);
 }

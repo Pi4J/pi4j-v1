@@ -1,17 +1,11 @@
 package com.pi4j.io.gpio;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.pi4j.io.gpio.event.GpioPinListener;
-import com.pi4j.io.gpio.trigger.GpioTrigger;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinAnalogInput.java  
+ * FILENAME      :  GpioPinOutput.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -33,22 +27,6 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  * #L%
  */
 
-
-public interface GpioPinAnalogInput extends GpioPinAnalog, GpioPinInput
+public interface GpioPinOutput extends GpioPin
 {
-    Collection<GpioPinListener> getListeners();
-    void addListener(GpioPinListener... listener);
-    void addListener(List<? extends GpioPinListener> listeners);
-    boolean hasListener(GpioPinListener... listener);
-    void removeListener(GpioPinListener... listener);
-    void removeListener(List<? extends GpioPinListener> listeners);
-    void removeAllListeners();
-    
-    Collection<GpioTrigger> getTriggers();
-    void addTrigger(GpioTrigger... trigger);
-    void addTrigger(List<? extends GpioTrigger> triggers);
-    
-    void removeTrigger(GpioTrigger... trigger);    
-    void removeTrigger(List<? extends GpioTrigger> triggers);
-    void removeAllTriggers();    
 }

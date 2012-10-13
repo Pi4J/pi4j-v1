@@ -1,11 +1,17 @@
-package com.pi4j.io.gpio.event;
+package com.pi4j.io.gpio;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.pi4j.io.gpio.event.GpioPinListener;
+import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioListener.java  
+ * FILENAME      :  GpioPinInput.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,31 +34,21 @@ package com.pi4j.io.gpio.event;
  */
 
 
-
-/**
- * <h1>Gpio Listener Interface</h1>
- * 
- * <p>
- * This interface implements the callback event handler for GPIO pin state changes.
- * </p>
- * 
- * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
- * the following system libraries:
- * <ul>
- * <li>pi4j</li>
- * <li>wiringPi</li>
- * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
- * </blockquote>
- * </p>
- * 
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
- */
-public interface GpioListener extends java.util.EventListener
+public interface GpioPinInput extends GpioPin
 {
-    void handleGpioPinEvent(GpioPinEvent event);
+    Collection<GpioPinListener> getListeners();
+    void addListener(GpioPinListener... listener);
+    void addListener(List<? extends GpioPinListener> listeners);
+    boolean hasListener(GpioPinListener... listener);
+    void removeListener(GpioPinListener... listener);
+    void removeListener(List<? extends GpioPinListener> listeners);
+    void removeAllListeners();
+    
+    Collection<GpioTrigger> getTriggers();
+    void addTrigger(GpioTrigger... trigger);
+    void addTrigger(List<? extends GpioTrigger> triggers);
+    
+    void removeTrigger(GpioTrigger... trigger);    
+    void removeTrigger(List<? extends GpioTrigger> triggers);
+    void removeAllTriggers();
 }

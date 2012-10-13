@@ -26,11 +26,13 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinInput;
 import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinEvent;
 import com.pi4j.io.gpio.event.PinEventType;
@@ -40,9 +42,9 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioEventMonitorImpl implements PinListener
 {
-    private final GpioPin pin;
+    private final GpioPinInput pin;
 
-    public GpioEventMonitorImpl(GpioPin pin)
+    public GpioEventMonitorImpl(GpioPinInput pin)
     {
         this.pin = pin;
     }
@@ -58,10 +60,11 @@ public class GpioEventMonitorImpl implements PinListener
             {
                 PinState state = ((PinDigitalStateChangeEvent)event).getState();
                 
-                // process events
-                for (GpioListener listener : pin.getListeners())
+                // process event callbacks for digital listeners
+                for (GpioPinListener listener : pin.getListeners())
                 {
-                    listener.handleGpioPinEvent(new GpioPinDigitalStateChangeEvent(event.getSource(), pin, state));
+                    if(listener instanceof GpioPinListenerDigital)                        
+                        ((GpioPinListenerDigital)listener).handleGpioPinDigitalEvent(new GpioPinDigitalStateChangeEvent(event.getSource(), pin, state));
                 }
     
                 // process triggers
@@ -75,10 +78,11 @@ public class GpioEventMonitorImpl implements PinListener
             {
                 int value = ((PinAnalogValueChangeEvent)event).getValue();
 
-                // process events
-                for (GpioListener listener : pin.getListeners())
+                // process event callbacks for analog listeners
+                for (GpioPinListener listener : pin.getListeners())
                 {
-                    listener.handleGpioPinEvent(new GpioPinAnalogValueChangeEvent(event.getSource(), pin, value));
+                    if(listener instanceof GpioPinListenerAnalog)                        
+                        ((GpioPinListenerAnalog)listener).handleGpioPinAnalogEvent(new GpioPinAnalogValueChangeEvent(event.getSource(), pin, value));
                 }
             }
         }

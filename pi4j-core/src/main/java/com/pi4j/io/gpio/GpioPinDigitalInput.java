@@ -28,6 +28,6 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinDigitalInput extends GpioPinDigital
+public interface GpioPinDigitalInput extends GpioPinDigital, GpioPinInput
 {
 }

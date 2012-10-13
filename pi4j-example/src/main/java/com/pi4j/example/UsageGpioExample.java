@@ -43,9 +43,10 @@ import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
 import com.pi4j.io.gpio.trigger.GpioPulseStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
-import com.pi4j.io.gpio.event.GpioListener;
+import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 
 // END SNIPPET: usage-import-snippet
@@ -131,21 +132,14 @@ public class UsageGpioExample
     }
 
  //START SNIPPET: usage-listener-snippet    
-    class GpioUsageExampleListener implements GpioListener
+    class GpioUsageExampleListener implements GpioPinListenerDigital
     {
         @Override
-        public void handleGpioPinEvent(GpioPinEvent event)
+        public void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event)
         {
-            // determine event type
-            if(event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
-            {
-                // cast to digital state change event
-                GpioPinDigitalStateChangeEvent evt = (GpioPinDigitalStateChangeEvent)event;
-                
-                // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + evt.getPin() + " = "
-                        + evt.getState());
-            }
+            // display pin state on console
+            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                    + event.getState());
         }
     }
  // END SNIPPET: usage-listener-snippet

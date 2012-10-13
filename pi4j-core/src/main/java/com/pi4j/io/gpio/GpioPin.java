@@ -28,12 +28,7 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-
-import com.pi4j.io.gpio.event.GpioListener;
-import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public interface GpioPin
 {
@@ -62,22 +57,6 @@ public interface GpioPin
     PinPullResistance getPullResistance();
     boolean isPullResistance(PinPullResistance resistance);
 
-    Collection<GpioListener> getListeners();
-    void addListener(GpioListener... listener);
-    void addListener(List<? extends GpioListener> listeners);
-    boolean hasListener(GpioListener... listener);
-    void removeListener(GpioListener... listener);
-    void removeListener(List<? extends GpioListener> listeners);
-    void removeAllListeners();
-    
-    Collection<GpioTrigger> getTriggers();
-    void addTrigger(GpioTrigger... trigger);
-    void addTrigger(List<? extends GpioTrigger> triggers);
-    
-    void removeTrigger(GpioTrigger... trigger);    
-    void removeTrigger(List<? extends GpioTrigger> triggers);
-    void removeAllTriggers();
-    
     GpioPinShutdown getShutdownOptions();
     void setShutdownOptions(GpioPinShutdown options);
     void setShutdownOptions(Boolean unexport);

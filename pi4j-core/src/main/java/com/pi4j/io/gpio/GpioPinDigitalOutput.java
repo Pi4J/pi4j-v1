@@ -28,7 +28,7 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPin
+public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput
 {
     void high();
     void low();    
