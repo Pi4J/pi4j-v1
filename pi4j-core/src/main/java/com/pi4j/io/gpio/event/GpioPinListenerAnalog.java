@@ -54,5 +54,5 @@ package com.pi4j.io.gpio.event;
  */
 public interface GpioPinListenerAnalog extends GpioPinListener
 {
-    void handleGpioPinAnalogEvent(GpioPinAnalogValueChangeEvent event);
+    void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event);
 }

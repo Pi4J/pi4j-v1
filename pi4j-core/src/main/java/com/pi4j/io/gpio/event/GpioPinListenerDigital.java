@@ -54,5 +54,5 @@ package com.pi4j.io.gpio.event;
  */
 public interface GpioPinListenerDigital extends GpioPinListener
 {
-    void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event);
+    void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event);
 }

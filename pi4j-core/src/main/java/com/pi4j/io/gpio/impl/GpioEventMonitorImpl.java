@@ -64,7 +64,7 @@ public class GpioEventMonitorImpl implements PinListener
                 for (GpioPinListener listener : pin.getListeners())
                 {
                     if(listener instanceof GpioPinListenerDigital)                        
-                        ((GpioPinListenerDigital)listener).handleGpioPinDigitalEvent(new GpioPinDigitalStateChangeEvent(event.getSource(), pin, state));
+                        ((GpioPinListenerDigital)listener).handleGpioPinDigitalStateChangeEvent(new GpioPinDigitalStateChangeEvent(event.getSource(), pin, state));
                 }
     
                 // process triggers
@@ -82,7 +82,7 @@ public class GpioEventMonitorImpl implements PinListener
                 for (GpioPinListener listener : pin.getListeners())
                 {
                     if(listener instanceof GpioPinListenerAnalog)                        
-                        ((GpioPinListenerAnalog)listener).handleGpioPinAnalogEvent(new GpioPinAnalogValueChangeEvent(event.getSource(), pin, value));
+                        ((GpioPinListenerAnalog)listener).handleGpioPinAnalogValueChangeEvent(new GpioPinAnalogValueChangeEvent(event.getSource(), pin, value));
                 }
             }
         }

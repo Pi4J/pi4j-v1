@@ -89,7 +89,7 @@ public class GpioTest
 class GpioTestListener implements GpioPinListenerDigital
 {
     @Override
-    public void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event)
+    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
     {
         // display pin state on console
         System.out.println(" --> GPIO PIN LISTENER STATE CHANGE: " + event.getPin() + " = "

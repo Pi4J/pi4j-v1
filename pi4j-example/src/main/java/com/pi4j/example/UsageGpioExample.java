@@ -135,7 +135,7 @@ public class UsageGpioExample
     class GpioUsageExampleListener implements GpioPinListenerDigital
     {
         @Override
-        public void handleGpioPinDigitalEvent(GpioPinDigitalStateChangeEvent event)
+        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
         {
             // display pin state on console
             System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
