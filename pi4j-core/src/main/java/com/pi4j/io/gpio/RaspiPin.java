@@ -28,17 +28,11 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.pi4j.io.gpio.impl.PinImpl;
 
 public class RaspiPin 
 {
-    private static Map<Integer,Pin> pins = new ConcurrentHashMap<Integer,Pin>();
-    
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 
     public static final Pin GPIO_01 = createDigitalAndPwmPin(1, "GPIO 1"); // PIN 1 supports PWM output
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2"); 
@@ -61,51 +55,17 @@ public class RaspiPin
     public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); 
     public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); 
     
-    public static Pin createDigitalPin(int address, String name)
+    private static Pin createDigitalPin(int address, String name)
     {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
+        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     PinPullResistance.all());
-        
-        addPinToMap(pin);
-        return pin;        
     }
 
-    public static Pin createDigitalAndPwmPin(int address, String name)
+    private static Pin createDigitalAndPwmPin(int address, String name)
     {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
+        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
                            EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
                            PinPullResistance.all());
-        
-        addPinToMap(pin);
-        return pin;
     }
-    
-    private static void addPinToMap(Pin pin)
-    {
-        pins.put(pin.getAddress(), pin);
-    }
-    
-    public Map<Integer, Pin> getPinMap()
-    {
-        return pins;
-    }
-
-    public static Collection<Pin> getPinList()
-    {
-        return pins.values();
-    }
-
-    public static Pin getPinByAddress(int address)
-    {
-        if(pins.containsKey(address))
-            return pins.get(address);
-        return null;
-    }
-
-    public static boolean hasPin(int address)
-    {
-        return pins.containsKey(address);
-    }
-    
 }
