@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
@@ -211,5 +212,22 @@ public class GpioProviderWrapper implements GpioProvider
             return provider.getValue(pin);
         }
     }
+
+    @Override
+    public void addListener(Pin pin, PinListener listener)
+    {
+        provider.addListener(pin, listener);        
+    }
     
+    @Override
+    public void removeListener(Pin pin, PinListener listener)
+    {
+        provider.removeListener(pin, listener);        
+    }
+    
+    @Override
+    public void removeAllListeners()
+    {
+        provider.removeAllListeners();        
+    }
 }

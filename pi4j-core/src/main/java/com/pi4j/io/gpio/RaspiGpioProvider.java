@@ -1,6 +1,11 @@
 package com.pi4j.io.gpio;
 
+import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
+import com.pi4j.io.gpio.impl.GpioProviderBase;
+import com.pi4j.wiringpi.GpioInterruptEvent;
+import com.pi4j.wiringpi.GpioInterruptListener;
 
 /*
  * #%L
@@ -30,7 +35,7 @@ import com.pi4j.io.gpio.exception.InvalidPinModeException;
  */
 
 
-public class RaspiGpioProvider implements GpioProvider
+public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider, GpioInterruptListener
 {
     public static final String NAME = "RaspberryPi GPIO Provider";
     
@@ -159,4 +164,58 @@ public class RaspiGpioProvider implements GpioProvider
         // set pin PWM value
         com.pi4j.wiringpi.Gpio.pwmWrite(pin.getAddress(), value);
     }
+
+    @Override
+    public void pinStateChange(GpioInterruptEvent event)
+    {
+        // iterate over the pin listeners map
+        for(Pin pin : listeners.keySet())
+        {
+            // dispatch this event to the listener 
+            // if a matching pin address is found
+            if(pin.getAddress() == event.getPin())
+            {
+                // dispatch this event to all listener handlers
+                for(PinListener listener : listeners.get(pin))
+                {
+                    listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, PinState.getState(event.getState())));
+                }
+            }            
+        }
+    }
+
+    @Override
+    public void addListener(Pin pin, PinListener listener)
+    {
+        super.addListener(pin, listener);
+
+        // update the native interrupt listener thread for callbacks
+        updateInterruptListener(pin);        
+    }
+    
+    @Override
+    public void removeListener(Pin pin, PinListener listener)
+    {
+        super.removeListener(pin, listener);
+        
+        // update the native interrupt listener thread for callbacks
+        updateInterruptListener(pin);        
+    }
+    
+    // internal 
+    private void updateInterruptListener(Pin pin)
+    {
+        if (listeners.size() > 0)
+        {
+            // setup interrupt listener native thread and enable callbacks
+            com.pi4j.wiringpi.GpioInterrupt.addListener(this);
+            com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
+        }
+        else
+        {
+            // remove interrupt listener, disable native thread and callbacks
+            com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
+            com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
+        }
+    }    
 }

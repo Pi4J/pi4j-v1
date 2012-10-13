@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.io.gpio.event;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioDigitalInput.java  
+ * FILENAME      :  PinListener.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,18 +27,30 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-public interface GpioDigitalInput
+/**
+ * <h1>Pin Listener Interface</h1>
+ * 
+ * <p>
+ * This interface implements the callback event handler for Pin state changes.
+ * </p>
+ * 
+ * <p>
+ * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
+ * the following system libraries:
+ * <ul>
+ * <li>pi4j</li>
+ * <li>wiringPi</li>
+ * </ul>
+ * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * </blockquote>
+ * </p>
+ * 
+ * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface PinListener extends java.util.EventListener
 {
-    void setEdge(PinEdge edge);
-    PinEdge getEdge();
-    boolean isEdge(PinEdge edge);
-
-    void setPullResistor(PinPullResistance resistance);
-    PinPullResistance getPullResistor();
-    boolean isPullResistor(PinPullResistance resistance);
-
-    boolean isHigh();
-    boolean isLow();
-    PinState getState();
-    boolean isState(PinState state);
+    void handlePinEvent(PinEvent event);
 }

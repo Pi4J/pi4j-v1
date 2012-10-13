@@ -5,7 +5,7 @@ package com.pi4j.io.gpio.event;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinStateChangeEvent.java  
+ * FILENAME      :  PinEvent.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,14 +30,16 @@ package com.pi4j.io.gpio.event;
 
 import java.util.EventObject;
 
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.Pin;
 
-public class GpioPinStateChangeEvent extends EventObject
+public class PinEvent extends EventObject
 {
-    static final long serialVersionUID = 1L;
-    private final GpioPin pin;
-    private final PinState state;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5238592505805435621L;
+    protected final Pin pin;
+    protected final PinEventType type;
 
     /**
      * <h1>Default event constructor</h1>
@@ -48,15 +50,12 @@ public class GpioPinStateChangeEvent extends EventObject
      * @param pin <p>
      *            GPIO pin number (not header pin number; not wiringPi pin number)
      *            </p>
-     * @param state <p>
-     *            New GPIO pin state.
-     *            </p>
      */
-    public GpioPinStateChangeEvent(Object obj, GpioPin pin, PinState state)
+    public PinEvent(Object obj, Pin pin, PinEventType type)
     {
         super(obj);
         this.pin = pin;
-        this.state = state;
+        this.type = type;
     }
 
     /**
@@ -68,22 +67,14 @@ public class GpioPinStateChangeEvent extends EventObject
      *         GPIO pin number (not header pin number; not wiringPi pin number)
      *         </p>
      */
-    public GpioPin getPin()
+    public Pin getPin()
     {
         return pin;
     }
-
-    /**
-     * <p>
-     * Get the new pin state raised in this event.
-     * </p>
-     * 
-     * @return <p>
-     *         GPIO pin state (HIGH, LOW)
-     *         </p>
-     */
-    public PinState getState()
+    
+    
+    public PinEventType getEventType()
     {
-        return state;
+        return type;
     }
 }

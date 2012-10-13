@@ -33,7 +33,9 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioListener;
-import com.pi4j.io.gpio.event.GpioPinStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinEvent;
+import com.pi4j.io.gpio.event.PinEventType;
 import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
 import com.pi4j.io.gpio.trigger.GpioInverseSyncStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioPulseStateTrigger;
@@ -87,9 +89,17 @@ public class GpioTest
 
 class GpioTestListener implements GpioListener
 {
-    public void pinStateChanged(GpioPinStateChangeEvent event)
+    @Override
+    public void handleGpioPinEvent(GpioPinEvent event)
     {
-        System.out.println(" --> GPIO PIN LISTENER STATE CHANGE: " + event.getPin() + " = "
-                + event.getState());
-    }
+        if(event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
+        {
+            // cast to digital state change event
+            GpioPinDigitalStateChangeEvent evt = (GpioPinDigitalStateChangeEvent)event;
+            
+            // display pin state on console
+            System.out.println(" --> GPIO PIN LISTENER STATE CHANGE: " + event.getPin() + " = "
+                    + evt.getState());
+        }
+    }    
 }

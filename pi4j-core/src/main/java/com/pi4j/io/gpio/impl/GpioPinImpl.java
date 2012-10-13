@@ -48,7 +48,7 @@ public class GpioPinImpl implements GpioPin
     private String name = null;
     private final GpioProvider provider;
     private final Pin pin;
-    private GpioPinListenerImpl monitor;
+    private GpioEventMonitorImpl monitor;
     private final GpioPinShutdownImpl shutdownOptions;
     private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
     private final List<GpioListener> listeners = new ArrayList<GpioListener>();
@@ -264,21 +264,17 @@ public class GpioPinImpl implements GpioPin
         {
             if (monitor == null)
             {            
-                // create new monitor
-                monitor = new GpioPinListenerImpl(this);
-    
-                // setup interrupt listener native thread and enable callbacks
-                com.pi4j.wiringpi.GpioInterrupt.addListener(monitor);
-                com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
+                // create new monitor and register for event callbacks
+                monitor = new GpioEventMonitorImpl(this);
+                provider.addListener(pin, monitor);
             }
         }
         else
         {
             if (monitor != null)
             {
-                // remove interrupt listener, disable native thread and callbacks
-                com.pi4j.wiringpi.GpioInterrupt.removeListener(monitor);
-                com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
+                // remove monitor and unregister for event callbacks
+                provider.removeListener(pin, monitor);
 
                 // destroy monitor instance
                 monitor = null;
@@ -316,6 +312,21 @@ public class GpioPinImpl implements GpioPin
         return listeners.toArray(new GpioListener[0]);
     }
 
+    @Override
+    public boolean hasListener(GpioListener... listener)
+    {
+        if(listener == null || listener.length == 0)
+            throw new IllegalArgumentException("Missing listener argument.");
+        
+        for (GpioListener lsnr : listener)
+        {
+            if(!listeners.contains(lsnr))
+                return false;
+        }
+
+        return true;
+    }
+    
     public synchronized void removeListener(GpioListener... listener)
     {
         if(listener == null || listener.length == 0)
@@ -332,7 +343,7 @@ public class GpioPinImpl implements GpioPin
         for (GpioListener listener : listeners)
             removeListener(listener);
     }
-
+    
     public synchronized void removeAllListeners()
     {
         for (GpioListener listener : this.listeners)

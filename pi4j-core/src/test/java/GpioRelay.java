@@ -25,7 +25,9 @@
  * #L%
  */
 import com.pi4j.io.gpio.event.GpioListener;
-import com.pi4j.io.gpio.event.GpioPinStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinEvent;
+import com.pi4j.io.gpio.event.PinEventType;
 
 public class GpioRelay
 {
@@ -67,9 +69,17 @@ public class GpioRelay
 
 class GpioRelayListener implements GpioListener
 {
-    public void pinStateChanged(GpioPinStateChangeEvent event)
+    @Override
+    public void handleGpioPinEvent(GpioPinEvent event)
     {
-        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                + event.getState());
-    }
+        if(event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
+        {
+            // cast to digital state change event
+            GpioPinDigitalStateChangeEvent evt = (GpioPinDigitalStateChangeEvent)event;
+            
+            // display pin state on console
+            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                    + evt.getState());
+        }
+    }     
 }

@@ -163,8 +163,7 @@ public class NativeLibraryLoader
                         // library load failed, remove from tracking collection
                         loadedLibraries.remove(libraryName);
 
-                        // TODO: change this to a logger instead of sysout
-                        System.out.println("ERROR:  The native library ["
+                        logger.severe("ERROR:  The native library ["
                                     + libraryName
                                     + " : "
                                     + fileName
@@ -180,8 +179,7 @@ public class NativeLibraryLoader
                     // library load failed, remove from tracking collection
                     loadedLibraries.remove(libraryName);
 
-                    // TODO: change this to a logger instead of sysout
-                    System.out.println("ERROR:  The native library ["
+                    logger.severe("ERROR:  The native library ["
                                 + libraryName
                                 + " : "
                                 + fileName

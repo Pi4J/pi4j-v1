@@ -1,5 +1,7 @@
 package com.pi4j.io.gpio;
 
+import com.pi4j.io.gpio.event.PinListener;
+
 /*
  * #%L
  * **********************************************************************
@@ -51,4 +53,8 @@ public interface GpioProvider
     
     void setValue(Pin pin, int value);
     int getValue(Pin pin);    
+    
+    void addListener(Pin pin, PinListener listener);
+    void removeListener(Pin pin, PinListener listener);
+    void removeAllListeners();    
 }

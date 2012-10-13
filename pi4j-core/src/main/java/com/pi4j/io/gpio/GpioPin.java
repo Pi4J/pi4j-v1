@@ -78,7 +78,7 @@ public interface GpioPin
     GpioListener[] getListeners();
     void addListener(GpioListener... listener);
     void addListener(List<? extends GpioListener> listeners);
-    
+    boolean hasListener(GpioListener... listener);
     void removeListener(GpioListener... listener);
     void removeListener(List<? extends GpioListener> listeners);
     void removeAllListeners();
