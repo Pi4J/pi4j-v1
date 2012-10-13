@@ -160,7 +160,8 @@ public class GpioInterrupt
      */
     public static synchronized void addListener(GpioInterruptListener listener)
     {
-        listeners.addElement(listener);
+        if(!listeners.contains(listener))
+            listeners.addElement(listener);
     }
 
     /**
@@ -180,6 +181,27 @@ public class GpioInterrupt
      */
     public static synchronized void removeListener(GpioInterruptListener listener)
     {
-        listeners.removeElement(listener);
+        if(listeners.contains(listener))
+            listeners.removeElement(listener);
     }
+    
+    
+    /**
+     * <h1>IS GPIO Interrupt Listener already registered</h1>
+     * 
+     * <p>
+     * Returns true if the listener is already registered for event callbacks.
+     * </p>
+     * 
+     * @see #com.pi4j.wiringpi.GpioInterruptListener
+     * @see #com.pi4j.wiringpi.GpioInterruptEvent
+     * 
+     * @param listener <p>
+     *            A class instance that implements the GpioInterruptListener interface.
+     *            </p>
+     */
+    public static synchronized boolean hasListener(GpioInterruptListener listener)
+    {
+        return listeners.contains(listener);
+    }    
 }

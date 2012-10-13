@@ -220,14 +220,16 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
         if (listeners.size() > 0)
         {
             // setup interrupt listener native thread and enable callbacks
-            com.pi4j.wiringpi.GpioInterrupt.addListener(this);
+            if(!com.pi4j.wiringpi.GpioInterrupt.hasListener(this))
+                com.pi4j.wiringpi.GpioInterrupt.addListener(this);
             com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
         }
         else
         {
             // remove interrupt listener, disable native thread and callbacks
             com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
-            com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
+            if(com.pi4j.wiringpi.GpioInterrupt.hasListener(this))
+                com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
         }
     }    
 }
