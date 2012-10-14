@@ -81,6 +81,7 @@
 		<module>pi4j-core</module>
 		<module>pi4j-example</module>
 		<module>pi4j-service</module>
+		<module>pi4j-gpio-extension</module>
 	</modules>
 
 	<!-- BUILD PROPERTIES -->
