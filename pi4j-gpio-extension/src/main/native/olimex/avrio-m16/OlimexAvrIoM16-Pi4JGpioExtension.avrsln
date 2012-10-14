@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{D1100916-62DA-4D80-A9B4-55A1E7CCEEB3}") = "OlimexAvrIoM16-Pi4JGpioExtension", "OlimexAvrIoM16-Pi4JGpioExtension.avrgccproj", "{BBAEC918-5635-4C15-97B8-5FD905C1CCBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBAEC918-5635-4C15-97B8-5FD905C1CCBE}.Debug|AVR.ActiveCfg = Debug|AVR
+		{BBAEC918-5635-4C15-97B8-5FD905C1CCBE}.Debug|AVR.Build.0 = Debug|AVR
+		{BBAEC918-5635-4C15-97B8-5FD905C1CCBE}.Release|AVR.ActiveCfg = Release|AVR
+		{BBAEC918-5635-4C15-97B8-5FD905C1CCBE}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

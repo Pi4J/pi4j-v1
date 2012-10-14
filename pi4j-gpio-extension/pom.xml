@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.pi4j</groupId>
+    <artifactId>pi4j-parent</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
+  </parent>
+  <artifactId>pi4j-gpio-extension</artifactId>
+  <name>Pi4J :: GPIO Extension</name>
+  <description>Pi4J GPIO Extension Library</description>
+  
+
+	<!-- PROJECT DEPENDENCIES -->
+	<dependencies>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>		
+	</dependencies>
+
+	<!-- BUILD INSTRUCTIONS -->
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/../</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>LICENSE.txt</include>
+					<include>NOTICE.txt</include>
+					<include>README.md</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>			
+		</resources>
+
+		<plugins>
+
+			<!-- JAVA COMPILER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<!-- INCLUDE SOURCE JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+
+			<!-- INCLUDE JAVADOC JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+
+			<!-- GENERATE LICENSE HEADERS IN SOURCE FILES -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASBERRY PI -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+
+					<!-- copy the compiled JAR file to the Raspberry Pi platform platform -->
+					<execution>
+						<id>transfer-compiled-pi4j-jar</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+									classpathref="maven.plugin.classpath" />
+								<if>
+									<equals arg1="${pi.transfer}" arg2="true" />
+									<then>
+										<!-- copy the JAR file to the Raspberry Pi -->
+										<scp
+											file="${project.build.directory}/${project.build.finalName}.jar"
+											todir="${pi.user}:${pi.password}@${pi.host}:${pi.dirCopyTo}"
+											port="${pi.port}" trust="true" verbose="true" failonerror="true">
+										</scp>
+									</then>
+									<else>
+										<echo>SCP transfer of Pi4J has been disabled.</echo>
+									</else>
+								</if>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.7.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.42</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>20020829</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+		</plugins>
+	</build>  
+</project>
