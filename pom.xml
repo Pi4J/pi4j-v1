@@ -88,7 +88,7 @@
 	<properties>
 
 		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>raspberrypi</pi.host>
+		<pi.host>pi-hf-wifi</pi.host>
 		<pi.port>22</pi.port>
 		<pi.user>pi</pi.user>
 		<pi.password>raspberry</pi.password>
@@ -117,7 +117,7 @@
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host>10.1.1.186</pi.host>
+				<pi.host>pi-hf-wifi</pi.host>
 				<!-- enable scp of Pi4j to Raspberry Pi -->
 				<pi.transfer>true</pi.transfer>
 			</properties>
@@ -154,12 +154,17 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>native-soft-float</id>
-			<modules>
-				<module>pi4j-native</module>
-			</modules>
+			<id>soft-float</id>
 			<properties>
 				<pi.abi>soft-float</pi.abi>
+				<pi.host>pi-sf-wifi</pi.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>hard-float</id>
+			<properties>
+				<pi.abi>hard-float</pi.abi>
+				<pi.host>pi-hf-wifi</pi.host>
 			</properties>
 		</profile>
 

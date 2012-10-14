@@ -12,8 +12,8 @@ Use the following command to build the Pi4J Java libraries and the JNI native li
  and WiringPi installed.  The connection and credentials to access the Pi can be defined 
  in a custom user profile in the parent POM.XML file.) 
 
-> mvn clean install -P native
-> mvn clean install -P native-soft-float -D pi.host=10.1.1.161
+> mvn clean install -P native -P hard-float
+> mvn clean install -P native -P soft-float
 
 Please note that the following prerequisites are required to be installed on your RaspberryPi
 before the pi4j-native project can be compiled.
@@ -26,9 +26,9 @@ before the pi4j-native project can be compiled.
 Use the following command to deploy a snapshot build to the OSS Maven staging repository.
 (Note, you must have a "sonatype-oss-snapshot-repo" site credentials defined in your private Maven settings.xml file.)
 
-> mvn clean deploy                                                                    (Java libraries only)
-> mvn clean deploy --projects pi4j-native -P native                                   (JNI native library for hard-float)
-> mvn clean deploy --projects pi4j-native -P native-soft-float -D pi.host=10.1.1.161  (JNI native library for soft-float)
+> mvn clean deploy                                                  (Java libraries only)
+> mvn clean deploy --projects pi4j-native -P native -P hard-float   (JNI native library for hard-float)
+> mvn clean deploy --projects pi4j-native -P native -P soft-float   (JNI native library for soft-float)
 
 If changes or additions are made to the Java JNI classes, then you may need to regenerate the native JNI .H header files.
 Use the following Maven command to regenerate the .H header source file.
