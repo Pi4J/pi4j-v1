@@ -1,4 +1,4 @@
-package com.ip4j.gpio.extension.serial;
+package com.pi4j.gpio.extension.serial;
 
 /*
  * #%L

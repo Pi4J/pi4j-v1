@@ -1,6 +1,6 @@
 package com.pi4j.gpio.extension.olimex;
 
-import com.ip4j.gpio.extension.serial.SerialCommandQueueProcessingThread;
+import com.pi4j.gpio.extension.serial.SerialCommandQueueProcessingThread;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
