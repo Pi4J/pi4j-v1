@@ -25,3 +25,7 @@
 /pi4j-service/.classpath
 /pi4j-service/.settings
 /pi4j-service/target
+/pi4j-gpio-extension/target
+/pi4j-gpio-extension/.classpath
+/pi4j-gpio-extension/.project
+/pi4j-gpio-extension/.settings
