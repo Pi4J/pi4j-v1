@@ -16,7 +16,9 @@ LIBS    = -L/usr/local/lib /usr/local/lib/libwiringPi.a
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=	com_pi4j_wiringpi_Gpio.c      \
+SRC	=   com_pi4j_jni_I2C.c            \
+	    com_pi4j_jni_Serial.c         \
+	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_Lcd.c       \
         com_pi4j_wiringpi_Shift.c     \
@@ -26,10 +28,11 @@ SRC	=	com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Nes.c       \
         com_pi4j_wiringpi_GpioPin.c   \
         com_pi4j_wiringpi_GpioUtil.c  \
-        com_pi4j_wiringpi_GpioInterrupt.c 
-        
+        com_pi4j_wiringpi_GpioInterrupt.c
 
-OBJ	=	com_pi4j_wiringpi_Gpio.o      \
+OBJ	=   com_pi4j_jni_I2C.o            \
+	    com_pi4j_jni_Serial.o         \
+	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
         com_pi4j_wiringpi_Lcd.o       \
         com_pi4j_wiringpi_Shift.o     \
@@ -76,7 +79,8 @@ uninstall:
 
 
 # DO NOT DELETE
-
+com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
+com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h  
 com_pi4j_wiringpi_GpioPin.o: com_pi4j_wiringpi_GpioPin.h
 com_pi4j_wiringpi_GpioUtil.o: com_pi4j_wiringpi_GpioUtil.h

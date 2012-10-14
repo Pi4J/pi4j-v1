@@ -79,7 +79,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     @Override
     public boolean hasPin(Pin pin)
     {
-        return (pin instanceof OlimexAVRIOPin);
+        return (pin.getProvider() == OlimexAVRIOGpioProvider.NAME);
     }
 
     @Override

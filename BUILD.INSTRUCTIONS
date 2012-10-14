@@ -31,7 +31,8 @@ Use the following command to deploy a snapshot build to the OSS Maven staging re
 > mvn clean deploy --projects pi4j-native -P native -P soft-float   (JNI native library for soft-float)
 
 If changes or additions are made to the Java JNI classes, then you may need to regenerate the native JNI .H header files.
-Use the following Maven command to regenerate the .H header source file.
+Use the following Maven command to regenerate the .H header source file.  
+(NOTE:  This command must be executed inside the pi4j-native project, not at the parent project level.)
 
 > mvn generate-sources -P native,generate-jni-headers
 

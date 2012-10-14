@@ -34,6 +34,12 @@ Welcome to Pi4J!
   * Triggers for automation based on pin state changes
   
   * Send & receive data via RS232 serial communication 
+
+  * I2C Communication 
+
+  * SPI Communication 
+
+  * Extensible GPIO Provider interface to add GPIO capacity via expansion boards     
   
   * Access system information and network information from the Raspberry Pi   
           
