@@ -1,9 +1,10 @@
+package com.pi4j.example.wiringpi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  WiringPiGpioTest.java  
+ * PROJECT       :  Pi4J :: Java Examples
+ * FILENAME      :  WiringPiGpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,7 +28,7 @@
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 
-public class WiringPiGpioTest
+public class WiringPiGpioExample
 {
     // Simple sequencer data
     // Triplets of LED, On/Off and delay

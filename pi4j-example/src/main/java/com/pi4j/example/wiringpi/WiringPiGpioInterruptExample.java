@@ -1,9 +1,10 @@
+package com.pi4j.example.wiringpi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  WiringPiGpioInterruptTest.java  
+ * PROJECT       :  Pi4J :: Java Examples
+ * FILENAME      :  WiringPiGpioInterruptExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +31,7 @@ import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioUtil;
 
-public class WiringPiGpioInterruptTest
+public class WiringPiGpioInterruptExample
 {
     public static void main(String args[]) throws InterruptedException
     {
