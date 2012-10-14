@@ -32,7 +32,8 @@
    *  Added support for analog GPIO pins (interfaces, methods and events). 
    *  Added Olimex AVR-IO-M16 GpioProvider to serve as an example of extending a new GpioProvider for GPIO expansion. 
    *  Added Olimex AVR-IO-M16 sources for ARV micro-controller.
-   *  Removed setDirection() from GpioPin; embedded this functionality into existing setMode() method.  Eliminating duplication. 
+   *  Removed setDirection() from GpioPin; embedded this functionality into existing setMode() method.  Eliminating duplication.
+   *  Removed old test programs from pi4j-core and moved wiringpi examples to pi4j-example project.  
    *  Added support for I2C communication.
 
 
