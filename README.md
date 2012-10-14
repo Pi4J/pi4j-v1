@@ -25,7 +25,7 @@
  
 ## RELEASES
 
- * 2012-10-15 :: 0.0.3-SNAPSHOT
+ 2012-10-15 :: 0.0.3-SNAPSHOT
  
    *  Refactored Gpio interfaces to permit extensible GpioProviders for add-on devices.
    *  Refactored Gpio interfaces to separate digital, analog, and PWM types of input and output pins.
@@ -35,7 +35,7 @@
    *  Removed setDirection() from GpioPin; embedded this functionality into existing setMode() method.  Eliminating duplication. 
    *  Added support for I2C communication.
 
- * 2012-09-23 :: 0.0.2-SNAPSHOT
+ 2012-09-23 :: 0.0.2-SNAPSHOT
  
    *  Refactored Gpio interface to permit methods using Pin argument to function without requiring a GpioPin to first be provisioned
    *  Added OSGi manifest 
@@ -45,8 +45,8 @@
    *  There were two Gpio classes; renamed one to GpioController to avoid confusion.
    *  Added OSGi service project to export Pi4J GPIO as an OSGi service.  
 
- * 2012-09-19 :: 0.0.1-SNAPSHOT
+ 2012-09-19 :: 0.0.1-SNAPSHOT
  
    *  Initial ALPHA release
  
-    
+ 
