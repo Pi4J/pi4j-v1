@@ -35,7 +35,7 @@ import java.io.PrintWriter;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.impl.I2CBusImpl;
+import com.pi4j.io.i2c.I2CFactory;
 
 
 public class I2CWiiMotionPlusExample {
@@ -46,7 +46,8 @@ public class I2CWiiMotionPlusExample {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting:");
         
-        I2CBus bus = I2CBusImpl.getBus(0);
+        // get I2C bus instance
+        I2CBus bus = I2CFactory.getInstance(I2CBus.I2C_BUS_0);
         
         WiiMotionPlus wiiMotionPlus = new WiiMotionPlus(bus);
         wiiMotionPlus.init();

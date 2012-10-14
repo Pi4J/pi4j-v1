@@ -150,10 +150,12 @@
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Export-Package>
 							com.pi4j.util.*,
+							com.pi4j.jni.*,
 							com.pi4j.wiringpi.*,
 							com.pi4j.system.*,
 							com.pi4j.io.serial.*,
-							com.pi4j.io.gpio.*
+							com.pi4j.io.gpio.*,
+							com.pi4j.io.i2c.*
 						</Export-Package>
 						<Private-Package>							
 						</Private-Package>

@@ -35,8 +35,7 @@ import com.pi4j.jni.I2C;
 
 public class I2CBusImpl implements I2CBus {
 
-    private static I2CBus bus0 = null;
-    
+    private static I2CBus bus0 = null;    
     private static I2CBus bus1 = null;
     
     public static I2CBus getBus(int busNumber) throws IOException {

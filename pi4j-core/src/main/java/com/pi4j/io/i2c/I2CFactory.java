@@ -1,13 +1,11 @@
 package com.pi4j.io.i2c;
 
-import java.io.IOException;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CBus.java  
+ * FILENAME      :  I2CFactory.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,13 +27,23 @@ import java.io.IOException;
  * #L%
  */
 
-public interface I2CBus {
 
-    public static final int I2C_BUS_0 = 0;
-    public static final int I2C_BUS_1 = 1;
-    
-	I2CDevice getDevice(int address) throws IOException;
-	
-	void close() throws IOException;
+import java.io.IOException;
+
+import com.pi4j.io.i2c.impl.I2CBusImpl;
+
+public class I2CFactory
+{
+    /**
+     * <h1>Create new I2CBus instance</h1>
+     * 
+     * @return <p>
+     *         Return a new I2CBus impl instance.
+     *         </p>
+     * @throws IOException 
+     */
+    public static I2CBus getInstance(int busNumber) throws IOException
+    {
+        return I2CBusImpl.getBus(busNumber);
+    }
 }
-
