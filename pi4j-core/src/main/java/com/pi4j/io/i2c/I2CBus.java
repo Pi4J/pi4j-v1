@@ -31,8 +31,8 @@ import java.io.IOException;
 
 public interface I2CBus {
 
-    public static final int I2C_BUS_0 = 0;
-    public static final int I2C_BUS_1 = 1;
+    public static final int BUS_0 = 0;
+    public static final int BUS_1 = 1;
     
 	I2CDevice getDevice(int address) throws IOException;
 	
