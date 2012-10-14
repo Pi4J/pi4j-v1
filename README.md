@@ -4,8 +4,8 @@
 
 ## PROJECT INFORMATION
 
- Project website: (http://www.pi4j.com/)
- Released builds are available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j).
+ Project website: (http://www.pi4j.com/) 
+ Release builds are available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j).
 
  Copyright (C) 2012 Pi4J
 
@@ -25,7 +25,7 @@
  
 ## RELEASES
 
-2012-10-15 :: 0.0.3-SNAPSHOT
+2012-10-14 :: 0.0.3-SNAPSHOT
  
    *  Refactored Gpio interfaces to permit extensible GpioProviders for add-on devices.
    *  Refactored Gpio interfaces to separate digital, analog, and PWM types of input and output pins.
