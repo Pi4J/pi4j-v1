@@ -28,6 +28,7 @@ package com.pi4j.example;
  */
 
 
+import com.pi4j.gpio.extension.olimex.OlimexAVRIOGpioProvider;
 import com.pi4j.gpio.extension.olimex.OlimexAVRIOPin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -41,6 +42,7 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.trigger.GpioPulseStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
+import com.pi4j.io.serial.Serial;
 
 /**
  * This example code demonstrates how to setup a listener
@@ -56,12 +58,15 @@ public class OlimexGpioExample
         
         // create gpio controller
         GpioController gpio = GpioFactory.getInstance();
-
+        
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
 
+        // create custom Olimex GPIO provider
+        OlimexAVRIOGpioProvider olimexProvider = new OlimexAVRIOGpioProvider(Serial.DEFAULT_COM_PORT);
+        
         // provision gpio input pin #01 from Olimex
-        GpioPinDigitalInput myInput = gpio.provisionDigitalInputPin(OlimexAVRIOPin.IN_01, "MyInput");
+        GpioPinDigitalInput myInput = gpio.provisionDigitalInputPin(olimexProvider, OlimexAVRIOPin.IN_01, "MyInput");
         
         // create and register gpio pin listener
         GpioExampleListener listener = new GpioExampleListener();
@@ -71,10 +76,10 @@ public class OlimexGpioExample
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
         GpioPinDigitalOutput myRelays[] =
           { 
-            gpio.provisionDigitalOuputPin(OlimexAVRIOPin.RELAY_01, "RELAY #1", PinState.LOW),
-            gpio.provisionDigitalOuputPin(OlimexAVRIOPin.RELAY_02, "RELAY #2", PinState.LOW),
-            gpio.provisionDigitalOuputPin(OlimexAVRIOPin.RELAY_03, "RELAY #3", PinState.LOW),
-            gpio.provisionDigitalOuputPin(OlimexAVRIOPin.RELAY_04, "RELAY #4", PinState.LOW)
+            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_01, "RELAY #1", PinState.LOW),
+            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_02, "RELAY #2", PinState.LOW),
+            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_03, "RELAY #3", PinState.LOW),
+            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_04, "RELAY #4", PinState.LOW)
           };
         
         // create a gpio control trigger on the input pin ; when the input goes HIGH, also set gpio pin #04 to HIGH

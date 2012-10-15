@@ -53,11 +53,6 @@ public class GpioProviderWrapper implements GpioProvider
         return provider;
     }
     
-    public void initialize()
-    {
-        provider.initialize();
-    }
-    
     public String getName()
     {
         return provider.getName();

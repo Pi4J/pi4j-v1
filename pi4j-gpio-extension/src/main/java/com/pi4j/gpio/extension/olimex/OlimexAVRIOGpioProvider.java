@@ -50,8 +50,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     private int currentStates = 0;
     private SerialCommandQueueProcessingThread queue;
 
-    @Override
-    public void initialize()
+    public OlimexAVRIOGpioProvider(String serialDevice)
     {
         com = SerialFactory.createInstance();
         
@@ -61,7 +60,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         // add/register the serial data listener
         com.addListener(listener);
         
-        com.open(Serial.DEFAULT_COM_PORT, 19200);
+        com.open(serialDevice, 19200);
         
         // create and start the serial command processing queue thread
         // set the delay time to 100 ms; this works well for the AVR-IO

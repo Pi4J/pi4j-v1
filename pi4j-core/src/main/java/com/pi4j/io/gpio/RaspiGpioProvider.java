@@ -42,8 +42,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     private PinMode mode;
     private PinPullResistance resistance;
 
-    @Override
-    public void initialize()
+    public RaspiGpioProvider()
     {
         // set wiringPi interface for internal use
         // we will use the WiringPi pin number scheme with the wiringPi library

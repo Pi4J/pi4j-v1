@@ -34,8 +34,6 @@ public interface GpioProvider
 {
     String getName();
     
-    void initialize();
-    
     boolean hasPin(Pin pin);
     
     void export(Pin pin, PinMode mode);

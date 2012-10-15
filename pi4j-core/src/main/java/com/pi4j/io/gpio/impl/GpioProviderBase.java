@@ -44,7 +44,6 @@ public abstract class GpioProviderBase implements GpioProvider
 {
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<Pin, List<PinListener>>();
 
-    public abstract void initialize();
     public abstract String getName();
     public abstract boolean hasPin(Pin pin);
     public abstract void export(Pin pin, PinMode mode);
