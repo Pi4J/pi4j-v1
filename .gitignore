@@ -5,6 +5,8 @@
 *.war
 *.ear
 
+maven-eclipse.xml
+.externalToolBuilders
 /target
 /.settings
 /pi4j-core/.settings

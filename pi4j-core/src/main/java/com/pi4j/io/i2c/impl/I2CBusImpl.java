@@ -33,11 +33,29 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
 
+/**
+ * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
+ * particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only 
+ * one file per bus for all devices. Device implementations use this class file handle.
+ * 
+ * @author daniel
+ *
+ */
 public class I2CBusImpl implements I2CBus {
 
-    private static I2CBus bus0 = null;    
+    /** Singleton instance of bus 0 */
+    private static I2CBus bus0 = null;
+
+    /** Singleton instance of bus 1 */
     private static I2CBus bus1 = null;
     
+    /** 
+     * Factory method that returns bus implementation.
+     * 
+     * @param busNumber bus number
+     * @return appropriate bus implementation
+     * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
+     */
     public static I2CBus getBus(int busNumber) throws IOException {
         I2CBus bus = null;
         if (busNumber == 0) {
@@ -52,13 +70,25 @@ public class I2CBusImpl implements I2CBus {
                 bus = new I2CBusImpl("/dev/i2c-1");
                 bus1 = bus;
             }
+        } else {
+            throw new IOException("Unknown bus number " + busNumber);
         }
         return bus;
     }
 
+    /** File handle for this i2c bus */
     protected int fd;
+    
+    /** File name of this i2c bus */
     protected String filename;
     
+    /**
+     * Constructor of i2c bus implementation.
+     * 
+     * @param filename file name of device to be opened.
+     * 
+     * @throws IOException thrown in case that file cannot be opened
+     */
     public I2CBusImpl(String filename) throws IOException {
         this.filename = filename;
         fd = I2C.i2cOpen(filename);
@@ -67,11 +97,26 @@ public class I2CBusImpl implements I2CBus {
         }
     }
 
+    /**
+     * Returns i2c device implementation ({@link I2CDeviceImpl}).
+     * 
+     * @param address address of i2c device
+     * 
+     * @return implementation of i2c device with given address
+     * 
+     * @throws IOException never in this implementation
+     */
     @Override
     public I2CDevice getDevice(int address) throws IOException {
         return new I2CDeviceImpl(this, address);
     }
-    
+
+    /**
+     * Closes this i2c bus
+     * 
+     * @throws IOException never in this implementation
+     */
+    @Override
     public void close() throws IOException {
         I2C.i2cClose(fd);
     }
