@@ -222,7 +222,7 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public void pulse(long milliseconds)
     {
-        GpioPulseImpl.execute(gpio, pin, milliseconds);
+        GpioPulseImpl.execute(gpio, provider, pin, milliseconds);
     }
 
     @Override

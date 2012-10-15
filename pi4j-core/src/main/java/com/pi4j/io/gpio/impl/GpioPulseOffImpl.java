@@ -29,21 +29,24 @@ package com.pi4j.io.gpio.impl;
 
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
 
 public class GpioPulseOffImpl implements Runnable
 {
     private final GpioController gpio;
+    private final GpioProvider provider;
     private final Pin pin;
     
-    public GpioPulseOffImpl(GpioController gpio, Pin pin)
+    public GpioPulseOffImpl(GpioController gpio, GpioProvider provider, Pin pin)
     {
         this.gpio = gpio;
+        this.provider = provider;
         this.pin = pin;        
     }
 
     public void run()
     {
-        gpio.low(pin);
+        gpio.low(provider, pin);
     }
 }

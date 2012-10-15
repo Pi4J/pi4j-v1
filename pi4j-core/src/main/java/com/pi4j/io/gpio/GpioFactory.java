@@ -28,12 +28,7 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 import com.pi4j.io.gpio.impl.GpioControllerImpl;
-import com.pi4j.io.gpio.impl.GpioProviderWrapper;
 
 /**
  * <h1>GPIO Factory</h1>
@@ -65,23 +60,8 @@ public class GpioFactory
     // we only allow a single controller to exists
     private static GpioController controller = null;
 
-    /**
-     * <h1>Get a list of the GPIO Providers on the system</h1>
-     * 
-     * @return <p>list of GpioProviders</p>
-     */
-    public static Map<String, GpioProvider> getProviders()
-    {
-        Map<String, GpioProvider> providers = new HashMap<String, GpioProvider>();
-
-        // lookup all GpioProviders using the service loader
-        ServiceLoader<GpioProvider> serviceLoader = ServiceLoader.load(GpioProvider.class);
-        for (GpioProvider provider : serviceLoader) 
-            providers.put(provider.getName(), new GpioProviderWrapper(provider));
-        
-        // return the listing of providers
-        return providers;
-    }
+    // we only allow a single default provider to exists
+    private static GpioProvider provider = null;
     
     /**
      * <h1>Create New GPIO Controller instance</h1>
@@ -99,4 +79,16 @@ public class GpioFactory
         // else return a copy of the existing controller
         return controller;
     }
+    
+    
+    public static GpioProvider getDefaultProvider()
+    {
+        // if a provider has not been created, then create a new instance
+        if(provider == null)
+            provider = new RaspiGpioProvider();
+
+        // return the provider instance
+        return provider;
+    }
+    
 }
