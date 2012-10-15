@@ -59,6 +59,7 @@ public class GpioPinImpl implements GpioPin,
                                     GpioPinInput,
                                     GpioPinOutput
 {
+    @SuppressWarnings("unused")
     private final GpioController gpio;
     private String name = null;
     private final GpioProvider provider;
@@ -222,7 +223,7 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public void pulse(long milliseconds)
     {
-        GpioPulseImpl.execute(gpio, provider, pin, milliseconds);
+        GpioPulseImpl.execute(this, milliseconds);
     }
 
     @Override
@@ -252,7 +253,7 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public PinState getState()
     {
-        return gpio.getState(pin);
+        return provider.getState(pin);
     }
 
     @Override

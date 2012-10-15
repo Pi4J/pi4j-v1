@@ -2,13 +2,12 @@ package com.pi4j.gpio.extension.olimex;
 
 import com.pi4j.gpio.extension.serial.SerialCommandQueueProcessingThread;
 import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.gpio.impl.GpioProviderBase;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
 import com.pi4j.io.serial.SerialDataListener;
@@ -52,6 +51,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
 
     public OlimexAVRIOGpioProvider(String serialDevice)
     {
+        // create serial communications instance
         com = SerialFactory.createInstance();
         
         // create serial data listener
@@ -60,6 +60,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         // add/register the serial data listener
         com.addListener(listener);
         
+        // open serial port for communication
         com.open(serialDevice, 19200);
         
         // create and start the serial command processing queue thread
@@ -76,39 +77,21 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     }
 
     @Override
-    public boolean hasPin(Pin pin)
-    {
-        return (pin.getProvider() == OlimexAVRIOGpioProvider.NAME);
-    }
-
-    @Override
-    public void export(Pin pin, PinMode mode)
-    {
-        // NOT SUPPORTED        
-    }
-
-    @Override
-    public boolean isExported(Pin pin)
-    {
-        // NOT SUPPORTED        
-        return false;
-    }
-
-    @Override
-    public void unexport(Pin pin)
-    {
-        // NOT SUPPORTED        
-    }
-
-    @Override
     public void setMode(Pin pin, PinMode mode)
     {
-        // ALL PIN MODES ARE PREDEFINED        
+        // ALL PIN MODES ARE PREDEFINED
+        //
+        // an exception will be throw by the base impl 
+        // if an alternate mode is selected for a pin 
+        // instance
+        super.setMode(pin, mode);
     }
 
     @Override
     public PinMode getMode(Pin pin)
     {
+        super.getMode(pin);
+        
         // return first mode found; this device has singular fixed pin modes
         for(PinMode mode : pin.getSupportedPinModes())
             return mode;
@@ -117,47 +100,10 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     }
 
     @Override
-    public void setPullResistance(Pin pin, PinPullResistance resistance)
-    {
-        // NOT SUPPORTED        
-    }
-
-    @Override
-    public PinPullResistance getPullResistance(Pin pin)
-    {
-        // NOT SUPPORTED        
-        return null;
-    }
-
-    @Override
-    public void setValue(Pin pin, int value)
-    {
-        // NOT SUPPORTED        
-    }
-
-    @Override
-    public int getValue(Pin pin)
-    {
-        // NOT SUPPORTED        
-        return -1;
-    }
-
-    @Override
-    public void setPwm(Pin pin, int value)
-    {
-        // NOT SUPPORTED        
-    }
-
-    @Override
-    public int getPwm(Pin pin)
-    {
-        // NOT SUPPORTED        
-        return -1;
-    }
-    
-    @Override
     public void setState(Pin pin, PinState state)
     {
+        super.setState(pin, state);
+
         // turn ON/OFF relay pins
         if(state == PinState.HIGH)
             queue.put("+" + pin.getAddress());
@@ -168,6 +114,9 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     @Override
     public PinState getState(Pin pin)
     {
+        super.getState(pin);
+
+        // calculate current state from the bitmask value
         int bit = (int)Math.pow(2, (pin.getAddress()-1));
         int state = (currentStates & bit);
         return (state == bit) ? PinState.HIGH : PinState.LOW;

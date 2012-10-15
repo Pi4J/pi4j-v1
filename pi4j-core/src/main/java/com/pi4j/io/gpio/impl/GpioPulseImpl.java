@@ -36,19 +36,17 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 
 public class GpioPulseImpl
 {
     @SuppressWarnings("rawtypes")
-    private static final ConcurrentHashMap<Pin, ScheduledFuture> tasks = new ConcurrentHashMap<Pin, ScheduledFuture>();
+    private static final ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture>();
     private static ScheduledExecutorService scheduledExecutorService;
 
 // TODO : index tasks map with unique provider and pin, not just pin
 
-    public synchronized static void execute(GpioController gpio, GpioProvider provider, Pin pin, long milliseconds)
+    public synchronized static void execute(GpioPinDigitalOutput pin, long milliseconds)
     {
         if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
@@ -63,11 +61,11 @@ public class GpioPulseImpl
         }
 
         // set the high state
-        gpio.high(provider, pin);
+        pin.high();
 
         // create future job to return the pin to the low state
         ScheduledFuture<?> scheduledFuture = scheduledExecutorService
-            .schedule(new GpioPulseOffImpl(gpio, provider, pin), milliseconds, TimeUnit.MILLISECONDS);
+            .schedule(new GpioPulseOffImpl(pin), milliseconds, TimeUnit.MILLISECONDS);
 
         // add the new scheduled job to the tasks map
         tasks.put(pin, scheduledFuture);
@@ -79,7 +77,7 @@ public class GpioPulseImpl
         {
             public Object call() throws Exception
             {
-                for (Entry<Pin, ScheduledFuture> item : tasks.entrySet())
+                for (Entry<GpioPinDigitalOutput, ScheduledFuture> item : tasks.entrySet())
                 {
                     ScheduledFuture task = item.getValue();
                     if (task.isCancelled() || task.isDone())

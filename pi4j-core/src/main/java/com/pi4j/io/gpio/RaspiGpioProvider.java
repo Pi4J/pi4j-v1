@@ -2,8 +2,6 @@ package com.pi4j.io.gpio;
 
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.impl.GpioProviderBase;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
 
@@ -39,9 +37,6 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
 {
     public static final String NAME = "RaspberryPi GPIO Provider";
     
-    private PinMode mode;
-    private PinPullResistance resistance;
-
     public RaspiGpioProvider()
     {
         // set wiringPi interface for internal use
@@ -64,6 +59,8 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void export(Pin pin, PinMode mode)
     {
+        super.export(pin, mode);
+       
         // export the pin and set the mode
         com.pi4j.wiringpi.GpioUtil.export(pin.getAddress(), mode.getDirection().getValue());
         setMode(pin, mode);
@@ -72,6 +69,8 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public boolean isExported(Pin pin)
     {
+        super.isExported(pin);
+        
         // return the pin exported state
         return com.pi4j.wiringpi.GpioUtil.isExported(pin.getAddress());
     }
@@ -79,6 +78,8 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void unexport(Pin pin)
     {
+        super.unexport(pin);
+
         // unexport the pins
         com.pi4j.wiringpi.GpioUtil.unexport(pin.getAddress());
     }
@@ -86,48 +87,50 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void setMode(Pin pin, PinMode mode)
     {
+        super.setMode(pin, mode);
+
         com.pi4j.wiringpi.Gpio.pinMode(pin.getAddress(), mode.getValue());
         
         // if this is an input pin, then configure edge detection
         if(PinMode.allInputs().contains(mode))
             com.pi4j.wiringpi.GpioUtil.setEdgeDetection(pin.getAddress(), PinEdge.BOTH.getValue());
-        
-        // cache mode
-        this.mode = mode;
     }
 
     @Override
     public PinMode getMode(Pin pin)
     {
-        // TODO get actual pin mode from native impl
-        return mode;
+        // TODO : get actual pin mode from native impl
+        return super.getMode(pin);
     }
     
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance)
     {
+        super.setPullResistance(pin, resistance);
+
         com.pi4j.wiringpi.Gpio.pullUpDnControl(pin.getAddress(), resistance.getValue());
-        
-        // cache resistance
-        this.resistance = resistance;
     }
 
     @Override
     public PinPullResistance getPullResistance(Pin pin)
     {
-        // TODO get actual pin pull resistance from native impl
-        return resistance;
+        // TODO : get actual pin pull resistance from native impl
+        return super.getPullResistance(pin);
     }
     
     @Override
     public void setState(Pin pin, PinState state)
     {
+        super.setState(pin, state);
+
         com.pi4j.wiringpi.Gpio.digitalWrite(pin.getAddress(), state.getValue());        
     }
 
     @Override
     public PinState getState(Pin pin)
     {
+        super.getState(pin);
+        
         // return pin state
         PinState state = null;
         int ret = com.pi4j.wiringpi.Gpio.digitalRead(pin.getAddress());
@@ -139,38 +142,34 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void setValue(Pin pin, int value)
     {
+        super.setValue(pin, value);
         throw new RuntimeException("This GPIO provider does not support analog pins.");
     }
 
     @Override
     public int getValue(Pin pin)
     {
+        super.getValue(pin);
         throw new RuntimeException("This GPIO provider does not support analog pins.");
     }
 
     @Override
     public void setPwm(Pin pin, int value)
     {
-        PinMode mode = getMode(pin);
+        super.setPwm(pin, value);
 
-        if(mode == PinMode.PWM_OUTPUT)
-        {
+        if(getMode(pin) == PinMode.PWM_OUTPUT)
             setPwmValue(pin, value);
-        }
-        else
-        {
-            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
-        }
     }
 
     @Override
     public int getPwm(Pin pin)
     {
-        // TODO implement actual pin value getter in native impl
-        throw new RuntimeException("NOT IMPLEMENTED");
+        return super.getPwm(pin);
     }
     
-    public void setPwmValue(Pin pin, int value)
+    // internal
+    private void setPwmValue(Pin pin, int value)
     {
         // set pin PWM value
         com.pi4j.wiringpi.Gpio.pwmWrite(pin.getAddress(), value);

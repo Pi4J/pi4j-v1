@@ -1,22 +1,11 @@
-package com.pi4j.io.gpio.impl;
-
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
+package com.pi4j.io.gpio;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioProviderWrapper.java  
+ * FILENAME      :  GpioProviderBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -39,28 +28,33 @@ import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
  */
 
 
-public class GpioProviderWrapper implements GpioProvider
-{
-    private final GpioProvider provider;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-    public GpioProviderWrapper(GpioProvider provider)
-    {
-        this.provider = provider;
-    }
+import com.pi4j.io.gpio.event.PinListener;
+import com.pi4j.io.gpio.exception.InvalidPinException;
+import com.pi4j.io.gpio.exception.InvalidPinModeException;
+import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
+import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
+
+public abstract class GpioProviderBase implements GpioProvider
+{
+    public abstract String getName();
+
+    protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<Pin, List<PinListener>>();
+    protected PinMode mode;
+    protected PinState state;
+    protected PinPullResistance resistance;
+    protected int analogValue = -1;
+    protected int pwmValue = -1;
+    protected boolean exported = false; 
     
-    public GpioProvider getUnderlyingProvider()
-    {
-        return provider;
-    }
-    
-    public String getName()
-    {
-        return provider.getName();
-    }
-    
+    @Override
     public boolean hasPin(Pin pin)
     {
-        return provider.hasPin(pin);
+        return (pin.getProvider() == getName());
     }
     
     @Override
@@ -72,7 +66,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(!pin.getSupportedPinModes().contains(mode))
             throw new UnsupportedPinModeException(pin, mode);
         
-        provider.export(pin, mode);
+        // cache exported state
+        this.exported = true;                
     }
     
     @Override
@@ -81,7 +76,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
         
-        return provider.isExported(pin);
+        // return cached exported state
+        return this.exported;
     }
 
     @Override
@@ -90,7 +86,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
         
-        provider.unexport(pin);        
+        // cache exported state
+        this.exported = false;
     }
 
     @Override
@@ -102,7 +99,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(!pin.getSupportedPinModes().contains(mode))
             throw new UnsupportedPinModeException(pin, mode);
         
-        provider.setMode(pin, mode);
+        // cache mode
+        this.mode = mode;        
     }
 
     @Override
@@ -110,8 +108,9 @@ public class GpioProviderWrapper implements GpioProvider
     {
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
-        
-        return provider.getMode(pin);
+
+        // return cached mode value
+        return mode;
     }
     
     
@@ -124,7 +123,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(!pin.getSupportedPinPullResistance().contains(resistance))
             throw new UnsupportedPinPullResistanceException(pin, resistance);
         
-        provider.setPullResistance(pin, resistance);
+        // cache resistance
+        this.resistance = resistance;        
     }
 
     @Override
@@ -133,7 +133,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
         
-        return provider.getPullResistance(pin);
+        // return cached resistance
+        return resistance;
     }
     
     @Override
@@ -148,7 +149,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(mode != PinMode.DIGITAL_OUTPUT)
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + mode.getName() + "]");
         
-        provider.setState(pin, state);
+        // cache pin state
+        this.state = state;                        
     }
 
     @Override
@@ -163,7 +165,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(!PinMode.allDigital().contains(mode))
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot getState() when pin mode is [" + mode.getName() + "]");
 
-        return provider.getState(pin);
+        // return cached pin state
+        return this.state;                        
     }
 
     @Override
@@ -178,16 +181,8 @@ public class GpioProviderWrapper implements GpioProvider
         if(!PinMode.allOutput().contains(mode))
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setValue(" + value + ") when pin mode is [" + mode.getName() + "]");
         
-        // if this pin is set as a digital output mode, 
-        // then use the set state method instead
-        if(mode == PinMode.DIGITAL_OUTPUT)
-        {
-            setState(pin, (value > 0) ? PinState.HIGH : PinState.LOW);
-        }
-        else
-        {
-            provider.setValue(pin, value);
-        }
+        // cache pin analog value
+        this.analogValue = value;                                
     }
 
     @Override
@@ -202,39 +197,79 @@ public class GpioProviderWrapper implements GpioProvider
         {
             return getState(pin).getValue(); 
         }
-        else
-        {
-            return provider.getValue(pin);
-        }
+        
+        // return cached pin analog value
+        return this.analogValue;                             
     }
-
+    
     @Override
     public void setPwm(Pin pin, int value)
     {
-        provider.setPwm(pin, value);
-    }
+        if(hasPin(pin) == false)
+            throw new InvalidPinException(pin);        
+        
+        PinMode mode = getMode(pin);
 
+        if(mode != PinMode.PWM_OUTPUT)
+        {
+            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
+        }
+        
+        // cache pin PWM value
+        this.pwmValue = value;                                        
+    }
+    
+    
     @Override
     public int getPwm(Pin pin)
     {
-        return provider.getPwm(pin);
+        if(hasPin(pin) == false)
+            throw new InvalidPinException(pin);        
+
+        // return cached pin PWM value
+        return this.pwmValue;                                        
     }
     
     @Override
     public void addListener(Pin pin, PinListener listener)
     {
-        provider.addListener(pin, listener);        
+        // create new pin listener entry if one does not already exist
+        if(!listeners.containsKey(pin))
+            listeners.put(pin, new ArrayList<PinListener>());
+        
+        // add the listener instance to the listeners map entry 
+        List<PinListener> lsnrs = listeners.get(pin);
+        if(!lsnrs.contains(listener))
+            lsnrs.add(listener);
     }
     
     @Override
     public void removeListener(Pin pin, PinListener listener)
     {
-        provider.removeListener(pin, listener);        
-    }
+        // lookup to pin entry in the listeners map
+        if(listeners.containsKey(pin))
+        {
+            // remote the listener instance from the listeners map entry if found 
+            List<PinListener> lsnrs = listeners.get(pin);
+            if(lsnrs.contains(listener))
+                lsnrs.remove(listener);
+            
+            // if the listener list is empty, then remove the listener pin from the map
+            if(lsnrs.isEmpty())
+                listeners.remove(pin);
+        }
+    }    
     
     @Override
     public void removeAllListeners()
     {
-        provider.removeAllListeners();        
+        // iterate over all listener pins in the map
+        for(Pin pin : listeners.keySet())
+        {
+            // iterate over all listener handler in the map entry
+            // and remove each listener handler instance
+            for(PinListener listener : listeners.get(pin))
+                removeListener(pin, listener);
+        }
     }
 }
