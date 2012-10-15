@@ -57,8 +57,6 @@ public class GpioControllerImpl implements GpioController
     private final List<GpioPin> pins = Collections.synchronizedList(new ArrayList<GpioPin>());
     private final GpioProvider defaultProvider;
     
-// TODO : deal with GpioProviderWrapper
-    
     /**
      * Default Constructor
      */

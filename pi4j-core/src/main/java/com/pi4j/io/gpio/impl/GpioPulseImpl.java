@@ -44,8 +44,6 @@ public class GpioPulseImpl
     private static final ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture>();
     private static ScheduledExecutorService scheduledExecutorService;
 
-// TODO : index tasks map with unique provider and pin, not just pin
-
     public synchronized static void execute(GpioPinDigitalOutput pin, long milliseconds)
     {
         if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
