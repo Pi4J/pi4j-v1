@@ -45,9 +45,23 @@ import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
 import com.pi4j.io.serial.Serial;
 
 /**
- * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the Raspberry Pi.  
+ * <p>
+ * This example code demonstrates how to setup a custom GpioProvider
+ * for GPIO pin state control and monitoring.
+ * </p>  
  * 
+ * <p>
+ * This exmaple implements the Olimex AVR-IO-M-16 expansion board.
+ * More information about the board can be found here: *
+ * https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
+ * </p>
+ * 
+ * <p>
+ * The Olimex AVR-IO board is connected via RS232 serial connection to the Raspberry Pi and provides
+ * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
+ * </p>
+ * 
+ * @see https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * @author Robert Savage
  */
 public class OlimexGpioExample

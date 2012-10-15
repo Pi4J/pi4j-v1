@@ -40,7 +40,22 @@ import com.pi4j.io.serial.SerialFactory;
  * #L%
  */
 
-
+/**
+ * <p>
+ * This GPIO provider implements the Olimex AVR-IO-M-16 expansion board as native Pi4J GPIO pins.
+ * More information about the board can be found here: *
+ * https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
+ * </p>
+ * 
+ * <p>
+ * The Olimex AVR-IO board is connected via RS232 serial connection to the Raspberry Pi and provides
+ * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
+ * </p>
+ * 
+ * @see https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
+ * @author Robert Savage
+ * 
+ */
 public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioProvider
 {
     public static final String NAME = "com.pi4j.gpio.extension.olimex.OlimexAVRIOGpioProvider";

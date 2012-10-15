@@ -39,7 +39,7 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * </p>
  * 
  * <p>
- * The Olimex AVR-IO board is connected vai RS232 serial connection to the Raspberry Pi and provides
+ * The Olimex AVR-IO board is connected via RS232 serial connection to the Raspberry Pi and provides
  * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
  * </p>
  * 
