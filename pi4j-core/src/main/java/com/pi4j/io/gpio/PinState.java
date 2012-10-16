@@ -79,6 +79,11 @@ public enum PinState
         }
         return null;
     }
+
+    public static PinState getInverseState(PinState state)
+    {
+        return (state == HIGH ? LOW : HIGH);
+    }
     
     public static PinState getState(boolean state)
     {

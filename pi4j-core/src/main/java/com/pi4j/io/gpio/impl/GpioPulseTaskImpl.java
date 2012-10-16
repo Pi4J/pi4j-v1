@@ -29,18 +29,21 @@ package com.pi4j.io.gpio.impl;
 
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
 
-public class GpioPulseOffImpl implements Runnable
+public class GpioPulseTaskImpl implements Runnable
 {
     private final GpioPinDigitalOutput pin;
+    private final PinState inactiveState;
     
-    public GpioPulseOffImpl(GpioPinDigitalOutput pin)
+    public GpioPulseTaskImpl(GpioPinDigitalOutput pin, PinState inactiveState)
     {
         this.pin = pin;        
+        this.inactiveState = inactiveState;
     }
 
     public void run()
     {
-        pin.low();
+        pin.setState(inactiveState);
     }
 }

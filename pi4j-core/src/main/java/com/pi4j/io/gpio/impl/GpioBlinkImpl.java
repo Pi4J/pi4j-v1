@@ -5,7 +5,7 @@ package com.pi4j.io.gpio.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPulseImpl.java  
+ * FILENAME      :  GpioBlinkImpl.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,8 +28,6 @@ package com.pi4j.io.gpio.impl;
  */
 
 
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -39,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioPulseImpl
+public class GpioBlinkImpl
 {
     @SuppressWarnings("rawtypes")
     private static final ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture>();
@@ -57,38 +55,26 @@ public class GpioPulseImpl
             ScheduledFuture<?> previouslyScheduled = tasks.get(pin);
             previouslyScheduled.cancel(true);
             tasks.remove(pin);
+            
+            // make sure pin is set to inactive state
+            pin.setState(PinState.getInverseState(activeState));
+        }
+        
+        if(milliseconds > 0)
+        {
+            // make sure pin starts in active state
+            pin.setState(activeState);
+            
+            // create future job to toggle the pin state
+            ScheduledFuture<?> scheduledFuture = scheduledExecutorService
+                .scheduleAtFixedRate(new GpioBlinkTaskImpl(pin), milliseconds, milliseconds, TimeUnit.MILLISECONDS);
+    
+            // add the new scheduled job to the tasks map
+            tasks.put(pin, scheduledFuture);
         }
 
-        // set the active state
-        pin.setState(activeState);
-
-        // create future job to return the pin to the low state
-        ScheduledFuture<?> scheduledFuture = scheduledExecutorService
-            .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(activeState)), milliseconds, TimeUnit.MILLISECONDS);
-
-        // add the new scheduled job to the tasks map
-        tasks.put(pin, scheduledFuture);
-
-        // create future job to return the pin to the low state
-        @SuppressWarnings(
-        { "rawtypes", "unchecked", "unused" })
-        ScheduledFuture<?> cleanupFuture = scheduledExecutorService.schedule(new Callable()
-        {
-            public Object call() throws Exception
-            {
-                for (Entry<GpioPinDigitalOutput, ScheduledFuture> item : tasks.entrySet())
-                {
-                    ScheduledFuture task = item.getValue();
-                    if (task.isCancelled() || task.isDone())
-                    {
-                        tasks.remove(item.getKey());
-                    }
-                }
-                return null;
-            }
-        }, (milliseconds + 500), TimeUnit.MILLISECONDS);
-
         // shutdown service when tasks are complete
-        scheduledExecutorService.shutdown();
+        if(tasks.isEmpty())
+            scheduledExecutorService.shutdown();
     }
 }

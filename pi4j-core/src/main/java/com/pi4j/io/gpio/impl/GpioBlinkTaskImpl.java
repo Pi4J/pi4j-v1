@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.io.gpio.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinDigitalOutput.java  
+ * FILENAME      :  GpioBlinkTaskImpl.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,15 +28,19 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+
+public class GpioBlinkTaskImpl implements Runnable
 {
-    void high();
-    void low();    
-    void toggle();
-    void blink(long milliseconds);
-    void blink(long milliseconds, PinState blinkState);
-    void pulse(long milliseconds);    
-    void pulse(long milliseconds, PinState pulseState);
-    void setState(PinState state);
-    void setState(boolean state);
+    private final GpioPinDigitalOutput pin;
+    
+    public GpioBlinkTaskImpl(GpioPinDigitalOutput pin)
+    {
+        this.pin = pin;        
+    }
+
+    public void run()
+    {
+        pin.toggle();
+    }
 }
