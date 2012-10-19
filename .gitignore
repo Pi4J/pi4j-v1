@@ -29,3 +29,7 @@
 /pi4j-gpio-extension/.classpath
 /pi4j-gpio-extension/.project
 /pi4j-gpio-extension/.settings
+/pi4j-device/target
+/pi4j-device/.settings
+/pi4j-device/.classpath
+/pi4j-device/.project

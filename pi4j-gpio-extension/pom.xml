@@ -17,10 +17,6 @@
 			<artifactId>pi4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>		
 	</dependencies>
 
 	<!-- BUILD INSTRUCTIONS -->

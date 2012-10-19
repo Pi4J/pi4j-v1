@@ -82,6 +82,7 @@
 		<module>pi4j-example</module>
 		<module>pi4j-service</module>
 		<module>pi4j-gpio-extension</module>
+		<module>pi4j-device</module>
 	</modules>
 
 	<!-- BUILD PROPERTIES -->

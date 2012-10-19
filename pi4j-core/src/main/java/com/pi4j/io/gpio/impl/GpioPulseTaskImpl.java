@@ -5,7 +5,7 @@ package com.pi4j.io.gpio.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPulseOffImpl.java  
+ * FILENAME      :  GpioPulseTaskImpl.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
