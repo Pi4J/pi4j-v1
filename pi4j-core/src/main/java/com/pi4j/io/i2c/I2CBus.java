@@ -1,7 +1,5 @@
 package com.pi4j.io.i2c;
 
-import java.io.IOException;
-
 /*
  * #%L
  * **********************************************************************
@@ -29,13 +27,32 @@ import java.io.IOException;
  * #L%
  */
 
+import java.io.IOException;
+
+/**
+ * This is abstraction of i2c bus. This interface allows bus to return i2c device.
+ * 
+ * @author Daniel Sendula
+ *
+ */
 public interface I2CBus {
 
     public static final int BUS_0 = 0;
     public static final int BUS_1 = 1;
-    
-	I2CDevice getDevice(int address) throws IOException;
-	
-	void close() throws IOException;
-}
 
+    /**
+     * Returns i2c device.
+     * @param address i2c device's address
+     * @return i2c device
+     * 
+     * @throws IOException thrown in case this bus cannot return i2c device.
+     */
+    I2CDevice getDevice(int address) throws IOException;
+    
+    /**
+     * Closes this bus. This usually means closing underlying file.
+     * 
+     * @throws IOException thrown in case there are problems closing this i2c bus.
+     */
+    void close() throws IOException;
+}
