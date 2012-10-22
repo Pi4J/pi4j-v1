@@ -38,7 +38,7 @@ import com.pi4j.jni.I2C;
  * particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only 
  * one file per bus for all devices. Device implementations use this class file handle.
  * 
- * @author daniel
+ * @author Daniel Sendula
  *
  */
 public class I2CBusImpl implements I2CBus {
