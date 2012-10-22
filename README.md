@@ -23,9 +23,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  
+## FUTURE PLANS
+
+   *  Add Java API support for SPI communication. (JNI wrapper for wiringPi SPI already exists)
+   *  Enhance/replace serial communication API.
+   *  Create additional GpioProvider implementations
+   *  Create device abstraction implementations
+
 ## RELEASES
 
-2012-10-14 :: 0.0.3-SNAPSHOT
+2012-10-22 :: 0.0.3-SNAPSHOT
  
    *  Refactored Gpio interfaces to permit extensible GpioProviders for add-on devices.
    *  Refactored Gpio interfaces to separate digital, analog, and PWM types of input and output pins.
@@ -33,7 +40,7 @@
    *  Added Olimex AVR-IO-M16 GpioProvider to serve as an example of extending a new GpioProvider for GPIO expansion. 
    *  Added Olimex AVR-IO-M16 sources for ARV micro-controller.
    *  Removed setDirection() from GpioPin; embedded this functionality into existing setMode() method.  Eliminating duplication.
-   *  Removed old test programs from pi4j-core and moved wiringpi examples to pi4j-example project.  
+   *  Removed old test programs from pi4j-core and moved wiringPi examples to pi4j-example project.  
    *  Added support for I2C communication.
    *  Added blink() methods for GPIO pins
 
