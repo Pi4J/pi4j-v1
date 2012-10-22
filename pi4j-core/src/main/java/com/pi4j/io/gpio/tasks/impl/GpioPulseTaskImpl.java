@@ -1,4 +1,4 @@
-package com.pi4j.io.gpio.impl;
+package com.pi4j.io.gpio.tasks.impl;
 
 /*
  * #%L

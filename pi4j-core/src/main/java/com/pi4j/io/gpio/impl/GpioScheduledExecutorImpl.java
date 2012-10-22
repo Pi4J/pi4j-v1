@@ -28,6 +28,7 @@ package com.pi4j.io.gpio.impl;
  */
 
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -38,96 +39,146 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.tasks.impl.GpioBlinkStopTaskImpl;
+import com.pi4j.io.gpio.tasks.impl.GpioBlinkTaskImpl;
+import com.pi4j.io.gpio.tasks.impl.GpioPulseTaskImpl;
 
 public class GpioScheduledExecutorImpl
 {
-    @SuppressWarnings("rawtypes")
-    private static final ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture> tasks = new ConcurrentHashMap<GpioPinDigitalOutput, ScheduledFuture>();
+    private static final ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>>();
     private static ScheduledExecutorService scheduledExecutorService;
 
-    public synchronized static void pulse(GpioPinDigitalOutput pin, long milliseconds, PinState pulseState)
+    private synchronized static void init(GpioPinDigitalOutput pin)
     {
         if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
 
-        // first determine if an existing pulse job is already scheduled for this pin
-        if (tasks.containsKey(pin))
+        // determine if any existing future tasks are already scheduled for this pin
+        if (pinTaskQueue.containsKey(pin))
         {
-            // if a job is found, then cancel it immediately and remove the job
-            ScheduledFuture<?> previouslyScheduled = tasks.get(pin);
-            previouslyScheduled.cancel(true);
-            tasks.remove(pin);
+            // if a task is found, then cancel all pending tasks immediately and remove them
+            ArrayList<ScheduledFuture<?>> tasks = pinTaskQueue.get(pin);
+            if(tasks != null && !tasks.isEmpty())
+            {
+                for(int index =  (tasks.size() - 1); index >= 0; index--)
+                {
+                    ScheduledFuture<?> task = tasks.get(index);
+                    task.cancel(true);
+                    tasks.remove(index);
+                }
+            }
+            
+            // if no remaining future tasks are remaining, then remove this pin from the tasks queue
+            if(tasks.isEmpty())
+                pinTaskQueue.remove(pin);                    
         }
+    }
+    
+    private synchronized static ScheduledFuture<?> createCleanupTask(long delay)
+    {
+        // create future task to clean up completed tasks
+        @SuppressWarnings(
+        { "rawtypes", "unchecked" })
+        ScheduledFuture<?> cleanupFutureTask = scheduledExecutorService.schedule(new Callable()
+        {
+            public Object call() throws Exception
+            {
+                for (Entry<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet())
+                {
+                    ArrayList<ScheduledFuture<?>> remainingTasks = item.getValue();
 
-        if(milliseconds > 0)
+                    // if a task is found, then cancel all pending tasks immediately and remove them
+                    if(remainingTasks != null && !remainingTasks.isEmpty())
+                    {
+                        for(int index = (remainingTasks.size() - 1); index >= 0; index--)
+                        {
+                            ScheduledFuture<?> remainingTask = remainingTasks.get(index);
+                            if (remainingTask.isCancelled() || remainingTask.isDone())
+                                remainingTasks.remove(index);
+                        }
+                    }
+                }
+                return null;
+            }
+        }, delay, TimeUnit.MILLISECONDS);
+        
+        return cleanupFutureTask;
+    }
+    
+    public synchronized static void pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState)
+    {
+        // perform the initial startup and cleanup for this pin 
+        init(pin);
+
+        // we only pulse for requests with a valid duration in milliseconds
+        if(duration > 0)
         {
             // set the active state
             pin.setState(pulseState);
             
             // create future job to return the pin to the low state
             ScheduledFuture<?> scheduledFuture = scheduledExecutorService
-                .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState)), milliseconds, TimeUnit.MILLISECONDS);
-    
-            // add the new scheduled job to the tasks map
-            tasks.put(pin, scheduledFuture);
-    
-            // create future job to clean up completed tasks
-            @SuppressWarnings(
-            { "rawtypes", "unchecked", "unused" })
-            ScheduledFuture<?> cleanupFuture = scheduledExecutorService.schedule(new Callable()
-            {
-                public Object call() throws Exception
-                {
-                    for (Entry<GpioPinDigitalOutput, ScheduledFuture> item : tasks.entrySet())
-                    {
-                        ScheduledFuture task = item.getValue();
-                        if (task.isCancelled() || task.isDone())
-                        {
-                            tasks.remove(item.getKey());
-                        }
-                    }
-                    return null;
-                }
-            }, (milliseconds + 500), TimeUnit.MILLISECONDS);
+                .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState)), duration, TimeUnit.MILLISECONDS);
+
+            // get pending tasks for the current pin
+            ArrayList<ScheduledFuture<?>> tasks;
+            if (!pinTaskQueue.containsKey(pin))
+                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());                
+            tasks = pinTaskQueue.get(pin);
+            
+            // add the new scheduled task to the tasks collection
+            tasks.add(scheduledFuture);
+            
+            // create future task to clean up completed tasks
+            createCleanupTask(duration + 500);
         }
 
         // shutdown service when tasks are complete
-        if(tasks.isEmpty())
+        if(pinTaskQueue.isEmpty())
             scheduledExecutorService.shutdown();
     }
 
-    public synchronized static void blink(GpioPinDigitalOutput pin, long milliseconds, PinState blinkState)
+    public synchronized static void blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState)
     {
-        if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
-            scheduledExecutorService = Executors.newScheduledThreadPool(5);
-
-        // first determine if an existing pulse job is already scheduled for this pin
-        if (tasks.containsKey(pin))
-        {
-            // if a job is found, then cancel it immediately and remove the job
-            ScheduledFuture<?> previouslyScheduled = tasks.get(pin);
-            previouslyScheduled.cancel(true);
-            tasks.remove(pin);
-            
-            // make sure pin is set to inactive state
-            pin.setState(PinState.getInverseState(blinkState));
-        }
+        // perform the initial startup and cleanup for this pin 
+        init(pin);
         
-        if(milliseconds > 0)
+        // we only blink for requests with a valid delay in milliseconds
+        if(delay > 0)
         {
             // make sure pin starts in active state
             pin.setState(blinkState);
             
             // create future job to toggle the pin state
-            ScheduledFuture<?> scheduledFuture = scheduledExecutorService
-                .scheduleAtFixedRate(new GpioBlinkTaskImpl(pin), milliseconds, milliseconds, TimeUnit.MILLISECONDS);
-    
-            // add the new scheduled job to the tasks map
-            tasks.put(pin, scheduledFuture);
-        }
+            ScheduledFuture<?> scheduledFutureBlinkTask = scheduledExecutorService
+                .scheduleAtFixedRate(new GpioBlinkTaskImpl(pin), delay, delay, TimeUnit.MILLISECONDS);
+                
+            // get pending tasks for the current pin
+            ArrayList<ScheduledFuture<?>> tasks;
+            if (!pinTaskQueue.containsKey(pin))
+                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());                
+            tasks = pinTaskQueue.get(pin);
 
+            // add the new scheduled task to the tasks collection
+            tasks.add(scheduledFutureBlinkTask);
+
+            // if a duration was defined, then schedule a future task to kill the blinker task
+            if(duration > 0 )
+            {
+                // create future job to stop blinking
+                ScheduledFuture<?> scheduledFutureBlinkStopTask = scheduledExecutorService
+                    .schedule(new GpioBlinkStopTaskImpl(pin,PinState.getInverseState(blinkState), scheduledFutureBlinkTask), duration, TimeUnit.MILLISECONDS);
+
+                // add the new scheduled stop task to the tasks collection
+                tasks.add(scheduledFutureBlinkStopTask);
+
+                // create future task to clean up completed tasks
+                createCleanupTask(duration + 500);                
+            }            
+        }
+                
         // shutdown service when tasks are complete
-        if(tasks.isEmpty())
+        if(pinTaskQueue.isEmpty())
             scheduledExecutorService.shutdown();
     }
 }

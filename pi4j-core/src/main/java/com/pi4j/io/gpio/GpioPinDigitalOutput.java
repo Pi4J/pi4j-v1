@@ -33,10 +33,12 @@ public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput
     void high();
     void low();    
     void toggle();
-    void blink(long milliseconds);
-    void blink(long milliseconds, PinState blinkState);
-    void pulse(long milliseconds);    
-    void pulse(long milliseconds, PinState pulseState);
+    void blink(long delay);
+    void blink(long delay, PinState blinkState);
+    void blink(long delay, long duration);
+    void blink(long delay, long duration, PinState blinkState);
+    void pulse(long duration);    
+    void pulse(long duration, PinState pulseState);
     void setState(PinState state);
     void setState(boolean state);
 }

@@ -44,17 +44,19 @@ public abstract class GpioProviderBase implements GpioProvider
     public abstract String getName();
 
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<Pin, List<PinListener>>();
-    protected PinMode mode;
-    protected PinState state;
-    protected PinPullResistance resistance;
-    protected int analogValue = -1;
-    protected int pwmValue = -1;
-    protected boolean exported = false; 
+    protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<Pin, GpioProviderPinCache>();
     
     @Override
     public boolean hasPin(Pin pin)
     {
         return (pin.getProvider() == getName());
+    }
+    
+    private GpioProviderPinCache getPinCache(Pin pin)
+    {
+        if(!cache.containsKey(pin))
+            cache.put(pin, new GpioProviderPinCache(pin));
+        return cache.get(pin);
     }
     
     @Override
@@ -67,7 +69,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new UnsupportedPinModeException(pin, mode);
         
         // cache exported state
-        this.exported = true;                
+        getPinCache(pin).setExported(true);
     }
     
     @Override
@@ -77,7 +79,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinException(pin);
         
         // return cached exported state
-        return this.exported;
+        return getPinCache(pin).isExported();
     }
 
     @Override
@@ -87,7 +89,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinException(pin);
         
         // cache exported state
-        this.exported = false;
+        getPinCache(pin).setExported(false);
     }
 
     @Override
@@ -100,7 +102,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new UnsupportedPinModeException(pin, mode);
         
         // cache mode
-        this.mode = mode;        
+        getPinCache(pin).setMode(mode);
     }
 
     @Override
@@ -110,7 +112,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinException(pin);
 
         // return cached mode value
-        return mode;
+        return getPinCache(pin).getMode();
     }
     
     
@@ -124,7 +126,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new UnsupportedPinPullResistanceException(pin, resistance);
         
         // cache resistance
-        this.resistance = resistance;        
+        getPinCache(pin).setResistance(resistance);
     }
 
     @Override
@@ -134,7 +136,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinException(pin);
         
         // return cached resistance
-        return resistance;
+        return getPinCache(pin).getResistance();
     }
     
     @Override
@@ -150,7 +152,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + mode.getName() + "]");
         
         // cache pin state
-        this.state = state;                        
+        getPinCache(pin).setState(state);
     }
 
     @Override
@@ -166,7 +168,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot getState() when pin mode is [" + mode.getName() + "]");
 
         // return cached pin state
-        return this.state;                        
+        return getPinCache(pin).getState();           
     }
 
     @Override
@@ -182,7 +184,7 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setValue(" + value + ") when pin mode is [" + mode.getName() + "]");
         
         // cache pin analog value
-        this.analogValue = value;                                
+        getPinCache(pin).setAnalogValue(value);                        
     }
 
     @Override
@@ -199,7 +201,7 @@ public abstract class GpioProviderBase implements GpioProvider
         }
         
         // return cached pin analog value
-        return this.analogValue;                             
+        return getPinCache(pin).getAnalogValue();                             
     }
     
     @Override
@@ -216,7 +218,7 @@ public abstract class GpioProviderBase implements GpioProvider
         }
         
         // cache pin PWM value
-        this.pwmValue = value;                                        
+        getPinCache(pin).setPwmValue(value);                       
     }
     
     
@@ -227,9 +229,9 @@ public abstract class GpioProviderBase implements GpioProvider
             throw new InvalidPinException(pin);        
 
         // return cached pin PWM value
-        return this.pwmValue;                                        
+        return getPinCache(pin).getPwmValue();                           
     }
-    
+
     @Override
     public void addListener(Pin pin, PinListener listener)
     {

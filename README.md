@@ -35,6 +35,7 @@
    *  Removed setDirection() from GpioPin; embedded this functionality into existing setMode() method.  Eliminating duplication.
    *  Removed old test programs from pi4j-core and moved wiringpi examples to pi4j-example project.  
    *  Added support for I2C communication.
+   *  Added blink() methods for GPIO pins
 
 
 2012-09-23 :: 0.0.2-SNAPSHOT

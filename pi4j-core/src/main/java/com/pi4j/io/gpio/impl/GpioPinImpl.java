@@ -221,28 +221,41 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
-    public void blink(long milliseconds)
+    public void blink(long delay)
     {
-        blink(milliseconds, PinState.HIGH);
+        blink(delay, PinState.HIGH);
     }
 
     @Override
-    public void blink(long milliseconds, PinState blinkState)
+    public void blink(long delay, PinState blinkState)
     {
         // NOTE: a value of 0 milliseconds will stop the blinking
-        GpioScheduledExecutorImpl.blink(this, milliseconds, blinkState);
+        blink(delay, 0, blinkState);
+    }
+
+    @Override
+    public void blink(long delay, long duration)
+    {
+        blink(delay, duration, PinState.HIGH);
+    }
+
+    @Override
+    public void blink(long delay, long duration, PinState blinkState)
+    {
+        // NOTE: a value of 0 milliseconds will stop the blinking
+        GpioScheduledExecutorImpl.blink(this, delay, duration, blinkState);
     }
     
     @Override
-    public void pulse(long milliseconds)
+    public void pulse(long duration)
     {
-        pulse(milliseconds, PinState.HIGH);
+        pulse(duration, PinState.HIGH);
     }
 
     @Override
-    public void pulse(long milliseconds, PinState pulseState)
+    public void pulse(long duration, PinState pulseState)
     {
-        GpioScheduledExecutorImpl.pulse(this, milliseconds, pulseState);
+        GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
     }
     
     @Override

@@ -61,6 +61,8 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     {
         super.export(pin, mode);
        
+        System.out.println("-- EXPORTING PIN [" + pin.getAddress() + "] to mode [" + mode.getName() + "]");       
+        
         // export the pin and set the mode
         com.pi4j.wiringpi.GpioUtil.export(pin.getAddress(), mode.getDirection().getValue());
         setMode(pin, mode);
