@@ -48,6 +48,7 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.GpioPinShutdown;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioPinListener;
+import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioPinImpl implements GpioPin, 
@@ -64,7 +65,7 @@ public class GpioPinImpl implements GpioPin,
     private String name = null;
     private final GpioProvider provider;
     private final Pin pin;
-    private GpioEventMonitorImpl monitor;
+    private PinListener monitor;
     private final GpioPinShutdownImpl shutdownOptions;
     private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
     private final List<GpioPinListener> listeners = new ArrayList<GpioPinListener>();
@@ -325,7 +326,7 @@ public class GpioPinImpl implements GpioPin,
             if (monitor == null)
             {            
                 // create new monitor and register for event callbacks
-                monitor = new GpioEventMonitorImpl(this);
+                monitor = new GpioEventMonitorExecutorImpl(this);
                 provider.addListener(pin, monitor);
             }
         }
