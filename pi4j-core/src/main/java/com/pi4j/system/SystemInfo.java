@@ -174,10 +174,10 @@ public class SystemInfo
           });
     }
     
-    /**
-     * 
-     * this logic was derived from :: jogamp project / developer gluegen
+    /*
+     * this method was derived from :: (project) jogamp / (developer) sgothel
      * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
+     * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
      */
     public static boolean isHardFloatAbi()
     {        
@@ -193,6 +193,11 @@ public class SystemInfo
             } } );
     }
     
+    /*
+     * this supporting method was derived from this source:
+     * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
+     * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+     */
     private static final boolean contains(String data, String[] search) 
     {
         if(null != data && null != search)
