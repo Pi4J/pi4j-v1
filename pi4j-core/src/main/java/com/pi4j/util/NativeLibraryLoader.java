@@ -41,6 +41,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.pi4j.system.SystemInfo;
+
 public class NativeLibraryLoader
 {
     private static List<String> loadedLibraries = null;
@@ -49,6 +51,12 @@ public class NativeLibraryLoader
     private static ConsoleHandler consoleHandler;
     private static boolean initialized  = false;
 
+    // private constructor 
+    private NativeLibraryLoader()
+    {
+        // forbid object construction 
+    }
+    
     public static synchronized void load(String libraryName)
     {
         load(libraryName, null);
@@ -97,6 +105,10 @@ public class NativeLibraryLoader
         }
         else
         {
+            // ---------------------------------------------
+            // ATTEMPT LOAD FROM SYSTEM LIBS
+            // ---------------------------------------------
+            
             // assume library loaded successfully, add to tracking collection
             loadedLibraries.add(libraryName);
             
@@ -127,42 +139,95 @@ public class NativeLibraryLoader
                 // debug
                 logger.fine("Library [" + libraryName + "] could not be using the System.loadLibrary(name) method; attempting to resolve the library using embedded resources in the JAR file.");                            
 
-                // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
-                URL resourceUrlHardFloat = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
+                
+                // ---------------------------------------------
+                // ATTEMPT LOAD BASED ON EDUCATED GUESS OF ABI
+                // ---------------------------------------------
+                
+                URL resourceUrl;
+                
+                // first attempt to determine if we are running on a hard float (armhf) based system  
+                if(SystemInfo.isHardFloatAbi())
+                {
+                    // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+                    resourceUrl = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
+                }
+                else
+                {
+                    // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+                    resourceUrl = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
+                }
                 
                 try
-                {
+                {                
                     // load library file from embedded resource
-                    loadLibraryFromResource(resourceUrlHardFloat, libraryName, fileName);
+                    loadLibraryFromResource(resourceUrl, libraryName, fileName);
                     
                     // debug
-                    logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");                                
+                    logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrl.toString() + "]");
                 }
-                catch(UnsatisfiedLinkError ule_hard_float)
+                catch(Exception ex)
                 {
-                    // debug
-                    logger.fine("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
-
-                    // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
-                    URL resourceUrlSoftFloat = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
+                    // ---------------------------------------------
+                    // ATTEMPT LOAD BASED USING HARD-FLOAT (armhf)
+                    // ---------------------------------------------
+                    
+                    // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+                    URL resourceUrlHardFloat = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
                     
                     try
                     {
                         // load library file from embedded resource
-                        loadLibraryFromResource(resourceUrlSoftFloat, libraryName, fileName);
+                        loadLibraryFromResource(resourceUrlHardFloat, libraryName, fileName);
                         
                         // debug
-                        logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlSoftFloat.toString() + "]");                                                        
+                        logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlHardFloat.toString() + "] (ARMHF)");                                                        
                     }
-                    catch (Throwable err)
+                    catch(UnsatisfiedLinkError ule_hard_float)
                     {
                         // debug
-                        logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlSoftFloat.toString() + "]");            
-                        logger.throwing(logger.getName(), "load", err);
+                        logger.fine("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
 
+                        // ---------------------------------------------
+                        // ATTEMPT LOAD BASED USING SOFT-FLOAT (armel)
+                        // ---------------------------------------------
+                        
+                        // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+                        URL resourceUrlSoftFloat = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
+                        
+                        try
+                        {
+                            // load library file from embedded resource
+                            loadLibraryFromResource(resourceUrlSoftFloat, libraryName, fileName);
+                            
+                            // debug
+                            logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlSoftFloat.toString() + "] (ARMEL)");                                                        
+                        }
+                        catch (Throwable err)
+                        {
+                            // debug
+                            logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlSoftFloat.toString() + "]");            
+                            logger.throwing(logger.getName(), "load", err);
+    
+                            // library load failed, remove from tracking collection
+                            loadedLibraries.remove(libraryName);
+    
+                            logger.severe("ERROR:  The native library ["
+                                        + libraryName
+                                        + " : "
+                                        + fileName
+                                        + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
+                        }
+                    }
+                    catch (Exception ex_hard_float)
+                    {
+                        // debug
+                        logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
+                        logger.throwing(logger.getName(), "load", ex_hard_float);
+                        
                         // library load failed, remove from tracking collection
                         loadedLibraries.remove(libraryName);
-
+    
                         logger.severe("ERROR:  The native library ["
                                     + libraryName
                                     + " : "
@@ -170,21 +235,6 @@ public class NativeLibraryLoader
                                     + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
                     }
                 }
-                catch (Exception ex_hard_float)
-                {
-                    // debug
-                    logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
-                    logger.throwing(logger.getName(), "load", ex_hard_float);
-                    
-                    // library load failed, remove from tracking collection
-                    loadedLibraries.remove(libraryName);
-
-                    logger.severe("ERROR:  The native library ["
-                                + libraryName
-                                + " : "
-                                + fileName
-                                + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
-                }                
             }
         }
     }

@@ -81,6 +81,12 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class Spi
 {
+    // private constructor 
+    private Spi() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

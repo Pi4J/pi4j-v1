@@ -83,6 +83,12 @@ public class Gertboard
     public static final int SPI_A2D = 0;
     public static final int SPI_D2A = 1;
 
+    // private constructor 
+    private Gertboard() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

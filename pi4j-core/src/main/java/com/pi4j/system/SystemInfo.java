@@ -31,11 +31,19 @@ package com.pi4j.system;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SystemInfo
 {
+    // private constructor 
+    private SystemInfo()
+    {
+        // forbid object construction 
+    }
+        
     private static Map<String, String> cpuInfo;
 
     private static String getCpuInfo(String target) throws IOException, InterruptedException
@@ -119,4 +127,84 @@ public class SystemInfo
     {
         return getCpuInfo("Serial");
     }
+
+    public static String getOsName() 
+    {
+        return System.getProperty("os.name");
+    }
+
+    public static String getOsVersion() 
+    {
+        return System.getProperty("os.version");
+    }
+
+    public static String getOsArch() 
+    {
+        return System.getProperty("os.arch");
+    }
+    
+    public static String getJavaVendor() 
+    {
+        return System.getProperty("java.vendor");
+    }
+ 
+    public static String getJavaVendorUrl() 
+    {
+        return System.getProperty("java.vendor.url");
+    }
+ 
+    public static String getJavaVersion() 
+    {
+        return System.getProperty("java.version");
+    }
+
+    public static String getJavaVirtualMachine() 
+    {
+        return System.getProperty("java.vm.name");
+    }
+
+    public static String getJavaRuntime() 
+    {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() 
+          {
+            public String run() 
+            {
+              return System.getProperty("java.runtime.name");
+            }
+          });
+    }
+    
+    /**
+     * 
+     * this logic was derived from :: jogamp project / developer gluegen
+     * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
+     */
+    public static boolean isHardFloatAbi()
+    {        
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            private final String[] gnueabihf = new String[] { "gnueabihf", "armhf" };
+            public Boolean run() {                    
+                if ( contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
+                     contains(System.getProperty("java.library.path"), gnueabihf) ||
+                     contains(System.getProperty("java.home"), gnueabihf) ) {
+                    return true;
+                }
+                return false;
+            } } );
+    }
+    
+    private static final boolean contains(String data, String[] search) 
+    {
+        if(null != data && null != search)
+        {            
+            for(int i=0; i<search.length; i++) 
+            {
+                if(data.indexOf(search[i]) >= 0) 
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }    
 }

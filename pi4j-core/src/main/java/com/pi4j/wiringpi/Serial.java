@@ -73,6 +73,12 @@ public class Serial
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
 
+    // private constructor 
+    private Serial() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

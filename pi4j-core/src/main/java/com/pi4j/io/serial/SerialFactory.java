@@ -59,6 +59,12 @@ import com.pi4j.io.serial.impl.SerialImpl;
  */
 public class SerialFactory
 {
+    // private constructor 
+    private SerialFactory()
+    {
+        // forbid object construction 
+    }
+    
     /**
      * <h1>Create New Serial instance</h1>
      * 

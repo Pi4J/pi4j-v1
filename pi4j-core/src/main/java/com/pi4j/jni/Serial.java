@@ -33,5 +33,10 @@ package com.pi4j.jni;
  */
 public class Serial
 {
-    
+    // private constructor 
+    private Serial() 
+    {
+        // forbid object construction 
+    }
+
 }

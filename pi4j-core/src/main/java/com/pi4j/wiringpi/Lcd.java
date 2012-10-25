@@ -79,6 +79,12 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class Lcd
 {
+    // private constructor 
+    private Lcd() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

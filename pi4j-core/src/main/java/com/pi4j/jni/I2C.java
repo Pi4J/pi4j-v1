@@ -45,6 +45,11 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class I2C {
 
+    // private constructor 
+    private I2C() {
+        // forbid object construction 
+    }
+    
     static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");

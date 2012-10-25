@@ -57,6 +57,12 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class GpioUtil
 {
+    // private constructor 
+    private GpioUtil() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

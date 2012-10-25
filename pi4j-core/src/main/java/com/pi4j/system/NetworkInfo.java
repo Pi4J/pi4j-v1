@@ -36,6 +36,12 @@ import java.util.List;
 
 public class NetworkInfo 
 { 
+    // private constructor 
+    private NetworkInfo()
+    {
+        // forbid object construction 
+    }
+    
     private static String[] executeCommand(String command) throws IOException, InterruptedException
     {
         return executeCommand(command, null);

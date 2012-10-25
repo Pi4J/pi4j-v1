@@ -83,6 +83,12 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class SoftPwm
 {
+    // private constructor 
+    private SoftPwm() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

@@ -323,6 +323,32 @@
 				</configuration>
 			</plugin>
 
+			<!-- CREATE DEBIAN (.DEB) PACKAGE -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>jdeb</artifactId> -->
+<!-- 				<groupId>org.vafer</groupId> -->
+<!-- 				<version>0.11</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>jdeb</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<dataSet> -->
+<!-- 								<data> -->
+<!-- 									<src>${project.build.directory}/${project.build.finalName}.jar</src> -->
+<!-- 									<type>file</type> -->
+<!-- 									<mapper> -->
+<!-- 										<type>perm</type> -->
+<!-- 										<prefix>/usr/share/pi4j/lib</prefix> -->
+<!-- 									</mapper> -->
+<!-- 								</data> -->
+<!-- 							</dataSet> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 		</plugins>
 
 		<pluginManagement>

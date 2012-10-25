@@ -34,6 +34,12 @@ import com.pi4j.io.i2c.impl.I2CBusImpl;
 
 public class I2CFactory
 {
+    // private constructor 
+    private I2CFactory()
+    {
+        // forbid object construction 
+    }
+    
     /**
      * <h1>Create new I2CBus instance</h1>
      * 

@@ -63,6 +63,12 @@ public class GpioFactory
     // we only allow a single default provider to exists
     private static GpioProvider provider = null;
     
+    // private constructor 
+    private GpioFactory()
+    {
+        // forbid object construction 
+    }
+    
     /**
      * <h1>Create New GPIO Controller instance</h1>
      * 

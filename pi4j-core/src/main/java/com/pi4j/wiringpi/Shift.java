@@ -63,6 +63,12 @@ public class Shift
     public static final int LSBFIRST = 0;
     public static final int MSBFIRST = 1;
 
+    // private constructor 
+    private Shift() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

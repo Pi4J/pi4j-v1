@@ -62,6 +62,12 @@ public class GpioInterrupt
     private static Vector<GpioInterruptListener> listeners = new Vector<GpioInterruptListener>();
     private Object lock;
 
+    // private constructor 
+    private GpioInterrupt() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library

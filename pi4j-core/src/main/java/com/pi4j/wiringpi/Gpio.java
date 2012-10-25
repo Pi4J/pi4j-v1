@@ -66,6 +66,12 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class Gpio
 {
+    // private constructor 
+    private Gpio() 
+    {
+        // forbid object construction 
+    }
+    
     /**
      * <p>
      * The total number of GPIO pins available in the WiringPi library.

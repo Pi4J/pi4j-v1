@@ -64,6 +64,12 @@ public class Nes
     public static final int PULSE_TIME = 25;
     public static final int MAX_NES_JOYSTICKS = 8;
 
+    // private constructor 
+    private Nes() 
+    {
+        // forbid object construction 
+    }
+    
     static
     {
         // Load the platform library
