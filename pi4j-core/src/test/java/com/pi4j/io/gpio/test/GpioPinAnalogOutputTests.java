@@ -5,7 +5,7 @@ package com.pi4j.io.gpio.test;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinAnalogInputTests.java  
+ * FILENAME      :  GpioPinAnalogOutputTests.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -38,50 +38,28 @@ import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinAnalogInput;
+import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.PinDirection;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.gpio.exception.GpioPinExistsException;
 import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 
-public class GpioPinAnalogInputTests    
+public class GpioPinAnalogOutputTests   
 {
-    private static MockGpioProvider provider;
     private static GpioController gpio;
-    private static GpioPinAnalogInput pin;
-    private static Double pinMonitoredValue;
-    private static int eventCounter;
-
+    private static GpioPinAnalogOutput pin;
+    
     @BeforeClass 
     public static void setup()
     {
         // create a mock gpio provider and controller
-        provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
-
-        // provision pin for testing
-        pin = gpio.provisionAnalogInputPin(MockPin.ANALOG_INPUT_PIN,  "analogInputPin");
         
-        // register pin listener
-        pin.addListener(new GpioPinListenerAnalog()
-            {
-                @Override
-                public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event)
-                {
-                    // set pin state
-                    if(event.getPin() == pin)
-                    {
-                        pinMonitoredValue = event.getValue();
-                        eventCounter++;
-                    }
-                }                
-            });
+        // provision pin for testing
+        pin = gpio.provisionAnalogOuputPin(MockPin.ANALOG_OUTPUT_PIN,  "analogOutputPin", 3.1416);
     }
 
     @Test
@@ -96,28 +74,28 @@ public class GpioPinAnalogInputTests
     public void testPinDuplicatePovisioning() 
     {
         // make sure that pin cannot be provisioned a second time
-        gpio.provisionAnalogOuputPin(MockPin.ANALOG_INPUT_PIN,  "analogInputPin");
+        gpio.provisionAnalogOuputPin(MockPin.ANALOG_OUTPUT_PIN,  "analogOutputPin");
     }    
     
     @Test(expected=UnsupportedPinModeException.class)
     public void testPinInvalidModePovisioning() 
     {       
-        // make sure that pin cannot be provisioned that does not support ANALOG INPUT 
-        gpio.provisionAnalogInputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin");
+        // make sure that pin cannot be provisioned that does not support ANALOG OUTPUT 
+        gpio.provisionAnalogOuputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin");
     }    
     
     @Test(expected=InvalidPinException.class)
     public void testInvalidPin()
     {
-        // attempt to export a pin that is not supported by the GPIO provider 
-        provider.export(RaspiPin.GPIO_01, PinMode.ANALOG_INPUT);
+        // attempt to export a pin that is not supported by the GPIO provider
+        pin.getProvider().export(RaspiPin.GPIO_00, PinMode.ANALOG_OUTPUT);
     }
-
+    
     @Test
     public void testPinProvider()
     {
-        // verify pin mode
-        assertEquals(pin.getProvider(), provider);                
+        // verify pin provider
+        assertTrue(pin.getProvider() instanceof MockGpioProvider);                
     }
     
     @Test
@@ -131,48 +109,48 @@ public class GpioPinAnalogInputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.ANALOG_INPUT_PIN);                
+        assertEquals(pin.getPin(), MockPin.ANALOG_OUTPUT_PIN);                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.ANALOG_INPUT_PIN.getAddress());
+        assertEquals(pin.getPin().getAddress(), MockPin.ANALOG_OUTPUT_PIN.getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "analogInputPin");
+        assertEquals(pin.getName(), "analogOutputPin");
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.ANALOG_INPUT);
+        assertEquals(pin.getMode(), PinMode.ANALOG_OUTPUT);
     }
 
     @Test
     public void testPinValidSupportedMode()
     {
         // verify valid pin mode
-        assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_INPUT));
+        assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));
     }
 
     @Test
     public void testPinInvalidSupportedMode()
     {
         // verify invalid pin mode
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_INPUT));
+        
+        // verify invalid pin mode
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_OUTPUT));
         
         // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));
-        
-        // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_INPUT));        
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_INPUT));        
 
         // verify invalid pin mode
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));              
@@ -182,10 +160,18 @@ public class GpioPinAnalogInputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.IN);                
+        assertEquals(pin.getMode().getDirection(), PinDirection.OUT);                
     }
 
-    public void testPinValue()
+    @Test
+    public void testPinInitialValue()
+    {
+        // verify pin initial state
+        assertTrue(pin.getValue() == 3.1416);
+    }
+
+    @Test
+    public void testPinSetValue()
     {
         Random generator = new Random();
         
@@ -195,18 +181,11 @@ public class GpioPinAnalogInputTests
             double newValue = generator.nextDouble();
             
             // explicit mock set on the mock provider 
-            provider.setMockAnalogValue(MockPin.ANALOG_INPUT_PIN, newValue);
+            pin.setValue(newValue);
     
             // verify pin value
             assertTrue(pin.getValue() == newValue);
         }
-    }
-
-    @Test(expected=InvalidPinModeException.class)
-    public void testPinInvalidSetState()
-    {
-        // explicit mock set on the mock provider 
-        provider.setState(MockPin.ANALOG_INPUT_PIN, PinState.HIGH);
     }
 
     @Test
@@ -219,36 +198,6 @@ public class GpioPinAnalogInputTests
         assertFalse(pin.isExported());
     }
     
-    @Test
-    public void testPinValueEvent() throws InterruptedException
-    {
-        Random generator = new Random();
-        
-        // reset event counter
-        eventCounter = 0;
-
-        // test five events
-        for(int index = 0; index < 5; index ++)
-        {
-            double newValue = generator.nextDouble();
-        
-            // reset pin monitoring variable
-            pinMonitoredValue = null;
-
-            // explicit mock set on the mock provider 
-            provider.setMockAnalogValue(MockPin.ANALOG_INPUT_PIN, newValue);
-        
-            // wait 1/10 second before continuing test
-            Thread.sleep(100);
-        
-            // verify pin value
-            assertTrue(pin.getValue() == pinMonitoredValue);
-        }
-        
-        // make sure we received the proper number of events
-        assertEquals(eventCounter, 5);
-    }    
-
     @Test
     public void testPinUnprovision() 
     {
@@ -263,4 +212,5 @@ public class GpioPinAnalogInputTests
         pins = gpio.getProvisionedPins();        
         assertFalse(pins.contains(pin));
     }    
+    
 }

@@ -89,9 +89,9 @@ public interface GpioController
     GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin, String name);    
     GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);    
     
-    GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name, int defaultValue);
+    GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name);
-    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, int defaultValue);
+    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name);
 
     GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, String name, int defaultValue);
