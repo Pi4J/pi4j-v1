@@ -1,6 +1,5 @@
 package com.pi4j.io.gpio;
 
-import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
@@ -187,11 +186,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
             // if a matching pin address is found
             if(pin.getAddress() == event.getPin())
             {
-                // dispatch this event to all listener handlers
-                for(PinListener listener : listeners.get(pin))
-                {
-                    listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, PinState.getState(event.getState())));
-                }
+                dispatchPinDigitalStateChangeEvent(pin, PinState.getState(event.getState()));
             }            
         }
     }

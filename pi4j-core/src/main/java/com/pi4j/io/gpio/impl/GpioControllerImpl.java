@@ -63,12 +63,21 @@ public class GpioControllerImpl implements GpioController
     public GpioControllerImpl()
     {
         // set the local default provider reference
-        defaultProvider = GpioFactory.getDefaultProvider();                
+        this(GpioFactory.getDefaultProvider());                
+    }
+
+    /**
+     * Default Constructor
+     */
+    public GpioControllerImpl(GpioProvider provider)
+    {
+        // set the local default provider reference
+        defaultProvider = provider;                
 
         // register shutdown callback hook class
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());        
     }
-
+    
     @Override
     public Collection<GpioPin> getProvisionedPins()
     {
@@ -714,8 +723,10 @@ public class GpioControllerImpl implements GpioController
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
         
-        for (GpioPin p : pin)
+        for (int index = (pin.length-1); index >= 0; index--)
         {
+            GpioPin p  = pin[index];
+            
             // ensure the requested pin has been provisioned
             if (!pins.contains(p))
                 throw new GpioPinNotProvisionedException(p.getPin());
@@ -729,8 +740,7 @@ public class GpioControllerImpl implements GpioController
             
             // remove this pin instance from the managed collection
             pins.remove(p);
-        }
-        
+        }        
     }
     
     /**

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
@@ -52,7 +53,7 @@ public abstract class GpioProviderBase implements GpioProvider
         return (pin.getProvider() == getName());
     }
     
-    private GpioProviderPinCache getPinCache(Pin pin)
+    protected GpioProviderPinCache getPinCache(Pin pin)
     {
         if(!cache.containsKey(pin))
             cache.put(pin, new GpioProviderPinCache(pin));
@@ -275,6 +276,19 @@ public abstract class GpioProviderBase implements GpioProvider
             // and remove each listener handler instance
             for(PinListener listener : listeners.get(pin))
                 removeListener(pin, listener);
+        }
+    }
+    
+    protected void dispatchPinDigitalStateChangeEvent(Pin pin, PinState state)
+    {
+        // if the pin listeners map contains this pin, then dispach event
+        if(listeners.containsKey(pin))
+        {
+            // dispatch this event to all listener handlers
+            for(PinListener listener : listeners.get(pin))
+            {
+                listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
+            }            
         }
     }
 }

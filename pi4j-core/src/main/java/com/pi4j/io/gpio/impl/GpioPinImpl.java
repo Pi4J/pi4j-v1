@@ -392,7 +392,7 @@ public class GpioPinImpl implements GpioPin,
     {
         if(listener == null || listener.length == 0)
             throw new IllegalArgumentException("Missing listener argument.");
-        
+
         for (GpioPinListener lsnr : listener)
             listeners.remove(lsnr);
         
@@ -407,8 +407,11 @@ public class GpioPinImpl implements GpioPin,
     
     public synchronized void removeAllListeners()
     {
-        for (GpioPinListener listener : this.listeners)
+        for (int index = (listeners.size()-1); index >= 0; index --)
+        {
+            GpioPinListener listener = listeners.get(index);
             removeListener(listener);
+        }
     }
 
     /**
@@ -460,8 +463,11 @@ public class GpioPinImpl implements GpioPin,
 
     public synchronized void removeAllTriggers()
     {
-        for (GpioTrigger trigger : this.triggers)
+        for (int index = (triggers.size()-1); index >= 0; index --)
+        {
+            GpioTrigger trigger = triggers.get(index);
             removeTrigger(trigger);
+        }
     }
 
     @Override
