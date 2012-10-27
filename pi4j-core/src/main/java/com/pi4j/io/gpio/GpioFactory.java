@@ -96,5 +96,11 @@ public class GpioFactory
         // return the provider instance
         return provider;
     }
+
+    public static void setDefaultProvider(GpioProvider provider)
+    {
+        // set the default provider instance
+        GpioFactory.provider = provider;
+    }
     
 }

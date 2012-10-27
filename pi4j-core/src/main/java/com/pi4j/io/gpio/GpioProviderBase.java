@@ -70,6 +70,9 @@ public abstract class GpioProviderBase implements GpioProvider
         
         // cache exported state
         getPinCache(pin).setExported(true);
+        
+        // cache mode
+        getPinCache(pin).setMode(mode);
     }
     
     @Override
