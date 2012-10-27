@@ -30,5 +30,5 @@ package com.pi4j.io.gpio;
 
 public interface GpioPinAnalogOutput extends GpioPinAnalog, GpioPinOutput
 {
-    void setValue(int value);
+    void setValue(double value);
 }

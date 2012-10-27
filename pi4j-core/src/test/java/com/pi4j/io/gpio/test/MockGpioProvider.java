@@ -51,4 +51,14 @@ public class MockGpioProvider extends GpioProviderBase implements GpioProvider
         // dispatch event
         dispatchPinDigitalStateChangeEvent(pin, state);
     }
+    
+    public void setMockAnalogValue(Pin pin, double value)
+    {
+        // cache pin state
+        getPinCache(pin).setAnalogValue(value);    
+        
+        // dispatch event
+        dispatchPinAnalogValueChangeEvent(pin, value);
+    }
+    
 }

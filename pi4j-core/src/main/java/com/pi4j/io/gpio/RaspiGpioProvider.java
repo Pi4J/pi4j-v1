@@ -141,14 +141,14 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     }
 
     @Override
-    public void setValue(Pin pin, int value)
+    public void setValue(Pin pin, double value)
     {
         super.setValue(pin, value);
         throw new RuntimeException("This GPIO provider does not support analog pins.");
     }
 
     @Override
-    public int getValue(Pin pin)
+    public double getValue(Pin pin)
     {
         super.getValue(pin);
         throw new RuntimeException("This GPIO provider does not support analog pins.");

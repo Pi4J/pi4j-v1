@@ -49,8 +49,8 @@ public interface GpioProvider
     void setState(Pin pin, PinState state);
     PinState getState(Pin pin);
     
-    void setValue(Pin pin, int value);
-    int getValue(Pin pin);    
+    void setValue(Pin pin, double value);
+    double getValue(Pin pin);    
 
     void setPwm(Pin pin, int value);
     int getPwm(Pin pin);    

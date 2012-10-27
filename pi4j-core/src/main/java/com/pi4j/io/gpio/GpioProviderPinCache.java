@@ -34,7 +34,7 @@ public class GpioProviderPinCache
     private PinMode mode;
     private PinState state;
     private PinPullResistance resistance;
-    private int analogValue = -1;
+    private double analogValue = -1;
     private int pwmValue = -1;
     private boolean exported = false; 
     
@@ -79,14 +79,14 @@ public class GpioProviderPinCache
         this.resistance = resistance;
     }
     
-    public int getAnalogValue()
+    public double getAnalogValue()
     {
         return analogValue;
     }
     
-    public void setAnalogValue(int analogValue)
+    public void setAnalogValue(double value)
     {
-        this.analogValue = analogValue;
+        this.analogValue = value;
     }
     
     public int getPwmValue()
@@ -94,9 +94,9 @@ public class GpioProviderPinCache
         return pwmValue;
     }
     
-    public void setPwmValue(int pwmValue)
+    public void setPwmValue(int value)
     {
-        this.pwmValue = pwmValue;
+        this.pwmValue = value;
     }
     
     public boolean isExported()

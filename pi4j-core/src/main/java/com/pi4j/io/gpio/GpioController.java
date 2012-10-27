@@ -61,8 +61,8 @@ public interface GpioController
     void toggle(GpioPinDigitalOutput... pin);
     void pulse(long milliseconds, GpioPinDigitalOutput... pin);
     
-    void setValue(int value, GpioPinAnalogOutput... pin);
-    int getValue(GpioPinAnalog pin);
+    void setValue(double value, GpioPinAnalogOutput... pin);
+    double getValue(GpioPinAnalog pin);
 
     void addListener(GpioPinListener listener, GpioPinInput... pin);
     void addListener(GpioPinListener[] listeners, GpioPinInput... pin);

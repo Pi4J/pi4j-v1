@@ -296,13 +296,13 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
-    public void setValue(int value)
+    public void setValue(double value)
     {
         provider.setValue(pin, value);
     }
     
     @Override
-    public int getValue()
+    public double getValue()
     {
         return provider.getValue(pin);
     }    

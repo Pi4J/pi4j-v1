@@ -36,7 +36,7 @@ public class PinAnalogValueChangeEvent extends PinEvent
      * 
      */
     private static final long serialVersionUID = -6210539419288104794L;
-    private final int value;
+    private final double value;
 
     /**
      * <h1>Default event constructor</h1>
@@ -51,7 +51,7 @@ public class PinAnalogValueChangeEvent extends PinEvent
      *            New GPIO pin analog value.
      *            </p>
      */
-    public PinAnalogValueChangeEvent(Object obj, Pin pin, int value)
+    public PinAnalogValueChangeEvent(Object obj, Pin pin, double value)
     {
         super(obj, pin, PinEventType.ANALOG_VALUE_CHANGE);
         this.value = value;
@@ -66,7 +66,7 @@ public class PinAnalogValueChangeEvent extends PinEvent
      *         GPIO pin value 
      *         </p>
      */
-    public int getValue()
+    public double getValue()
     {
         return value;
     }

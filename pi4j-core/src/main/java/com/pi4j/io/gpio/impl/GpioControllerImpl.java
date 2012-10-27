@@ -391,7 +391,7 @@ public class GpioControllerImpl implements GpioController
     }
     
     @Override
-    public void setValue(int value, GpioPinAnalogOutput... pin)
+    public void setValue(double value, GpioPinAnalogOutput... pin)
     {
         if(pin == null || pin.length == 0)
             throw new IllegalArgumentException("Missing pin argument.");
@@ -408,7 +408,7 @@ public class GpioControllerImpl implements GpioController
     }
 
     @Override
-    public int getValue(GpioPinAnalog pin)
+    public double getValue(GpioPinAnalog pin)
     {
         return pin.getValue();
     }    

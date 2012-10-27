@@ -81,7 +81,7 @@ public class GpioEventDispatchTaskImpl implements Runnable
             }
             else if (event.getEventType() == PinEventType.ANALOG_VALUE_CHANGE)
             {
-                int value = ((PinAnalogValueChangeEvent) event).getValue();
+                double value = ((PinAnalogValueChangeEvent) event).getValue();
 
                 // process event callbacks for analog listeners
                 for (GpioPinListener listener : pin.getListeners())

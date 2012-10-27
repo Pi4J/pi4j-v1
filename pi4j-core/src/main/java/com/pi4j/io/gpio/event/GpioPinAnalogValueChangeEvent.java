@@ -36,7 +36,7 @@ public class GpioPinAnalogValueChangeEvent extends GpioPinEvent
      * 
      */
     private static final long serialVersionUID = -1036445757629271L;
-    private final int value;
+    private final double value;
 
     /**
      * <h1>Default event constructor</h1>
@@ -51,7 +51,7 @@ public class GpioPinAnalogValueChangeEvent extends GpioPinEvent
      *            New GPIO pin value.
      *            </p>
      */
-    public GpioPinAnalogValueChangeEvent(Object obj, GpioPin pin, int value)
+    public GpioPinAnalogValueChangeEvent(Object obj, GpioPin pin, double value)
     {
         super(obj, pin, PinEventType.ANALOG_VALUE_CHANGE);
         this.value = value;
@@ -66,7 +66,7 @@ public class GpioPinAnalogValueChangeEvent extends GpioPinEvent
      *         GPIO pin value
      *         </p>
      */
-    public int getValue()
+    public double getValue()
     {
         return value;
     }

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
@@ -176,7 +177,7 @@ public abstract class GpioProviderBase implements GpioProvider
     }
 
     @Override
-    public void setValue(Pin pin, int value)
+    public void setValue(Pin pin, double value)
     {
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
@@ -192,7 +193,7 @@ public abstract class GpioProviderBase implements GpioProvider
     }
 
     @Override
-    public int getValue(Pin pin)
+    public double getValue(Pin pin)
     {
         if(hasPin(pin) == false)
             throw new InvalidPinException(pin);
@@ -281,13 +282,26 @@ public abstract class GpioProviderBase implements GpioProvider
     
     protected void dispatchPinDigitalStateChangeEvent(Pin pin, PinState state)
     {
-        // if the pin listeners map contains this pin, then dispach event
+        // if the pin listeners map contains this pin, then dispatch event
         if(listeners.containsKey(pin))
         {
             // dispatch this event to all listener handlers
             for(PinListener listener : listeners.get(pin))
             {
                 listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
+            }            
+        }
+    }
+    
+    protected void dispatchPinAnalogValueChangeEvent(Pin pin, double value)
+    {
+        // if the pin listeners map contains this pin, then dispatch event
+        if(listeners.containsKey(pin))
+        {
+            // dispatch this event to all listener handlers
+            for(PinListener listener : listeners.get(pin))
+            {
+                listener.handlePinEvent(new PinAnalogValueChangeEvent(this, pin, value));
             }            
         }
     }
