@@ -608,23 +608,23 @@ public class GpioControllerImpl implements GpioController
     }
     
     @Override
-    public GpioPinDigitalOutput provisionDigitalOuputPin(GpioProvider provider, Pin pin, String name)
+    public GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name)
     {
         // return new new pin instance
         return (GpioPinDigitalOutput)provisionPin(provider, pin, name, PinMode.DIGITAL_OUTPUT);
     }
 
     @Override
-    public GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name)
+    public GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name)
     {
-        return provisionDigitalOuputPin(defaultProvider, pin, name);
+        return provisionDigitalOutputPin(defaultProvider, pin, name);
     }
     
     @Override
-    public GpioPinDigitalOutput provisionDigitalOuputPin(GpioProvider provider, Pin pin, String name, PinState defaultState)
+    public GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name, PinState defaultState)
     {
         // create new GPIO pin instance
-        GpioPinDigitalOutput gpioPin = provisionDigitalOuputPin(provider, pin, name);
+        GpioPinDigitalOutput gpioPin = provisionDigitalOutputPin(provider, pin, name);
 
         // apply default state
         if (defaultState != null)
@@ -635,9 +635,9 @@ public class GpioControllerImpl implements GpioController
     }
 
     @Override
-    public GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name, PinState defaultState)
+    public GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name, PinState defaultState)
     {
-        return provisionDigitalOuputPin(defaultProvider, pin, name, defaultState);
+        return provisionDigitalOutputPin(defaultProvider, pin, name, defaultState);
     }
     
     @Override
@@ -654,23 +654,23 @@ public class GpioControllerImpl implements GpioController
     }
     
     @Override
-    public GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name)
+    public GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name)
     {
         // return new new pin instance
         return (GpioPinAnalogOutput)provisionPin(provider, pin, name, PinMode.ANALOG_OUTPUT);
     }
 
     @Override
-    public GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name)
+    public GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name)
     {
-        return provisionAnalogOuputPin(defaultProvider, pin, name);
+        return provisionAnalogOutputPin(defaultProvider, pin, name);
     }
 
     @Override
-    public GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name, double defaultValue)
+    public GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name, double defaultValue)
     {
         // create new GPIO pin instance
-        GpioPinAnalogOutput gpioPin = provisionAnalogOuputPin(provider, pin, name);
+        GpioPinAnalogOutput gpioPin = provisionAnalogOutputPin(provider, pin, name);
 
         // apply default value
         gpioPin.setValue(defaultValue);
@@ -680,9 +680,9 @@ public class GpioControllerImpl implements GpioController
     }
 
     @Override
-    public GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, double defaultValue)
+    public GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name, double defaultValue)
     {
-        return provisionAnalogOuputPin(defaultProvider, pin, name, defaultValue);
+        return provisionAnalogOutputPin(defaultProvider, pin, name, defaultValue);
     }
     
     @Override
