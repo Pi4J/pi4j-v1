@@ -58,7 +58,7 @@ public class GpioPinDigitalOutputTests
         gpio = MockGpioFactory.getInstance();
         
         // provision pin for testing
-        pin = gpio.provisionDigitalOuputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
+        pin = gpio.provisionDigitalOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
     }
 
     @Test
@@ -73,14 +73,14 @@ public class GpioPinDigitalOutputTests
     public void testPinDuplicatePovisioning() 
     {
         // make sure that pin cannot be provisioned a second time
-        gpio.provisionDigitalOuputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
+        gpio.provisionDigitalOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
     }    
     
     @Test(expected=UnsupportedPinModeException.class)
     public void testPinInvalidModePovisioning() 
     {       
         // make sure that pin cannot be provisioned that does not support DIGITAL OUTPUT 
-        gpio.provisionDigitalOuputPin(MockPin.DIGITAL_INPUT_PIN,  "analogOutputPin");
+        gpio.provisionDigitalOutputPin(MockPin.DIGITAL_INPUT_PIN,  "analogOutputPin");
     }    
     
     @Test(expected=InvalidPinException.class)

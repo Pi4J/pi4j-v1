@@ -96,7 +96,7 @@ public class GpioPinAnalogInputTests
     public void testPinDuplicatePovisioning() 
     {
         // make sure that pin cannot be provisioned a second time
-        gpio.provisionAnalogOuputPin(MockPin.ANALOG_INPUT_PIN,  "analogInputPin");
+        gpio.provisionAnalogOutputPin(MockPin.ANALOG_INPUT_PIN,  "analogInputPin");
     }    
     
     @Test(expected=UnsupportedPinModeException.class)

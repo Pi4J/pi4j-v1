@@ -94,7 +94,7 @@ public class GpioPinDigitalInputTests
     public void testPinDuplicatePovisioning() 
     {
         // make sure that pin cannot be provisioned a second time
-        gpio.provisionDigitalOuputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin", PinState.LOW);
+        gpio.provisionDigitalOutputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin", PinState.LOW);
     }    
     
     @Test(expected=UnsupportedPinModeException.class)

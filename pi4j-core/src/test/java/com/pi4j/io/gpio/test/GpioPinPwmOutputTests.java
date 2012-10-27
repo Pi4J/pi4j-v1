@@ -38,7 +38,7 @@ import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinAnalogOutput;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.PinDirection;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.RaspiPin;
@@ -46,10 +46,11 @@ import com.pi4j.io.gpio.exception.GpioPinExistsException;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 
-public class GpioPinAnalogOutputTests   
+public class GpioPinPwmOutputTests   
 {
     private static GpioController gpio;
-    private static GpioPinAnalogOutput pin;
+    private static GpioPinPwmOutput pin;
+    private static int initialValue = 2;
     
     @BeforeClass 
     public static void setup()
@@ -58,7 +59,7 @@ public class GpioPinAnalogOutputTests
         gpio = MockGpioFactory.getInstance();
         
         // provision pin for testing
-        pin = gpio.provisionAnalogOutputPin(MockPin.ANALOG_OUTPUT_PIN,  "analogOutputPin", 3.1416);
+        pin = gpio.provisionPwmOutputPin(MockPin.PWM_OUTPUT_PIN,  "pwmOutputPin", initialValue);
     }
 
     @Test
@@ -73,21 +74,21 @@ public class GpioPinAnalogOutputTests
     public void testPinDuplicatePovisioning() 
     {
         // make sure that pin cannot be provisioned a second time
-        gpio.provisionAnalogOutputPin(MockPin.ANALOG_OUTPUT_PIN,  "analogOutputPin");
+        gpio.provisionPwmOutputPin(MockPin.PWM_OUTPUT_PIN,  "pwmOutputPin");
     }    
     
     @Test(expected=UnsupportedPinModeException.class)
     public void testPinInvalidModePovisioning() 
     {       
-        // make sure that pin cannot be provisioned that does not support ANALOG OUTPUT 
-        gpio.provisionAnalogOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin");
+        // make sure that pin cannot be provisioned that does not support PWM OUTPUT 
+        gpio.provisionPwmOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin");
     }    
     
     @Test(expected=InvalidPinException.class)
     public void testInvalidPin()
     {
         // attempt to export a pin that is not supported by the GPIO provider
-        pin.getProvider().export(RaspiPin.GPIO_00, PinMode.ANALOG_OUTPUT);
+        pin.getProvider().export(RaspiPin.GPIO_00, PinMode.PWM_OUTPUT);
     }
     
     @Test
@@ -108,35 +109,35 @@ public class GpioPinAnalogOutputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.ANALOG_OUTPUT_PIN);                
+        assertEquals(pin.getPin(), MockPin.PWM_OUTPUT_PIN);                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.ANALOG_OUTPUT_PIN.getAddress());
+        assertEquals(pin.getPin().getAddress(), MockPin.PWM_OUTPUT_PIN.getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "analogOutputPin");
+        assertEquals(pin.getName(), "pwmOutputPin");
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.ANALOG_OUTPUT);
+        assertEquals(pin.getMode(), PinMode.PWM_OUTPUT);
     }
 
     @Test
     public void testPinValidSupportedMode()
     {
         // verify valid pin mode
-        assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));
+        assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));
     }
 
     @Test
@@ -152,7 +153,7 @@ public class GpioPinAnalogOutputTests
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_INPUT));        
 
         // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));              
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));              
     }
     
     @Test
@@ -166,24 +167,24 @@ public class GpioPinAnalogOutputTests
     public void testPinInitialValue()
     {
         // verify pin initial state
-        assertTrue(pin.getValue() == 3.1416);
+        assertTrue(pin.getPwm() == initialValue);
     }
 
     @Test
-    public void testPinSetValue()
+    public void testPinSetPwmValue()
     {
         Random generator = new Random();
         
         // test ten random numbers
         for(int index = 0; index < 10; index ++)
         {
-            double newValue = generator.nextDouble();
+            int newValue = generator.nextInt();
             
             // explicit mock set on the mock provider 
-            pin.setValue(newValue);
+            pin.setPwm(newValue);
     
             // verify pin value
-            assertTrue(pin.getValue() == newValue);
+            assertTrue(pin.getPwm() == newValue);
         }
     }
 

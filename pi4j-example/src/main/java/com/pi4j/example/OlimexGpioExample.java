@@ -90,10 +90,10 @@ public class OlimexGpioExample
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
         GpioPinDigitalOutput myRelays[] =
           { 
-            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_01, "RELAY #1", PinState.LOW),
-            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_02, "RELAY #2", PinState.LOW),
-            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_03, "RELAY #3", PinState.LOW),
-            gpio.provisionDigitalOuputPin(olimexProvider, OlimexAVRIOPin.RELAY_04, "RELAY #4", PinState.LOW)
+            gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_01, "RELAY #1", PinState.LOW),
+            gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_02, "RELAY #2", PinState.LOW),
+            gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_03, "RELAY #3", PinState.LOW),
+            gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_04, "RELAY #4", PinState.LOW)
           };
         
         // create a gpio control trigger on the input pin ; when the input goes HIGH, also set gpio pin #04 to HIGH

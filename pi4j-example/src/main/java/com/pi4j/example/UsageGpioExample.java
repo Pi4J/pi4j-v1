@@ -77,7 +77,7 @@ public class UsageGpioExample
         // END SNIPPET: usage-provision-input-pin-snippet
         // START SNIPPET: usage-provision-output-pin-snippet
         // provision gpio pins #04 as an output pin and make sure is is set to LOW at startup
-        GpioPinDigitalOutput myLed = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_04,   // PIN NUMBER
+        GpioPinDigitalOutput myLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04,   // PIN NUMBER
                                                                    "My LED",           // PIN FRIENDLY NAME
                                                                    PinState.LOW);      // PIN STARTUP STATE
         // END SNIPPET: usage-provision-output-pin-snippet

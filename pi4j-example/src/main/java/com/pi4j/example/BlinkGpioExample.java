@@ -56,8 +56,8 @@ public class BlinkGpioExample
         GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 & #03 as an output pins and blink
-        GpioPinDigitalOutput led1 = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_01, "MyBlikingLED1");
-        GpioPinDigitalOutput led2 = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_03, "MyBlikingLED2");
+        GpioPinDigitalOutput led1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyBlikingLED1");
+        GpioPinDigitalOutput led2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyBlikingLED2");
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);

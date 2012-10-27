@@ -81,18 +81,18 @@ public interface GpioController
     GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);
     GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name);
 
-    GpioPinDigitalOutput provisionDigitalOuputPin(GpioProvider provider, Pin pin, String name, PinState defaultState);
-    GpioPinDigitalOutput provisionDigitalOuputPin(GpioProvider provider, Pin pin, String name);
-    GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name, PinState defaultState);
-    GpioPinDigitalOutput provisionDigitalOuputPin(Pin pin, String name);
+    GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name, PinState defaultState);
+    GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name, PinState defaultState);
+    GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name);
 
     GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin, String name);    
     GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);    
     
-    GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name, double defaultValue);
-    GpioPinAnalogOutput provisionAnalogOuputPin(GpioProvider provider, Pin pin, String name);
-    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name, double defaultValue);
-    GpioPinAnalogOutput provisionAnalogOuputPin(Pin pin, String name);
+    GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name, double defaultValue);
+    GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name, double defaultValue);
+    GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name);
 
     GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, String name, int defaultValue);
     GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, String name);

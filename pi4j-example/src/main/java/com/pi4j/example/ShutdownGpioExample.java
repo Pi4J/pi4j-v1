@@ -53,7 +53,7 @@ public class ShutdownGpioExample
         GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPin pin = gpio.provisionDigitalOuputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
+        GpioPin pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
         
         // configure the pin shutdown behavior; these settings will be 
         // automatically applied to the pin when the application is terminated
