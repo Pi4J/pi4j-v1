@@ -323,32 +323,67 @@
 				</configuration>
 			</plugin>
 
+			<!-- ATTACH LICENSE AS ARTIFACT -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${basedir}/LICENSE.txt</file>
+									<type>txt</type>
+									<classifier>license</classifier>
+								</artifact>
+								<artifact>
+									<file>${basedir}/NOTICE.txt</file>
+									<type>txt</type>
+									<classifier>notice</classifier>
+								</artifact>
+								<artifact>
+									<file>${basedir}/README.md</file>
+									<type>md</type>
+									<classifier>readme</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+				<inherited>false</inherited>
+			</plugin>
+
 			<!-- CREATE DEBIAN (.DEB) PACKAGE -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>jdeb</artifactId> -->
-<!-- 				<groupId>org.vafer</groupId> -->
-<!-- 				<version>0.11</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>jdeb</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<dataSet> -->
-<!-- 								<data> -->
-<!-- 									<src>${project.build.directory}/${project.build.finalName}.jar</src> -->
-<!-- 									<type>file</type> -->
-<!-- 									<mapper> -->
-<!-- 										<type>perm</type> -->
-<!-- 										<prefix>/usr/share/pi4j/lib</prefix> -->
-<!-- 									</mapper> -->
-<!-- 								</data> -->
-<!-- 							</dataSet> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>jdeb</artifactId> -->
+			<!-- <groupId>org.vafer</groupId> -->
+			<!-- <version>0.11</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>jdeb</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <dataSet> -->
+			<!-- <data> -->
+			<!-- <src>${project.build.directory}/${project.build.finalName}.jar</src> -->
+			<!-- <type>file</type> -->
+			<!-- <mapper> -->
+			<!-- <type>perm</type> -->
+			<!-- <prefix>/usr/share/pi4j/lib</prefix> -->
+			<!-- </mapper> -->
+			<!-- </data> -->
+			<!-- </dataSet> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 		</plugins>
 
 		<pluginManagement>
@@ -393,6 +428,59 @@
 							<goals>
 								<goal>jar</goal>
 							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- DOWNLOAD LICENSE, README & NOTICE ARTIFACTS -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.5.1</version>
+					<executions>
+						<execution>
+							<id>copy-license</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>copy</goal>
+							</goals>
+							<configuration>
+								<artifactItems>
+									<artifactItem>
+										<groupId>com.pi4j</groupId>
+										<artifactId>pi4j-parent</artifactId>
+										<version>${project.version}</version>
+										<classifier>license</classifier>
+										<type>txt</type>
+										<overWrite>true</overWrite>
+										<outputDirectory>${project.build.directory}</outputDirectory>
+										<destFileName>LICENSE.txt</destFileName>
+									</artifactItem>
+									<artifactItem>
+										<groupId>com.pi4j</groupId>
+										<artifactId>pi4j-parent</artifactId>
+										<version>${project.version}</version>
+										<classifier>notice</classifier>
+										<type>txt</type>
+										<overWrite>true</overWrite>
+										<outputDirectory>${project.build.directory}</outputDirectory>
+										<destFileName>NOTICE.txt</destFileName>
+									</artifactItem>	
+									<artifactItem>
+										<groupId>com.pi4j</groupId>
+										<artifactId>pi4j-parent</artifactId>
+										<version>${project.version}</version>
+										<classifier>readme</classifier>
+										<type>md</type>
+										<overWrite>true</overWrite>
+										<outputDirectory>${project.build.directory}</outputDirectory>
+										<destFileName>README.md</destFileName>
+									</artifactItem>	
+								</artifactItems>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+								<overWriteReleases>false</overWriteReleases>
+								<overWriteSnapshots>true</overWriteSnapshots>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
@@ -519,12 +607,12 @@
 				<artifactId>ant-contrib</artifactId>
 				<version>20020829</version>
 			</dependency>
-		    <dependency>
-		      <groupId>junit</groupId>
-		      <artifactId>junit</artifactId>
-		      <version>4.10</version>
-		      <scope>test</scope>
-		    </dependency>			
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -29,18 +29,18 @@
 			<type>so</type>
 			<classifier>soft-float</classifier>
 		</dependency>
-	    <dependency>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	      <scope>test</scope>
-	    </dependency>		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
 		<resources>
 			<resource>
-				<directory>${basedir}/../</directory>
+				<directory>${project.build.directory}</directory>
 				<filtering>false</filtering>
 				<includes>
 					<include>LICENSE.txt</include>
@@ -84,7 +84,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.5.1</version>
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -99,7 +98,7 @@
 								<artifactItem>
 									<groupId>com.pi4j</groupId>
 									<artifactId>pi4j-native</artifactId>
-									<version>${project.version}</version>									
+									<version>${project.version}</version>
 									<type>so</type>
 									<classifier>hard-float</classifier>
 									<overWrite>true</overWrite>
@@ -109,7 +108,7 @@
 								<artifactItem>
 									<groupId>com.pi4j</groupId>
 									<artifactId>pi4j-native</artifactId>
-									<version>${project.version}</version>									
+									<version>${project.version}</version>
 									<type>so</type>
 									<classifier>soft-float</classifier>
 									<overWrite>true</overWrite>
@@ -162,7 +161,7 @@
 							com.pi4j.io.gpio.*,
 							com.pi4j.io.i2c.*
 						</Export-Package>
-						<Private-Package>							
+						<Private-Package>
 						</Private-Package>
 					</instructions>
 				</configuration>
@@ -252,59 +251,59 @@
 					<version>1.0.0</version>
 					<configuration>
 						<lifecycleMappingMetadata>
-						<pluginExecutions>
-							<pluginExecution>
-								<pluginExecutionFilter>
-									<groupId>org.apache.felix</groupId>
-									<artifactId>
-										maven-bundle-plugin
-									</artifactId>
-									<versionRange>
-										[2.3.7,)
-									</versionRange>
-									<goals>
-										<goal>manifest</goal>
-									</goals>
-								</pluginExecutionFilter>
-								<action>
-									<ignore></ignore>
-								</action>
-							</pluginExecution>
-							<pluginExecution>
-								<pluginExecutionFilter>
-									<groupId>org.codehaus.mojo</groupId>
-									<artifactId>
-										build-helper-maven-plugin
-									</artifactId>
-									<versionRange>[1.7,)</versionRange>
-									<goals>
-										<goal>add-resource</goal>
-									</goals>
-								</pluginExecutionFilter>
-								<action>
-									<ignore></ignore>
-								</action>
-							</pluginExecution>
-							<pluginExecution>
-								<pluginExecutionFilter>
-									<groupId>
-										org.apache.maven.plugins
-									</groupId>
-									<artifactId>
-										maven-dependency-plugin
-									</artifactId>
-									<versionRange>
-										[2.5.1,)
-									</versionRange>
-									<goals>
-										<goal>copy</goal>
-									</goals>
-								</pluginExecutionFilter>
-								<action>
-									<ignore></ignore>
-								</action>
-							</pluginExecution>
-						</pluginExecutions>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.felix</groupId>
+										<artifactId>
+											maven-bundle-plugin
+										</artifactId>
+										<versionRange>
+											[2.3.7,)
+										</versionRange>
+										<goals>
+											<goal>manifest</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>
+											build-helper-maven-plugin
+										</artifactId>
+										<versionRange>[1.7,)</versionRange>
+										<goals>
+											<goal>add-resource</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.5.1,)
+										</versionRange>
+										<goals>
+											<goal>copy</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
