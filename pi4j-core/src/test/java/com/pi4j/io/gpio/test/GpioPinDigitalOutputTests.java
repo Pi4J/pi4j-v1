@@ -108,28 +108,28 @@ public class GpioPinDigitalOutputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.DIGITAL_OUTPUT_PIN);                
+        assertEquals(MockPin.DIGITAL_OUTPUT_PIN, pin.getPin());                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.DIGITAL_OUTPUT_PIN.getAddress());
+        assertEquals(MockPin.DIGITAL_OUTPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "digitalOutputPin");
+        assertEquals("digitalOutputPin", pin.getName());
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.DIGITAL_OUTPUT);
+        assertEquals(PinMode.DIGITAL_OUTPUT, pin.getMode());
     }
 
     @Test
@@ -159,7 +159,7 @@ public class GpioPinDigitalOutputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.OUT);                
+        assertEquals(PinDirection.OUT, pin.getMode().getDirection());                
     }
 
     @Test
@@ -167,7 +167,7 @@ public class GpioPinDigitalOutputTests
     {
         // verify pin initial state
         assertTrue(pin.isLow());
-        assertEquals(pin.getState(), PinState.LOW);                
+        assertEquals(PinState.LOW, pin.getState());                
     }
 
     @Test
@@ -177,7 +177,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(pin.getState(), PinState.HIGH);                
+        assertEquals(PinState.HIGH, pin.getState());                
     }
 
     @Test
@@ -187,7 +187,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(pin.getState(), PinState.LOW);                
+        assertEquals(PinState.LOW, pin.getState());                
     }
 
     @Test
@@ -197,7 +197,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(pin.getState(), PinState.HIGH);                
+        assertEquals(PinState.HIGH, pin.getState());                
     }
 
     @Test
@@ -207,7 +207,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(pin.getState(), PinState.LOW);                
+        assertEquals(PinState.LOW, pin.getState());                
     }
 
     @Test
@@ -217,7 +217,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(pin.getState(), PinState.HIGH);                
+        assertEquals(PinState.HIGH, pin.getState());                
     }
 
     @Test
@@ -227,7 +227,7 @@ public class GpioPinDigitalOutputTests
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(pin.getState(), PinState.LOW);                
+        assertEquals(PinState.LOW, pin.getState());                
     }
 
     @Test

@@ -108,21 +108,21 @@ public class GpioPinAnalogOutputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.ANALOG_OUTPUT_PIN);                
+        assertEquals(MockPin.ANALOG_OUTPUT_PIN, pin.getPin());                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.ANALOG_OUTPUT_PIN.getAddress());
+        assertEquals(MockPin.ANALOG_OUTPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "analogOutputPin");
+        assertEquals("analogOutputPin", pin.getName());
     }
      
     @Test
@@ -159,7 +159,7 @@ public class GpioPinAnalogOutputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.OUT);                
+        assertEquals(PinDirection.OUT, pin.getMode().getDirection());                
     }
 
     @Test

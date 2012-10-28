@@ -117,7 +117,7 @@ public class GpioPinAnalogInputTests
     public void testPinProvider()
     {
         // verify pin mode
-        assertEquals(pin.getProvider(), provider);                
+        assertEquals(provider, pin.getProvider());                
     }
     
     @Test
@@ -131,28 +131,28 @@ public class GpioPinAnalogInputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.ANALOG_INPUT_PIN);                
+        assertEquals(MockPin.ANALOG_INPUT_PIN, pin.getPin());                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.ANALOG_INPUT_PIN.getAddress());
+        assertEquals(MockPin.ANALOG_INPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "analogInputPin");
+        assertEquals("analogInputPin", pin.getName());
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.ANALOG_INPUT);
+        assertEquals(PinMode.ANALOG_INPUT, pin.getMode());
     }
 
     @Test
@@ -182,7 +182,7 @@ public class GpioPinAnalogInputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.IN);                
+        assertEquals(PinDirection.IN, pin.getMode().getDirection());                
     }
 
     public void testPinValue()
@@ -246,7 +246,7 @@ public class GpioPinAnalogInputTests
         }
         
         // make sure we received the proper number of events
-        assertEquals(eventCounter, 5);
+        assertEquals(5, eventCounter);
     }    
 
     @Test

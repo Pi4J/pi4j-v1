@@ -109,28 +109,28 @@ public class GpioPinPwmOutputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.PWM_OUTPUT_PIN);                
+        assertEquals(MockPin.PWM_OUTPUT_PIN, pin.getPin());                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.PWM_OUTPUT_PIN.getAddress());
+        assertEquals(MockPin.PWM_OUTPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "pwmOutputPin");
+        assertEquals("pwmOutputPin", pin.getName());
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.PWM_OUTPUT);
+        assertEquals(PinMode.PWM_OUTPUT, pin.getMode());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class GpioPinPwmOutputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.OUT);                
+        assertEquals(PinDirection.OUT, pin.getMode().getDirection());                
     }
 
     @Test

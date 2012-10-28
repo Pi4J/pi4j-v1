@@ -115,7 +115,7 @@ public class GpioPinDigitalInputTests
     public void testPinProvider()
     {
         // verify pin mode
-        assertEquals(pin.getProvider(), provider);                
+        assertEquals(provider, pin.getProvider());                
     }
     
     @Test
@@ -129,28 +129,28 @@ public class GpioPinDigitalInputTests
     public void testPinInstance()
     {
         // verify pin instance
-        assertEquals(pin.getPin(), MockPin.DIGITAL_INPUT_PIN);                
+        assertEquals(MockPin.DIGITAL_INPUT_PIN, pin.getPin());                
     }
     
     @Test
     public void testPinAddress()
     {    
         // verify pin address
-        assertEquals(pin.getPin().getAddress(), MockPin.DIGITAL_INPUT_PIN.getAddress());
+        assertEquals(MockPin.DIGITAL_INPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
     public void testPinName()
     {
         // verify pin name
-        assertEquals(pin.getName(), "digitalInputPin");
+        assertEquals("digitalInputPin", pin.getName());
     }
      
     @Test
     public void testPinMode()
     {
         // verify pin mode
-        assertEquals(pin.getMode(), PinMode.DIGITAL_INPUT);
+        assertEquals(PinMode.DIGITAL_INPUT, pin.getMode());
     }
 
     @Test
@@ -180,7 +180,7 @@ public class GpioPinDigitalInputTests
     public void testPinDirection()
     {
         // verify pin direction
-        assertEquals(pin.getMode().getDirection(), PinDirection.IN);                
+        assertEquals(PinDirection.IN, pin.getMode().getDirection());                
     }
 
     public void testPinHiState()
@@ -190,7 +190,7 @@ public class GpioPinDigitalInputTests
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(pin.getState(), PinState.HIGH);                
+        assertEquals(PinState.HIGH, pin.getState());                
     }
 
     @Test
@@ -201,7 +201,7 @@ public class GpioPinDigitalInputTests
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(pin.getState(), PinState.LOW);                
+        assertEquals(PinState.LOW, pin.getState());                
     }
 
     @Test(expected=InvalidPinModeException.class)
@@ -244,7 +244,7 @@ public class GpioPinDigitalInputTests
         Thread.sleep(100);
         
         // verify pin low state
-        assertEquals(pinMonitoredState, PinState.LOW);                
+        assertEquals(PinState.LOW, pinMonitoredState);                
     }    
 
     @Test
@@ -263,7 +263,7 @@ public class GpioPinDigitalInputTests
         Thread.sleep(100);
         
         // verify pin hi state
-        assertEquals(pinMonitoredState, PinState.HIGH);                
+        assertEquals(PinState.HIGH, pinMonitoredState);                
     }
     
     @Test

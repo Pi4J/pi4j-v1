@@ -38,9 +38,15 @@ public class GpioToggleStateTrigger extends GpioTriggerBase
 {
     private final GpioPinDigitalOutput targetPin;
 
-    public GpioToggleStateTrigger(PinState state, GpioPinDigitalOutput targetPin)
+    public GpioToggleStateTrigger(GpioPinDigitalOutput targetPin)
     {
         super();
+        this.targetPin = targetPin;
+    }
+    
+    public GpioToggleStateTrigger(PinState state, GpioPinDigitalOutput targetPin)
+    {
+        super(state);
         this.targetPin = targetPin;
     }
     
