@@ -83,6 +83,7 @@
 		<module>pi4j-service</module>
 		<module>pi4j-gpio-extension</module>
 		<module>pi4j-device</module>
+		<module>pi4j-distribution</module>
 	</modules>
 
 	<!-- BUILD PROPERTIES -->
@@ -167,6 +168,14 @@
 				<pi.abi>hard-float</pi.abi>
 				<pi.host>pi-hf-wifi</pi.host>
 			</properties>
+		</profile>
+
+		<!-- SPECIAL PROFILE TO BUILD .DEB DISTRIBUTION PROJECT -->
+		<profile>
+			<id>distro</id>
+			<modules>
+				<module>pi4j-distribution</module>
+			</modules>
 		</profile>
 
 	</profiles>
@@ -357,33 +366,6 @@
 				</executions>
 				<inherited>false</inherited>
 			</plugin>
-
-			<!-- CREATE DEBIAN (.DEB) PACKAGE -->
-			<!-- <plugin> -->
-			<!-- <artifactId>jdeb</artifactId> -->
-			<!-- <groupId>org.vafer</groupId> -->
-			<!-- <version>0.11</version> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <phase>package</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>jdeb</goal> -->
-			<!-- </goals> -->
-			<!-- <configuration> -->
-			<!-- <dataSet> -->
-			<!-- <data> -->
-			<!-- <src>${project.build.directory}/${project.build.finalName}.jar</src> -->
-			<!-- <type>file</type> -->
-			<!-- <mapper> -->
-			<!-- <type>perm</type> -->
-			<!-- <prefix>/usr/share/pi4j/lib</prefix> -->
-			<!-- </mapper> -->
-			<!-- </data> -->
-			<!-- </dataSet> -->
-			<!-- </configuration> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
 		</plugins>
 
 		<pluginManagement>
@@ -465,7 +447,7 @@
 										<overWrite>true</overWrite>
 										<outputDirectory>${project.build.directory}</outputDirectory>
 										<destFileName>NOTICE.txt</destFileName>
-									</artifactItem>	
+									</artifactItem>
 									<artifactItem>
 										<groupId>com.pi4j</groupId>
 										<artifactId>pi4j-parent</artifactId>
@@ -475,7 +457,7 @@
 										<overWrite>true</overWrite>
 										<outputDirectory>${project.build.directory}</outputDirectory>
 										<destFileName>README.md</destFileName>
-									</artifactItem>	
+									</artifactItem>
 								</artifactItems>
 								<outputDirectory>${project.build.directory}</outputDirectory>
 								<overWriteReleases>false</overWriteReleases>

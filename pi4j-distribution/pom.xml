@@ -1,0 +1,330 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.pi4j</groupId>
+		<artifactId>pi4j-parent</artifactId>
+		<version>0.0.3-SNAPSHOT</version>
+	</parent>
+	<artifactId>pi4j-distribution</artifactId>
+	<name>Pi4J :: Distribution</name>
+	<description>Packaged Pi4J Distributions</description>
+	<packaging>pom</packaging>
+
+
+	<!-- PROJECT DEPENDENCIES -->
+	<dependencies>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-device</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-gpio-extension</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-example</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-example</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+	</dependencies>
+
+	<!-- BUILD INSTRUCTIONS -->
+	<build>
+		<plugins>
+
+			<!-- ACQUIRE DEPENDENCIES -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+
+					<!-- DOWNLOAD LICENSE, README & NOTICE ARTIFACTS -->
+					<execution>
+						<id>copy-license</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.pi4j</groupId>
+									<artifactId>pi4j-parent</artifactId>
+									<version>${project.version}</version>
+									<classifier>license</classifier>
+									<type>txt</type>
+									<overWrite>true</overWrite>
+									<destFileName>LICENSE.txt</destFileName>
+									<outputDirectory>${project.build.directory}/distro-contents</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.pi4j</groupId>
+									<artifactId>pi4j-parent</artifactId>
+									<version>${project.version}</version>
+									<classifier>notice</classifier>
+									<type>txt</type>
+									<overWrite>true</overWrite>
+									<destFileName>NOTICE.txt</destFileName>
+									<outputDirectory>${project.build.directory}/distro-contents</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.pi4j</groupId>
+									<artifactId>pi4j-parent</artifactId>
+									<version>${project.version}</version>
+									<classifier>readme</classifier>
+									<type>md</type>
+									<overWrite>true</overWrite>
+									<destFileName>README.md</destFileName>
+									<outputDirectory>${project.build.directory}/distro-contents</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+
+					<!-- DOWNLOAD LIBRARY ARTIFACTS -->
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/distro-contents/libs</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<excludeTransitive>true</excludeTransitive>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+
+					<!-- DOWNLOAD & EXTRACT EXAMPLE SOURCE ARTIFACTS -->
+					<execution>
+						<id>unpack-example-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.pi4j</groupId>
+									<artifactId>pi4j-example</artifactId>
+									<version>${project.version}</version>
+									<classifier>sources</classifier>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/distro-contents/examples</outputDirectory>
+									<includes>com/pi4j/example/*.java,com/pi4j/example/*.sh</includes>
+								</artifactItem>
+							</artifactItems>
+							<includes>**/*.java</includes>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+
+
+			<!-- CREATE DEBIAN (.DEB) PACKAGE -->
+			<plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+				<version>0.12-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jdeb</goal>
+						</goals>
+						<configuration>
+							<attach>true</attach>
+							<deb>${project.build.directory}/pi4j-${version}.deb</deb>
+							<installDir>/opt/pi4j</installDir>
+							<dataSet>
+								<data>
+									<src>${project.build.directory}/distro-contents/LICENSE.txt</src>
+									<dst>LICENSE</dst>
+									<type>file</type>
+									<dst>/opt/pi4j/LICENSE</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/NOTICE.txt</src>
+									<type>file</type>
+									<dst>/opt/pi4j/NOTICE</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/README.md</src>
+									<type>file</type>
+									<dst>/opt/pi4j/README</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/libs/pi4j-core.jar</src>
+									<type>file</type>
+									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/libs/pi4j-device.jar</src>
+									<type>file</type>
+									<dst>/opt/pi4j/lib/pi4j-device.jar</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/libs/pi4j-service.jar</src>
+									<type>file</type>
+									<dst>/opt/pi4j/lib/pi4j-service.jar</dst>
+								</data>
+								<data>
+									<src>${project.build.directory}/distro-contents/libs/pi4j-gpio-extension.jar</src>
+									<type>file</type>
+									<dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
+								</data>
+								
+								<data>
+									<src>${project.build.directory}/distro-contents/examples/com/pi4j/example</src>
+									<type>directory</type>
+	                                <mapper>
+	                                    <type>perm</type>
+	                                    <prefix>/opt/pi4j/examples</prefix>
+	                                    <filemode>777</filemode>
+	                                </mapper>									
+								</data>
+							</dataSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- OPTIONALLY DEPLOY THE FINAL .DEB TO THE RASBERRY PI -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+
+					<!-- copy the compiled JAR file to the Raspberry Pi platform platform -->
+					<execution>
+						<id>transfer-packaged-pi4j-deb</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+									classpathref="maven.plugin.classpath" />
+								<if>
+									<equals arg1="${pi.transfer}" arg2="true" />
+									<then>
+										<!-- copy the JAR file to the Raspberry Pi -->
+										<scp file="${project.build.directory}/pi4j-${version}.deb"
+											todir="${pi.user}:${pi.password}@${pi.host}:${pi.dirCopyTo}"
+											port="${pi.port}" trust="true" verbose="true" failonerror="true">
+										</scp>
+									</then>
+									<else>
+										<echo>SCP transfer of Pi4J has been disabled.</echo>
+									</else>
+								</if>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.7.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.42</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>20020829</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- DEPLOY .DEB PACAKGE TO GITHUB DOWNLOADS PAGE -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>downloads-maven-plugin</artifactId>
+				<version>0.5</version>
+				<configuration>
+					<description>Debian installer package of the Pi4J Library for the
+						Raspberry Pi</description>
+					<override>true</override>
+					<repositoryOwner>Pi4J</repositoryOwner>
+					<repositoryName>pi4j</repositoryName>
+					<includeAttached>true</includeAttached>
+					<includes>
+						<include>pi4j-${project.version]}.deb</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.5.1,)
+										</versionRange>
+										<goals>
+											<goal>copy</goal>
+											<goal>
+												copy-dependencies
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

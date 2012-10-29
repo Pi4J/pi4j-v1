@@ -1,0 +1,9 @@
+Package: pi4j
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Depends: 
+Maintainer: Pi4J Support <support@pi4j.com>
+Description: Java library for IO access on the Raspberry Pi platform
+Distribution: development
