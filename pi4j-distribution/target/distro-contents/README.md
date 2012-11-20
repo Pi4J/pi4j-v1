@@ -32,6 +32,17 @@
 
 ## RELEASES
 
+2012-11-19 :: 0.0.4-SNAPSHOT
+ 
+   *  Added support for building a Pi4J .deb installer package for Debian/Raspian Linux distribution. (BETA)
+   *  Modified NetworkInfo static methods to permit empty array return values when a network property cannot be obtained.
+      https://github.com/Pi4J/pi4j/issues/3
+   *  Fixed issue in newer Raspberry Pi 512mb firmware where Pi4J was not compiled against latest wiringPi library and thus not detecting the hardware properly.
+      https://github.com/Pi4J/pi4j/issues/3
+   *  Fixed defect where Pi4J library prevented consuming program from exiting properly.
+      https://github.com/Pi4J/pi4j/issues/4 
+      https://github.com/Pi4J/pi4j/issues/6
+
 2012-10-22 :: 0.0.3-SNAPSHOT
  
    *  Refactored Gpio interfaces to permit extensible GpioProviders for add-on devices.

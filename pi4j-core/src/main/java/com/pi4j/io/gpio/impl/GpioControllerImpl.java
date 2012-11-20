@@ -557,7 +557,7 @@ public class GpioControllerImpl implements GpioController
         if (name != null)
             gpioPin.setName(name);
 
-        // export this pin as a DIGITAL_INPUT
+        // export this pin 
         gpioPin.export(mode);
 
         // add this new pin instance to the managed collection
@@ -743,6 +743,62 @@ public class GpioControllerImpl implements GpioController
         }        
     }
     
+    public void setShutdownOptions(GpioPinShutdown options, GpioPin... pin)
+    {
+        for (GpioPin p : pin)
+        {
+            if (!pins.contains(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setShutdownOptions(options);
+        }  
+    }
+    
+    public void setShutdownOptions(Boolean unexport, GpioPin... pin)
+    {
+        for (GpioPin p : pin)
+        {
+            if (!pins.contains(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setShutdownOptions(unexport);
+        }          
+    }
+    
+    public void setShutdownOptions(Boolean unexport, PinState state, GpioPin... pin)
+    {
+        for (GpioPin p : pin)
+        {
+            if (!pins.contains(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setShutdownOptions(unexport, state);
+        }          
+    }
+    
+    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, GpioPin... pin)
+    {
+        for (GpioPin p : pin)
+        {
+            if (!pins.contains(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setShutdownOptions(unexport, state, resistance);
+        }          
+    }
+    
+    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, PinMode mode, GpioPin... pin)
+    {
+        for (GpioPin p : pin)
+        {
+            if (!pins.contains(p))
+                throw new GpioPinNotProvisionedException(p.getPin());
+    
+            p.setShutdownOptions(unexport, state, resistance, mode);
+        }                  
+    }
+
+    
     /**
      * This class is used to perform any configured shutdown actions
      * on the provisioned GPIO pins
@@ -754,6 +810,10 @@ public class GpioControllerImpl implements GpioController
     {        
         public void run()
         {
+            // shutdown executor service
+            GpioScheduledExecutorImpl.shutdown();
+            
+            // shutdown explicit configured GPIO pins
             for (GpioPin pin : pins)
             {
                 GpioPinShutdown shutdownOptions = pin.getShutdownOptions(); 

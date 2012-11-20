@@ -46,6 +46,7 @@ public class NetworkInfo
     {
         return executeCommand(command, null);
     }
+    
     private static String[] executeCommand(String command, String split) throws IOException, InterruptedException
     {
         List<String> result = new ArrayList<String>();
@@ -78,8 +79,8 @@ public class NetworkInfo
 
         if(result.size() > 0)
             return (String[])result.toArray(new String[0]);
-        
-        throw new RuntimeException("Invalid command: " + command);
+        else
+            return new String[0];
     }
 
     public static String getHostname() throws IOException, InterruptedException

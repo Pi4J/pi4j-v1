@@ -96,8 +96,17 @@ public class GpioScheduledExecutorImpl
                             if (remainingTask.isCancelled() || remainingTask.isDone())
                                 remainingTasks.remove(index);
                         }
+                        
+                        // if no remaining future tasks are remaining, then remove this pin from the tasks queue
+                        if(remainingTasks.isEmpty())
+                            pinTaskQueue.remove(item.getKey());                         
                     }
                 }
+                
+                // shutdown service when tasks are complete
+                if(pinTaskQueue.isEmpty())
+                    scheduledExecutorService.shutdown();
+                
                 return null;
             }
         }, delay, TimeUnit.MILLISECONDS);
@@ -181,4 +190,10 @@ public class GpioScheduledExecutorImpl
         if(pinTaskQueue.isEmpty())
             scheduledExecutorService.shutdown();
     }
+    
+    public synchronized static void shutdown()
+    {
+        if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown())
+            scheduledExecutorService.shutdownNow();
+    }    
 }

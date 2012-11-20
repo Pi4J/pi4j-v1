@@ -102,6 +102,12 @@ public interface GpioController
     GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode);
     GpioPin provisionPin(Pin pin, String name, PinMode mode);
 
+    void setShutdownOptions(GpioPinShutdown options, GpioPin... pin);
+    void setShutdownOptions(Boolean unexport, GpioPin... pin);
+    void setShutdownOptions(Boolean unexport, PinState state, GpioPin... pin);
+    void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, GpioPin... pin);
+    void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, PinMode mode, GpioPin... pin);
+    
     Collection<GpioPin> getProvisionedPins();
     
     void unprovisionPin(GpioPin... pin);
