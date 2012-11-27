@@ -252,6 +252,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
         return response - 20000;
     }
 	
+    response = ioctl(fd, I2C_SLAVE, deviceAddress);
+    if (response < 0) {
+        return response - 10000;
+    }
+
     response = read(fd, buf, 1);
     if (response != 1) {
 	    return response - 30000;
@@ -284,6 +289,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
         return response - 20000;
     }
 	
+    response = ioctl(fd, I2C_SLAVE, deviceAddress);
+    if (response < 0) {
+        return response - 10000;
+    }
+
     response = read(fd, buf, size);
     if (response > 0) {
 
