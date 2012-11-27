@@ -216,7 +216,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
         return response - 10000;
-	}
+    }
 
     response = read(fd, buf, size);
     if (response > 0) {
@@ -243,19 +243,19 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
         return response - 10000;
-	}
+    }
 
     buf[0] = localAddress;												
 	
-	response = write(fd, buf, 1);
-	if (response != 1) {
-	    return response - 20000;
-	}
+    response = write(fd, buf, 1);
+    if (response != 1) {
+        return response - 20000;
+    }
 	
     response = read(fd, buf, 1);
     if (response != 1) {
 	    return response - 30000;
-	}
+    }
 
     response = (int)buf[0];
 
@@ -275,14 +275,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
         return response - 10000;
-	}
+    }
 
     buf[0] = localAddress;
 	
-	response = write(fd, buf, 1);
-	if (response != 1) {
-	    return response - 20000;
-	}
+    response = write(fd, buf, 1);
+    if (response != 1) {
+        return response - 20000;
+    }
 	
     response = read(fd, buf, size);
     if (response > 0) {
