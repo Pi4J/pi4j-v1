@@ -51,7 +51,7 @@ import com.pi4j.io.serial.Serial;
  * </p>  
  * 
  * <p>
- * This exmaple implements the Olimex AVR-IO-M-16 expansion board.
+ * This example implements the Olimex AVR-IO-M-16 expansion board.
  * More information about the board can be found here: *
  * https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * </p>
