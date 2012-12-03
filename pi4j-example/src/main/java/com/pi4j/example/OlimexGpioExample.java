@@ -51,7 +51,7 @@ import com.pi4j.io.serial.Serial;
  * </p>  
  * 
  * <p>
- * This exmaple implements the Olimex AVR-IO-M-16 expansion board.
+ * This example implements the Olimex AVR-IO-M-16 expansion board.
  * More information about the board can be found here: *
  * https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * </p>
@@ -114,10 +114,14 @@ public class OlimexGpioExample
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;)
+        // or we reach 60 seconds
+        for (int seconds = 0; seconds < 60; seconds++)
         {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         }
+        
+        // shutdown the GPIO provider
+        olimexProvider.shutdown();        
     }
     
     

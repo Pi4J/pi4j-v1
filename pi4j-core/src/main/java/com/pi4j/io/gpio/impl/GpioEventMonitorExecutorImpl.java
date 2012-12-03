@@ -49,4 +49,10 @@ public class GpioEventMonitorExecutorImpl implements PinListener
     {
         executor.execute(new GpioEventDispatchTaskImpl(pin, event));
     }
+    
+    public synchronized static void shutdown()
+    {
+        if (executor != null && !executor.isShutdown())
+            executor.shutdownNow();
+    }      
 }

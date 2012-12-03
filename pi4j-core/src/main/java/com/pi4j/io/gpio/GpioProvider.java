@@ -57,5 +57,7 @@ public interface GpioProvider
     
     void addListener(Pin pin, PinListener listener);
     void removeListener(Pin pin, PinListener listener);
-    void removeAllListeners();    
+    void removeAllListeners();
+
+    void shutdown();    
 }

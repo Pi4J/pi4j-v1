@@ -810,8 +810,9 @@ public class GpioControllerImpl implements GpioController
     {        
         public void run()
         {
-            // shutdown executor service
+            // shutdown executor services
             GpioScheduledExecutorImpl.shutdown();
+            GpioEventMonitorExecutorImpl.shutdown();
             
             // shutdown explicit configured GPIO pins
             for (GpioPin pin : pins)

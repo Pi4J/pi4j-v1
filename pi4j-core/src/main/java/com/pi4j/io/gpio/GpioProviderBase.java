@@ -305,4 +305,9 @@ public abstract class GpioProviderBase implements GpioProvider
             }            
         }
     }
+    
+    @Override
+    public void shutdown()
+    {
+    }     
 }

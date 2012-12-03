@@ -30,7 +30,7 @@
    *  Create additional GpioProvider implementations
    *  Create device abstraction implementations
 
-## RELEASES
+## IN DEVELOPMENT
 
 2012-11-19 :: 0.0.4-SNAPSHOT
  
@@ -42,6 +42,8 @@
    *  Fixed defect where Pi4J library prevented consuming program from exiting properly.
       https://github.com/Pi4J/pi4j/issues/4 
       https://github.com/Pi4J/pi4j/issues/6
+
+## RELEASES
 
 2012-10-22 :: 0.0.3-SNAPSHOT
  

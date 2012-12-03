@@ -57,7 +57,7 @@ public class SerialCommandQueueProcessingThread extends Thread
      * Exit the monitoring thread.
      * </p>
      */
-    public synchronized void exit()
+    public synchronized void shutdown()
     {
         exiting = true;
     }
