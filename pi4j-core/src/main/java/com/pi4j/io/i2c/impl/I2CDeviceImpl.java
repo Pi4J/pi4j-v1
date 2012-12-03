@@ -160,24 +160,24 @@ public class I2CDeviceImpl implements I2CDevice {
     @Override
     public int read(byte[] buffer, int offset, int size) throws IOException {
         // It doesn't work for some reason. 
-        // int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
-        // if (ret < 0) {
-        //     throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
-        // }
-        // return ret;
-        for (int i = 0; i < size; i++) {
-            int b = read();
-            if (b < 0) {
-                if (i == 0) {
-                    throw new IOException("Error reading from " + makeDescription() + ". Got " + b + ".");
-                } else {
-                    return i;
-                }
-            }
-            if (b > 127) { b = b - 256; }
-            buffer[i + offset] = (byte)b;
+        int ret = I2C.i2cReadBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
+        if (ret < 0) {
+            throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
         }
-        return size;
+        return ret;
+        //for (int i = 0; i < size; i++) {
+        //    int b = read();
+        //    if (b < 0) {
+        //        if (i == 0) {
+        //            throw new IOException("Error reading from " + makeDescription() + ". Got " + b + ".");
+        //        } else {
+        //            return i;
+        //        }
+        //    }
+        //    if (b > 127) { b = b - 256; }
+        //    buffer[i + offset] = (byte)b;
+        //}
+        //return size;
     }
 
     /**
@@ -216,24 +216,24 @@ public class I2CDeviceImpl implements I2CDevice {
     @Override
     public int read(int address, byte[] buffer, int offset, int size) throws IOException {
         // It doesn't work for some reason. 
-        // int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
-        // if (ret < 0) {
-        //     throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
-        // }
-        // return ret;
-        for (int i = 0; i < size; i++) {
-            int b = read(address + i);
-            if (b < 0) {
-                if (i == 0) {
-                    throw new IOException("Error reading from " + makeDescription(address) + ". Got " + b + ".");
-                } else {
-                    return i;
-                }
-            }
-            if (b > 127) { b = b - 256; }
-            buffer[i + offset] = (byte)b;
+        int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
+        if (ret < 0) {
+            throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
         }
-        return size;
+        return ret;
+        // for (int i = 0; i < size; i++) {
+        //     int b = read(address + i);
+        //     if (b < 0) {
+        //         if (i == 0) {
+        //             throw new IOException("Error reading from " + makeDescription(address) + ". Got " + b + ".");
+        //         } else {
+        //             return i;
+        //         }
+        //     }
+        //     if (b > 127) { b = b - 256; }
+        //     buffer[i + offset] = (byte)b;
+        // }
+        // return size;
     }
     
     /**
