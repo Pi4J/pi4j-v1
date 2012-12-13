@@ -31,11 +31,7 @@ package com.pi4j.io.serial;
 import com.pi4j.io.serial.impl.SerialImpl;
 
 /**
- * <h1>Serial Factory</h1>
- * 
- * <p>
- * This factory class provide a static method to create new 'Serial' instances.
- * </p>
+ * <p> This factory class provide a static method to create new 'Serial' instances. </p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -57,23 +53,19 @@ import com.pi4j.io.serial.impl.SerialImpl;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class SerialFactory
-{
+public class SerialFactory {
+
     // private constructor 
-    private SerialFactory()
-    {
+    private SerialFactory() {
         // forbid object construction 
     }
     
     /**
-     * <h1>Create New Serial instance</h1>
+     * Create New Serial instance
      * 
-     * @return <p>
-     *         Return a new Serial implementation instance.
-     *         </p>
+     * @return Return a new Serial implementation instance.
      */
-    public static Serial createInstance()
-    {
+    public static Serial createInstance() {
         return new SerialImpl();
     }
 }

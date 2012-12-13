@@ -30,17 +30,15 @@ package com.pi4j.io.gpio.tasks.impl;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 
-public class GpioBlinkTaskImpl implements Runnable
-{
+public class GpioBlinkTaskImpl implements Runnable {
+
     private final GpioPinDigitalOutput pin;
     
-    public GpioBlinkTaskImpl(GpioPinDigitalOutput pin)
-    {
+    public GpioBlinkTaskImpl(GpioPinDigitalOutput pin) {
         this.pin = pin;        
     }
 
-    public void run()
-    {
+    public void run() {
         pin.toggle();
     }
 }

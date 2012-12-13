@@ -34,62 +34,52 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioToggleStateTrigger extends GpioTriggerBase
-{
+public class GpioToggleStateTrigger extends GpioTriggerBase {
+
     private final GpioPinDigitalOutput targetPin;
 
-    public GpioToggleStateTrigger(GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(GpioPinDigitalOutput targetPin) {
         super();
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(PinState state, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
         super(state);
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(GpioPin pin, PinState state, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(GpioPin pin, PinState state, GpioPinDigitalOutput targetPin) {
         super(state);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(GpioPin pin, PinState[] states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(GpioPin pin, PinState[] states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(GpioPin pin, List<PinState> states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(GpioPin pin, List<PinState> states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioToggleStateTrigger(GpioPin[] pins, PinState[] states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(GpioPin[] pins, PinState[] states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioToggleStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioToggleStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioPinDigitalOutput getTargetPin()
-    {
+    public GpioPinDigitalOutput getTargetPin() {
         return targetPin;
     }
     
     @Override
-    public void invoke(GpioPin pin, PinState state)
-    {
-        if(targetPin != null)
-        {
+    public void invoke(GpioPin pin, PinState state) {
+        if (targetPin != null) {
             targetPin.toggle();
         }
     }

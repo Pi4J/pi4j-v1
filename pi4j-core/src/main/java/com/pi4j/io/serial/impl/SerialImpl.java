@@ -34,11 +34,7 @@ import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataListener;
 
 /**
- * <h1>Serial Implementation Class</h1>
- * 
- * <p>
- * This implementation class implements the 'Serial' interface using the WiringPi Serial library.
- * </p>
+ * <p> This implementation class implements the 'Serial' interface using the WiringPi Serial library.</p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -61,76 +57,55 @@ import com.pi4j.io.serial.SerialDataListener;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class SerialImpl implements Serial
-{
+public class SerialImpl implements Serial {
+
     private int fileDescriptor = -1;
     private final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<SerialDataListener>();
     private SerialDataMonitorThread monitor;
 
     /**
-     * <p>
      * This method is call to open a serial port for communication.
-     * </p>
      * 
      * @see #DEFAULT_COM_PORT
      * 
-     * @param device <p>
-     *            <The device address of the serial port to access. You can use constant
+     * @param device The device address of the serial port to access. You can use constant
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *            GPIO header./p>
-     * @param baudRate <p>
-     *            The baud rate to use with the serial port.
-     *            </p>
-     * @return <p>
-     *         The return value is the file descriptor or -1 for any error.
-     *         </p>
+     *            GPIO header.
+     * @param baudRate The baud rate to use with the serial port.
+     * @return The return value is the file descriptor or -1 for any error.
      */
-    public int open(String device, int baudRate)
-    {
+    public int open(String device, int baudRate) {
         fileDescriptor = com.pi4j.wiringpi.Serial.serialOpen(device, baudRate);
         return fileDescriptor;
     }
 
     /**
-     * <p>
      * This method is called to determine if the serial port is already open.
-     * </p>
      * 
      * @see #open(String, int)
-     * @return <p>
-     *         a value of 'true' is returned if the serial port is already open.
-     *         </p>
+     * @return a value of 'true' is returned if the serial port is already open.
      */
-    public boolean isOpen()
-    {
+    public boolean isOpen() {
         return (fileDescriptor >= 0);
     }
 
     /**
-     * <p>
      * This method is called to close a currently open open serial port.
-     * </p>
      */
-    public void close()
-    {
+    public void close() {
         com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
     }
 
     /**
-     * <p>
      * This method is called to immediately flush the serial data transmit buffer and force any
      * pending data to be sent to the serial port immediately.
-     * </p>
      */
-    public void flush()
-    {
+    public void flush() {
         com.pi4j.wiringpi.Serial.serialFlush(fileDescriptor);
     }
 
     /**
-     * <p>
-     * This method will read the next character available from the serial port receive buffer.
-     * </p>
+     * <p> This method will read the next character available from the serial port receive buffer.</p>
      * <p>
      * <b>NOTE: If a serial data listener has been implemented and registered with this class, then
      * this method should not be called directly. A background thread will be running to collect
@@ -138,221 +113,158 @@ public class SerialImpl implements Serial
      * via the event.</b>
      * </p>
      * 
-     * @return <p>
-     *         next available character in the serial data buffer
-     *         </p>
+     * @return next available character in the serial data buffer
      */
-    public char read()
-    {
+    public char read() {
         return (char) com.pi4j.wiringpi.Serial.serialGetchar(fileDescriptor);
     }
 
     /**
-     * <p>
      * This method is called to submit a single character of data to the serial port transmit
      * buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A single character to be transmitted.
-     *            </p>
+     * @param data  A single character to be transmitted.
      */
-    public void write(char data)
-    {
+    public void write(char data) {
         com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, data);
     }
 
     /**
-     * <p>
      * This method is called to submit a character array of data to the serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A character array of data to be transmitted.
-     *            </p>
+     * @param data A character array of data to be transmitted.
      */
-    public void write(char data[])
-    {
+    public void write(char data[]) {
         write(new String(data));
     }
 
     /**
-     * <p>
      * This method is called to submit a single byte of data to the serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A single byte to be transmitted.
-     *            </p>
+     * @param data  A single byte to be transmitted.
      */
-    public void write(byte data)
-    {
+    public void write(byte data) {
         com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, (char) data);
     }
 
     /**
-     * <p>
      * This method is called to submit a byte array of data to the serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A byte array of data to be transmitted.
-     *            </p>
+     * @param data  A byte array of data to be transmitted.
      */
-    public void write(byte data[])
-    {
+    public void write(byte data[]) {
         write(new String(data));
     }
 
     /**
-     * <p>
      * This method is called to submit a string of data to the serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A string of data to be transmitted.
-     *            </p>
+     * @param data A string of data to be transmitted.
      */
-    public void write(String data)
-    {
+    public void write(String data) {
         // break data into packets of 1024 bytes
         int position = 0;
-        while (position < data.length())
-        {
+        while (position < data.length()) {
             int length = 1024;
-            if (position + 1024 > data.length())
+            if (position + 1024 > data.length()) {
                 com.pi4j.wiringpi.Serial.serialPuts(fileDescriptor, data.substring(position));
-            else
+            } else {
                 com.pi4j.wiringpi.Serial.serialPuts(fileDescriptor,
                                                     data.substring(position, (position + length)));
+            }
             position += length;
         }
     }
     
     /**
-     * <p>
      * This method is called to submit a string of data with trailing CR + LF characters to the
      * serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A string of data to be transmitted.
-     *            </p>
+     * @param data A string of data to be transmitted.
      */
-    public void writeln(String data)
-    {
+    public void writeln(String data) {
         write(data + "\r\n");
     }
 
     /**
-     * <p>
      * This method is called to submit a string of formatted data to the serial port transmit
      * buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A string of formatted data to be transmitted.
-     *            </p>
-     * @param args <p>
-     *            A series of arguments that can be included for the format string variable
+     * @param data A string of formatted data to be transmitted.
+     * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
-     *            </p>
      */
-    public void write(String data, String... args)
-    {
+    public void write(String data, String... args) {
         write(String.format(data, (Object[]) args));
     }
 
     /**
-     * <p>
      * This method is called to submit a string of formatted data with trailing CR + LF characters
      * to the serial port transmit buffer.
-     * </p>
      * 
-     * @param data <p>
-     *            A string of formatted data to be transmitted.
-     *            </p>
-     * @param args <p>
-     *            A series of arguments that can be included for the format string variable
+     * @param data  A string of formatted data to be transmitted.
+     * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
-     *            </p>
      */
-    public void writeln(String data, String... args)
-    {
+    public void writeln(String data, String... args) {
         write(data + "\r\n", args);
     }
     
     /**
-     * <p>
      * This method is called to determine if and how many bytes are available on the serial received
      * data buffer.
-     * </p>
      * 
-     * @return <p>
-     *         The number of available bytes pending in the serial received buffer is returned.
-     *         </p>
+     * @return  The number of available bytes pending in the serial received buffer is returned.
      */
-    public int availableBytes()
-    {
+    public int availableBytes() {
         return com.pi4j.wiringpi.Serial.serialDataAvail(fileDescriptor);
     }
 
     /**
-     * <h1>Add Serial Event Listener</h1>
+     * <p>Add Serial Event Listener</p>
      * 
-     * <p>
-     * Java consumer code can call this method to register itself as a listener for serial data
-     * events.
-     * </p>
+     * <p> Java consumer code can call this method to register itself as a listener for serial data
+     * events. </p>
      * 
      * @see #com.pi4j.io.serial.SerialDataListener
      * @see #com.pi4j.io.serial.SerialDataEvent
      * 
-     * @param listener <p>
-     *            A class instance that implements the SerialListener interface.
-     *            </p>
+     * @param listener  A class instance that implements the SerialListener interface.
      */
-    public synchronized void addListener(SerialDataListener... listener)
-    {
+    public synchronized void addListener(SerialDataListener... listener) {
         // add the new listener to the list of listeners
-        for(SerialDataListener lsnr : listener)
+        for (SerialDataListener lsnr : listener) {
             listeners.add(lsnr);
+        }
 
         // if there is not a current listening monitor thread running,
         // then lets start it now
-        if (monitor == null || monitor.isAlive() == false)
-        {
+        if (monitor == null || monitor.isAlive() == false) {
             monitor = new SerialDataMonitorThread(this, listeners);
             monitor.start();
         }
     }
 
     /**
-     * <h1>Remove Serial Event Listener</h1>
+     * <p>Remove Serial Event Listener</p>
      * 
-     * <p>
-     * Java consumer code can call this method to unregister itself as a listener for serial data
-     * events.
-     * </p>
+     * <p> Java consumer code can call this method to unregister itself as a listener for serial data
+     * events. </p>
      * 
      * @see #com.pi4j.io.serial.SerialDataListener
      * @see #com.pi4j.io.serial.SerialDataEvent
-
      * 
-     * @param listener <p>
-     *            A class instance that implements the SerialListener interface.
-     *            </p>
+     * @param listener A class instance that implements the SerialListener interface.
      */
-    public synchronized void removeListener(SerialDataListener... listener)
-    {
+    public synchronized void removeListener(SerialDataListener... listener) {
         // remove the listener from the list of listeners
-        for(SerialDataListener lsnr : listener)
+        for (SerialDataListener lsnr : listener) {
             listeners.remove(lsnr);
+        }
 
         // if there are not more listeners, then exit and destroy
         // the monitor thread now
-        if (listeners.isEmpty() && monitor != null)
-        {
+        if (listeners.isEmpty() && monitor != null) {
             monitor.exit();
             monitor = null;
         }

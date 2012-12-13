@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi LCD Library</h1>
- * 
  * <p>
  * Part of wiringPi is a library to allow access to parallel interface LCD displays (Those that use
  * the popular Hitachi HD44780U or compatible controllers)
@@ -77,16 +75,14 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Lcd
-{
+public class Lcd {
+
     // private constructor 
-    private Lcd() 
-    {
+    private Lcd() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
@@ -148,8 +144,6 @@ public class Lcd
             int d1, int d2, int d3, int d4, int d5, int d6, int d7);
 
     /**
-     * <h1>void lcdHome (int handle);</h1>
-     * 
      * <p>
      * Set the cursor to the home position.
      * </p>
@@ -161,8 +155,6 @@ public class Lcd
     public static native void lcdHome(int handle);
 
     /**
-     * <h1>void lcdClear (int handle);</h1>
-     * 
      * <p>
      * Clears the LCD screen.
      * </p>
@@ -174,8 +166,6 @@ public class Lcd
     public static native void lcdClear(int handle);
 
     /**
-     * <h1>lcdPosition (int handle, int x, int y)</h1>
-     * 
      * <p>
      * Set the position of the cursor for subsequent text entry.
      * </p>
@@ -189,8 +179,6 @@ public class Lcd
     public static native void lcdPosition(int handle, int x, int y);
 
     /**
-     * <h1>lcdPutchar(int handle, byte data)</h1>
-     * 
      * <p>
      * Write a single character of data to the LCD display.
      * </p>
@@ -203,15 +191,9 @@ public class Lcd
     public static native void lcdPutchar(int handle, byte data);
 
     /**
-     * <h1>lcdPuts(int handle, String data)</h1>
+     * <p>Write string of data to the LCD display.</p>
      * 
-     * <p>
-     * Write string of data to the LCD display.
-     * </p>
-     * 
-     * <p>
-     * (ATTENTION: the 'data' argument can only be a maximum of 512 characters.)
-     * </p>
+     * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
@@ -221,15 +203,9 @@ public class Lcd
     public static native void lcdPuts(int handle, String data);
 
     /**
-     * <h1>lcdPuts(int handle, String data, String... args)</h1>
+     * <p>Write formatted string of data to the LCD display.</p>
      * 
-     * <p>
-     * Write formatted string of data to the LCD display.
-     * </p>
-     * 
-     * <p>
-     * (ATTENTION: the 'data' argument can only be a maximum of 512 characters.)
-     * </p>
+     * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
@@ -237,8 +213,7 @@ public class Lcd
      * @param data
      * @param args
      */
-    public static void lcdPuts(int handle, String data, String... args)
-    {
+    public static void lcdPuts(int handle, String data, String... args) {
         lcdPuts(handle, String.format(data, (Object[]) args));
     }
 }

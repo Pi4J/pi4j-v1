@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi Gertboard Library</h1>
- * 
  * <p>
  * The Gertboard has an on-board Digital to Analog (DAC) converter and an Analog to Digital (ADC)
  * converters. These are connected via the SPI bus back to the Raspberry Pi host.
@@ -76,93 +74,69 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Gertboard
-{
+public class Gertboard {
+
     public static final int SPI_ADC_SPEED = 1000000;
     public static final int SPI_DAC_SPEED = 1000000;
     public static final int SPI_A2D = 0;
     public static final int SPI_D2A = 1;
 
     // private constructor 
-    private Gertboard() 
-    {
+    private Gertboard() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>int gertboardAnalogWrite (int channel, int value)</h1>
-     * 
-     * <p>
-     * This outputs the supplied value (0-255) to the given channel (0 or 1). The output voltage is:
-     * </p>
+     * <p> This outputs the supplied value (0-255) to the given channel (0 or 1). The output voltage is:
      * 
      * <pre>
      * vOut = value / 255 * 2.047
      * </pre>
      * 
-     * <p>
      * or to find the value for a given voltage:
-     * </p>
      * 
      * <pre>
      * value = vOut / 2.047 * 255
      * </pre>
-     * 
+     * </p>
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
-     * @param chan <p>
-     *            Analog channel to write to (0 or 1).
-     *            </p>
-     * @param value <p>
-     *            The output value (0-255) supplied to the given channel (0 or 1).
-     *            </p>
+     * @param chan  Analog channel to write to (0 or 1).
+     * @param value The output value (0-255) supplied to the given channel (0 or 1).
      */
     public static native void gertboardAnalogWrite(int chan, int value);
 
     /**
-     * <h1>int gertboardAnalogRead (int channel)</h1>
-     * 
-     * <p>
-     * This returns a value from 0 to 1023 representing the value on the supplied channel (0 or 1).
+     * <p> This returns a value from 0 to 1023 representing the value on the supplied channel (0 or 1).
      * To convert this to a voltage, use the following formula:
-     * </p>
      * 
      * <pre>
      * vIn = value * 3.3 / 1023
      * </pre>
+     * </p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
-     * @param chan <p>
-     *            Analog channel to read from (0 or 1).
-     *            </p>
-     * @return <p>
-     *         This returns a value from 0 to 1023 representing the value on the supplied channel (0
+     * @param chan Analog channel to read from (0 or 1).
+     * @return This returns a value from 0 to 1023 representing the value on the supplied channel (0
      *         or 1).
-     *         </p>
      */
     public static native int gertboardAnalogRead(int chan);
 
     /**
-     * <h1>int gertboardSPISetup (void)</h1>
-     * 
-     * <p>
-     * This must be called to initialize the SPI bus to communicate with the Gertboards ADC and DAC
+     * <p> This must be called to initialize the SPI bus to communicate with the Gertboards ADC and DAC
      * chips. If the return value is < 0 then an error occurred and errno will be set appropriately.
      * </p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
-     * @return <p>
-     *         If the return value is < 0 then an error occurred and errno will be set
+     * @return If the return value is < 0 then an error occurred and errno will be set
      *         appropriately. If the return value is '0' or greater than the call was successful.
-     *         </p>
      */
     public static native int gertboardSPISetup();
 }

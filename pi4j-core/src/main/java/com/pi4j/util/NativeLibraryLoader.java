@@ -43,8 +43,8 @@ import java.util.logging.Logger;
 
 import com.pi4j.system.SystemInfo;
 
-public class NativeLibraryLoader
-{
+public class NativeLibraryLoader {
+
     private static List<String> loadedLibraries = null;
     private static Logger logger = Logger.getLogger("com.pi4j.util.NativeLibraryLoader");
     private static FileHandler fileHandler;
@@ -52,25 +52,20 @@ public class NativeLibraryLoader
     private static boolean initialized  = false;
 
     // private constructor 
-    private NativeLibraryLoader()
-    {
+    private NativeLibraryLoader() {
         // forbid object construction 
     }
     
-    public static synchronized void load(String libraryName)
-    {
+    public static synchronized void load(String libraryName) {
         load(libraryName, null);
     }
 
-    public static synchronized void load(String libraryName, String fileName)
-    {
+    public static synchronized void load(String libraryName, String fileName) {
         // check for debug property; if found enabled all logging levels
-        if(initialized == false)
-        {
+        if (initialized == false) {
             initialized = true;
             String debug = System.getProperty("pi4j.debug");
-            if(debug != null)
-            {
+            if (debug != null) {
                 logger.setLevel(Level.ALL);
                 try {
                     // create an appending file handler
@@ -88,23 +83,20 @@ public class NativeLibraryLoader
         }
 
         // debug
-        if(fileName == null || fileName.length() == 0)
+        if (fileName == null || fileName.length() == 0) {
             logger.fine("Load library [" + libraryName + "] (no alternate embedded file provided)");
-        else
+        } else {
             logger.fine("Load library [" + libraryName + "] (alternate embedded file: " + fileName + ")");
-        
+        }
         // create instance if null
-        if (loadedLibraries == null)
+        if (loadedLibraries == null) {
             loadedLibraries = Collections.synchronizedList(new ArrayList<String>());
-
+        }
         // first, make sure that this library has not already been previously loaded
-        if (loadedLibraries.contains(libraryName))
-        {
+        if (loadedLibraries.contains(libraryName)) {
             // debug
             logger.fine("Library [" + libraryName + "] has already been loaded; no need to load again.");            
-        }
-        else
-        {
+        } else {
             // ---------------------------------------------
             // ATTEMPT LOAD FROM SYSTEM LIBS
             // ---------------------------------------------
@@ -112,8 +104,7 @@ public class NativeLibraryLoader
             // assume library loaded successfully, add to tracking collection
             loadedLibraries.add(libraryName);
             
-            try
-            {
+            try {
                 // debug
                 logger.fine("Attempting to load library [" + libraryName + "] using the System.loadLibrary(name) method.");            
                 
@@ -122,12 +113,9 @@ public class NativeLibraryLoader
                 
                 // debug
                 logger.fine("Library [" + libraryName + "] loaded successfully using the System.loadLibrary(name) method.");                            
-            }
-            catch (UnsatisfiedLinkError e)
-            {
+            } catch (UnsatisfiedLinkError e) {
                 // if a filename was not provided, then throw exception
-                if (fileName == null)
-                {
+                if (fileName == null) {
                     // debug
                     logger.severe("Library [" + libraryName + "] could not be using the System.loadLibrary(name) method and no embedded file path was provided as an auxillary lookup.");                            
 
@@ -147,27 +135,21 @@ public class NativeLibraryLoader
                 URL resourceUrl;
                 
                 // first attempt to determine if we are running on a hard float (armhf) based system  
-                if(SystemInfo.isHardFloatAbi())
-                {
+                if(SystemInfo.isHardFloatAbi()) {
                     // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
                     resourceUrl = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
-                }
-                else
-                {
+                } else {
                     // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
                     resourceUrl = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
                 }
                 
-                try
-                {                
+                try {               
                     // load library file from embedded resource
                     loadLibraryFromResource(resourceUrl, libraryName, fileName);
                     
                     // debug
                     logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrl.toString() + "]");
-                }
-                catch(Exception ex)
-                {
+                } catch(Exception ex) {
                     // ---------------------------------------------
                     // ATTEMPT LOAD BASED USING HARD-FLOAT (armhf)
                     // ---------------------------------------------
@@ -175,16 +157,13 @@ public class NativeLibraryLoader
                     // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
                     URL resourceUrlHardFloat = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
                     
-                    try
-                    {
+                    try {
                         // load library file from embedded resource
                         loadLibraryFromResource(resourceUrlHardFloat, libraryName, fileName);
                         
                         // debug
                         logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlHardFloat.toString() + "] (ARMHF)");                                                        
-                    }
-                    catch(UnsatisfiedLinkError ule_hard_float)
-                    {
+                    } catch(UnsatisfiedLinkError ule_hard_float) {
                         // debug
                         logger.fine("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
 
@@ -195,16 +174,13 @@ public class NativeLibraryLoader
                         // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
                         URL resourceUrlSoftFloat = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
                         
-                        try
-                        {
+                        try {
                             // load library file from embedded resource
                             loadLibraryFromResource(resourceUrlSoftFloat, libraryName, fileName);
                             
                             // debug
                             logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrlSoftFloat.toString() + "] (ARMEL)");                                                        
-                        }
-                        catch (Throwable err)
-                        {
+                        } catch (Throwable err) {
                             // debug
                             logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlSoftFloat.toString() + "]");            
                             logger.throwing(logger.getName(), "load", err);
@@ -218,9 +194,7 @@ public class NativeLibraryLoader
                                         + fileName
                                         + "] could not be found in the JVM library path nor could it be loaded from the embedded JAR resource file; you may need to explicitly define the library path '-Djava.library.path' where this native library can be found.");
                         }
-                    }
-                    catch (Exception ex_hard_float)
-                    {
+                    } catch (Exception ex_hard_float) {
                         // debug
                         logger.severe("Failed to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrlHardFloat.toString() + "]");            
                         logger.throwing(logger.getName(), "load", ex_hard_float);
@@ -239,8 +213,7 @@ public class NativeLibraryLoader
         }
     }
 
-    private static void loadLibraryFromResource(URL resourceUrl, String libraryName, String fileName) throws UnsatisfiedLinkError, Exception
-    {
+    private static void loadLibraryFromResource(URL resourceUrl, String libraryName, String fileName) throws UnsatisfiedLinkError, Exception {
         // create a 1Kb read buffer
         byte[] buffer = new byte[1024];
         int byteCount = 0;
@@ -255,8 +228,7 @@ public class NativeLibraryLoader
         File tempDirectory = new File(System.getProperty("java.io.tmpdir"));
         
         // check to see if the temporary path exists
-        if(!tempDirectory.exists())
-        {
+        if (!tempDirectory.exists()) {
             // debug
             logger.warning("The Java system temporary path [" + tempDirectory.getAbsolutePath() + "] does not exist.");            
             
@@ -268,8 +240,7 @@ public class NativeLibraryLoader
         File tempFile = new File(tempDirectory.getAbsolutePath() + "/" + fileName);
         
         // make sure that this temporary file does not exist; if it does then delete it
-        if(tempFile.exists())
-        {
+        if (tempFile.exists()) {
             // debug
             logger.warning("The temporary file already exists [" + tempFile.getAbsolutePath() + "]; attempting to delete it now.");            
             
@@ -280,38 +251,31 @@ public class NativeLibraryLoader
         // create output stream object
         OutputStream outputStream = null;
         
-        try
-        {
+        try {
             // create the new file
             outputStream = new FileOutputStream(tempFile);
-        }
-        catch(FileNotFoundException fnfe)
-        {
+        } catch(FileNotFoundException fnfe) {
             // error
             logger.severe("The temporary file [" + tempFile.getAbsolutePath() + "] cannot be created; it is a directory, not a file.");            
             throw(fnfe);
-        }
-        catch(SecurityException se)
-        {
+        } catch(SecurityException se) {
             // error
             logger.severe("The temporary file [" + tempFile.getAbsolutePath() + "] cannot be created; a security exception was detected. " + se.getMessage());            
             throw(se);
         }
         
-        try
-        {
+        try {
             // copy the library file content
-            while ((byteCount = inputStream.read(buffer)) >= 0)
+            while ((byteCount = inputStream.read(buffer)) >= 0) {
                 outputStream.write(buffer, 0, byteCount);
+            }
             
             // flush all write data from stream 
             outputStream.flush();
             
             // close the output stream
             outputStream.close();                            
-        }
-        catch(IOException ioe)
-        {
+        } catch(IOException ioe) {
             // error
             logger.severe("The temporary file [" + tempFile.getAbsolutePath() + "] could not be written to; an IO exception was detected. " + ioe.getMessage());            
             throw(ioe);                            
@@ -320,37 +284,30 @@ public class NativeLibraryLoader
         // close the input stream
         inputStream.close();
         
-        try
-        {
+        try {
             // attempt to load the new temporary library file
             System.load(tempFile.getAbsolutePath());
             
-            try
-            {
+            try {
                 // ensure that this temporary file is removed when the program exits
                 tempFile.deleteOnExit();
-            }
-            catch(SecurityException dse)
-            {
+            } catch(SecurityException dse) {
                 // warning
                 logger.warning("The temporary file [" + tempFile.getAbsolutePath() + "] cannot be flagged for removal on program termination; a security exception was detected. " + dse.getMessage());            
             }
-        }
-        catch(UnsatisfiedLinkError ule)
-        {
+        } catch(UnsatisfiedLinkError ule) {
             // if unable to load the library and the temporary file
             // exists; then delete the temporary file immediately
             if(tempFile.exists())
                 tempFile.delete();
             
             throw(ule);
-        }
-        catch(Exception ex)
-        {
+        } catch(Exception ex) {
             // if unable to load the library and the temporary file
             // exists; then delete the temporary file immediately
-            if(tempFile.exists())
+            if (tempFile.exists()) {
                 tempFile.delete();
+            }
             
             throw(ex);
         }

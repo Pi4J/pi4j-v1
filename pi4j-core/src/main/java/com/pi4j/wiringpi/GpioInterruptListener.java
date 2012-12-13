@@ -29,11 +29,7 @@ package com.pi4j.wiringpi;
 
 
 /**
- * <h1>Gpio Interrupt Listener Interface</h1>
- * 
- * <p>
- * This interface implements the callback event handler for GPIO interrupt state changes.
- * </p>
+ * <p>This interface implements the callback event handler for GPIO interrupt state changes.</p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -51,7 +47,6 @@ package com.pi4j.wiringpi;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public interface GpioInterruptListener extends java.util.EventListener
-{
+public interface GpioInterruptListener extends java.util.EventListener {
     void pinStateChange(GpioInterruptEvent event);
 }

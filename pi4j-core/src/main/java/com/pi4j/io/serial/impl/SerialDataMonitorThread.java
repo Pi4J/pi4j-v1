@@ -36,8 +36,6 @@ import com.pi4j.io.serial.SerialDataEvent;
 import com.pi4j.io.serial.SerialDataListener;
 
 /**
- * <h1>Serial Data Monitoring Implementation Class</h1>
- * 
  * <p>
  * This implementation class implements the 'Serial' monitoring thread to poll the serial received
  * buffer and notify registered event listeners when data is available.
@@ -64,58 +62,41 @@ import com.pi4j.io.serial.SerialDataListener;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class SerialDataMonitorThread extends Thread
-{
+public class SerialDataMonitorThread extends Thread {
+
     public static final int DELAY = 100; // milliseconds
     private boolean exiting = false;
     private final Serial serial;
     private final List<SerialDataListener> listeners;
 
     /**
-     * <p>
-     * Default constructor
-     * </p>
-     * <p>
-     * NOTE: This class is used internal to the Pi4J library by the SerialImpl class./p>
+     * <p> Default constructor </p>
+     * <p> NOTE: This class is used internal to the Pi4J library by the SerialImpl class.</p>
      * 
-     * @param serial <p>
-     *            A class that implements the 'Serial' interface.
-     *            </p>
-     * @param listeners <p>
-     *            A collection of class instances that implement the SerialListener interface.
-     *            </p>
+     * @param serial  A class that implements the 'Serial' interface.
+     * @param listeners  A collection of class instances that implement the SerialListener interface.
      */
-    public SerialDataMonitorThread(Serial serial, CopyOnWriteArrayList<SerialDataListener> listeners)
-    {
+    public SerialDataMonitorThread(Serial serial, CopyOnWriteArrayList<SerialDataListener> listeners) {
         this.serial = serial;
         this.listeners = listeners;
     }
 
     /**
-     * <p>
      * Exit the monitoring thread.
-     * </p>
      */
-    public synchronized void exit()
-    {
+    public synchronized void exit() {
         exiting = true;
     }
 
     /**
-     * <p>
      * This method is called when this monitoring thread starts
-     * </p>
      */
-    public void run()
-    {
+    public void run() {
         StringBuilder buffer = new StringBuilder();
 
-        while (!exiting)
-        {
-            if (serial.isOpen())
-            {
-                if (serial.availableBytes() > 0)
-                {
+        while (!exiting) {
+            if (serial.isOpen()) {
+                if (serial.availableBytes() > 0) {
                     // reset buffer data
                     buffer.setLength(0);
 
@@ -124,12 +105,10 @@ public class SerialDataMonitorThread extends Thread
                         buffer.append(serial.read());
 
                     // when done reading, emit the event if there are any listeners
-                    if (!listeners.isEmpty())
-                    {
+                    if (!listeners.isEmpty()) {
                         // iterate over the listeners and send the data events
                         SerialDataEvent event = new SerialDataEvent(serial, buffer.toString());
-                        for (SerialDataListener sdl : listeners)
-                        {
+                        for (SerialDataListener sdl : listeners) {
                             sdl.dataReceived(event);
                         }
                     }
@@ -137,12 +116,9 @@ public class SerialDataMonitorThread extends Thread
             }
 
             // wait for a small interval before attempting to read serial data again
-            try
-            {
+            try {
                 Thread.sleep(DELAY);
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

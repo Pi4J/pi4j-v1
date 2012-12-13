@@ -33,26 +33,24 @@ import com.pi4j.io.gpio.event.PinEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.tasks.impl.GpioEventDispatchTaskImpl;
 
-public class GpioEventMonitorExecutorImpl implements PinListener
-{
+public class GpioEventMonitorExecutorImpl implements PinListener {
+    
     private final GpioPinInput pin;
     private static ExecutorService executor;
     
-    public GpioEventMonitorExecutorImpl(GpioPinInput pin)
-    {
+    public GpioEventMonitorExecutorImpl(GpioPinInput pin) {
         this.pin = pin;        
         executor = Executors.newSingleThreadExecutor();
     }
     
     @Override
-    public void handlePinEvent(PinEvent event)
-    {
+    public void handlePinEvent(PinEvent event) {
         executor.execute(new GpioEventDispatchTaskImpl(pin, event));
     }
     
-    public synchronized static void shutdown()
-    {
-        if (executor != null && !executor.isShutdown())
+    public synchronized static void shutdown() {
+        if (executor != null && !executor.isShutdown()) {
             executor.shutdownNow();
+        }
     }      
 }

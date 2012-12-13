@@ -36,142 +36,117 @@ import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SystemInfo
-{
+public class SystemInfo {
+
     // private constructor 
-    private SystemInfo()
-    {
+    private SystemInfo() {
         // forbid object construction 
     }
         
     private static Map<String, String> cpuInfo;
 
-    private static String getCpuInfo(String target) throws IOException, InterruptedException
-    {
+    private static String getCpuInfo(String target) throws IOException, InterruptedException {
         // if the CPU data has not been previously acquired, then acquire it now
-        if (cpuInfo == null)
-        {
+        if (cpuInfo == null) {
             cpuInfo = new HashMap<String, String>();
             Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line = reader.readLine();
-            while (line != null)
-            {
+            while (line != null) {
                 String parts[] = line.split(":", 2);
-                if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty())
-                {
+                if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty()) {
                     cpuInfo.put(parts[0].trim(), parts[1].trim());
                 }
                 line = reader.readLine();
             }
         }
 
-        if (cpuInfo.containsKey(target))
+        if (cpuInfo.containsKey(target)) {
             return cpuInfo.get(target);
+        }
 
         throw new RuntimeException("Invalid target: " + target);
     }
 
-    public static String getProcessor() throws IOException, InterruptedException
-    {
+    public static String getProcessor() throws IOException, InterruptedException {
         return getCpuInfo("Processor");
     }
 
-    public static String getBogoMIPS() throws IOException, InterruptedException
-    {
+    public static String getBogoMIPS() throws IOException, InterruptedException {
         return getCpuInfo("BogoMIPS");
     }
 
-    public static String[] getCpuFeatures() throws IOException, InterruptedException
-    {
+    public static String[] getCpuFeatures() throws IOException, InterruptedException {
         return getCpuInfo("Features").split(" ");
     }
 
-    public static String getCpuImplementer() throws IOException, InterruptedException
-    {
+    public static String getCpuImplementer() throws IOException, InterruptedException {
         return getCpuInfo("CPU implementer");
     }
 
-    public static String getCpuArchitecture() throws IOException, InterruptedException
-    {
+    public static String getCpuArchitecture() throws IOException, InterruptedException {
         return getCpuInfo("CPU architecture");
     }
 
-    public static String getCpuVariant() throws IOException, InterruptedException
-    {
+    public static String getCpuVariant() throws IOException, InterruptedException {
         return getCpuInfo("CPU variant");
     }
 
-    public static String getCpuPart() throws IOException, InterruptedException
-    {
+    public static String getCpuPart() throws IOException, InterruptedException {
         return getCpuInfo("CPU part");
     }
 
-    public static String getCpuRevision() throws IOException, InterruptedException
-    {
+    public static String getCpuRevision() throws IOException, InterruptedException {
         return getCpuInfo("CPU revision");
     }
 
-    public static String getHardware() throws IOException, InterruptedException
-    {
+    public static String getHardware() throws IOException, InterruptedException {
         return getCpuInfo("Hardware");
     }
 
-    public static String getRevision() throws IOException, InterruptedException
-    {
+    public static String getRevision() throws IOException, InterruptedException {
         return getCpuInfo("Revision");
     }
 
-    public static String getSerial() throws IOException, InterruptedException
-    {
+    public static String getSerial() throws IOException, InterruptedException {
         return getCpuInfo("Serial");
     }
 
-    public static String getOsName() 
-    {
+    public static String getOsName() {
         return System.getProperty("os.name");
     }
 
-    public static String getOsVersion() 
-    {
+    public static String getOsVersion() {
         return System.getProperty("os.version");
     }
 
-    public static String getOsArch() 
-    {
+    public static String getOsArch()  {
         return System.getProperty("os.arch");
     }
     
-    public static String getJavaVendor() 
-    {
+    public static String getJavaVendor()  {
         return System.getProperty("java.vendor");
     }
  
-    public static String getJavaVendorUrl() 
-    {
+    public static String getJavaVendorUrl() {
         return System.getProperty("java.vendor.url");
     }
  
-    public static String getJavaVersion() 
-    {
+    public static String getJavaVersion() {
         return System.getProperty("java.version");
     }
 
-    public static String getJavaVirtualMachine() 
-    {
+    public static String getJavaVirtualMachine() {
         return System.getProperty("java.vm.name");
     }
 
-    public static String getJavaRuntime() 
-    {
-        return AccessController.doPrivileged(new PrivilegedAction<String>() 
-          {
-            public String run() 
-            {
-              return System.getProperty("java.runtime.name");
+    public static String getJavaRuntime() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>()  {
+            public String run()  {
+                return System.getProperty("java.runtime.name");
             }
-          });
+        });
     }
     
     /*
@@ -179,8 +154,7 @@ public class SystemInfo
      * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
      * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
      */
-    public static boolean isHardFloatAbi()
-    {        
+    public static boolean isHardFloatAbi() {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             private final String[] gnueabihf = new String[] { "gnueabihf", "armhf" };
             public Boolean run() {                    
@@ -198,14 +172,10 @@ public class SystemInfo
      * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
      * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
      */
-    private static final boolean contains(String data, String[] search) 
-    {
-        if(null != data && null != search)
-        {            
-            for(int i=0; i<search.length; i++) 
-            {
-                if(data.indexOf(search[i]) >= 0) 
-                {
+    private static final boolean contains(String data, String[] search)  {
+        if (null != data && null != search) { 
+            for (int i=0; i<search.length; i++) {
+                if (data.indexOf(search[i]) >= 0) {
                     return true;
                 }
             }

@@ -28,8 +28,8 @@ package com.pi4j.system;
  */
 
 
-public class NetworkInterface
-{
+public class NetworkInterface {
+
     private final String linkEncap;
     private final String ipAddress;
     private final String macAddress;
@@ -38,8 +38,7 @@ public class NetworkInterface
     private final String mtu;
     private final String metric;
     
-    public NetworkInterface(String linkEncap,String macAddress,String ipAddress,String broadcastAddress,String subnetMask,String mtu,String metric)
-    {
+    public NetworkInterface(String linkEncap,String macAddress,String ipAddress,String broadcastAddress,String subnetMask,String mtu,String metric) {
         this.linkEncap = linkEncap;
         this.ipAddress = ipAddress;
         this.macAddress = macAddress;
@@ -49,38 +48,31 @@ public class NetworkInterface
         this.metric = metric;        
     }
     
-    public String getLinkEncap()
-    {
+    public String getLinkEncap() {
         return linkEncap;
     }
  
-    public String getIPAddress()
-    {
+    public String getIPAddress() {
         return ipAddress;
     }
 
-    public String getMACAddress()
-    {
+    public String getMACAddress() {
         return macAddress;
     }
     
-    public String getBroadcastAddress()
-    {
+    public String getBroadcastAddress() {
         return broadcastAddress;
     }
     
-    public String getSubnetMask()
-    {
+    public String getSubnetMask() {
         return subnetMask;
     }
     
-    public String getMTU()
-    {
+    public String getMTU() {
         return mtu;
     }
     
-    public String getMetric()
-    {
+    public String getMetric() {
         return metric;
     }
 }

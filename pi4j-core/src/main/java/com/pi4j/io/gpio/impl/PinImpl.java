@@ -34,16 +34,15 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 
-public class PinImpl implements Pin
-{
+public class PinImpl implements Pin {
+
     private final int address;
     private final String name ;
     private final String provider;
     private final EnumSet<PinPullResistance> supportedPinPullResistance;
     private final EnumSet<PinMode> supportedPinModes;
 
-    public PinImpl(String provider, int address, String name, EnumSet<PinMode> modes, EnumSet<PinPullResistance> pullResistance)
-    {
+    public PinImpl(String provider, int address, String name, EnumSet<PinMode> modes, EnumSet<PinPullResistance> pullResistance) {
         this.provider = provider;
         this.address = address;
         this.name = name;
@@ -51,48 +50,43 @@ public class PinImpl implements Pin
         this.supportedPinPullResistance = pullResistance;
     }
 
-    public PinImpl(String provider, int address, String name, EnumSet<PinMode> modes)
-    {
+    public PinImpl(String provider, int address, String name, EnumSet<PinMode> modes) {
         this(provider, address, name, modes, null);
     }
     
     @Override
-    public int getAddress()
-    {
+    public int getAddress() {
         return address;
     }
     
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public String getProvider()
-    {
+    public String getProvider() {
         return provider;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 
     @Override
-    public EnumSet<PinMode> getSupportedPinModes()
-    {
-        if(supportedPinModes == null)
-            return EnumSet.noneOf(PinMode.class);        
+    public EnumSet<PinMode> getSupportedPinModes() {
+        if (supportedPinModes == null) {
+            return EnumSet.noneOf(PinMode.class);
+        }
         return supportedPinModes;
     }
 
     @Override
-    public EnumSet<PinPullResistance> getSupportedPinPullResistance()
-    {
-        if(supportedPinPullResistance == null)
+    public EnumSet<PinPullResistance> getSupportedPinPullResistance() {
+        if (supportedPinPullResistance == null) {
             return EnumSet.noneOf(PinPullResistance.class);
+        }
         return supportedPinPullResistance;
     }
 }

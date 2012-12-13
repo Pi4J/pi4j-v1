@@ -33,8 +33,6 @@ import java.util.Vector;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>GpioInterrupt Monitoring Class</h1>
- * 
  * <p>
  * This class provides static methods to configure the native Pi4J library to listen to GPIO
  * interrupts and invoke callbacks into this class. Additionally, this class provides a listener
@@ -57,26 +55,22 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class GpioInterrupt
-{
+public class GpioInterrupt {
+
     private static Vector<GpioInterruptListener> listeners = new Vector<GpioInterruptListener>();
     private Object lock;
 
     // private constructor 
-    private GpioInterrupt() 
-    {
+    private GpioInterrupt()  {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>Enable Monitoring on GPIO Pin</h1>
-     * 
      * <p>
      * This method is used to instruct the native code to setup a monitoring thread to monitor
      * interrupts that represent changes to the selected GPIO pin.
@@ -86,62 +80,46 @@ public class GpioInterrupt
      * <b>The GPIO pin must first be exported before it can be monitored.</b>
      * </p>
      * 
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @return <p>
-     *         A return value of a negative number represents an error. A return value of '0'
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @return A return value of a negative number represents an error. A return value of '0'
      *         represents success and that the GPIO pin is already being monitored. A return value
      *         of '1' represents success and that a new monitoring thread was created to handle the
      *         requested GPIO pin number.
-     *         </p>
      */
     public static native int enablePinStateChangeCallback(int pin);
 
     /**
-     * <h1>Disable Monitoring on GPIO Pin</h1>
-     * 
      * <p>
      * This method is used to instruct the native code to stop the monitoring thread monitoring
      * interrupts on the selected GPIO pin.
      * </p>
      * 
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @return <p>
-     *         A return value of a negative number represents an error. A return value of '0'
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+
+     * @return A return value of a negative number represents an error. A return value of '0'
      *         represents success and that no existing monitor was previously running. A return
      *         value of '1' represents success and that an existing monitoring thread was stopped
      *         for the requested GPIO pin number.
-     *         </p>
      */
     public static native int disablePinStateChangeCallback(int pin);
 
     /**
-     * <h1>Pin State Change Callback</h1>
-     * 
      * <p>
      * This method is provided as the callback handler for the Pi4J native library to invoke when a
      * GPIO interrupt is detected. This method should not be called from any Java consumers. (Thus
      * is is marked as a private method.)
      * </p>
      * 
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @param state <p>
-     *            New GPIO pin state.
-     *            </p>
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param state New GPIO pin state.
      */
     @SuppressWarnings("unchecked")
-    private static void pinStateChangeCallback(int pin, boolean state)
-    {
+    private static void pinStateChangeCallback(int pin, boolean state) {
+
         Vector<GpioInterruptListener> dataCopy;
         dataCopy = (Vector<GpioInterruptListener>) listeners.clone();
 
-        for (int i = 0; i < dataCopy.size(); i++)
-        {
+        for (int i = 0; i < dataCopy.size(); i++) {
             GpioInterruptEvent event = new GpioInterruptEvent(listeners, pin, state);
             ((GpioInterruptListener) dataCopy.elementAt(i)).pinStateChange(event);
         }
@@ -150,8 +128,6 @@ public class GpioInterrupt
     }
 
     /**
-     * <h1>Add GPIO Interrupt Listener</h1>
-     * 
      * <p>
      * Java consumer code can all this method to register itself as a listener for pin state
      * changes.
@@ -160,19 +136,15 @@ public class GpioInterrupt
      * @see #com.pi4j.wiringpi.GpioInterruptListener
      * @see #com.pi4j.wiringpi.GpioInterruptEvent
      * 
-     * @param listener <p>
-     *            A class instance that implements the GpioInterruptListener interface.
-     *            </p>
+     * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void addListener(GpioInterruptListener listener)
-    {
-        if(!listeners.contains(listener))
+    public static synchronized void addListener(GpioInterruptListener listener) {
+        if (!listeners.contains(listener)) {
             listeners.addElement(listener);
+        }
     }
 
     /**
-     * <h1>Remove GPIO Interrupt Listener</h1>
-     * 
      * <p>
      * Java consumer code can all this method to unregister itself as a listener for pin state
      * changes.
@@ -181,20 +153,16 @@ public class GpioInterrupt
      * @see #com.pi4j.wiringpi.GpioInterruptListener
      * @see #com.pi4j.wiringpi.GpioInterruptEvent
      * 
-     * @param listener <p>
-     *            A class instance that implements the GpioInterruptListener interface.
-     *            </p>
+     * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void removeListener(GpioInterruptListener listener)
-    {
-        if(listeners.contains(listener))
+    public static synchronized void removeListener(GpioInterruptListener listener) {
+        if (listeners.contains(listener)) {
             listeners.removeElement(listener);
+        }
     }
     
     
     /**
-     * <h1>IS GPIO Interrupt Listener already registered</h1>
-     * 
      * <p>
      * Returns true if the listener is already registered for event callbacks.
      * </p>
@@ -202,12 +170,9 @@ public class GpioInterrupt
      * @see #com.pi4j.wiringpi.GpioInterruptListener
      * @see #com.pi4j.wiringpi.GpioInterruptEvent
      * 
-     * @param listener <p>
-     *            A class instance that implements the GpioInterruptListener interface.
-     *            </p>
+     * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized boolean hasListener(GpioInterruptListener listener)
-    {
+    public static synchronized boolean hasListener(GpioInterruptListener listener) {
         return listeners.contains(listener);
     }    
 }

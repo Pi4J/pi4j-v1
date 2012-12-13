@@ -34,62 +34,52 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioBlinkStopStateTrigger extends GpioTriggerBase
-{
+public class GpioBlinkStopStateTrigger extends GpioTriggerBase {
+
     private final GpioPinDigitalOutput targetPin;
 
-    public GpioBlinkStopStateTrigger(GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(GpioPinDigitalOutput targetPin) {
         super();
         this.targetPin = targetPin;
     }
     
-    public GpioBlinkStopStateTrigger(PinState state, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
         super(state);
         this.targetPin = targetPin;
     }
     
-    public GpioBlinkStopStateTrigger(GpioPin pin, PinState state, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(GpioPin pin, PinState state, GpioPinDigitalOutput targetPin) {
         super(state);
         this.targetPin = targetPin;
     }
 
-    public GpioBlinkStopStateTrigger(GpioPin pin, PinState[] states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(GpioPin pin, PinState[] states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioBlinkStopStateTrigger(GpioPin pin, List<PinState> states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(GpioPin pin, List<PinState> states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioBlinkStopStateTrigger(GpioPin[] pins, PinState[] states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(GpioPin[] pins, PinState[] states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
 
-    public GpioBlinkStopStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPinDigitalOutput targetPin)
-    {
+    public GpioBlinkStopStateTrigger(List<GpioPin> pins, List<PinState> states, GpioPinDigitalOutput targetPin) {
         super(states);
         this.targetPin = targetPin;
     }
     
-    public GpioPinDigitalOutput getTargetPin()
-    {
+    public GpioPinDigitalOutput getTargetPin() {
         return targetPin;
     }
     
     @Override
-    public void invoke(GpioPin pin, PinState state)
-    {
-        if(targetPin != null)
-        {
+    public void invoke(GpioPin pin, PinState state) {
+        if (targetPin != null) {
             targetPin.blink(0);
             targetPin.low();
         }

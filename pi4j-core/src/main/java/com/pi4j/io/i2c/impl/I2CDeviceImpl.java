@@ -165,19 +165,6 @@ public class I2CDeviceImpl implements I2CDevice {
             throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
         }
         return ret;
-        //for (int i = 0; i < size; i++) {
-        //    int b = read();
-        //    if (b < 0) {
-        //        if (i == 0) {
-        //            throw new IOException("Error reading from " + makeDescription() + ". Got " + b + ".");
-        //        } else {
-        //            return i;
-        //        }
-        //    }
-        //    if (b > 127) { b = b - 256; }
-        //    buffer[i + offset] = (byte)b;
-        //}
-        //return size;
     }
 
     /**
@@ -221,19 +208,6 @@ public class I2CDeviceImpl implements I2CDevice {
             throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
         }
         return ret;
-        // for (int i = 0; i < size; i++) {
-        //     int b = read(address + i);
-        //     if (b < 0) {
-        //         if (i == 0) {
-        //             throw new IOException("Error reading from " + makeDescription(address) + ". Got " + b + ".");
-        //         } else {
-        //             return i;
-        //         }
-        //     }
-        //     if (b > 127) { b = b - 256; }
-        //     buffer[i + offset] = (byte)b;
-        // }
-        // return size;
     }
     
     /**
