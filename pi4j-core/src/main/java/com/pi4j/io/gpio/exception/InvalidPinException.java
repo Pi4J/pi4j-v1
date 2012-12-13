@@ -30,22 +30,24 @@ package com.pi4j.io.gpio.exception;
 
 import com.pi4j.io.gpio.Pin;
 
-public class InvalidPinException extends RuntimeException
-{
-    /**
-     * 
-     */
+
+/**
+ * Invalid pin exception.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class InvalidPinException extends RuntimeException {
+
     private static final long serialVersionUID = -5101222911651959182L;
     private final Pin pin;
 
-    public InvalidPinException(Pin pin)
-    {
+    public InvalidPinException(Pin pin) {
         super("Invalid pin exception; this pin [" + pin.getName() + "] is not supported by GPIO provider [" + pin.getProvider() + "]");
         this.pin = pin;
     }
 
-    public Pin getPin()
-    {
+    public Pin getPin() {
         return pin;
     }
 }

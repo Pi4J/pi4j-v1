@@ -29,9 +29,14 @@ import java.util.EnumSet;
  * #L%
  */
 
+/**
+ * Pin pull up/down resistance definition.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinPullResistance {
 
-public enum PinPullResistance
-{
     OFF(0, "off"),
     PULL_DOWN(1, "down"),
     PULL_UP(2, "up"); 
@@ -39,30 +44,25 @@ public enum PinPullResistance
     private final int value;
     private final String name;
 
-    private PinPullResistance(int value, String name)
-    {
+    private PinPullResistance(int value, String name) {
         this.value = value;
         this.name = name;
     }
 
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name.toUpperCase();        
     }    
     
-    public static EnumSet<PinPullResistance> all()
-    {
+    public static EnumSet<PinPullResistance> all() {
         return EnumSet.of(PinPullResistance.OFF, 
                           PinPullResistance.PULL_DOWN,
                           PinPullResistance.PULL_UP);

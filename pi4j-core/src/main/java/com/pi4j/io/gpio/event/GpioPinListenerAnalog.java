@@ -30,11 +30,7 @@ package com.pi4j.io.gpio.event;
 
 
 /**
- * <h1>Gpio Listener Interface</h1>
- * 
- * <p>
- * This interface implements the callback event handler for GPIO pin state changes.
- * </p>
+ * <p>This interface implements the callback event handler for GPIO pin state changes.</p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -52,7 +48,8 @@ package com.pi4j.io.gpio.event;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public interface GpioPinListenerAnalog extends GpioPinListener
-{
+public interface GpioPinListenerAnalog extends GpioPinListener {
+
     void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event);
+
 }

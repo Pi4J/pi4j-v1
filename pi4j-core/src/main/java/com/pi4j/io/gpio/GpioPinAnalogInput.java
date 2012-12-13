@@ -33,9 +33,14 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  * #L%
  */
 
+/**
+ * Analog input pin inteface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinAnalogInput extends GpioPinAnalog, GpioPinInput {
 
-public interface GpioPinAnalogInput extends GpioPinAnalog, GpioPinInput
-{
     Collection<GpioPinListener> getListeners();
     void addListener(GpioPinListener... listener);
     void addListener(List<? extends GpioPinListener> listeners);

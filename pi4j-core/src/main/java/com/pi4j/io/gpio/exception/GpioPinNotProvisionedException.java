@@ -30,23 +30,25 @@ package com.pi4j.io.gpio.exception;
 
 import com.pi4j.io.gpio.Pin;
 
-public class GpioPinNotProvisionedException extends RuntimeException
-{
-    /**
-     * 
-     */
+
+/**
+ * GPIO pin not provisioned exception.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class GpioPinNotProvisionedException extends RuntimeException {
+
     private static final long serialVersionUID = 1171484082578232353L;
 
     private final Pin pin;
 
-    public GpioPinNotProvisionedException(Pin pin)
-    {
+    public GpioPinNotProvisionedException(Pin pin) {
         super("This GPIO pin has not been provisioned: " + pin.toString());
         this.pin = pin;
     }
 
-    public Pin getPin()
-    {
+    public Pin getPin() {
         return pin;
     }
 }

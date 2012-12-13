@@ -31,44 +31,36 @@ package com.pi4j.io.gpio.event;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 
-public class PinDigitalStateChangeEvent extends PinEvent
-{
-    /**
-     * 
-     */
+
+/**
+ * GPIO digital pin state change event.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class PinDigitalStateChangeEvent extends PinEvent {
+
     private static final long serialVersionUID = -7643355305429082626L;
     private final PinState state;
 
     /**
-     * <h1>Default event constructor</h1>
+     * Default event constructor
      * 
-     * @param obj <p>
-     *            Ignore this parameter
-     *            </p>
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @param state <p>
-     *            New GPIO pin state.
-     *            </p>
+     * @param obj Ignore this parameter
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param state New GPIO pin state.
      */
-    public PinDigitalStateChangeEvent(Object obj, Pin pin, PinState state)
-    {
+    public PinDigitalStateChangeEvent(Object obj, Pin pin, PinState state) {
         super(obj, pin, PinEventType.DIGITAL_STATE_CHANGE);
         this.state = state;
     }
 
     /**
-     * <p>
      * Get the new pin state raised in this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin state (HIGH, LOW)
-     *         </p>
+     * @return GPIO pin state (HIGH, LOW)
      */
-    public PinState getState()
-    {
+    public PinState getState() {
         return state;
     }
 }

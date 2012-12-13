@@ -28,7 +28,15 @@ package com.pi4j.io.gpio;
  */
 
 
-public interface GpioPinAnalog extends GpioPin
-{
+/**
+ * Gpio analog pin interface. This interface is extension of {@link GpioPin} interface
+ * with operation to read an analog value.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinAnalog extends GpioPin {
+
     double getValue();
+
 }

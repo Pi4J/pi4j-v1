@@ -27,9 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio shutdown pin interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinShutdown {
 
-public interface GpioPinShutdown
-{
     void setUnexport(Boolean unexport);
     Boolean getUnexport();
     void setMode(PinMode mode);
@@ -38,4 +43,5 @@ public interface GpioPinShutdown
     PinPullResistance getPullResistor();
     void setState(PinState state);
     PinState getState();
+
 }

@@ -29,9 +29,14 @@ import com.pi4j.io.gpio.event.PinListener;
  * #L%
  */
 
+/**
+ * Gpio provider interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioProvider {
 
-public interface GpioProvider
-{
     String getName();
     
     boolean hasPin(Pin pin);

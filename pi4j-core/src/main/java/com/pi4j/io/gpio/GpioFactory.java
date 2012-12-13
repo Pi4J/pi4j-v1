@@ -31,11 +31,7 @@ package com.pi4j.io.gpio;
 import com.pi4j.io.gpio.impl.GpioControllerImpl;
 
 /**
- * <h1>GPIO Factory</h1>
- * 
- * <p>
- * This factory class provides a static method to create new 'GpioController' instances.
- * </p>
+ * <p>This factory class provides a static method to create new 'GpioController' instances. </p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -44,6 +40,7 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
+ * 
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
  * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
  * </blockquote>
@@ -55,8 +52,8 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class GpioFactory
-{
+public class GpioFactory {
+
     // we only allow a single controller to exists
     private static GpioController controller = null;
 
@@ -64,41 +61,51 @@ public class GpioFactory
     private static GpioProvider provider = null;
     
     // private constructor 
-    private GpioFactory()
-    {
+    private GpioFactory() {
         // forbid object construction 
     }
     
     /**
-     * <h1>Create New GPIO Controller instance</h1>
+     * <p>Return default instance of {@link GpioController}.</p>
+     * <p>Note: this is not thread safe singleton pattern implementation. 
+     *    Implementation does not provide any synchronization or mechanisms to prevent
+     *    instantiation of two instances.</p>
      * 
-     * @return <p>
-     *         Return a new GpioController impl instance.
-     *         </p>
+     * @return Return a new GpioController impl instance.
      */
-    public static GpioController getInstance()
-    {
+    public static GpioController getInstance() {
         // if a controller has not been created, then create a new instance
-        if(controller == null)
+        // Note: this is not thread safe singleton 
+        if (controller == null) {
             controller = new GpioControllerImpl();
-
+        }
         // else return a copy of the existing controller
         return controller;
     }
     
-    
-    public static GpioProvider getDefaultProvider()
-    {
+    /**
+     * <p>Return default instance of {@link GpioProvider}.</p>
+     * <p>Note: this is not thread safe singleton pattern implementation. 
+     *    Implementation does not provide any synchronization or mechanisms to prevent
+     *    instantiation of two instances.</p>
+     * 
+     * @return Return a new GpioController impl instance.
+     */
+    public static GpioProvider getDefaultProvider() {
         // if a provider has not been created, then create a new instance
-        if(provider == null)
+        if (provider == null) {
             provider = new RaspiGpioProvider();
-
+        }
         // return the provider instance
         return provider;
     }
 
-    public static void setDefaultProvider(GpioProvider provider)
-    {
+    /**
+     * Sets default {@link GpioProvider}.
+     * 
+     * @param provider default gpio provider
+     */
+    public static void setDefaultProvider(GpioProvider provider) {
         // set the default provider instance
         GpioFactory.provider = provider;
     }

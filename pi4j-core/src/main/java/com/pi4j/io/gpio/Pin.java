@@ -29,11 +29,18 @@ import java.util.EnumSet;
  * #L%
  */
 
-public interface Pin
-{
+/**
+ * This interface describes a pin.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface Pin {
+    
     String getProvider();
     int getAddress();    
     String getName();
     EnumSet<PinMode> getSupportedPinModes();
     EnumSet<PinPullResistance> getSupportedPinPullResistance();
+
 }

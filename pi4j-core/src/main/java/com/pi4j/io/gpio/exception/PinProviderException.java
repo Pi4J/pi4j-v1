@@ -30,22 +30,23 @@ package com.pi4j.io.gpio.exception;
 
 import com.pi4j.io.gpio.Pin;
 
-public class PinProviderException extends RuntimeException
-{
-    /**
-     * 
-     */
+/**
+ * Pin provider exception.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class PinProviderException extends RuntimeException {
+
     private static final long serialVersionUID = -519207741462960871L;
     private final Pin pin;
 
-    public PinProviderException(Pin pin)
-    {
+    public PinProviderException(Pin pin) {
         super("Unknown GPIO pin provider [" + pin.getProvider() + "] on pin [" + pin.toString() + "]");
         this.pin = pin;
     }
 
-    public Pin getPin()
-    {
+    public Pin getPin() {
         return pin;
     }
 }

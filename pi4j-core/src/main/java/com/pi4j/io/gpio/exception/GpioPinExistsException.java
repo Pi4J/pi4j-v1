@@ -27,26 +27,27 @@ package com.pi4j.io.gpio.exception;
  * #L%
  */
 
-
 import com.pi4j.io.gpio.Pin;
 
-public class GpioPinExistsException extends RuntimeException
-{
-    /**
-     * 
-     */
+
+/**
+ * GPIO pin already exists exception.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class GpioPinExistsException extends RuntimeException {
+
     private static final long serialVersionUID = 1171484082578232353L;
 
     private final Pin pin;
 
-    public GpioPinExistsException(Pin pin)
-    {
+    public GpioPinExistsException(Pin pin) {
         super("This GPIO pin already exists: " + pin.toString());
         this.pin = pin;
     }
 
-    public Pin getPin()
-    {
+    public Pin getPin() {
         return pin;
     }
 }

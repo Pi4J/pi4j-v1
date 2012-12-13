@@ -33,9 +33,15 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  * #L%
  */
 
+/**
+ * Gpio input pin interface. This interface is extension of {@link GpioPin} interface
+ * with listeners and triggers support..
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinInput extends GpioPin {
 
-public interface GpioPinInput extends GpioPin
-{
     Collection<GpioPinListener> getListeners();
     void addListener(GpioPinListener... listener);
     void addListener(List<? extends GpioPinListener> listeners);
@@ -51,4 +57,5 @@ public interface GpioPinInput extends GpioPin
     void removeTrigger(GpioTrigger... trigger);    
     void removeTrigger(List<? extends GpioTrigger> triggers);
     void removeAllTriggers();
+
 }

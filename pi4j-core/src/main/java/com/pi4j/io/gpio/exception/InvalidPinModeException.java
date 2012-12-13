@@ -27,25 +27,25 @@ package com.pi4j.io.gpio.exception;
  * #L%
  */
 
-
 import com.pi4j.io.gpio.Pin;
 
-public class InvalidPinModeException extends RuntimeException
-{
-    /**
-     * 
-     */
+/**
+ * Invalid pin mode exception.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class InvalidPinModeException extends RuntimeException {
+
     private static final long serialVersionUID = -5101222911651959182L;
     private final Pin pin;
 
-    public InvalidPinModeException(Pin pin, String message)
-    {
+    public InvalidPinModeException(Pin pin, String message) {
         super(message);
         this.pin = pin;
     }
 
-    public Pin getPin()
-    {
+    public Pin getPin() {
         return pin;
     }
 }
