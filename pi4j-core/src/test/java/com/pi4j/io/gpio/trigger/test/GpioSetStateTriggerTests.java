@@ -43,8 +43,8 @@ import com.pi4j.io.gpio.test.MockGpioProvider;
 import com.pi4j.io.gpio.test.MockPin;
 import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
 
-public class GpioSetStateTriggerTests   
-{
+public class GpioSetStateTriggerTests {
+
     private static MockGpioProvider provider;
     private static GpioController gpio;
     private static GpioPinDigitalInput inputPin;
@@ -53,8 +53,7 @@ public class GpioSetStateTriggerTests
     private static GpioSetStateTrigger triggerLow;
     
     @BeforeClass 
-    public static void setup()
-    {
+    public static void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -73,23 +72,20 @@ public class GpioSetStateTriggerTests
     }
     
     @AfterClass 
-    public static void teardown()
-    {
+    public static void teardown() {
         // remove triggers
         inputPin.removeTrigger(triggerHigh);        
         inputPin.removeTrigger(triggerLow);
     }    
 
     @Test
-    public void testHasTrigger() 
-    {
+    public void testHasTrigger() {
         // verify that the input pin does have a trigger assigned
         assertFalse(inputPin.getTriggers().isEmpty());        
     }    
 
     @Test
-    public void testTriggerHigh() throws InterruptedException
-    {
+    public void testTriggerHigh() throws InterruptedException {
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
@@ -101,8 +97,7 @@ public class GpioSetStateTriggerTests
     }
     
     @Test
-    public void testTriggerLow() throws InterruptedException
-    {
+    public void testTriggerLow() throws InterruptedException {
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
