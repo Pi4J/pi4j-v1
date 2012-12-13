@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pi4j-native" default="default" basedir=".">
+<project name="pi4j-native" default="build-libpi4j.so" basedir=".">
     <target name="build-libpi4j.so">
     
         <echo message="Building native libpi4j shared library for ABI: ${pi-abi}"/>
