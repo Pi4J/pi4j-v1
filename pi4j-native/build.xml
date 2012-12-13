@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pi4j-native" default="default" basedir=".">
+    <target name="build-libpi4j.so">
+    
+        <echo message="Building native libpi4j shared library for ABI: ${pi-abi}"/>
+    
+		<!-- ensure the target directory is empty on the Raspberry Pi -->
+		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+			password="${pi-password}" trust="true" failonerror="true"
+			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
+	
+		<!-- ensure the target directory exists on the Raspberry Pi -->
+		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+			password="${pi-password}" trust="true" failonerror="false"
+			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}/*" />
+	
+		<!-- copy all the necessary source files to the Raspberry Pi -->
+		<scp todir="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}"
+			port="${pi-port}" trust="true" verbose="true" failonerror="true">
+			<fileset dir="src/main/native" />
+		</scp>
+	
+		<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
+			Pi platform -->
+		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+			password="${pi-password}" trust="true" failonerror="true"
+			verbose="true" command="cd ${pi-dirBuildTemp}; make clean; make all" />
+	
+		<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
+		<scp
+			file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/libpi4j.so"
+			todir="${project-build-directory}/${pi-abi}/" port="${pi-port}" trust="true"
+			verbose="true" failonerror="true">
+		</scp>
+	
+		<!-- remove the temporary target directory from the Raspberry Pi -->
+		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+			password="${pi-password}" trust="true" failonerror="true"
+			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
+		
+    </target>
+</project>

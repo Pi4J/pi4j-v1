@@ -114,10 +114,14 @@ public class OlimexGpioExample
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;)
+        // or we reach 60 seconds
+        for (int seconds = 0; seconds < 60; seconds++)
         {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         }
+        
+        // shutdown the GPIO provider
+        olimexProvider.shutdown();        
     }
     
     
