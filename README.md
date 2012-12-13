@@ -44,6 +44,9 @@
       https://github.com/Pi4J/pi4j/issues/6
    *  Added support for MCP23008 GPIO Provider using I2C bus.
    *  Added support for MCP23017 GPIO Provider using I2C bus.
+   *  Modified build script to support concurrent soft-float and hard-float native library builds
+   *  Modified build script to include pulling wiringPi sources and compiling when building native library
+   *  Added power controller device interface, base impl, and reference impl
 
 ## RELEASES
 

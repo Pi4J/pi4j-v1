@@ -32,7 +32,7 @@
 
 ## IN DEVELOPMENT
 
-2012-11-19 :: 0.0.4-SNAPSHOT
+2012-12-02 :: 0.0.4-SNAPSHOT
  
    *  Added support for building a Pi4J .deb installer package for Debian/Raspian Linux distribution. (BETA)
    *  Modified NetworkInfo static methods to permit empty array return values when a network property cannot be obtained.
@@ -42,6 +42,8 @@
    *  Fixed defect where Pi4J library prevented consuming program from exiting properly.
       https://github.com/Pi4J/pi4j/issues/4 
       https://github.com/Pi4J/pi4j/issues/6
+   *  Added support for MCP23008 GPIO Provider using I2C bus.
+   *  Added support for MCP23017 GPIO Provider using I2C bus.
 
 ## RELEASES
 

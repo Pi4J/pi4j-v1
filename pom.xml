@@ -89,12 +89,17 @@
 	<!-- BUILD PROPERTIES -->
 	<properties>
 
-		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>pi-hf-wifi</pi.host>
-		<pi.port>22</pi.port>
-		<pi.user>pi</pi.user>
-		<pi.password>raspberry</pi.password>
-		<pi.abi>hard-float</pi.abi>
+		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
+		<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
+		<pi.port.hard-float>22</pi.port.hard-float>
+		<pi.user.hard-float>pi</pi.user.hard-float>
+		<pi.password.hard-float>raspberry</pi.password.hard-float>
+
+		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
+		<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
+		<pi.port.soft-float>22</pi.port.soft-float>
+		<pi.user.soft-float>pi</pi.user.soft-float>
+		<pi.password.soft-float>raspberry</pi.password.soft-float>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
 		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
@@ -114,36 +119,19 @@
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-		<!-- PROFILE : Robert Savage -->
+		<!-- USER PROFILE : Robert Savage -->
 		<profile>
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host>pi-hf-wifi</pi.host>
-				<!-- enable scp of Pi4j to Raspberry Pi -->
-				<pi.transfer>true</pi.transfer>
+				<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
+				<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
 			</properties>
 			<activation>
+				<!-- automatically set user profile based on environment setting -->
 				<property>
 					<name>env.MAVEN_PROFILE</name>
 					<value>savage</value>
-				</property>
-			</activation>
-		</profile>
-
-		<!-- PROFILE : Chris Walzl -->
-		<profile>
-			<id>cwalzl</id>
-			<properties>
-				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host>raspberrypi</pi.host>
-				<!-- enable scp of Pi4j to Raspberry Pi -->
-				<pi.transfer>true</pi.transfer>
-			</properties>
-			<activation>
-				<property>
-					<name>env.MAVEN_PROFILE</name>
-					<value>cwalzl</value>
 				</property>
 			</activation>
 		</profile>
@@ -154,20 +142,6 @@
 			<modules>
 				<module>pi4j-native</module>
 			</modules>
-		</profile>
-		<profile>
-			<id>soft-float</id>
-			<properties>
-				<pi.abi>soft-float</pi.abi>
-				<pi.host>pi-sf-wifi</pi.host>
-			</properties>
-		</profile>
-		<profile>
-			<id>hard-float</id>
-			<properties>
-				<pi.abi>hard-float</pi.abi>
-				<pi.host>pi-hf-wifi</pi.host>
-			</properties>
 		</profile>
 
 		<!-- SPECIAL PROFILE TO BUILD .DEB DISTRIBUTION PROJECT -->

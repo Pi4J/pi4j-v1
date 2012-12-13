@@ -85,6 +85,75 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>soft-float</id>
+			<properties>
+				<pi.build.soft-float>true</pi.build.soft-float>
+			</properties>
+			<build>
+				<plugins>			
+					<!-- ATTACH COMPILED NATIVE LIBRARY -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-artifacts</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attach-artifact</goal>
+								</goals>
+								<configuration>
+									<artifacts>
+										<artifact>
+											<file>${project.build.directory}/soft-float/libpi4j.so</file>
+											<type>so</type>
+											<classifier>soft-float</classifier>									
+										</artifact>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>			
+				</plugins>
+			</build>			
+		</profile>
+
+		<profile>
+			<id>hard-float</id>
+			<properties>
+				<pi.build.hard-float>true</pi.build.hard-float>
+			</properties>
+			<build>
+				<plugins>			
+					<!-- ATTACH COMPILED NATIVE LIBRARY -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-artifacts</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attach-artifact</goal>
+								</goals>
+								<configuration>
+									<artifacts>
+										<artifact>
+											<file>${project.build.directory}/hard-float/libpi4j.so</file>
+											<type>so</type>
+											<classifier>hard-float</classifier>									
+										</artifact>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>			
+				</plugins>
+			</build>			
+		</profile>
+				
 	</profiles>
 
 
@@ -112,7 +181,21 @@
 							<tasks>
 								<mkdir dir="target" />
 								<mkdir dir="target/classes" />
-								<mkdir dir="target/${pi.abi}" />								
+								
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+								                  classpathref="maven.plugin.classpath" />
+				                <if>
+				                  <equals arg1="${pi.build.hard-float}" arg2="true" />
+				                  <then>
+								   <mkdir dir="target/hard-float" />
+				                  </then>
+				                </if>							
+				                <if>
+				                  <equals arg1="${pi.build.soft-float}" arg2="true" />
+				                  <then>
+								   <mkdir dir="target/soft-float" />
+				                  </then>
+				                </if>
 							</tasks>
 						</configuration>
 						<goals>
@@ -130,39 +213,37 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<!-- ensure the target directory is empty on the Raspberry Pi -->
-								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
-									password="${pi.password}" trust="true" failonerror="true"
-									verbose="true" command="rm --recursive --force ${pi.dirBuildTemp}" />
-
-								<!-- ensure the target directory exists on the Raspberry Pi -->
-								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
-									password="${pi.password}" trust="true" failonerror="false"
-									verbose="true" command="mkdir --parents ${pi.dirBuildTemp}/*" />
-
-								<!-- copy all the necessary source files to the Raspberry Pi -->
-								<scp todir="${pi.user}:${pi.password}@${pi.host}:${pi.dirBuildTemp}"
-									port="${pi.port}" trust="true" verbose="true" failonerror="true">
-									<fileset dir="src/main/native" />
-								</scp>
-
-								<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
-									Pi platform -->
-								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
-									password="${pi.password}" trust="true" failonerror="true"
-									verbose="true" command="cd /home/pi/pi4j-temp; make clean; make all" />
-
-								<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
-								<scp
-									file="${pi.user}:${pi.password}@${pi.host}:${pi.dirBuildTemp}/libpi4j.so"
-									todir="${project.build.directory}/${pi.abi}/" port="${pi.port}" trust="true"
-									verbose="true" failonerror="true">
-								</scp>
-
-								<!-- remove the temporary target directory from the Raspberry Pi -->
-								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
-									password="${pi.password}" trust="true" failonerror="true"
-									verbose="true" command="rm --recursive --force ${pi.dirBuildTemp}" />
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+								                  classpathref="maven.plugin.classpath" />
+				                <property name="compile_classpath" 
+				                          refid="maven.compile.classpath"/>
+				                <property name="project-build-directory"
+				                          value="${project.build.directory}"/>		
+				                <property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>
+				                <if>
+				                  <equals arg1="${pi.build.hard-float}" arg2="true" />
+				                  <then>
+								    <ant target="build-libpi4j.so" >
+								    	<property name="pi-abi" value="hard-float"/>
+						                <property name="pi-port" value="${pi.port.hard-float}"/>							
+						                <property name="pi-host" value="${pi.host.hard-float}"/>							
+						                <property name="pi-user" value="${pi.user.hard-float}"/>		
+						                <property name="pi-password" value="${pi.password.hard-float}"/>
+								    </ant>
+				                  </then>
+				                </if>							
+				                <if>
+				                  <equals arg1="${pi.build.soft-float}" arg2="true" />
+				                  <then>
+								    <ant target="build-libpi4j.so">
+								    	<property name="pi-abi" value="soft-float"/> 
+						                <property name="pi-port" value="${pi.port.soft-float}"/>							
+						                <property name="pi-host" value="${pi.host.soft-float}"/>							
+						                <property name="pi-user" value="${pi.user.soft-float}"/>		
+						                <property name="pi-password" value="${pi.password.soft-float}"/>
+								    </ant>
+				                  </then>
+				                </if>							
 							</tasks>
 						</configuration>
 					</execution>
@@ -184,30 +265,6 @@
 						<version>20020829</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-
-			<!-- ATTACH COMPILED NATIVE LIBRARY -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-artifacts</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${project.build.directory}/${pi.abi}/libpi4j.so</file>
-									<type>so</type>
-									<classifier>${pi.abi}</classifier>									
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 		</plugins>
