@@ -19,7 +19,13 @@
 			port="${pi-port}" trust="true" verbose="true" failonerror="true">
 			<fileset dir="src/main/native" />
 		</scp>
-	
+
+		<!-- download and compile the 'wiringPi.a' native static library on the Raspberry 
+			Pi platform -->
+		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+			password="${pi-password}" trust="true" failonerror="true"
+			verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x wiringpi-build.sh; ./wiringpi-build.sh" />
+
 		<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
 			Pi platform -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
