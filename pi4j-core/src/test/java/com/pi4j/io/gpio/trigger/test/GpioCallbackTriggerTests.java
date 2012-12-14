@@ -44,8 +44,8 @@ import com.pi4j.io.gpio.test.MockGpioProvider;
 import com.pi4j.io.gpio.test.MockPin;
 import com.pi4j.io.gpio.trigger.GpioCallbackTrigger;
 
-public class GpioCallbackTriggerTests   
-{
+public class GpioCallbackTriggerTests {
+
     private static MockGpioProvider provider;
     private static GpioController gpio;
     private static GpioPinDigitalInput inputPin;
@@ -53,8 +53,7 @@ public class GpioCallbackTriggerTests
     private static int callbackCounter = 0;
     
     @BeforeClass 
-    public static void setup()
-    {
+    public static void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -63,11 +62,9 @@ public class GpioCallbackTriggerTests
         inputPin = gpio.provisionDigitalInputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin");
         
         // create trigger
-        trigger = new GpioCallbackTrigger(new Callable<Void>()
-        {
+        trigger = new GpioCallbackTrigger(new Callable<Void>() {
             @Override
-            public Void call() throws Exception
-            {
+            public Void call() throws Exception {
                 callbackCounter++;
                 return null;
             }
@@ -78,22 +75,19 @@ public class GpioCallbackTriggerTests
     }
     
     @AfterClass 
-    public static void teardown()
-    {
+    public static void teardown() {
         // remove trigger
         inputPin.removeTrigger(trigger);        
     }    
 
     @Test
-    public void testHasTrigger() 
-    {
+    public void testHasTrigger() {
         // verify that the input pin does have a trigger assigned
         assertFalse(inputPin.getTriggers().isEmpty());        
     }    
 
     @Test
-    public void testTrigger() throws InterruptedException
-    {
+    public void testTrigger() throws InterruptedException {
         // reset counter
         callbackCounter = 0;
         

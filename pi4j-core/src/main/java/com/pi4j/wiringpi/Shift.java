@@ -58,25 +58,23 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Shift
-{
+public class Shift {
+
     public static final int LSBFIRST = 0;
     public static final int MSBFIRST = 1;
 
     // private constructor 
-    private Shift() 
-    {
+    private Shift() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>uint8_t shiftIn (uint8_t dPin, uint8_t cPin, uint8_t order);</h1>
+     * <p>uint8_t shiftIn (uint8_t dPin, uint8_t cPin, uint8_t order);</p>
      * 
      * <p>
      * This shifts an 8-bit data value in with the data appearing on the dPin and the clock being
@@ -98,7 +96,7 @@ public class Shift
     public static native byte shiftIn(byte dPin, byte cPin, byte order);
 
     /**
-     * <h1>void shiftOut (uint8_t dPin, uint8_t cPin, uint8_t order, uint8_t val);</h1>
+     * <p>void shiftOut (uint8_t dPin, uint8_t cPin, uint8_t order, uint8_t val);</p>
      * 
      * <p>
      * The shifts an 8-bit data value val out with the data being sent out on dPin and the clock

@@ -27,6 +27,11 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-public interface GpioPinOutput extends GpioPin
-{
+/**
+ * Gpio pin output decorator interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinOutput extends GpioPin {
 }

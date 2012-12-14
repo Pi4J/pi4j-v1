@@ -30,44 +30,35 @@ package com.pi4j.io.gpio.event;
 
 import com.pi4j.io.gpio.Pin;
 
-public class PinAnalogValueChangeEvent extends PinEvent
-{
-    /**
-     * 
-     */
+/**
+ * GPIO analog pin value change event.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class PinAnalogValueChangeEvent extends PinEvent {
+
     private static final long serialVersionUID = -6210539419288104794L;
     private final double value;
 
     /**
-     * <h1>Default event constructor</h1>
+     * Default event constructor
      * 
-     * @param obj <p>
-     *            Ignore this parameter
-     *            </p>
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @param value <p>
-     *            New GPIO pin analog value.
-     *            </p>
+     * @param obj Ignore this parameter
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param value  New GPIO pin analog value.
      */
-    public PinAnalogValueChangeEvent(Object obj, Pin pin, double value)
-    {
+    public PinAnalogValueChangeEvent(Object obj, Pin pin, double value) {
         super(obj, pin, PinEventType.ANALOG_VALUE_CHANGE);
         this.value = value;
     }
 
     /**
-     * <p>
      * Get the new pin value raised in this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin value 
-     *         </p>
+     * @return GPIO pin value
      */
-    public double getValue()
-    {
+    public double getValue() {
         return value;
     }
 }

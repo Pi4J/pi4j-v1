@@ -27,8 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio output pwm pin interface.This interface adds operation to set output pwm value.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinPwmOutput extends GpioPinPwm, GpioPinOutput {
 
-public interface GpioPinPwmOutput extends GpioPinPwm, GpioPinOutput
-{
     void setPwm(int value);
+
 }

@@ -34,8 +34,8 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.impl.PinImpl;
 
-public class MockPin 
-{
+public class MockPin {
+
     public static final Pin DIGITAL_BIDIRECTIONAL_PIN = new PinImpl(MockGpioProvider.NAME, 0, "GPIO-0", 
                                                             EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                                                             PinPullResistance.all());

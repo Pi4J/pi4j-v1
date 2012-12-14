@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi Software PWM Library</h1>
- * 
  * <p>
  * WiringPi includes a software-driven PWM handler capable of outputting a PWM signal on any of the
  * Raspberry Pi's GPIO pins.
@@ -81,22 +79,20 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class SoftPwm
-{
+public class SoftPwm {
+
     // private constructor 
-    private SoftPwm() 
-    {
+    private SoftPwm() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>int softPwmCreate (int pin, int initialValue, int pwmRange);</h1>
+     * <p>int softPwmCreate (int pin, int initialValue, int pwmRange);</p>
      * 
      * <p>
      * This creates a software controlled PWM pin. You can use any GPIO pin and the pin numbering
@@ -107,25 +103,18 @@ public class SoftPwm
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/">https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/</a>
      * 
-     * @param pin <p>
-     *            The GPIO pin to use as a PWM pin.
+     * @param pin The GPIO pin to use as a PWM pin.
      *            </p>
-     * @param value <p>
-     *            The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
+     * @param value The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
      *            on)</i>)
-     *            </p>
-     * @param range <p>
-     *            The maximum range. Use 100 for the pwmRange.
-     *            </p>
-     * @return <p>
-     *         The return value is 0 for success. Anything else and you should check the global
+     * @param range The maximum range. Use 100 for the pwmRange.
+     * @return The return value is 0 for success. Anything else and you should check the global
      *         errno variable to see what went wrong.
-     *         </p>
      */
     public static native int softPwmCreate(int pin, int value, int range);
 
     /**
-     * <h1>void softPwmWrite (int pin, int value);</h1>
+     * <p>void softPwmWrite (int pin, int value);</p>
      * 
      * <p>
      * This updates the PWM value on the given pin. The value is checked to be in-range and pins
@@ -134,13 +123,9 @@ public class SoftPwm
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/">https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/</a>
-     * @param pin <p>
-     *            The GPIO pin to use as a PWM pin.
-     *            </p>
-     * @param value <p>
-     *            The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
+     * @param pin The GPIO pin to use as a PWM pin.
+     * @param value The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
      *            on)</i>)
-     *            </p>
      */
     public static native void softPwmWrite(int pin, int value);
 }

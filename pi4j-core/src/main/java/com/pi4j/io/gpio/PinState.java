@@ -29,77 +29,72 @@ import java.util.EnumSet;
  * #L%
  */
 
+/**
+ * Pin edge definition.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinState {
 
-public enum PinState
-{
     LOW(0, "LOW"), 
     HIGH(1, "HIGH"); 
 
     private final int value;
     private final String name;
 
-    private PinState(int value, String name)
-    {
+    private PinState(int value, String name) {
         this.value = value;
         this.name = name;
     }
 
-    public boolean isHigh()
-    {
+    public boolean isHigh() {
         return (this == HIGH);
     }
 
-    public boolean isLow()
-    {
+    public boolean isLow() {
         return (this == LOW);
     }
     
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;        
     }    
     
-    public static PinState getState(int state)
-    {
-        for (PinState item : PinState.values())
-        {
-            if (item.getValue() == state)
+    public static PinState getState(int state) {
+        for (PinState item : PinState.values()) {
+            if (item.getValue() == state) {
                 return item;
+            }
         }
         return null;
     }
 
-    public static PinState getInverseState(PinState state)
-    {
+    public static PinState getInverseState(PinState state) {
         return (state == HIGH ? LOW : HIGH);
     }
     
-    public static PinState getState(boolean state)
-    {
-        if(state == true)
+    public static PinState getState(boolean state) {
+        if (state == true) {
             return PinState.HIGH;
-        else
+        } else {
             return PinState.LOW;
-    }        
+        }
+    }
 
-    public static PinState[] allStates()
-    {
+    public static PinState[] allStates() {
         return PinState.values();
     }    
     
-    public static EnumSet<PinState> all()
-    {
+    public static EnumSet<PinState> all() {
         return EnumSet.of(PinState.HIGH, PinState.LOW);
     }        
 }

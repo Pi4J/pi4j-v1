@@ -27,9 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * This class provides cache for gpio pin instances.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class GpioProviderPinCache {
 
-public class GpioProviderPinCache
-{
     private final Pin pin;
     private PinMode mode;
     private PinState state;
@@ -38,74 +43,60 @@ public class GpioProviderPinCache
     private int pwmValue = -1;
     private boolean exported = false; 
     
-    public GpioProviderPinCache(Pin pin)
-    {
+    public GpioProviderPinCache(Pin pin) {
         this.pin = pin;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "PIN [" + pin.getName() + "] CACHE :: mode=" + mode.getName() + "; state=" + state.getName();
     }
 
-    public PinMode getMode()
-    {
+    public PinMode getMode() {
         return mode;
     }
     
-    public void setMode(PinMode mode)
-    {
+    public void setMode(PinMode mode) {
         this.mode = mode;
     }
     
-    public PinState getState()
-    {
+    public PinState getState() {
         return state;
     }
     
-    public void setState(PinState state)
-    {
+    public void setState(PinState state) {
         this.state = state;
     }
     
-    public PinPullResistance getResistance()
-    {
+    public PinPullResistance getResistance() {
         return resistance;
     }
     
-    public void setResistance(PinPullResistance resistance)
-    {
+    public void setResistance(PinPullResistance resistance) {
         this.resistance = resistance;
     }
     
-    public double getAnalogValue()
-    {
+    public double getAnalogValue() {
         return analogValue;
     }
     
-    public void setAnalogValue(double value)
-    {
+    public void setAnalogValue(double value) {
         this.analogValue = value;
     }
     
-    public int getPwmValue()
-    {
+    public int getPwmValue() {
         return pwmValue;
     }
     
-    public void setPwmValue(int value)
-    {
+    public void setPwmValue(int value) {
         this.pwmValue = value;
     }
     
-    public boolean isExported()
-    {
+    public boolean isExported() {
         return exported;
     }
     
-    public void setExported(boolean exported)
-    {
+    public void setExported(boolean exported) {
         this.exported = exported;
     }
 }

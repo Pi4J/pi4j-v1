@@ -29,49 +29,48 @@ import java.util.EnumSet;
  * #L%
  */
 
-
-public enum PinDirection
-{
+/**
+ * Pn direction.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinDirection {
+    
     IN(0, "in"), 
     OUT(1, "out");
 
     private final int value;
     private final String name;
 
-    private PinDirection(int value, String name)
-    {
+    private PinDirection(int value, String name) {
         this.value = value;
         this.name = name;
     }
 
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name.toUpperCase();        
     }    
     
-    public static PinDirection getDirection(int direction)
-    {
-        for (PinDirection item : PinDirection.values())
-        {
-            if (item.getValue() == direction)
+    public static PinDirection getDirection(int direction) {
+        for (PinDirection item : PinDirection.values()) {
+            if (item.getValue() == direction) {
                 return item;
+            }
         }
         return null;
     }    
     
-    public static EnumSet<PinDirection> all()
-    {
+    public static EnumSet<PinDirection> all() {
         return EnumSet.of(PinDirection.IN, PinDirection.OUT);
     }
 }

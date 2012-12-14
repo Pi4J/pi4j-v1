@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi Serial Port Communication</h1>
- * 
  * <p>
  * WiringPi includes a simplified serial port handling library. It can use the on-board serial port,
  * or any USB serial device with no special distinctions between them. You just specify the device
@@ -64,29 +62,27 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Serial
-{
+public class Serial {
+
     /**
-     * <p>The default hardware COM port provided via the Raspberry Pi GPIO header.</p>
+     * The default hardware COM port provided via the Raspberry Pi GPIO header.
      * 
      * @see #serialOpen(String,int)
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
 
     // private constructor 
-    private Serial() 
-    {
+    private Serial() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>int serialOpen (char *device, int baud);</h1>
+     * <p>int serialOpen (char *device, int baud);</p>
      * 
      * <p>
      * This opens and initializes the serial device and sets the baud rate. It sets the port into
@@ -103,27 +99,21 @@ public class Serial
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
      * 
-     * @param device <p>
-     *            <The device address of the serial port to access. You can use constant
+     * @param device The device address of the serial port to access. You can use constant
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *            GPIO header./p>
-     * @param baud <p>
-     *            The baud rate to use with the serial port.
-     *            </p>
-     * @return <p>
-     *         The return value is the file descriptor or -1 for any error, in which case errno will
+     *            GPIO header.
+     * @param baud The baud rate to use with the serial port.
+     * @return The return value is the file descriptor or -1 for any error, in which case errno will
      *         be set as appropriate.
-     *         </p>
      */
     public static native int serialOpen(String device, int baud);
 
     /**
-     * <h1>void serialClose (int fd);</h1>
+     * <p>void serialClose (int fd);</p>
      * 
      * <p>
      * Closes the device identified by the file descriptor given.
      * </p>
-     * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
      * @param fd <p>
@@ -135,124 +125,85 @@ public class Serial
     /**
      * <h1>void serialFlush (int fd);</h1>
      * 
-     * <p>
-     * This discards all data received, or waiting to be send down the given device.
-     * </p>
+     * <p>This discards all data received, or waiting to be send down the given device.</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
+     * @param fd The file descriptor of the serial port.
      */
     public static native void serialFlush(int fd);
 
     /**
-     * <h1>void serialPutchar (int fd, unsigned char c);</h1>
+     * <p>void serialPutchar (int fd, unsigned char c);</p>
      * 
-     * <p>
-     * Sends the single byte to the serial device identified by the given file descriptor.
-     * </p>
+     * <p>Sends the single byte to the serial device identified by the given file descriptor.</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
-     * @param data <p>
-     *            The character to transmit to the serial port.
-     *            </p>
+     * @param fd The file descriptor of the serial port.
+     * @param data The character to transmit to the serial port.
      */
     public static native void serialPutchar(int fd, char data);
 
     /**
-     * <h1>void serialPuts (int fd, char *s);</h1>
+     * <p>void serialPuts (int fd, char *s);</p>
      * 
-     * <p>
-     * Sends the nul-terminated string to the serial device identified by the given file descriptor.
-     * </p>
+     * <p>Sends the nul-terminated string to the serial device identified by the given file descriptor.</p>
      * 
-     * <p>
-     * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
-     * </p>
+     * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
-     * @param data <p>
-     *            The data string to transmit to the serial port.
-     *            </p>
+     * @param fd The file descriptor of the serial port.
+     * @param data The data string to transmit to the serial port.
      */
     public static native void serialPuts(int fd, String data);
 
     /**
-     * <h1>void serialPuts (int fd, String data, String...arguments);</h1>
+     * <p>void serialPuts (int fd, String data, String...arguments);</p>
      * 
      * <p>
      * Sends the nul-terminated formatted string to the serial device identified by the given file
      * descriptor.
      * </p>
      * 
-     * <p>
-     * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
-     * </p>
+     * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
-     * @param data <p>
-     *            The formatted data string to transmit to the serial port.
-     *            </p>
-     * @param args <p>
-     *            Arguments to the format string.
-     *            </p>
+     * @param fd The file descriptor of the serial port.
+     * @param data The formatted data string to transmit to the serial port.
+     * @param args Arguments to the format string.
      */
-    public static void serialPuts(int fd, String data, String... args)
-    {
+    public static void serialPuts(int fd, String data, String... args) {
         serialPuts(fd, String.format(data, (Object[]) args));
     }
 
     /**
-     * <h1>int serialDataAvail (int fd);</h1>
+     * <p>int serialDataAvail (int fd);</p>
      * 
-     * <p>
      * Returns the number of characters available for reading, or -1 for any error condition, in
      * which case errno will be set appropriately.
-     * </p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
-     * @return <p>
-     *         Returns the number of characters available for reading, or -1 for any error
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the number of characters available for reading, or -1 for any error
      *         condition, in which case errno will be set appropriately.
-     *         </p>
      */
     public static native int serialDataAvail(int fd);
 
     /**
-     * <h1>int serialGetchar (int fd);</h1>
+     * <p>int serialGetchar (int fd);</p>
      * 
-     * <p>
-     * Returns the next character available on the serial device. This call will block for up to 10
-     * seconds if no data is available (when it will return -1)
-     * </p>
+     * <p>Returns the next character available on the serial device. This call will block for up to 10
+     * seconds if no data is available (when it will return -1)</p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
-     * @param fd <p>
-     *            The file descriptor of the serial port.
-     *            </p>
-     * @return <p>
-     *         Returns the next character available on the serial device. This call will block for
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the next character available on the serial device. This call will block for
      *         up to 10 seconds if no data is available (when it will return -1)
-     *         </p>
      */
     public static native int serialGetchar(int fd);
 }

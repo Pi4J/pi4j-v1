@@ -32,38 +32,34 @@ import java.util.EventObject;
 
 import com.pi4j.io.gpio.GpioPin;
 
-public class GpioPinEvent extends EventObject
-{
-    /**
-     * 
-     */
+/**
+ * GPIO pin event.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class GpioPinEvent extends EventObject {
+
     private static final long serialVersionUID = -1036445757629271L;
     protected final GpioPin pin;
     protected final PinEventType type;
 
-    public GpioPinEvent(Object obj, GpioPin pin, PinEventType type)
-    {
+    public GpioPinEvent(Object obj, GpioPin pin, PinEventType type) {
         super(obj);
         this.pin = pin;
         this.type = type;        
     }
 
     /**
-     * <p>
      * Get the pin number that changed and raised this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin number (not header pin number; not wiringPi pin number)
-     *         </p>
+     * @return GPIO pin number (not header pin number; not wiringPi pin number)
      */
-    public GpioPin getPin()
-    {
+    public GpioPin getPin() {
         return pin;
     }
 
-    public PinEventType getEventType()
-    {
+    public PinEventType getEventType() {
         return type;
     }
 }

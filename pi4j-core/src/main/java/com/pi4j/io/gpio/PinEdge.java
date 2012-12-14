@@ -27,9 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Pin edge definition.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinEdge {
 
-public enum PinEdge
-{
     NONE(0, "none"), 
     BOTH(1, "both"),
     RISING(2, "rising"), 
@@ -38,34 +43,29 @@ public enum PinEdge
     private final int value;
     private final String name;
 
-    private PinEdge(int value, String name)
-    {
+    private PinEdge(int value, String name) {
         this.value = value;
         this.name = name;
     }
 
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;        
     }    
     
-    public static PinEdge getEdge(int edge)
-    {
-        for (PinEdge item : PinEdge.values())
-        {
-            if (item.getValue() == edge)
+    public static PinEdge getEdge(int edge) {
+        for (PinEdge item : PinEdge.values()) {
+            if (item.getValue() == edge) {
                 return item;
+            }
         }
         return null;
     }

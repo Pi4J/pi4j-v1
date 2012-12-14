@@ -27,7 +27,11 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-
-public interface GpioPinDigitalInput extends GpioPinDigital, GpioPinInput
-{
+/**
+ * This is a decorator interface to describe digital input pin.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinDigitalInput extends GpioPinDigital, GpioPinInput {
 }

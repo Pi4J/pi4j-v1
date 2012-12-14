@@ -43,25 +43,22 @@ import com.pi4j.io.gpio.tasks.impl.GpioBlinkStopTaskImpl;
 import com.pi4j.io.gpio.tasks.impl.GpioBlinkTaskImpl;
 import com.pi4j.io.gpio.tasks.impl.GpioPulseTaskImpl;
 
-public class GpioScheduledExecutorImpl
-{
+public class GpioScheduledExecutorImpl {
+
     private static final ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>>();
     private static ScheduledExecutorService scheduledExecutorService;
 
-    private synchronized static void init(GpioPinDigitalOutput pin)
-    {
-        if (scheduledExecutorService == null || scheduledExecutorService.isShutdown())
+    private synchronized static void init(GpioPinDigitalOutput pin) {
+        if (scheduledExecutorService == null || scheduledExecutorService.isShutdown()) {
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
+        }
 
         // determine if any existing future tasks are already scheduled for this pin
-        if (pinTaskQueue.containsKey(pin))
-        {
+        if (pinTaskQueue.containsKey(pin)) {
             // if a task is found, then cancel all pending tasks immediately and remove them
             ArrayList<ScheduledFuture<?>> tasks = pinTaskQueue.get(pin);
-            if(tasks != null && !tasks.isEmpty())
-            {
-                for(int index =  (tasks.size() - 1); index >= 0; index--)
-                {
+            if (tasks != null && !tasks.isEmpty()) {
+                for (int index =  (tasks.size() - 1); index >= 0; index--) {
                     ScheduledFuture<?> task = tasks.get(index);
                     task.cancel(true);
                     tasks.remove(index);
@@ -69,43 +66,41 @@ public class GpioScheduledExecutorImpl
             }
             
             // if no remaining future tasks are remaining, then remove this pin from the tasks queue
-            if(tasks.isEmpty())
-                pinTaskQueue.remove(pin);                    
+            if (tasks.isEmpty()) {
+                pinTaskQueue.remove(pin);
+            }
         }
     }
     
-    private synchronized static ScheduledFuture<?> createCleanupTask(long delay)
-    {
+    private synchronized static ScheduledFuture<?> createCleanupTask(long delay) {
         // create future task to clean up completed tasks
-        @SuppressWarnings(
-        { "rawtypes", "unchecked" })
-        ScheduledFuture<?> cleanupFutureTask = scheduledExecutorService.schedule(new Callable()
-        {
-            public Object call() throws Exception
-            {
-                for (Entry<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet())
-                {
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        ScheduledFuture<?> cleanupFutureTask = scheduledExecutorService.schedule(new Callable() {
+            public Object call() throws Exception {
+                for (Entry<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet()) {
                     ArrayList<ScheduledFuture<?>> remainingTasks = item.getValue();
 
                     // if a task is found, then cancel all pending tasks immediately and remove them
-                    if(remainingTasks != null && !remainingTasks.isEmpty())
-                    {
-                        for(int index = (remainingTasks.size() - 1); index >= 0; index--)
-                        {
+                    if (remainingTasks != null && !remainingTasks.isEmpty()) {
+                        for (int index = (remainingTasks.size() - 1); index >= 0; index--) {
                             ScheduledFuture<?> remainingTask = remainingTasks.get(index);
-                            if (remainingTask.isCancelled() || remainingTask.isDone())
+                            if (remainingTask.isCancelled() || remainingTask.isDone()) {
                                 remainingTasks.remove(index);
+                            }
                         }
                         
                         // if no remaining future tasks are remaining, then remove this pin from the tasks queue
-                        if(remainingTasks.isEmpty())
-                            pinTaskQueue.remove(item.getKey());                         
+                        if (remainingTasks.isEmpty()) {
+                            pinTaskQueue.remove(item.getKey());
+                        }
                     }
                 }
                 
                 // shutdown service when tasks are complete
-                if(pinTaskQueue.isEmpty())
+                if (pinTaskQueue.isEmpty()) {
                     scheduledExecutorService.shutdown();
+                }
                 
                 return null;
             }
@@ -114,14 +109,12 @@ public class GpioScheduledExecutorImpl
         return cleanupFutureTask;
     }
     
-    public synchronized static void pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState)
-    {
+    public synchronized static void pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState) {
         // perform the initial startup and cleanup for this pin 
         init(pin);
 
         // we only pulse for requests with a valid duration in milliseconds
-        if(duration > 0)
-        {
+        if (duration > 0) {
             // set the active state
             pin.setState(pulseState);
             
@@ -131,8 +124,9 @@ public class GpioScheduledExecutorImpl
 
             // get pending tasks for the current pin
             ArrayList<ScheduledFuture<?>> tasks;
-            if (!pinTaskQueue.containsKey(pin))
-                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());                
+            if (!pinTaskQueue.containsKey(pin)) {
+                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());
+            }
             tasks = pinTaskQueue.get(pin);
             
             // add the new scheduled task to the tasks collection
@@ -143,18 +137,18 @@ public class GpioScheduledExecutorImpl
         }
 
         // shutdown service when tasks are complete
-        if(pinTaskQueue.isEmpty())
+        if (pinTaskQueue.isEmpty()) {
             scheduledExecutorService.shutdown();
+        }
     }
 
-    public synchronized static void blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState)
-    {
+    public synchronized static void blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState) {
+
         // perform the initial startup and cleanup for this pin 
         init(pin);
         
         // we only blink for requests with a valid delay in milliseconds
-        if(delay > 0)
-        {
+        if (delay > 0) {
             // make sure pin starts in active state
             pin.setState(blinkState);
             
@@ -164,16 +158,16 @@ public class GpioScheduledExecutorImpl
                 
             // get pending tasks for the current pin
             ArrayList<ScheduledFuture<?>> tasks;
-            if (!pinTaskQueue.containsKey(pin))
-                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());                
+            if (!pinTaskQueue.containsKey(pin)) {
+                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());
+            }
             tasks = pinTaskQueue.get(pin);
 
             // add the new scheduled task to the tasks collection
             tasks.add(scheduledFutureBlinkTask);
 
             // if a duration was defined, then schedule a future task to kill the blinker task
-            if(duration > 0 )
-            {
+            if (duration > 0) {
                 // create future job to stop blinking
                 ScheduledFuture<?> scheduledFutureBlinkStopTask = scheduledExecutorService
                     .schedule(new GpioBlinkStopTaskImpl(pin,PinState.getInverseState(blinkState), scheduledFutureBlinkTask), duration, TimeUnit.MILLISECONDS);
@@ -187,13 +181,14 @@ public class GpioScheduledExecutorImpl
         }
                 
         // shutdown service when tasks are complete
-        if(pinTaskQueue.isEmpty())
+        if (pinTaskQueue.isEmpty()) {
             scheduledExecutorService.shutdown();
+        }
     }
     
-    public synchronized static void shutdown()
-    {
-        if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown())
+    public synchronized static void shutdown() {
+        if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
             scheduledExecutorService.shutdownNow();
+        }
     }    
 }

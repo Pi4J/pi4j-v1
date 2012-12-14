@@ -50,16 +50,15 @@ import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 
-public class GpioPinDigitalInputTests    
-{
+public class GpioPinDigitalInputTests {
+    
     private static MockGpioProvider provider;
     private static GpioController gpio;
     private static GpioPinDigitalInput pin;
     private static PinState pinMonitoredState;
 
     @BeforeClass 
-    public static void setup()
-    {
+    public static void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -68,14 +67,11 @@ public class GpioPinDigitalInputTests
         pin = gpio.provisionDigitalInputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin", PinPullResistance.PULL_DOWN);
         
         // register pin listener
-        pin.addListener(new GpioPinListenerDigital()
-            {
+        pin.addListener(new GpioPinListenerDigital() {
                 @Override
-                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-                {
+                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                     // set pin state
-                    if(event.getPin() == pin)
-                    {
+                    if (event.getPin() == pin) {
                         pinMonitoredState = event.getState();
                     }
                 }                
@@ -83,86 +79,74 @@ public class GpioPinDigitalInputTests
     }
 
     @Test
-    public void testPinProvisioned() 
-    {
+    public void testPinProvisioned()  {
         // make sure that pin is provisioned
         Collection<GpioPin> pins = gpio.getProvisionedPins();        
         assertTrue(pins.contains(pin));
     }    
 
     @Test(expected=GpioPinExistsException.class)
-    public void testPinDuplicatePovisioning() 
-    {
+    public void testPinDuplicatePovisioning()  {
         // make sure that pin cannot be provisioned a second time
         gpio.provisionDigitalOutputPin(MockPin.DIGITAL_INPUT_PIN,  "digitalInputPin", PinState.LOW);
     }    
     
     @Test(expected=UnsupportedPinModeException.class)
-    public void testPinInvalidModePovisioning() 
-    {       
+    public void testPinInvalidModePovisioning() {
         // make sure that pin cannot be provisioned that does not support DIGITAL INPUT 
         gpio.provisionDigitalInputPin(MockPin.ANALOG_INPUT_PIN,  "digitalInputPin");
     }    
     
     @Test(expected=InvalidPinException.class)
-    public void testInvalidPin()
-    {
+    public void testInvalidPin() {
         // attempt to export a pin that is not supported by the GPIO provider 
         provider.export(RaspiPin.GPIO_01, PinMode.DIGITAL_INPUT);
     }
 
     @Test
-    public void testPinProvider()
-    {
+    public void testPinProvider() {
         // verify pin mode
         assertEquals(provider, pin.getProvider());                
     }
     
     @Test
-    public void testPinExport()
-    {
+    public void testPinExport() {
         // verify is exported
         assertTrue(pin.isExported());
     }
     
     @Test
-    public void testPinInstance()
-    {
+    public void testPinInstance() {
         // verify pin instance
         assertEquals(MockPin.DIGITAL_INPUT_PIN, pin.getPin());                
     }
     
     @Test
-    public void testPinAddress()
-    {    
+    public void testPinAddress() {
         // verify pin address
         assertEquals(MockPin.DIGITAL_INPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
-    public void testPinName()
-    {
+    public void testPinName() {
         // verify pin name
         assertEquals("digitalInputPin", pin.getName());
     }
      
     @Test
-    public void testPinMode()
-    {
+    public void testPinMode() {
         // verify pin mode
         assertEquals(PinMode.DIGITAL_INPUT, pin.getMode());
     }
 
     @Test
-    public void testPinValidSupportedMode()
-    {
+    public void testPinValidSupportedMode() {
         // verify valid pin mode
         assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_INPUT));
     }
 
     @Test
-    public void testPinInvalidSupportedMode()
-    {
+    public void testPinInvalidSupportedMode() {
         // verify invalid pin mode
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_OUTPUT));
         
@@ -177,14 +161,12 @@ public class GpioPinDigitalInputTests
     }
     
     @Test
-    public void testPinDirection()
-    {
+    public void testPinDirection() {
         // verify pin direction
         assertEquals(PinDirection.IN, pin.getMode().getDirection());                
     }
 
-    public void testPinHiState()
-    {
+    public void testPinHiState() {
         // explicit mock set on the mock provider 
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
@@ -194,8 +176,7 @@ public class GpioPinDigitalInputTests
     }
 
     @Test
-    public void testPinLowState()
-    {
+    public void testPinLowState() {
         // explicit mock set on the mock provider 
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
@@ -205,22 +186,19 @@ public class GpioPinDigitalInputTests
     }
 
     @Test(expected=InvalidPinModeException.class)
-    public void testPinInvalidSetHiState()
-    {
+    public void testPinInvalidSetHiState() {
         // explicit mock set on the mock provider 
         provider.setState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
     }
 
     @Test(expected=InvalidPinModeException.class)
-    public void testPinInvalidSetLowState()
-    {
+    public void testPinInvalidSetLowState() {
         // explicit mock set on the mock provider 
         provider.setState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
     }
     
     @Test
-    public void testPinUnexport() 
-    {
+    public void testPinUnexport() {
         // unexport pin
         pin.unexport();
         
@@ -229,8 +207,7 @@ public class GpioPinDigitalInputTests
     }
     
     @Test
-    public void testPinLowEvent() throws InterruptedException
-    {
+    public void testPinLowEvent() throws InterruptedException {
         // explicit mock set on the mock provider 
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
         
@@ -248,8 +225,7 @@ public class GpioPinDigitalInputTests
     }    
 
     @Test
-    public void testPinHiEvent() throws InterruptedException
-    {
+    public void testPinHiEvent() throws InterruptedException {
         // explicit mock set on the mock provider 
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
         
@@ -267,8 +243,7 @@ public class GpioPinDigitalInputTests
     }
     
     @Test
-    public void testPinUnprovision() 
-    {
+    public void testPinUnprovision() {
         // make sure that pin is provisioned before we start
         Collection<GpioPin> pins = gpio.getProvisionedPins();
         assertTrue(pins.contains(pin));

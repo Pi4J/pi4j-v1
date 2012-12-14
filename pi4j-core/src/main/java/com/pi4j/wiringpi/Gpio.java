@@ -31,7 +31,7 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi GPIO Control</h1>
+ * <[>WiringPi GPIO Control</[>
  * 
  * <p>
  * Some of the functions in the WiringPi library are designed to mimic those in the Arduino Wiring
@@ -64,114 +64,81 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Gpio
-{
+public class Gpio {
+
     // private constructor 
-    private Gpio() 
-    {
+    private Gpio()  {
         // forbid object construction 
     }
     
     /**
-     * <p>
      * The total number of GPIO pins available in the WiringPi library.
-     * </p>
      * <i>(Note this is not the maximum pin count on the Pi GPIO header.)</i>
      */
     public static final int NUM_PINS = 20;
 
     /**
-     * <h1>GPIO PIN DIRECTION</h1>
-     * <p>
      * GPIO pin constant for INPUT direction for reading pin states
-     * </p>
      * 
      * @see #pinMode(int,int)
      */
     public static final int INPUT = 0;
 
     /**
-     * <h1>GPIO PIN DIRECTION</h1> <>GPIO pin constant for OUTPUT direction for writing digital
-     * pin</p> states (0/1)
+     * GPIO pin constant for OUTPUT direction for writing digital pin states (0/1)
      * 
      * @see #pinMode(int,int)
      */
     public static final int OUTPUT = 1;
 
     /**
-     * <h1>GPIO PIN DIRECTION</h1>
-     * <p>
-     * GPIO pin constant for PWM_OUTPUT direction for writing analog pin
-     * </p>
-     * states
+     * GPIO pin constant for PWM_OUTPUT direction for writing analog pin states
      * 
      * @see #pinMode(int,int)
      */
     public static final int PWM_OUTPUT = 2;
 
     /**
-     * <h1>GPIO PIN STATE</h1>
-     * <p>
      * GPIO pin state constant for LOW/OFF/0VDC
-     * </p>
      * 
      * @see #digitalWrite(int,int)
      */
     public static final int LOW = 0;
 
     /**
-     * <h1>GPIO PIN STATE</h1>
-     * <p>
      * GPIO pin state constant for HIGH/ON/+3.3VDC
-     * </p>
      * 
      * @see #digitalWrite(int,int)
      */
     public static final int HIGH = 1;
 
     /**
-     * <h1>PULL UP/DOWN - DISABLED</h1>
-     * <p>
      * GPIO constant to disable the pull-up or pull-down resistor mode on a GPIO pin.
-     * </p>
      * 
      * @see #waitForInterrupt(int,int)
      */
     public static final int PUD_OFF = 0;
 
     /**
-     * <h1>PULL DOWN - ENABLED</h1>
-     * <p>
      * GPIO constant to enable the pull-down resistor mode on a GPIO pin.
-     * </p>
      * 
      * @see #waitForInterrupt(int,int)
      */
     public static final int PUD_DOWN = 1;
 
     /**
-     * <h1>PULL UP - ENABLED</h1>
-     * <p>
      * GPIO constant to enable the pull-up resistor mode on a GPIO pin.
-     * </p>
      * 
      * @see #waitForInterrupt(int,int)
      */
     public static final int PUD_UP = 2;
 
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>[Setup Functions]</h1>
-     * 
-     * <p>
-     * <b>wiringPiSetup()</b>
-     * </p>
-     * 
      * <p>
      * This initializes the wiringPi system and assumes that the calling program is going to be
      * using the wiringPi pin numbering scheme. This is a simplified numbering scheme which provides
@@ -180,27 +147,17 @@ public class Gpio
      * GPIO pin number to the physical location on the edge connector.
      * </p>
      * 
-     * <p>
-     * <b><i>This function needs to be called with root privileges.</i></b>
-     * </p>
+     * <p><b><i>This function needs to be called with root privileges.</i></b></p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         If this function returns a value of '-1' then an error has occurred and the
+     * @return If this function returns a value of '-1' then an error has occurred and the
      *         initialization of the GPIO has failed. A return value of '0' indicates a successful
      *         GPIO initialization.
-     *         </p>
      */
     public static native int wiringPiSetup();
 
     /**
-     * <h1>[Setup Functions]</h1>
-     * 
-     * <p>
-     * <b>wiringPiSetupSys()</b>
-     * </p>
-     * 
      * <p>
      * This initializes the wiringPi system but uses the /sys/class/gpio interface rather than
      * accessing the hardware directly. This can be called as a non-root user provided the GPIO pins
@@ -224,85 +181,55 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         If this function returns a value of '-1' then an error has occurred and the
+     * @return If this function returns a value of '-1' then an error has occurred and the
      *         initialization of the GPIO has failed. A return value of '0' indicates a successful
      *         GPIO initialization.
-     *         </p>
      */
     public static native int wiringPiSetupSys();
 
     /**
-     * <h1>[Setup Functions]</h1>
-     * 
-     * <p>
-     * <b>wiringPiSetupGpio()</b>
-     * </p>
-     * 
      * <p>
      * This setup function is identical to wiringPiSetup(), however it allows the calling programs
      * to use the Broadcom GPIO pin numbers directly with no re-mapping.
      * </p>
      * 
-     * <p>
-     * <b><i>This function needs to be called with root privileges.</i></b>
-     * </p>
+     * <p> <b><i>This function needs to be called with root privileges.</i></b></p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         If this function returns a value of '-1' then an error has occurred and the
+     * @return If this function returns a value of '-1' then an error has occurred and the
      *         initialization of the GPIO has failed. A return value of '0' indicates a successful
      *         GPIO initialization.
-     *         </p>
      */
     public static native int wiringPiSetupGpio();
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b>void pinMode (int pin, int mode)</b>
-     * </p>
-     * 
      * <p>
      * This sets the mode of a pin to either INPUT, OUTPUT, or PWM_OUTPUT. Note that only wiringPi
      * pin 1 (GPIO-18) supports PWM output. The pin number is the number obtained from the pins
      * table.
      * </p>
      * 
-     * <p>
-     * <b><i>This function has no effect when in Sys mode.</i></b>
-     * </p>
+     * <p> <b><i>This function has no effect when in Sys mode.</i></b></p>
      * 
      * @see #INPUT
      * @see #OUTPUT
      * @see #PWM_OUTPUT
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param mode <p>
-     *            Pin mode/direction to apply to the selected pin.</br>The following constants are
+     * @param mode  Pin mode/direction to apply to the selected pin.</br>The following constants are
      *            provided for use with this parameter:
      *            <ul>
      *            <li>INPUT</li>
      *            <li>OUTPUT</li>
      *            <li>PWM_OUTPUT</li>
      *            </ul>
-     *            </p>
      */
     public static native void pinMode(int pin, int mode);
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b> void pullUpDnControl (int pin, int pud) </b>
-     * </p>
-     * 
      * This sets the pull-up or pull-down resistor mode on the given pin, which should be set as an
      * input. Unlike the Arduino, the BCM2835 has both pull-up an down internal resistors. The
      * parameter pud should be; PUD_OFF, (no pull up/down), PUD_DOWN (pull to ground) or PUD_UP
@@ -317,29 +244,19 @@ public class Gpio
      * @see #PUD_UP
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param pud <p>
-     *            Pull Up/Down internal pin resistance.</br>The following constants are provided for
+     * @param pud Pull Up/Down internal pin resistance.</br>The following constants are provided for
      *            use with this parameter:
      *            <ul>
      *            <li>PUD_OFF</li>
      *            <li>PUD_DOWN</li>
      *            <li>PUD_UP</li>
      *            </ul>
-     *            </p>
      */
     public static native void pullUpDnControl(int pin, int pud);
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b> void digitalWrite (int pin, int value) </b>
-     * </p>
-     * 
      * <p>
      * Writes the value HIGH or LOW (1 or 0) to the given pin which must have been previously set as
      * an output.
@@ -349,28 +266,18 @@ public class Gpio
      * @see #LOW
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param value <p>
-     *            The pin state to write to the selected pin.</br>The following constants are
+     * @param value The pin state to write to the selected pin.</br>The following constants are
      *            provided for use with this parameter:
      *            <ul>
      *            <li>HIGH</li>
      *            <li>LOW</li>
      *            </ul>
-     *            </p>
      */
     public static native void digitalWrite(int pin, int value);
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b> void digitalWrite (int pin, boolean value) </b>
-     * </p>
-     * 
      * <p>
      * Writes the value HIGH or LOW ('true' or 'false') to the given pin which must have been
      * previously set as an output.
@@ -378,55 +285,32 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param value <p>
-     *            The pin boolean state to write to the selected pin.
-     *            </p>
+     * @param value The pin boolean state to write to the selected pin.
      */
-    public static void digitalWrite(int pin, boolean value)
-    {
+    public static void digitalWrite(int pin, boolean value) {
         digitalWrite(pin, (value == true) ? 1 : 0);
     }
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b> void pwmWrite (int pin, int value) </b>
-     * </p>
-     * 
      * <p>
      * Writes the value to the PWM register for the given pin. The value must be between 0 and 1024.
      * (Again, note that only pin 1 supports PWM)
      * </p>
      * 
-     * <p>
-     * <b>This function has no effect when in Sys mode</b>
-     * </p>
+     * <p><b>This function has no effect when in Sys mode</b></p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param value <p>
-     *            The analog value to write to the selected pin. </br><i>(The value must be between
+     * @param value The analog value to write to the selected pin. </br><i>(The value must be between
      *            0 and 1024.)</i>
-     *            </p>
      */
     public static native void pwmWrite(int pin, int value);
 
     /**
-     * <h1>[General wiring functions]</h1>
-     * 
-     * <p>
-     * <b> int digitalRead (int pin) </b>
-     * </p>
-     * 
      * <p>
      * This function returns the value read at the given pin. It will be HIGH or LOW (1 or 0)
      * depending on the logic level at the pin.
@@ -434,24 +318,14 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @return <p>
-     *         If the selected GPIO pin is HIGH, then a value of '1' is returned; else of the pin is
+     * @return If the selected GPIO pin is HIGH, then a value of '1' is returned; else of the pin is
      *         LOW, then a value of '0' is returned.
-     *         </p>
      */
     public static native int digitalRead(int pin);
 
     /**
-     * <h1>[Timing functions]</h1>
-     * 
-     * <p>
-     * <b> void delay (unsigned int howLong) </b>
-     * </p>
-     * 
      * <p>
      * This causes program execution to pause for at least howLong milliseconds. Due to the
      * multi-tasking nature of Linux it could be longer. Note that the maximum delay is an unsigned
@@ -460,19 +334,11 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param howLong <p>
-     *            The number of milliseconds to delay the main program thread.
-     *            </p>
+     * @param howLong The number of milliseconds to delay the main program thread.
      */
     public static native void delay(long howLong);
 
     /**
-     * <h1>[Timing functions]</h1>
-     * 
-     * <p>
-     * <b> unsigned int millis (void) </b>
-     * </p>
-     * 
      * <p>
      * This returns a number representing the number if milliseconds since your program called one
      * of the wiringPiSetup functions. It returns an unsigned 32-bit number which wraps after 49
@@ -481,20 +347,12 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         The number if milliseconds since the program called one of the wiringPi setup
+     * @return The number if milliseconds since the program called one of the wiringPi setup
      *         functions.
-     *         </p>
      */
     public static native long millis();
 
     /**
-     * <h1>[Timing functions]</h1>
-     * 
-     * <p>
-     * <b> void delayMicroseconds (unsigned int howLong) </b>
-     * </p>
-     * 
      * <p>
      * This causes program execution to pause for at least howLong microseconds. Due to the
      * multi-tasking nature of Linux it could be longer. Note that the maximum delay is an unsigned
@@ -503,19 +361,11 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param howLong <p>
-     *            The number of microseconds to delay the main program thread.
-     *            </p>
+     * @param howLong The number of microseconds to delay the main program thread.
      */
     public static native void delayMicroseconds(long howLong);
 
     /**
-     * <h1>[Program/Thread Priority]</h1>
-     * 
-     * <p>
-     * <b> int piHiPri (int priority) </b>
-     * </p>
-     * 
      * <p>
      * This attempts to shift your program (or thread in a multi-threaded program) to a higher
      * priority and enables a real-time scheduling. The priority parameter should be from 0 (the
@@ -538,27 +388,22 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param priority <p>
-     *            The priority parameter should be from 0 (the Default) to 99 (the maximum)
-     *            </p>
-     * @return <p>
-     *         The return value is 0 for success and -1 for error. If an error is returned, the
+     * @param priority  The priority parameter should be from 0 (the Default) to 99 (the maximum)
+     * @return The return value is 0 for success and -1 for error. If an error is returned, the
      *         program should then consult the errno global variable, as per the usual conventions.
-     *         </p>
      */
     public static native int piHiPri(int priority);
 
     /**
-     * <h1>[Interrupts]</h1>
+     * <p>[Interrupts]</p>
      * 
+     * <p>
      * With a newer kernel patched with the GPIO interrupt handling code, you can now wait for an
      * interrupt in your program. This frees up the processor to do other tasks while you're waiting
      * for that interrupt. The GPIO can be set to interrupt on a rising, falling or both edges of
      * the incoming signal.
-     * 
-     * <p>
-     * <b> int waitForInterrupt (int pin, int timeOut) </b>
      * </p>
+     * <p> <b> int waitForInterrupt (int pin, int timeOut) </b> </p>
      * 
      * <p>
      * When called, it will wait for an interrupt event to happen on that pin and your program will
@@ -584,79 +429,57 @@ public class Gpio
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @param pin <p>
-     *            The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     *            </p>
-     * @param timeout <p>
-     *            The number of milliseconds to wait before timing out. </br>A value of '-1' will
+     * @param timeout The number of milliseconds to wait before timing out. </br>A value of '-1' will
      *            disable the timeout.
-     *            </p>
-     * @return <p>
-     *         The return value is -1 if an error occurred (and errno will be set appropriately), 0
+     * @return The return value is -1 if an error occurred (and errno will be set appropriately), 0
      *         if it timed out, or 1 on a successful interrupt event.
-     *         </p>
      */
     public static native int waitForInterrupt(int pin, int timeout);
 
     /**
-     * <h1>[Hardware]</h1>
+     * <p>[Hardware]</p>
      * 
-     * <p>
-     * <b>extern int piBoardRev(void);</b>
-     * </p>
-     * 
-     * <p>
-     * This method provides the board revision as determined by the wiringPi library. 
-     * </p>
+     * <p> This method provides the board revision as determined by the wiringPi library.  </p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         The return value represents the major board revision version. 
+     * @return The return value represents the major board revision version. 
      *         A -1 will be returned if the board revision cannot be determined.
-     *         </p>
      */
     public static native int piBoardRev();
 
     
     /**
-     * <h1>[Hardware]</h1>
+     * <p>[Hardware]</p>
      * 
-     * <p>
-     * <b>extern int wpiPinToGpio(int wpiPin);</b>
-     * </p>
-     * 
-     * <p>
-     * This method provides the edge GPIO pin number for the requested wiringPi pin number. 
-     * </p>
+     * <p> This method provides the edge GPIO pin number for the requested wiringPi pin number.  </p>
      * 
      * @see <a
      *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     * @return <p>
-     *         The return value represents the RaspberryPi GPIO (edge) pin number. 
+     * @return The return value represents the RaspberryPi GPIO (edge) pin number. 
      *         A -1 will be returned for an invalid pin number.
-     *         </p>
      */
     public static native int wpiPinToGpio(int wpiPin);
                                                      
     
-    /**
-     * --------------------------------------------------------------------------------------------
-     * lets not use native code for threading in Java; that could get you into some trouble.
-     * --------------------------------------------------------------------------------------------
-     * <h1>Concurrent Processing (multi-threading)</h1>
-     * 
-     * wiringPi has a simplified interface to the Linux implementation of Posix threads, as well as
-     * a (simplified) mechanisms to access mutexs (Mutual exclusions)
-     * 
-     * Using these functions you can create a new process (a function inside your main program)
-     * which runs concurrently with your main program and using the mutex mechanisms, safely pass
-     * variables between them.
-     * 
-     * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
-     */
+    //    /**
+    //     * --------------------------------------------------------------------------------------------
+    //     * lets not use native code for threading in Java; that could get you into some trouble.
+    //     * --------------------------------------------------------------------------------------------
+    //     * <h1>Concurrent Processing (multi-threading)</h1>
+    //     * 
+    //     * wiringPi has a simplified interface to the Linux implementation of Posix threads, as well as
+    //     * a (simplified) mechanisms to access mutexs (Mutual exclusions)
+    //     * 
+    //     * Using these functions you can create a new process (a function inside your main program)
+    //     * which runs concurrently with your main program and using the mutex mechanisms, safely pass
+    //     * variables between them.
+    //     * 
+    //     * @see <a
+    //     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/functions/">https://projects.drogon.net/raspberry-pi/wiringpi/functions/</a>
+    //     */
     // public static native int piThreadCreate(void fn, int timeout);
     // public static native void piLock(int key);
     // public static native void piUnlock(int key);

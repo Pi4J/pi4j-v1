@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi NES Controller Library</h1>
- * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
  * the following system libraries:
@@ -51,8 +49,8 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Nes
-{
+public class Nes {
+
     public static final int NES_RIGHT = 0x01;
     public static final int NES_LEFT = 0x02;
     public static final int NES_DOWN = 0x04;
@@ -65,23 +63,19 @@ public class Nes
     public static final int MAX_NES_JOYSTICKS = 8;
 
     // private constructor 
-    private Nes() 
-    {
+    private Nes() {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>setupNesJoystick:</h1>
+     * <p>setupNesJoystick:</p>
      * 
-     * <p>
-     * Create a new NES joystick interface, program the pins, etc.
-     * </p>
+     * <p>Create a new NES joystick interface, program the pins, etc.</p>
      * 
      * @param dPin
      * @param cPin
@@ -91,11 +85,9 @@ public class Nes
     public static native int setupNesJoystick(int dPin, int cPin, int lPin);
 
     /**
-     * <h1>readNesJoystick:</h1>
+     * <p>readNesJoystick:</p>
      * 
-     * <p>
-     * Do a single scan of the NES Joystick.
-     * </p>
+     * <p>Do a single scan of the NES Joystick.</p>
      * 
      * @param joystick
      * @return return value

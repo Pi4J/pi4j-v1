@@ -32,24 +32,27 @@ import java.io.IOException;
 
 import com.pi4j.io.i2c.impl.I2CBusImpl;
 
-public class I2CFactory
-{
+/**
+ * I2C factory - it returns instances of {@link I2CBus} interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public class I2CFactory {
+
     // private constructor 
-    private I2CFactory()
-    {
+    private I2CFactory() {
         // forbid object construction 
     }
     
     /**
-     * <h1>Create new I2CBus instance</h1>
+     * Create new I2CBus instance
      * 
-     * @return <p>
-     *         Return a new I2CBus impl instance.
-     *         </p>
+     * @return Return a new I2CBus impl instance.
+     * 
      * @throws IOException 
      */
-    public static I2CBus getInstance(int busNumber) throws IOException
-    {
+    public static I2CBus getInstance(int busNumber) throws IOException {
         return I2CBusImpl.getBus(busNumber);
     }
 }

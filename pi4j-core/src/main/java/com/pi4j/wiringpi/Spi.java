@@ -31,8 +31,6 @@ package com.pi4j.wiringpi;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <h1>WiringPi SPI Library</h1>
- * 
  * <p>
  * WiringPi includes a software-driven PWM handler capable of outputting a PWM signal on any of the
  * Raspberry Pi's GPIO pins.
@@ -79,38 +77,32 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class Spi
-{
+public class Spi {
+
     // private constructor 
-    private Spi() 
-    {
+    private Spi()  {
         // forbid object construction 
     }
     
-    static
-    {
+    static {
         // Load the platform library
         NativeLibraryLoader.load("pi4j", "libpi4j.so");
     }
 
     /**
-     * <h1>wiringPiSPIGetFd:</h1>
+     * <p>wiringPiSPIGetFd:</p>
      * 
      * <p>
      * Return the file-descriptor for the given channel
      * </p>
      * 
-     * @param channel <p>
-     *            SPI channel
-     *            </p>
-     * @return <p>
-     *         file-descriptor for the given channel
-     *         </p>
+     * @param channel SPI channel
+     * @return file-descriptor for the given channel
      */
     public static native int wiringPiSPIGetFd(int channel);
 
     /**
-     * <h1>wiringPiSPIDataRW:</h1>
+     * <p>wiringPiSPIDataRW:</p>
      * 
      * <p>
      * Write and Read a block of data over the SPI bus. Note the data is being read into the
@@ -121,28 +113,22 @@ public class Spi
      * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
      * </p>
      * 
-     * @param channel <p>
-     *            SPI channel
-     *            </p>
+     * @param channel SPI channel</p>
      * @param data
      * @param len
-     * @return <p>return -1 on error</p>
+     * @return return -1 on error
      */
     public static native int wiringPiSPIDataRW(int channel, String data, int len);
 
     /**
-     * <h1>wiringPiSPISetup:</h1>
+     * <p>wiringPiSPISetup:</p>
      * 
      * <p>
      * Open the SPI device, and set it up, etc.</b>
      * 
-     * @param channel <p>
-     *            SPI channel
-     *            </p>
-     * @param speed <p>
-     *            SPI speed
-     *            </p>
-     * @return <p>return -1 on error</p>
+     * @param channel SPI channel
+     * @param speed SPI speed
+     * @return return -1 on error
      */
     public static native int wiringPiSPISetup(int channel, int speed);
 }

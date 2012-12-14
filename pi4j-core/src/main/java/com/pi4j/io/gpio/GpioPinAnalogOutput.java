@@ -27,8 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio analog output pin interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinAnalogOutput extends GpioPinAnalog, GpioPinOutput {
 
-public interface GpioPinAnalogOutput extends GpioPinAnalog, GpioPinOutput
-{
     void setValue(double value);
+
 }

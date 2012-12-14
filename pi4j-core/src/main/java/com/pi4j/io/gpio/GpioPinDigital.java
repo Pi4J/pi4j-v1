@@ -27,11 +27,18 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio digital pin interface. This interface is extension of {@link GpioPin} interface
+ * with operation to read digital states.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinDigital extends GpioPin {
 
-public interface GpioPinDigital extends GpioPin
-{
     boolean isHigh();
     boolean isLow();
     PinState getState();
     boolean isState(PinState state);
+
 }

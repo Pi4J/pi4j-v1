@@ -29,9 +29,14 @@ import java.util.EnumSet;
  * #L%
  */
 
+/**
+ * Pin edge definition.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinMode {
 
-public enum PinMode
-{
     DIGITAL_INPUT(0, "input", PinDirection.IN), 
     DIGITAL_OUTPUT(1, "output", PinDirection.OUT),
     PWM_OUTPUT(2, "pwm_output", PinDirection.OUT),
@@ -42,58 +47,48 @@ public enum PinMode
     private final String name;
     private final PinDirection direction;
 
-    private PinMode(int value, String name, PinDirection direction)
-    {
+    private PinMode(int value, String name, PinDirection direction) {
         this.value = value;
         this.name = name;
         this.direction = direction;
     }
 
-    public int getValue()
-    {
+    public int getValue() {
         return value;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public PinDirection getDirection()
-    {
+    public PinDirection getDirection() {
         return direction;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name.toUpperCase();        
     }    
     
-    public static EnumSet<PinMode> allDigital()
-    {
+    public static EnumSet<PinMode> allDigital() {
         return EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT);
     }    
 
-    public static EnumSet<PinMode> allAnalog()
-    {
+    public static EnumSet<PinMode> allAnalog() {
         return EnumSet.of(PinMode.ANALOG_INPUT, PinMode.ANALOG_OUTPUT);
     }    
 
-    public static EnumSet<PinMode> all()
-    {
+    public static EnumSet<PinMode> all() {
         return EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, 
                           PinMode.ANALOG_INPUT, PinMode.ANALOG_OUTPUT,
                           PinMode.PWM_OUTPUT);
     }    
 
-    public static EnumSet<PinMode> allInputs()
-    {
+    public static EnumSet<PinMode> allInputs() {
         return EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.ANALOG_INPUT);
     }    
 
-    public static EnumSet<PinMode> allOutput()
-    {
+    public static EnumSet<PinMode> allOutput() {
         return EnumSet.of(PinMode.DIGITAL_OUTPUT, 
                           PinMode.ANALOG_OUTPUT,
                           PinMode.PWM_OUTPUT);

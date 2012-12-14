@@ -28,8 +28,15 @@ package com.pi4j.io.gpio.event;
  */
 
 
-public enum PinEventType
-{
+/**
+ * Pin event type.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public enum PinEventType {
+
     DIGITAL_STATE_CHANGE,
     ANALOG_VALUE_CHANGE
+
 }

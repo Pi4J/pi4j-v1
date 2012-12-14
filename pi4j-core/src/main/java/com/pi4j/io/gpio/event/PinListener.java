@@ -28,11 +28,9 @@ package com.pi4j.io.gpio.event;
  */
 
 /**
- * <h1>Pin Listener Interface</h1>
+ * <p>Pin Listener Interface</p>
  * 
- * <p>
- * This interface implements the callback event handler for Pin state changes.
- * </p>
+ * <p>This interface implements the callback event handler for Pin state changes. </p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -50,7 +48,8 @@ package com.pi4j.io.gpio.event;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public interface PinListener extends java.util.EventListener
-{
+public interface PinListener extends java.util.EventListener {
+    
     void handlePinEvent(PinEvent event);
+
 }

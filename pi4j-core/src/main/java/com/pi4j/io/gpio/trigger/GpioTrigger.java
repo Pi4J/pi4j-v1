@@ -33,10 +33,14 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
 
 
-public interface GpioTrigger
-{
+public interface GpioTrigger {
+
     void addPinState(PinState... state);
+    
     void addPinState(List<? extends PinState> states);
+    
     boolean hasPinState(PinState state);
+    
     void invoke(GpioPin pin, PinState state);
+
 }

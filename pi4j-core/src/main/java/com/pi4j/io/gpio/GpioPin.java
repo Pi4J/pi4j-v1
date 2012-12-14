@@ -30,8 +30,14 @@ package com.pi4j.io.gpio;
 
 import java.util.Map;
 
-public interface GpioPin
-{
+/**
+ * Gpio pin interface. This interface describes all operations over single GPIO pin.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPin {
+
     GpioProvider getProvider();
     Pin getPin();
     

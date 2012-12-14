@@ -41,55 +41,49 @@ import com.pi4j.io.gpio.event.PinEvent;
 import com.pi4j.io.gpio.event.PinEventType;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-public class GpioEventDispatchTaskImpl implements Runnable
-{
+public class GpioEventDispatchTaskImpl implements Runnable {
+
     private final GpioPinInput pin;
     private final PinEvent event;
 
-    public GpioEventDispatchTaskImpl(GpioPinInput pin, PinEvent event)
-    {
+    public GpioEventDispatchTaskImpl(GpioPinInput pin, PinEvent event) {
         this.event = event;
         this.pin = pin;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         // only process listeners and triggers if the received interrupt event
         // matches the pin number being tracked my this class instance
-        if (this.pin.getPin().equals(event.getPin()))
-        {
-            if (event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE)
-            {
+        if (this.pin.getPin().equals(event.getPin())) {
+            if (event.getEventType() == PinEventType.DIGITAL_STATE_CHANGE) {
                 PinState state = ((PinDigitalStateChangeEvent) event).getState();
 
                 // process event callbacks for digital listeners
-                for (GpioPinListener listener : pin.getListeners())
-                {
-                    if (listener instanceof GpioPinListenerDigital)
+                for (GpioPinListener listener : pin.getListeners()) {
+                    if (listener instanceof GpioPinListenerDigital) {
                         ((GpioPinListenerDigital) listener)
                             .handleGpioPinDigitalStateChangeEvent(new GpioPinDigitalStateChangeEvent(
                                     event.getSource(), pin, state));
+                    }
                 }
 
                 // process triggers
-                for (GpioTrigger trigger : pin.getTriggers())
-                {
-                    if (trigger.hasPinState(state))
+                for (GpioTrigger trigger : pin.getTriggers()) {
+                    if (trigger.hasPinState(state)) {
                         trigger.invoke(pin, state);
+                    }
                 }
-            }
-            else if (event.getEventType() == PinEventType.ANALOG_VALUE_CHANGE)
-            {
+            } else if (event.getEventType() == PinEventType.ANALOG_VALUE_CHANGE) {
                 double value = ((PinAnalogValueChangeEvent) event).getValue();
 
                 // process event callbacks for analog listeners
-                for (GpioPinListener listener : pin.getListeners())
-                {
-                    if (listener instanceof GpioPinListenerAnalog)
+                for (GpioPinListener listener : pin.getListeners()) {
+                    if (listener instanceof GpioPinListenerAnalog) {
                         ((GpioPinListenerAnalog) listener)
                             .handleGpioPinAnalogValueChangeEvent(new GpioPinAnalogValueChangeEvent(
                                     event.getSource(), pin, value));
+                    }
                 }
             }
         }

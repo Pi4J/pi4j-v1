@@ -46,15 +46,14 @@ import com.pi4j.io.gpio.exception.GpioPinExistsException;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 
-public class GpioPinPwmOutputTests   
-{
+public class GpioPinPwmOutputTests {
+
     private static GpioController gpio;
     private static GpioPinPwmOutput pin;
     private static int initialValue = 2;
     
     @BeforeClass 
-    public static void setup()
-    {
+    public static void setup() {
         // create a mock gpio provider and controller
         gpio = MockGpioFactory.getInstance();
         
@@ -63,86 +62,74 @@ public class GpioPinPwmOutputTests
     }
 
     @Test
-    public void testPinProvisioned() 
-    {
+    public void testPinProvisioned() {
         // make sure that pin is provisioned
         Collection<GpioPin> pins = gpio.getProvisionedPins();        
         assertTrue(pins.contains(pin));
     }    
 
     @Test(expected=GpioPinExistsException.class)
-    public void testPinDuplicatePovisioning() 
-    {
+    public void testPinDuplicatePovisioning() {
         // make sure that pin cannot be provisioned a second time
         gpio.provisionPwmOutputPin(MockPin.PWM_OUTPUT_PIN,  "pwmOutputPin");
     }    
     
     @Test(expected=UnsupportedPinModeException.class)
-    public void testPinInvalidModePovisioning() 
-    {       
+    public void testPinInvalidModePovisioning() {
         // make sure that pin cannot be provisioned that does not support PWM OUTPUT 
         gpio.provisionPwmOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin");
     }    
     
     @Test(expected=InvalidPinException.class)
-    public void testInvalidPin()
-    {
+    public void testInvalidPin() {
         // attempt to export a pin that is not supported by the GPIO provider
         pin.getProvider().export(RaspiPin.GPIO_00, PinMode.PWM_OUTPUT);
     }
     
     @Test
-    public void testPinProvider()
-    {
+    public void testPinProvider() {
         // verify pin provider
         assertTrue(pin.getProvider() instanceof MockGpioProvider);                
     }
     
     @Test
-    public void testPinExport()
-    {
+    public void testPinExport() {
         // verify is exported
         assertTrue(pin.isExported());
     }
     
     @Test
-    public void testPinInstance()
-    {
+    public void testPinInstance() {
         // verify pin instance
         assertEquals(MockPin.PWM_OUTPUT_PIN, pin.getPin());                
     }
     
     @Test
-    public void testPinAddress()
-    {    
+    public void testPinAddress() {
         // verify pin address
         assertEquals(MockPin.PWM_OUTPUT_PIN.getAddress(), pin.getPin().getAddress());
     }
 
     @Test
-    public void testPinName()
-    {
+    public void testPinName() {
         // verify pin name
         assertEquals("pwmOutputPin", pin.getName());
     }
      
     @Test
-    public void testPinMode()
-    {
+    public void testPinMode() {
         // verify pin mode
         assertEquals(PinMode.PWM_OUTPUT, pin.getMode());
     }
 
     @Test
-    public void testPinValidSupportedMode()
-    {
+    public void testPinValidSupportedMode() {
         // verify valid pin mode
         assertTrue(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));
     }
 
     @Test
-    public void testPinInvalidSupportedMode()
-    {
+    public void testPinInvalidSupportedMode() {
         // verify invalid pin mode
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_INPUT));
         
@@ -157,27 +144,23 @@ public class GpioPinPwmOutputTests
     }
     
     @Test
-    public void testPinDirection()
-    {
+    public void testPinDirection() {
         // verify pin direction
         assertEquals(PinDirection.OUT, pin.getMode().getDirection());                
     }
 
     @Test
-    public void testPinInitialValue()
-    {
+    public void testPinInitialValue() {
         // verify pin initial state
         assertTrue(pin.getPwm() == initialValue);
     }
 
     @Test
-    public void testPinSetPwmValue()
-    {
+    public void testPinSetPwmValue() {
         Random generator = new Random();
         
         // test ten random numbers
-        for(int index = 0; index < 10; index ++)
-        {
+        for (int index = 0; index < 10; index ++) {
             int newValue = generator.nextInt();
             
             // explicit mock set on the mock provider 
@@ -189,8 +172,7 @@ public class GpioPinPwmOutputTests
     }
 
     @Test
-    public void testPinUnexport() 
-    {
+    public void testPinUnexport() {
         // unexport pin
         pin.unexport();
         
@@ -199,8 +181,7 @@ public class GpioPinPwmOutputTests
     }
     
     @Test
-    public void testPinUnprovision() 
-    {
+    public void testPinUnprovision() {
         // make sure that pin is provisioned before we start
         Collection<GpioPin> pins = gpio.getProvisionedPins();
         assertTrue(pins.contains(pin));

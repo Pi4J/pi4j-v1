@@ -27,9 +27,14 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio digital output pin interface.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
+public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput {
 
-public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput
-{
     void high();
     void low();    
     void toggle();
@@ -41,4 +46,5 @@ public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput
     void pulse(long duration, PinState pulseState);
     void setState(PinState state);
     void setState(boolean state);
+
 }

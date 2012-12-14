@@ -31,11 +31,7 @@ package com.pi4j.wiringpi;
 import java.util.EventObject;
 
 /**
- * <h1>Gpio Interrupt Event</h1>
- * 
- * <p>
- * This class provides the event object for GPIO interrupt state changes.
- * </p>
+ * <p> This class provides the event object for GPIO interrupt state changes. </p>
  * 
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
@@ -53,8 +49,8 @@ import java.util.EventObject;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class GpioInterruptEvent extends EventObject
-{
+public class GpioInterruptEvent extends EventObject {
+
     private static final long serialVersionUID = 1L;
     private int pin;
     private boolean state;
@@ -62,62 +58,40 @@ public class GpioInterruptEvent extends EventObject
     /**
      * <h1>Default event constructor</h1>
      * 
-     * @param obj <p>
-     *            Ignore this parameter
-     *            </p>
-     * @param pin <p>
-     *            GPIO pin number (not header pin number; not wiringPi pin number)
-     *            </p>
-     * @param state <p>
-     *            New GPIO pin state.
-     *            </p>
+     * @param obj Ignore this parameter
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param state New GPIO pin state.
      */
-    public GpioInterruptEvent(Object obj, int pin, boolean state)
-    {
+    public GpioInterruptEvent(Object obj, int pin, boolean state) {
         super(obj);
         this.pin = pin;
         this.state = state;
     }
 
     /**
-     * <p>
      * Get the pin number that changed and raised this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin number (not header pin number; not wiringPi pin number)
-     *         </p>
+     * @return GPIO pin number (not header pin number; not wiringPi pin number)
      */
-    public int getPin()
-    {
+    public int getPin() {
         return pin;
     }
 
     /**
-     * <p>
      * Get the new pin state raised in this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin state (HIGH=true, LOW=false)
-     *         </p>
+     * @return GPIO pin state (HIGH=true, LOW=false)
      */
-    public boolean getState()
-    {
+    public boolean getState() {
         return state;
     }
 
     /**
-     * <p>
      * Get the new pin state value raised in this event.
-     * </p>
      * 
-     * @return <p>
-     *         GPIO pin state (HIGH=1, LOW=0)
-     *         </p>
+     * @return GPIO pin state (HIGH=1, LOW=0)
      */
-    public int getStateValue()
-    {
+    public int getStateValue() {
         return (state == true) ? 1 : 0;
     }
 }

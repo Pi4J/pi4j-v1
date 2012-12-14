@@ -32,8 +32,6 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.impl.GpioControllerImpl;
 
 /**
- * <h1>GPIO Factory</h1>
- * 
  * <p>
  * This factory class provides a static method to create new 'GpioController' instances.
  * </p>
@@ -56,37 +54,32 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class MockGpioFactory
-{
+public class MockGpioFactory {
+
     // we only allow a single default provider to exists
     private static MockGpioProvider provider = null;
     
     // private constructor 
-    private MockGpioFactory()
-    {
+    private MockGpioFactory() {
         // forbid object construction 
     }
     
     /**
-     * <h1>Create New GPIO Controller instance</h1>
+     * Create New GPIO Controller instance
      * 
-     * @return <p>
-     *         Return a new GpioController impl instance.
-     *         </p>
+     * @return Return a new GpioController impl instance.
      */
-    public static GpioController getInstance()
-    {
+    public static GpioController getInstance() {
         // return a new instance of the GPIO controller
         return new GpioControllerImpl(getMockProvider());
     }
     
     
-    public static MockGpioProvider getMockProvider()
-    {
+    public static MockGpioProvider getMockProvider() {
         // if a provider has not been created, then create a new instance
-        if(provider == null)
+        if (provider == null) {
             provider = new MockGpioProvider();
-
+        }
         // return the provider instance
         return provider;
     }

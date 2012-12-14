@@ -34,49 +34,42 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioPulseStateTrigger extends GpioTriggerBase
-{
+public class GpioPulseStateTrigger extends GpioTriggerBase {
+
     private final GpioPinDigitalOutput targetPin;
     private final long milliseconds;
 
-    public GpioPulseStateTrigger(GpioPinDigitalOutput targetPin, long milliseconds)
-    {
+    public GpioPulseStateTrigger(GpioPinDigitalOutput targetPin, long milliseconds) {
         super();
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
     
-    public GpioPulseStateTrigger(PinState state, GpioPinDigitalOutput targetPin, long milliseconds)
-    {
+    public GpioPulseStateTrigger(PinState state, GpioPinDigitalOutput targetPin, long milliseconds) {
         super(state);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
 
-    public GpioPulseStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin, long milliseconds)
-    {
+    public GpioPulseStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin, long milliseconds) {
         super(states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
 
-    public GpioPulseStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin, long milliseconds)
-    {
+    public GpioPulseStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin, long milliseconds) {
         super(states);
         this.targetPin = targetPin;
         this.milliseconds = milliseconds;
     }
     
-    public GpioPinDigitalOutput getTargetPin()
-    {
+    public GpioPinDigitalOutput getTargetPin() {
         return targetPin;
     }
 
     @Override
-    public void invoke(GpioPin pin, PinState state)
-    {
-        if(targetPin != null)
-        {
+    public void invoke(GpioPin pin, PinState state) {
+        if (targetPin != null) {
             targetPin.pulse(milliseconds);
         }
     }

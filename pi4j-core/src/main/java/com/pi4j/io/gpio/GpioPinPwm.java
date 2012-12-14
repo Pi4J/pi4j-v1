@@ -27,8 +27,16 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+/**
+ * Gpio input pin interface. This interface is extension of {@link GpioPin} interface
+ * with reading pwm values.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ */
 
-public interface GpioPinPwm extends GpioPin
-{
+public interface GpioPinPwm extends GpioPin {
+
     int getPwm();
+
 }
