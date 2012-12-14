@@ -29,6 +29,7 @@
    *  Enhance/replace serial communication API.
    *  Create additional GpioProvider implementations
    *  Create device abstraction implementations
+   *  Create pi4j-api library and move interfaces there
 
 ## IN DEVELOPMENT
 
@@ -47,6 +48,7 @@
    *  Modified build script to support concurrent soft-float and hard-float native library builds
    *  Modified build script to include pulling wiringPi sources and compiling when building native library
    *  Added power controller device interface, base impl, and reference impl
+   *  Added GpioController.provisionXXXPin methods that allow name to be optional
 
 ## RELEASES
 

@@ -77,30 +77,50 @@ public interface GpioController
     void removeAllTriggers();
 
     GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, String name, PinPullResistance resistance);
+    GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, PinPullResistance resistance);
     GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin);
     GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name, PinPullResistance resistance);
+    GpioPinDigitalInput provisionDigitalInputPin(Pin pin, PinPullResistance resistance);
     GpioPinDigitalInput provisionDigitalInputPin(Pin pin, String name);
+    GpioPinDigitalInput provisionDigitalInputPin(Pin pin);
 
     GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name, PinState defaultState);
+    GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, PinState defaultState);
     GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin);
     GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name, PinState defaultState);
+    GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, PinState defaultState);
     GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name);
+    GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin);
 
     GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin, String name);    
+    GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin);
     GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);    
+    GpioPinAnalogInput provisionAnalogInputPin(Pin pin);    
     
     GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name, double defaultValue);
+    GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin);
     GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name, double defaultValue);
+    GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin, String name);
+    GpioPinAnalogOutput provisionAnalogOutputPin(Pin pin);
 
     GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, String name, int defaultValue);
+    GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, int defaultValue);
     GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinPwmOutput provisionPwmOutputPin(GpioProvider provider, Pin pin);
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name, int defaultValue);
+    GpioPinPwmOutput provisionPwmOutputPin(Pin pin, int defaultValue);
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name);
+    GpioPinPwmOutput provisionPwmOutputPin(Pin pin);
     
     GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode);
+    GpioPin provisionPin(GpioProvider provider, Pin pin, PinMode mode);
     GpioPin provisionPin(Pin pin, String name, PinMode mode);
+    GpioPin provisionPin(Pin pin, PinMode mode);
 
     void setShutdownOptions(GpioPinShutdown options, GpioPin... pin);
     void setShutdownOptions(Boolean unexport, GpioPin... pin);
