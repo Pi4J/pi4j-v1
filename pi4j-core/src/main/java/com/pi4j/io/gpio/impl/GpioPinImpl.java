@@ -64,6 +64,7 @@ public class GpioPinImpl implements GpioPin,
     @SuppressWarnings("unused")
     private final GpioController gpio;
     private String name = null;
+    private Object tag = null;
     private final GpioProvider provider;
     private final Pin pin;
     private PinListener monitor;
@@ -100,6 +101,16 @@ public class GpioPinImpl implements GpioPin,
             return pin.toString();
         }
         return name;
+    }
+    
+    @Override
+    public void setTag(Object tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public Object getTag() {
+        return tag;
     }
 
     @Override

@@ -61,6 +61,7 @@ Copyright (C) 2012 Pi4J
    *  Added GpioController.provisionXXXPin methods that allow name to be optional
    *  Relocated project downloads location to google code site; github deprecated downloads.
    *  Added Google Groups discussion forum to project docs. 
+   *  Added getTag() and setTag() to GpioPin interface and impl. 
 
 ## RELEASES
 

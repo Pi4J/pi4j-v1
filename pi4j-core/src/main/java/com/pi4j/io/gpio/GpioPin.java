@@ -44,6 +44,9 @@ public interface GpioPin {
     void setName(String name);
     String getName();
 
+    void setTag(Object tag);
+    Object getTag();
+    
     void setProperty(String key, String value);
     boolean hasProperty(String key);
     String getProperty(String key);
