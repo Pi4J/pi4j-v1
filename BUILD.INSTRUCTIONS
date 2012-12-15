@@ -42,11 +42,12 @@ Use the following Maven command to regenerate the .H header source file.
 DOWNLOADS
 --------------------
 
-Use the following Maven command to deploy the downloadable artifacts the Github downloads page.
-(Note, you must have a "github" site credentials defined in your private Maven settings.xml file.
- Please see this README for detail on the Maven plugin performing this task: https://github.com/github/maven-plugins/blob/master/README.md)
+Use the following Maven command to deploy the downloadable artifacts the Google Code project downloads page.
+(Note, you must have "Google Code" project credentials defined in your private Maven settings.xml file.
+ Please see this README for detail on the Maven plugin performing this task: 
+ http://code.google.com/p/maven-gcu-plugin/wiki/Usage)
 
-> mvn clean install ghDownloads:upload --projects pi4j-core
+> mvn clean install gcu:upload --projects pi4j-core
 
 
 --------------------

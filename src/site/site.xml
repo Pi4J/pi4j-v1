@@ -47,10 +47,12 @@
 		</head>
 		<links>
 			<item name="Home" href="http://www.pi4j.com/" />
+			<item name="Downloads" href="download.html" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>
 			<item name="Wiki" href="https://github.com/Pi4J/pi4j/wiki/" target="pi4j-github"/>
-			<item name="Blog" href="http://www.savagehomeautomation.com/" target="_blank"/>
+			<item name="Forum" href="https://groups.google.com/forum/#!forum/pi4j" target="pi4j-groups"/>
+			<item name="Blog" href="http://www.savagehomeautomation.com/projects/category/pi4j" target="_blank"/>
 		</links>
 		<menu name="Pi4J">
 			<item name="Welcome" href="index.html" />

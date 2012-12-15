@@ -288,23 +288,23 @@
 				</configuration>
 			</plugin>
 
-			<!-- DEPLOY DOWNLOADABLE ARTIFACTS TO GITHUB -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
-				<version>0.5</version>
-				<configuration>
-					<description>${project.version} build of the Pi4J Library for the
-						Raspberry Pi</description>
-					<override>true</override>
-					<repositoryOwner>Pi4J</repositoryOwner>
-					<repositoryName>pi4j</repositoryName>
-					<includeAttached>true</includeAttached>
-					<includes>
-						<include>pi4j-core*</include>
-					</includes>
-				</configuration>
-			</plugin>
+			<!-- DEPLOY DOWNLOADABLE ARTIFACTS TO GITHUB  !! GITHUB HAS DEPRECATED DOWNLOADS !! -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.github.github</groupId> -->
+<!-- 				<artifactId>downloads-maven-plugin</artifactId> -->
+<!-- 				<version>0.5</version> -->
+<!-- 				<configuration> -->
+<!-- 					<description>${project.version} build of the Pi4J Library for the -->
+<!-- 						Raspberry Pi</description> -->
+<!-- 					<override>true</override> -->
+<!-- 					<repositoryOwner>Pi4J</repositoryOwner> -->
+<!-- 					<repositoryName>pi4j</repositoryName> -->
+<!-- 					<includeAttached>true</includeAttached> -->
+<!-- 					<includes> -->
+<!-- 						<include>pi4j-core*</include> -->
+<!-- 					</includes> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 
 			<!-- ATTACH LICENSE AS ARTIFACT -->
 			<plugin>
@@ -455,6 +455,12 @@
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>1.7</version>
 				</plugin>
+				
+                <plugin>
+                    <groupId>com.googlecode.maven-gcu-plugin</groupId>
+                    <artifactId>maven-gcu-plugin</artifactId>
+                    <version>1.1</version>
+                </plugin>				
 
 				<!-- GENERATE LICENSE HEADERS IN SOURCE FILES -->
 				<plugin>
