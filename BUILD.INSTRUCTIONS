@@ -47,7 +47,7 @@ Use the following Maven command to deploy the downloadable artifacts the Google 
  Please see this README for detail on the Maven plugin performing this task: 
  http://code.google.com/p/maven-gcu-plugin/wiki/Usage)
 
-> mvn clean install gcu:upload --projects pi4j-core
+> mvn clean install gcu:upload --projects pi4j-core,pi4j-distribution
 
 
 --------------------

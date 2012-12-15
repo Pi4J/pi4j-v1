@@ -269,22 +269,46 @@
 			</plugin>
 
 			<!-- DEPLOY .DEB PACAKGE TO GITHUB DOWNLOADS PAGE -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
-				<version>0.5</version>
-				<configuration>
-					<description>Debian installer package of the Pi4J Library for the
-						Raspberry Pi</description>
-					<override>true</override>
-					<repositoryOwner>Pi4J</repositoryOwner>
-					<repositoryName>pi4j</repositoryName>
-					<includeAttached>true</includeAttached>
-					<includes>
-						<include>pi4j-${project.version]}.deb</include>
-					</includes>
-				</configuration>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.github.github</groupId> -->
+<!-- 				<artifactId>downloads-maven-plugin</artifactId> -->
+<!-- 				<version>0.5</version> -->
+<!-- 				<configuration> -->
+<!-- 					<description>Debian installer package of the Pi4J Library for the -->
+<!-- 						Raspberry Pi</description> -->
+<!-- 					<override>true</override> -->
+<!-- 					<repositoryOwner>Pi4J</repositoryOwner> -->
+<!-- 					<repositoryName>pi4j</repositoryName> -->
+<!-- 					<includeAttached>true</includeAttached> -->
+<!-- 					<includes> -->
+<!-- 						<include>pi4j-${project.version}.deb</include> -->
+<!-- 					</includes> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+			
+			
+			<!-- DEPLOY .DEP PACKAGE TO GOOGLE CODE -->
+			<!-- http://code.google.com/p/maven-gcu-plugin/wiki/Usage -->
+            <plugin>
+                <groupId>com.googlecode.maven-gcu-plugin</groupId>
+                <artifactId>maven-gcu-plugin</artifactId>
+                <configuration>
+                    <serverId>googlecode</serverId>
+                    <failsOnError>true</failsOnError>
+                    <projectName>pi4j</projectName>
+                    <uploads>
+                         <upload>
+                            <file>${project.build.directory}/pi4j-${project.version}.deb</file>
+                            <summary>${project.version} Debian installer package of the Pi4J Library for the Raspberry Pi</summary>
+                            <labels>
+                                <label>Featured</label>
+                                <label>Type-Package</label>
+                                <label>SNAPSHOT</label>
+                            </labels>
+                         </upload>
+                    </uploads>
+                </configuration>
+            </plugin>					
 
 		</plugins>
 		<pluginManagement>
