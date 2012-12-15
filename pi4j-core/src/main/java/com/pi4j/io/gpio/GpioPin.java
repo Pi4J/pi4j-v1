@@ -50,6 +50,7 @@ public interface GpioPin {
     void setProperty(String key, String value);
     boolean hasProperty(String key);
     String getProperty(String key);
+    String getProperty(String key, String defaultValue);
     Map<String,String> getProperties();
     void removeProperty(String key);
     void clearProperties();

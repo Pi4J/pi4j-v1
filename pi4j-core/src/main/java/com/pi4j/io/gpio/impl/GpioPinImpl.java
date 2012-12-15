@@ -124,13 +124,21 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(String key, String defaultValue) {
         if (properties.containsKey(key)) {
-            return properties.get(key);
+            if(properties.get(key) == null || properties.get(key).isEmpty())
+                return defaultValue;
+            else
+                return properties.get(key);
         }
-        return null;
+        return defaultValue;
     }
 
+    @Override
+    public String getProperty(String key) {
+        return getProperty(key, null);
+    }
+    
     @Override
     public Map<String, String> getProperties() {
         return properties;
