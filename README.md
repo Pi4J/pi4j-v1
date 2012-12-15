@@ -4,12 +4,13 @@
 
 ## PROJECT INFORMATION
 
- Project website: http://www.pi4j.com/ 
- 
+ Project website: http://www.pi4j.com/ <br />
+ Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
+ <br />
  Release builds are available from 
    * [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
    * [Google Code] http://code.google.com/p/pi4j/downloads
-
+<br />
  Snapshot builds are available from 
    * [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
    * [Google Code] http://code.google.com/p/pi4j/downloads
@@ -56,7 +57,8 @@
    *  Modified build script to include pulling wiringPi sources and compiling when building native library
    *  Added power controller device interface, base impl, and reference impl
    *  Added GpioController.provisionXXXPin methods that allow name to be optional
-   *  Relocated project downloads location to google code site; github deprecated downloads. 
+   *  Relocated project downloads location to google code site; github deprecated downloads.
+   *  Added Google Groups discussion forum to project docs. 
 
 ## RELEASES
 
