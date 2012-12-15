@@ -7,14 +7,14 @@ Usage
 
   To implement Pi4J, you will need to include a number of Pi4J packages into your project classes.  The following list includes the majority of the Pi4J imports that you would need.  You probably will not require all of these imports in your project, you can remove any unused imports. 
   
-%{snippet|id=usage-import-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java} 
+%{snippet|id=usage-import-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
 
 
 * Create Controller Instance
 
   Before interacting with Pi4J, you must first create a new GPIO controller instance.  The <GpioFactory> includes a <createInstance> method to create the GPIO controller.  Your project should only instantiate a single GPIO controller instance and that instance should be shared across your project.  
 
-%{snippet|id=usage-create-controller-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java} 
+%{snippet|id=usage-create-controller-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
  
 
 * Pin Numbering
@@ -46,12 +46,12 @@ Usage
   
   The following example demonstrates how to provision an INPUT pin.  Input pins are pins that your program will monitor for state change or interrogate state when needed.  Input pins are used for switches, sensors, etc.    
 
-%{snippet|id=usage-provision-input-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-provision-input-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   The following example demonstrates how to provision an OUTPUT pin.\
   Output pins are pins that your program will control state changes.  Output pins are used for controlling relays, LEDs, transistors, etc.    
 
-%{snippet|id=usage-provision-output-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-provision-output-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
 
 * Control Pin State
@@ -59,7 +59,7 @@ Usage
   P14J provides a number of convenience method for controlling or writing a state to a GPIO pin.\
   The examples below demonstrate a few of the controlling methods you can invoke on a GPIO pin.  
 
-%{snippet|id=usage-control-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-control-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   A complete example project demonstrating the control of GPIO pins is provided {{{./example/control.html}here}}.
 
@@ -69,7 +69,7 @@ Usage
   P14J provides a number of convenience method for reading/interrogating the current state to a GPIO pin.\
   The examples below demonstrate a few of the reading methods you can invoke on a GPIO pin.  
 
-%{snippet|id=usage-read-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-read-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
 
 * Listen for Pin Changes
@@ -79,11 +79,11 @@ Usage
   You must create a class that implements the <GpioListener> interface.  This interface simply contain a single method <pinStateChanged(GpioPinStateChangeEvent event)> that is used to notify the listener class when a pin change event has occurred.\
   The following snippet demonstrates a simple listener implementation:      
 
-%{snippet|id=usage-listener-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-listener-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   To setup your listener, you must register the listener with a pin and instantiate your listener impl.
 
-%{snippet|id=usage-register-listener-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-register-listener-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   A complete example project demonstrating the listening for GPIO pin state changes is provided {{{./example/listener.html}here}}.
 
@@ -95,7 +95,7 @@ Usage
   You can simply use the <setShutdownOptions> method on the <GpioPin> instance to configure the desired shutdown behavior to be applied.
   The following snippet demonstrates a simple GPIO pin shutdown configuration implementation:      
 
-%{snippet|id=usage-shutdown-pin-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-shutdown-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   A complete example project demonstrating the GPIO pin shutdown configuration is provided {{{./example/shutdown.html}here}}.
 
@@ -105,7 +105,7 @@ Usage
   P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\     
   The following snippet demonstrates a simple ''follow-me' trigger implementation:      
 
-%{snippet|id=usage-trigger-snippet|file=pi4j-example/src/main/java/com/pi4j/example/UsageGpioExample.java}
+%{snippet|id=usage-trigger-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
  
   A complete example project demonstrating the GPIO pin triggers is provided {{{./example/trigger.html}here}}.\
   (This example includes all available provided triggers.)

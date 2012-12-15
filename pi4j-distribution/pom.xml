@@ -135,7 +135,7 @@
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/distro-contents/examples</outputDirectory>
-									<includes>com/pi4j/example/*.java,com/pi4j/example/*.sh</includes>
+									<includes>*.java,*.sh</includes>
 								</artifactItem>
 							</artifactItems>
 							<includes>**/*.java</includes>
@@ -202,7 +202,7 @@
 								</data>
 								
 								<data>
-									<src>${project.build.directory}/distro-contents/examples/com/pi4j/example</src>
+									<src>${project.build.directory}/distro-contents/examples</src>
 									<type>directory</type>
 	                                <mapper>
 	                                    <type>perm</type>

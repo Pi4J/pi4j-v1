@@ -63,7 +63,7 @@ public class UsageGpioExample
     {
         // START SNIPPET: usage-create-controller-snippet
         // create gpio controller instance
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         // END SNIPPET: usage-create-controller-snippet
 
         // START SNIPPET: usage-provision-input-pin-snippet
@@ -71,15 +71,15 @@ public class UsageGpioExample
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
         // changes)
         GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
-                                                                     "MyButton",                   // PIN FRIENDLY NAME
-                                                                     PinPullResistance.PULL_DOWN); // PIN RESISTANCE
+                                                                     "MyButton",                   // PIN FRIENDLY NAME (optional)
+                                                                     PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
 
         // END SNIPPET: usage-provision-input-pin-snippet
         // START SNIPPET: usage-provision-output-pin-snippet
         // provision gpio pins #04 as an output pin and make sure is is set to LOW at startup
         GpioPinDigitalOutput myLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04,   // PIN NUMBER
-                                                                   "My LED",           // PIN FRIENDLY NAME
-                                                                   PinState.LOW);      // PIN STARTUP STATE
+                                                                   "My LED",           // PIN FRIENDLY NAME (optional)
+                                                                   PinState.LOW);      // PIN STARTUP STATE (optional)
         // END SNIPPET: usage-provision-output-pin-snippet
 
         // START SNIPPET: usage-shutdown-pin-snippet
@@ -115,7 +115,7 @@ public class UsageGpioExample
 
         // START SNIPPET: usage-register-listener-snippet
         // create and register gpio pin listener
-        myButton.addListener(new GpioExampleListener());
+        myButton.addListener(new GpioUsageExampleListener());
         // END SNIPPET: usage-register-listener-snippet
 
         // START SNIPPET: usage-trigger-snippet
@@ -132,7 +132,7 @@ public class UsageGpioExample
     }
 
  //START SNIPPET: usage-listener-snippet    
-    class GpioUsageExampleListener implements GpioPinListenerDigital
+    public static class GpioUsageExampleListener implements GpioPinListenerDigital
     {
         @Override
         public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)

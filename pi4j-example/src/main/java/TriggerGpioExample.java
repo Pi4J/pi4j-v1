@@ -55,15 +55,13 @@ public class TriggerGpioExample
         System.out.println("<--Pi4J--> GPIO Trigger Example ... started.");
 
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
-                                                  "MyButton", 
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
                                                   PinPullResistance.PULL_DOWN);
         
         System.out.println(" ... complete the GPIO #02 circuit and see the triggers take effect.");
-
         
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
         GpioPinDigitalOutput myLed[] =

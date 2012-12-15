@@ -28,7 +28,6 @@
  * #L%
  */
 
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -51,13 +50,22 @@ public class ListenGpioExample
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
-        myButton.addListener(new GpioExampleListener());
+        myButton.addListener(new GpioPinListenerDigital()
+        {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+            {
+                // display pin state on console
+                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+            }
+            
+        });
         
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
@@ -69,22 +77,4 @@ public class ListenGpioExample
     }
 }
 
-/**
- * This class implements the GPIO listener interface
- * with the callback method for event notifications
- * when GPIO pin states change.
- * 
- * @see GpioPinListener
- * @author Robert Savage
- */
-class GpioExampleListener implements GpioPinListenerDigital
-{
-    @Override
-    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-    {
-        // display pin state on console
-        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                + event.getState());
-    }
-}
 // END SNIPPET: listen-gpio-snippet

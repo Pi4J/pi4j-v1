@@ -49,10 +49,10 @@ public class FrequencyGpioExample
         System.out.println("<--Pi4J--> GPIO Frequency Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED-1", PinState.LOW);
+        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
 
         // continuous loop
         while(true)

@@ -58,14 +58,19 @@ public class SerialExample
         System.out.println(" ... connect using settings: 38400, N, 8, 1.");
         System.out.println(" ... data received on serial port should be displayed below.");
         
-        // create serial data listener
-        SerialExampleListener listener = new SerialExampleListener();
-
         // create an instance of the serial communications class
-        Serial serial = SerialFactory.createInstance();
+        final Serial serial = SerialFactory.createInstance();
 
-        // add/register the serial data listener
-        serial.addListener(listener);
+        // create and register the serial data listener
+        serial.addListener(new SerialDataListener()
+        {
+            @Override
+            public void dataReceived(SerialDataEvent event)
+            {
+                // print out the data received to the console
+                System.out.print(event.getData());
+            }            
+        });
         
         // open the default serial port provided on the GPIO header
         int ret = serial.open(Serial.DEFAULT_COM_PORT, 38400);
@@ -98,22 +103,6 @@ public class SerialExample
             // wait 1 second before continuing
             Thread.sleep(1000);
         }
-    }
-}
-
-/**
- * This class implements the serial data listener interface with the callback method for event
- * notifications when data is received on the serial port.
- * 
- * @see SerialDataListener
- * @author Robert Savage
- */
-class SerialExampleListener implements SerialDataListener
-{
-    public void dataReceived(SerialDataEvent event)
-    {
-        // print out the data received to the console
-        System.out.print(event.getData());
     }
 }
 

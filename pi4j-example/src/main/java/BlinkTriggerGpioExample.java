@@ -51,17 +51,16 @@ public class BlinkTriggerGpioExample
         System.out.println("<--Pi4J--> GPIO Blink Trigger Example ... started.");
 
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
-                                                  "MyButton", 
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, 
                                                   PinPullResistance.PULL_DOWN);
         
         System.out.println(" ... complete the GPIO #02 circuit and see the blink trigger take effect.");
         
         // setup gpio pins #04 an output pins and make sure they are all LOW at startup
-        GpioPinDigitalOutput myLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "LED #1", PinState.LOW);
+        final GpioPinDigitalOutput myLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
         
         // create a gpio control trigger on the input pin ; when the input goes HIGH, turn on blinking
         myButton.addTrigger(new GpioBlinkStateTrigger(PinState.HIGH, myLed, 250));

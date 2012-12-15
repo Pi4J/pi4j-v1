@@ -68,10 +68,10 @@ public class MCP23017GpioExample
         System.out.println("<--Pi4J--> MCP23017 GPIO Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // create custom MCP23017 GPIO provider
-        MCP23017GpioProvider mcpProvider = new MCP23017GpioProvider(I2CBus.BUS_0, 0x21);
+        final MCP23017GpioProvider mcpProvider = new MCP23017GpioProvider(I2CBus.BUS_0, 0x21);
         
         // provision gpio input pins from MCP23017
         GpioPinDigitalInput myInputs[] =
@@ -87,10 +87,16 @@ public class MCP23017GpioExample
             };
         
         // create and register gpio pin listener
-        GpioExampleListener listener = new GpioExampleListener();
-        
-        // add listener callbacks
-        gpio.addListener(listener, myInputs);
+        gpio.addListener(new GpioPinListenerDigital()
+        {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+            {
+                // display pin state on console
+                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                        + event.getState());
+            }
+        }, myInputs);
         
         // provision gpio output pins and make sure they are all LOW at startup
         GpioPinDigitalOutput myOutputs[] =
@@ -117,16 +123,5 @@ public class MCP23017GpioExample
         // shutdown the GPIO provider
         mcpProvider.shutdown();
     }
-    
-    public static class GpioExampleListener implements GpioPinListenerDigital
-    {
-        @Override
-        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-        {
-            // display pin state on console
-            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                    + event.getState());
-        }
-    }    
 }
 

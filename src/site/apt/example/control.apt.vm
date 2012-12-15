@@ -5,9 +5,9 @@ Simple GPIO Control using Pi4J.
 * Source Code
   
   The source code for this example is included in the github repository:\
-  {{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/com/pi4j/example/ControlGpioExample.java}}
+  {{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/ControlGpioExample.java}}
 
-%{snippet|id=control-gpio-snippet|file=pi4j-example/src/main/java/com/pi4j/example/ControlGpioExample.java}
+%{snippet|id=control-gpio-snippet|file=pi4j-example/src/main/java/ControlGpioExample.java}
 
 * JavaDoc
 
@@ -34,7 +34,7 @@ Simple GPIO Control using Pi4J.
   First, copy the <ControlGpioExample.java> source file to a directory on the RaspberryPi.\
   You can use the following command on the Pi's console or SSH terminal to download the example source file directly to your Pi:
   
-  <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/com/pi4j/example/ControlGpioExample.java>>>
+  <<<wget https://raw.github.com/Pi4J/pi4j/master/pi4j-example/src/main/java/ControlGpioExample.java>>>
 
   If you have not already downloaded the Pi4J library JAR to the RaspberryPi, then you can use the following command on the Pi's console or SSH terminal to download the Pi4J JAR file.
 
@@ -50,7 +50,7 @@ Simple GPIO Control using Pi4J.
   
   The following command will run this example program:
   
-  <<<sudo java -classpath .:pi4j-core-${project.version}.jar com.pi4j.example.ControlGpioExample>>>
+  <<<sudo java -classpath .:pi4j-core-${project.version}.jar ControlGpioExample>>>
   
 * Output
 

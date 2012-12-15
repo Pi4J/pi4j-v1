@@ -1,5 +1,3 @@
-
-
 /*
  * #%L
  * **********************************************************************
@@ -47,7 +45,7 @@ public class I2CWiiMotionPlusExample {
         System.out.println("Starting:");
         
         // get I2C bus instance
-        I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
+        final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
         
         WiiMotionPlus wiiMotionPlus = new WiiMotionPlus(bus);
         wiiMotionPlus.init();

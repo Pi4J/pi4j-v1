@@ -28,7 +28,6 @@
  * #L%
  */
 
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -48,10 +47,10 @@ public class ControlGpioExample
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
+        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
         System.out.println("--> GPIO state should be: ON");
         
         Thread.sleep(5000);

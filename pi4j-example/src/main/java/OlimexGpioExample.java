@@ -71,16 +71,16 @@ public class OlimexGpioExample
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
 
         // create custom Olimex GPIO provider
-        OlimexAVRIOGpioProvider olimexProvider = new OlimexAVRIOGpioProvider(Serial.DEFAULT_COM_PORT);
+        final OlimexAVRIOGpioProvider olimexProvider = new OlimexAVRIOGpioProvider(Serial.DEFAULT_COM_PORT);
         
         // provision gpio input pin #01 from Olimex
-        GpioPinDigitalInput myInput = gpio.provisionDigitalInputPin(olimexProvider, OlimexAVRIOPin.IN_01, "MyInput");
+        final GpioPinDigitalInput myInput = gpio.provisionDigitalInputPin(olimexProvider, OlimexAVRIOPin.IN_01);
         
         // create and register gpio pin listener
         GpioExampleListener listener = new GpioExampleListener();

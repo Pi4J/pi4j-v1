@@ -53,17 +53,28 @@ public class BlinkGpioExample
         System.out.println("<--Pi4J--> GPIO Blink Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 & #03 as an output pins and blink
-        GpioPinDigitalOutput led1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyBlikingLED1");
-        GpioPinDigitalOutput led2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyBlikingLED2");
+        final GpioPinDigitalOutput led1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01);
+        final GpioPinDigitalOutput led2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03);
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
-        myButton.addListener(new GpioBlinkExampleListener(led2));
+        myButton.addListener(new GpioPinListenerDigital()
+            {
+                @Override
+                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+                {
+                    // when button is pressed, speed up the blink rate on LED #2
+                    if(event.getState().isHigh())
+                        led2.blink(200);
+                    else
+                        led2.blink(1000);
+                }
+            });
 
         // continuously blink the led every 1/2 second for 15 seconds
         led1.blink(500, 15000);
@@ -82,34 +93,4 @@ public class BlinkGpioExample
     }
 }
 
-/**
- * This class implements the GPIO listener interface
- * with the callback method for event notifications
- * when GPIO pin states change.
- * 
- * @see GpioPinListener
- * @author Robert Savage
- */
-class GpioBlinkExampleListener implements GpioPinListenerDigital
-{
-    private final GpioPinDigitalOutput led;
-    
-    public GpioBlinkExampleListener(GpioPinDigitalOutput led)
-    {
-        this.led = led;    
-    }
-    
-    @Override
-    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-    {
-        if(event.getState().isHigh())
-        {
-            led.blink(200);
-        }
-        else
-        {
-            led.blink(1000);
-        }
-    }
-}    
 //END SNIPPET: blink-gpio-snippet

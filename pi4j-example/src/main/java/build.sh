@@ -30,38 +30,62 @@
 echo "---------------------------------------------------------"
 
 # THE FOLLOWING INSTRUCTIONS WILL COMPILE ALL THE EXAMPLE PROJECTS
-echo "[01 of 11] ... compiling : BlinkGpioExample.java"
+echo "[01 of 19] ... compiling : BlinkGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . BlinkGpioExample.java
 
-echo "[02 of 11] ... compiling : BlinkTriggerGpioExample.java"
+echo "[02 of 19] ... compiling : BlinkTriggerGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . BlinkTriggerGpioExample.java
 
-echo "[03 of 11] ... compiling : ControlGpioExample.java"
+echo "[03 of 19] ... compiling : ControlGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ControlGpioExample.java
 
-echo "[04 of 11] ... compiling : I2CWiiMotionPlusExample.java"
+echo "[04 of 19] ... compiling : CylonGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . CylonGpioExample.java
+
+echo "[05 of 19] ... compiling : FrequencyGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . FrequencyGpioExample.java
+
+echo "[06 of 19] ... compiling : I2CWiiMotionPlusExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . I2CWiiMotionPlusExample.java
 
-echo "[05 of 11] ... compiling : ListenGpioExample.java"
+echo "[07 of 19] ... compiling : ListenGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ListenGpioExample.java
 
-echo "[06 of 11] ... compiling : OlimexGpioExample.java"
+echo "[08 of 19] ... compiling : ListenMultipleGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ListenMultipleGpioExample.java
+
+echo "[09 of 19] ... compiling : MCP23017GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . MCP23017GpioExample.java
+
+echo "[10 of 19] ... compiling : OlimexGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . OlimexGpioExample.java
 
-echo "[07 of 11] ... compiling : SerialExample.java"
+echo "[11 of 19] ... compiling : SerialExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . SerialExample.java
 
-echo "[08 of 11] ... compiling : ShutdownGpioExample.java"
+echo "[12 of 19] ... compiling : ShutdownGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ShutdownGpioExample.java
 
-echo "[09 of 11] ... compiling : SystemInfoExample.java"
+echo "[13 of 19] ... compiling : SystemInfoExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . SystemInfoExample.java
 
-echo "[10 of 11] ... compiling : TriggerGpioExample.java"
+echo "[14 of 19] ... compiling : TriggerGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . TriggerGpioExample.java
 
-echo "[11 of 11] ... compiling : UsageGpioExample.java"
+echo "[15 of 19] ... compiling : UsageGpioExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . UsageGpioExample.java
+
+echo "[16 of 19] ... compiling : WiringPiGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiGpioExample.java
+
+echo "[17 of 19] ... compiling : WiringPiGpioInterruptExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiGpioInterruptExample.java
+
+echo "[18 of 19] ... compiling : WiringPiSerialExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiSerialExample.java
+
+echo "[19 of 19] ... compiling : WiringPiSoftPWMExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiSoftPWMExample.java
 
 echo "---------------------------------------------------------"
 

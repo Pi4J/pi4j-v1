@@ -1,4 +1,4 @@
-// START SNIPPET: cycle-gpio-snippet
+// START SNIPPET: cylon-gpio-snippet
 
 
 /*
@@ -6,7 +6,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  CycleGpioExample.java  
+ * FILENAME      :  CylonGpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -37,48 +37,48 @@ import com.pi4j.io.gpio.RaspiPin;
 
 /**
  * This example code demonstrates how to perform a blinking cycle 
- * of a series of GPIO pins on the Raspberry Pi.  
+ * (cylon effect) of a series of GPIO pins on the Raspberry Pi.  
  * 
  * @author Robert Savage
  */
-public class CycleGpioExample
+public class CylonGpioExample
 {
     public static void main(String[] args) throws InterruptedException
     {
-        System.out.println("<--Pi4J--> GPIO Cycle Example ... started.");
+        System.out.println("<--Pi4J--> GPIO Cylon Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPinDigitalOutput[] pin = {
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "MyLED-0", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED-1", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED-2", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED-3", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED-4", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED-5", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED-6", PinState.LOW),
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED-7", PinState.LOW)};
+        final GpioPinDigitalOutput[] pins = {
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, PinState.LOW),
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, PinState.LOW)};
         System.out.println("--> GPIO state should be: ON");
 
         // set shutdown options on all pins
-        gpio.setShutdownOptions(true, PinState.LOW, pin);
+        gpio.setShutdownOptions(true, PinState.LOW, pins);
         
         while(true)
         {
             for(int index = 0; index <= 6; index++)
             {
-                pin[index].pulse(50);
+                pins[index].pulse(50);
                 Thread.sleep(50);
             }
             
             for(int index = 6; index >= 0; index--)
             {
-                pin[index].pulse(50);
+                pins[index].pulse(50);
                 Thread.sleep(50);
             }
         }
     }
 }
-//END SNIPPET: cycle-gpio-snippet
+//END SNIPPET: cylon-gpio-snippet

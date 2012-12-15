@@ -51,17 +51,17 @@ public class ListenMultipleGpioExample
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
         // create gpio controller
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton0 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, "MyButton-0", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton1 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, "MyButton-1", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton2 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton-2", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton3 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, "MyButton-3", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton4 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "MyButton-4", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton5 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, "MyButton-5", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton6 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "MyButton-6", PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton7 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, "MyButton-7", PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton0 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton1 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton2 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton3 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton4 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton5 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton6 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput myButton7 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
         myButton0.addListener(new GpioExampleMultiListener());
