@@ -35,3 +35,5 @@ maven-eclipse.xml
 /pi4j-device/.settings
 /pi4j-device/.classpath
 /pi4j-device/.project
+
+/pi4j-distribution/target
