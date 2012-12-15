@@ -4,21 +4,20 @@
 
 ## PROJECT INFORMATION
 
- Project website: http://www.pi4j.com/ <br />
- Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
- Project issues list: https://github.com/Pi4J/pi4j/issues <br />
- <br />
- Release builds are available from 
+Project website: http://www.pi4j.com/ <br />
+Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
+Project issues list: https://github.com/Pi4J/pi4j/issues <br />
+<br />
+Release builds are available from 
    *  [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
    *  [Google Code] http://code.google.com/p/pi4j/downloads
 
-
- Snapshot builds are available from 
+Snapshot builds are available from 
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
    *  [Google Code] http://code.google.com/p/pi4j/downloads
 
  
- Copyright (C) 2012 Pi4J
+Copyright (C) 2012 Pi4J
 
 ## LICENSE
  
