@@ -8,6 +8,16 @@
   <part id="general">
     <title>General</title>
 
+    <faq id="contact">
+      <question>
+        What is the best way to contact the Pi4J project?
+      </question>
+      <answer>
+        <p></p>
+        <p>Click <a href="contact.html">here</a> to see the contact methods for the Pi4J project.</p>
+      </answer>
+    </faq>
+
     <faq id="permissions">
       <question>
         What level of permissions is required to run software using Pi4J?
