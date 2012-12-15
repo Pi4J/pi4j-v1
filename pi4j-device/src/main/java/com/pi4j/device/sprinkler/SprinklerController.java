@@ -2,7 +2,7 @@ package com.pi4j.device.sprinkler;
 
 import java.util.List;
 
-public interface SprinklerSystem {
+public interface SprinklerController {
 
     int getZoneCount();
     List<SprinklerZone> getZones();
