@@ -1,4 +1,4 @@
-package com.pi4j.device.power.impl;
+package com.pi4j.component.power.impl;
 
 /*
  * #%L
@@ -28,13 +28,13 @@ package com.pi4j.device.power.impl;
  */
 
 
-import com.pi4j.device.power.PowerControllerBase;
-import com.pi4j.device.power.PowerState;
+import com.pi4j.component.power.PowerBase;
+import com.pi4j.component.power.PowerState;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioPowerController extends PowerControllerBase
-{
+public class GpioPowerController extends PowerBase {
+    
     // internal class members
     GpioPinDigitalOutput pin = null;
     PinState onState = PinState.HIGH;
@@ -48,8 +48,7 @@ public class GpioPowerController extends PowerControllerBase
      * @param onState pin state to set when power is ON
      * @param offState pin state to set when power is OFF
      */
-    public GpioPowerController(GpioPinDigitalOutput pin, PinState onState, PinState offState)
-    {
+    public GpioPowerController(GpioPinDigitalOutput pin, PinState onState, PinState offState) {
         this.pin = pin;
         this.onState = onState;
         this.offState = offState;
@@ -62,8 +61,7 @@ public class GpioPowerController extends PowerControllerBase
      *  
      * @param pin GPIO digital output pin
      */
-    public GpioPowerController(GpioPinDigitalOutput pin)
-    {
+    public GpioPowerController(GpioPinDigitalOutput pin) {
         this.pin = pin;        
     }
 
@@ -74,8 +72,7 @@ public class GpioPowerController extends PowerControllerBase
      * @return PowerState 
      */
     @Override
-    public PowerState getState()
-    {
+    public PowerState getState() {
         if(pin.isState(onState))
             return PowerState.ON;
         else if(pin.isState(offState))
@@ -91,26 +88,22 @@ public class GpioPowerController extends PowerControllerBase
      * @param state new power state to apply
      */
     @Override
-    public void setState(PowerState state)
-    {
-        switch(state)
-        {
-            case OFF:
-            {
+    public void setState(PowerState state) {
+        switch(state) {
+            case OFF: {
                 if(!isOff())
                     pin.setState(offState);
                 break;
             }
-            case ON:
-            {
+            case ON: {
                 if(!isOn())
                     pin.setState(onState);
                 break;
             }
-            default:
-            {
+            default: {
                 throw new UnsupportedOperationException("Cannot set power state: " + state.toString());
             }
         }
     }
+    
 }

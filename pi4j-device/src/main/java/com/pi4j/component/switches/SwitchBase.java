@@ -1,13 +1,13 @@
-package com.pi4j.device.power;
+package com.pi4j.component.switches;
 
-import com.pi4j.device.Pi4JDevice;
+import com.pi4j.component.ComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerController.java  
+ * FILENAME      :  PowerControllerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,12 +30,19 @@ import com.pi4j.device.Pi4JDevice;
  */
 
 
-public interface PowerController extends Pi4JDevice
-{
-    void on();
-    void off();
-    boolean isOn();
-    boolean isOff();
-    PowerState getState();
-    void setState(PowerState state);
+public abstract class SwitchBase extends ComponentBase implements Switch {
+    
+    @Override
+    public boolean isOn() {
+        return (getState() == SwitchState.ON);
+    }
+
+    @Override
+    public boolean isOff() {
+        return (getState() == SwitchState.OFF);
+    }
+
+    @Override
+    public abstract SwitchState getState();
+    
 }

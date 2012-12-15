@@ -1,4 +1,4 @@
-package com.pi4j.device.switches;
+package com.pi4j.component.switches;
 
 /*
  * #%L
@@ -28,11 +28,12 @@ package com.pi4j.device.switches;
  */
 
 
-import com.pi4j.device.Pi4JDevice;
+import com.pi4j.component.Component;
 
-public interface Switch extends Pi4JDevice
-{
+public interface Switch extends Component {
+    
     boolean isOn();
     boolean isOff();
     SwitchState getState();
+    
 }

@@ -1,11 +1,11 @@
-package com.pi4j.device.power;
+package com.pi4j.component.power;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  PowerState.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,35 +28,10 @@ package com.pi4j.device.power;
  */
 
 
-public abstract class PowerControllerBase implements PowerController
-{
-    @Override
-    public void on()
-    {
-        setState(PowerState.ON);
-    }
-
-    @Override
-    public void off()
-    {
-        setState(PowerState.OFF);
-    }
-
-    @Override
-    public boolean isOn()
-    {
-        return getState() == PowerState.ON;
-    }
-
-    @Override
-    public boolean isOff()
-    {
-        return getState() == PowerState.OFF;
-    }
-
-    @Override
-    public abstract PowerState getState();
-
-    @Override
-    public abstract void setState(PowerState state);
+public enum PowerState {
+    
+    UNKNOWN,
+    ON,
+    OFF
+    
 }

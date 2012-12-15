@@ -1,11 +1,11 @@
-package com.pi4j.device.switches;
+package com.pi4j.component.switches;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ToggleSwitch.java  
+ * FILENAME      :  PowerControllerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,6 +28,6 @@ package com.pi4j.device.switches;
  */
 
 
-public interface ToggleSwitch extends Switch
-{
+public abstract class ToggleSwitchBase extends SwitchBase implements ToggleSwitch {
+    
 }

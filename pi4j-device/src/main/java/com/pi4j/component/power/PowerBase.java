@@ -1,11 +1,13 @@
-package com.pi4j.device.switches;
+package com.pi4j.component.power;
+
+import com.pi4j.component.ComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  SwitchState.java  
+ * FILENAME      :  PowerControllerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,8 +30,32 @@ package com.pi4j.device.switches;
  */
 
 
-public enum SwitchState
-{
-    ON,
-    OFF
+public abstract class PowerBase extends ComponentBase implements Power {
+    
+    @Override
+    public void on() {
+        setState(PowerState.ON);
+    }
+
+    @Override
+    public void off() {
+        setState(PowerState.OFF);
+    }
+
+    @Override
+    public boolean isOn() {
+        return (getState() == PowerState.ON);
+    }
+
+    @Override
+    public boolean isOff() {
+        return (getState() == PowerState.OFF);
+    }
+
+    @Override
+    public abstract PowerState getState();
+
+    @Override
+    public abstract void setState(PowerState state);
+    
 }

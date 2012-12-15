@@ -62,6 +62,7 @@ Copyright (C) 2012 Pi4J
    *  Relocated project downloads location to google code site; github deprecated downloads.
    *  Added Google Groups discussion forum to project docs. 
    *  Added getTag() and setTag() to GpioPin interface and impl. 
+   *  Added TemperatureConversion utility. 
 
 ## RELEASES
 

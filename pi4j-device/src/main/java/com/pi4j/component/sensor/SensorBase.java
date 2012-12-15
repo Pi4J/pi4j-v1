@@ -1,11 +1,13 @@
-package com.pi4j.device.power;
+package com.pi4j.component.sensor;
+
+import com.pi4j.component.ComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerState.java  
+ * FILENAME      :  PowerControllerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,9 +30,19 @@ package com.pi4j.device.power;
  */
 
 
-public enum PowerState
-{
-    UNKNOWN,
-    ON,
-    OFF
+public abstract class SensorBase extends ComponentBase implements Sensor {
+    
+    @Override
+    public boolean isOpen() {
+        return (getState() == SensorState.OPEN);
+    }
+
+    @Override
+    public boolean isClosed() {
+        return (getState() == SensorState.CLOSED);
+    }
+
+    @Override
+    public abstract SensorState getState();
+
 }

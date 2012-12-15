@@ -1,11 +1,11 @@
-package com.pi4j.device.switches;
+package com.pi4j.component.switches;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MomentarySwitch.java  
+ * FILENAME      :  ToggleSwitch.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,6 +28,5 @@ package com.pi4j.device.switches;
  */
 
 
-public interface MomentarySwitch extends Switch
-{
+public interface ToggleSwitch extends Switch {
 }

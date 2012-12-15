@@ -1,11 +1,13 @@
-package com.pi4j.device;
+package com.pi4j.component.light;
+
+import com.pi4j.component.ComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  Pi4JDevice.java  
+ * FILENAME      :  PowerControllerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,7 +30,20 @@ package com.pi4j.device;
  */
 
 
-public interface Pi4JDevice
-{
+public abstract class LightBase extends ComponentBase implements Light {
+    
+    @Override
+    public abstract void on();
 
+    @Override
+    public abstract void off();
+
+    @Override
+    public abstract boolean isOn();
+
+    @Override
+    public boolean isOff() {
+        return (!isOn());
+    }
+    
 }
