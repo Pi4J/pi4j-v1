@@ -50,7 +50,7 @@ Simple GPIO Control using Pi4J.
   
   The following command will run this example program:
   
-  <<<sudo java -classpath .:pi4j-core-${project.version}.jar ControlGpioExample>>>
+  <<<sudo java -classpath .:classes:/opt/pi4j/lib/'*' ControlGpioExample>>>
   
 * Output
 

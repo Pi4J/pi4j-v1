@@ -18,9 +18,27 @@ Installation
 
 ** Install Pi4J
 
-  Just download and copy the Pi4J JAR file and make sure it is included in the classpath for your Java project.\
+  Download a copy of the latest Pi4J Debian/Raspian installer package (.deb) file.
   You can use the following command on the Raspberry Pi's console to download the latest pi4j.jar build:
+  <<<wget http://pi4j.googlecode.com/files/pi4j-${project.version}.deb>>>
+ 
+  NOTE: If you have a previous version of Pi4J installed, please uninstall it first.
   
-  <<<wget https://github.com/downloads/Pi4J/pi4j/pi4j-core-${project.version}.jar>>>
+  Once downloaded, use the following command to perform the installation:
+  <<<sudo dpkg -i pi4j-${project.version}.deb>>>
   
+  This will install the Pi4J libraries and example source files to:
+  <<</opt/pi4j/lib>>>
+  <<</opt/pi4j/example>>>
   
+  When attempting to start a Java program using the Pi4J libraries, make sure to include the Pi4J lib folder in the classpath:
+  <<<sudo java -classpath .:classes:/opt/pi4j/lib/'*'>>>
+  
+  If you would like to explore the examples, you can compile all the examples with the following commands:
+  <<<cd /opt/pi4j/lib>>>
+  <<<./build>>>
+  
+ ** Uninstall Pi4J
+ 
+ To uninstall Pi4J from your system, use the following command:
+  <<<sudo dpkg -r pi4j>>>

@@ -135,7 +135,7 @@
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/distro-contents/examples</outputDirectory>
-									<includes>*.java,*.sh</includes>
+									<includes>*.java,build</includes>
 								</artifactItem>
 							</artifactItems>
 							<includes>**/*.java</includes>
