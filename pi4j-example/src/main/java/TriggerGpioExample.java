@@ -1,5 +1,5 @@
 // START SNIPPET: trigger-gpio-snippet
-package com.pi4j.example;
+
 
 /*
  * #%L

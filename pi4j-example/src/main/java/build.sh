@@ -66,7 +66,7 @@ javac -classpath .:classes:/opt/pi4j/lib/'*' -d . UsageGpioExample.java
 echo "---------------------------------------------------------"
 
 # THE FOLLOWING INSTRUCTIONS WILL EXECUTE ONE OF THE EXAMPLES
-# sudo java -classpath .:classes:/opt/pi4j/lib/'*' com.pi4j.example.BlinkGpioExample
+# sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample
 echo "The following command syntax can be used to execute the sample projects:"
-echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' com.pi4j.example.BlinkGpioExample"
+echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample"
 echo "---------------------------------------------------------"

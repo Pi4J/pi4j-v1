@@ -1,11 +1,10 @@
-package com.pi4j.example.wiringpi;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  WiringPiSoftPWMExample.java  
+ * FILENAME      :  WiringPiSerialExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -26,35 +25,38 @@ package com.pi4j.example.wiringpi;
  * limitations under the License.
  * #L%
  */
+import com.pi4j.wiringpi.Serial;
 
-import com.pi4j.wiringpi.SoftPwm;
 
-public class WiringPiSoftPWMExample
+
+public class WiringPiSerialExample
 {
-    public static void main(String[] args) throws InterruptedException
+    
+    public static void main(String args[]) throws InterruptedException
     {
-        // initialize wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
+        System.out.println("<--Pi4J--> SERIAL test program");
 
-        // create soft-pwm pins (min=0 ; max=100)
-        SoftPwm.softPwmCreate(1, 0, 100);
-
-        // continuous loop
-        while (true)
+        int fd = Serial.serialOpen(Serial.DEFAULT_COM_PORT, 38400);
+        if (fd == -1)
         {
-            // fade LED to fully ON
-            for (int i = 0; i <= 100; i++)
-            {
-                SoftPwm.softPwmWrite(1, i);
-                Thread.sleep(100);
-            }
+            System.out.println(" ==>> SERIAL SETUP FAILED");
+            return;
+        }
+        
+        while(true)
+        {
+            Serial.serialPuts(fd, "TEST\r\n");
 
-            // fade LED to fully OFF
-            for (int i = 100; i >= 0; i--)
+            int dataavail = Serial.serialDataAvail(fd);
+            
+            while(dataavail > 0)
             {
-                SoftPwm.softPwmWrite(1, i);
-                Thread.sleep(100);
+                int data = Serial.serialGetchar(fd);
+                System.out.print((char)data);                
+                dataavail = Serial.serialDataAvail(fd);
             }
+            
+            Thread.sleep(1000);
         }
     }
 }

@@ -1,5 +1,5 @@
 // START SNIPPET: cycle-gpio-snippet
-package com.pi4j.example;
+
 
 /*
  * #%L

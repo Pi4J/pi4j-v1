@@ -1,5 +1,5 @@
 // START SNIPPET: listen-multi-gpio-snippet
-package com.pi4j.example;
+
 
 /*
  * #%L

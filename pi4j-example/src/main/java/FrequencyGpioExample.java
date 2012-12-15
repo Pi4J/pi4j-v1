@@ -1,12 +1,12 @@
-// START SNIPPET: shutdown-gpio-snippet
-package com.pi4j.example;
+// START SNIPPET: frequency-gpio-snippet
+
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  ShutdownGpioExample.java  
+ * FILENAME      :  FrequencyGpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,43 +29,37 @@ package com.pi4j.example;
  */
 
 
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
 /**
- * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Raspberry Pi.  
+ * This example code provides a continuous GPIO pin state 
+ * changes on the Raspberry Pi to allow measurement of
+ * frequency.  
  * 
  * @author Robert Savage
  */
-public class ShutdownGpioExample
+public class FrequencyGpioExample
 {
-    public static void main(String[] args) throws InterruptedException
+    public static void main(String[] args) 
     {
-        System.out.println("<--Pi4J--> GPIO Shutdown Example ... started.");
+        System.out.println("<--Pi4J--> GPIO Frequency Example ... started.");
         
         // create gpio controller
         GpioController gpio = GpioFactory.getInstance();
         
         // provision gpio pin #01 as an output pin and turn on
-        GpioPin pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
-        
-        // configure the pin shutdown behavior; these settings will be 
-        // automatically applied to the pin when the application is terminated
-        pin.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
-        
-        System.out.println("--> GPIO state should be: ON");
-        System.out.println("    This program will automatically terminate in 10 seconds,");
-        System.out.println("    or you can use the CTRL-C keystroke to terminate at any time.");
-        System.out.println("    When the program terminates, the GPIO state should be shutdown and set to: OFF");
-        
-        // wait 10 seconds
-        Thread.sleep(10000);
+        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED-1", PinState.LOW);
+
+        // continuous loop
+        while(true)
+        {
+            pin.setState(true);
+            pin.setState(false);
+        }
     }
 }
-//END SNIPPET: shutdown-gpio-snippet
+//END SNIPPET: frequency-gpio-snippet

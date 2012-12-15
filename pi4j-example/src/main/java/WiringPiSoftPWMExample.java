@@ -1,10 +1,11 @@
-package com.pi4j.example.wiringpi;
+
+
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  WiringPiSerialExample.java  
+ * FILENAME      :  WiringPiSoftPWMExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -25,38 +26,35 @@ package com.pi4j.example.wiringpi;
  * limitations under the License.
  * #L%
  */
-import com.pi4j.wiringpi.Serial;
 
+import com.pi4j.wiringpi.SoftPwm;
 
-
-public class WiringPiSerialExample
+public class WiringPiSoftPWMExample
 {
-    
-    public static void main(String args[]) throws InterruptedException
+    public static void main(String[] args) throws InterruptedException
     {
-        System.out.println("<--Pi4J--> SERIAL test program");
+        // initialize wiringPi library
+        com.pi4j.wiringpi.Gpio.wiringPiSetup();
 
-        int fd = Serial.serialOpen(Serial.DEFAULT_COM_PORT, 38400);
-        if (fd == -1)
-        {
-            System.out.println(" ==>> SERIAL SETUP FAILED");
-            return;
-        }
-        
-        while(true)
-        {
-            Serial.serialPuts(fd, "TEST\r\n");
+        // create soft-pwm pins (min=0 ; max=100)
+        SoftPwm.softPwmCreate(1, 0, 100);
 
-            int dataavail = Serial.serialDataAvail(fd);
-            
-            while(dataavail > 0)
+        // continuous loop
+        while (true)
+        {
+            // fade LED to fully ON
+            for (int i = 0; i <= 100; i++)
             {
-                int data = Serial.serialGetchar(fd);
-                System.out.print((char)data);                
-                dataavail = Serial.serialDataAvail(fd);
+                SoftPwm.softPwmWrite(1, i);
+                Thread.sleep(100);
             }
-            
-            Thread.sleep(1000);
+
+            // fade LED to fully OFF
+            for (int i = 100; i >= 0; i--)
+            {
+                SoftPwm.softPwmWrite(1, i);
+                Thread.sleep(100);
+            }
         }
     }
 }

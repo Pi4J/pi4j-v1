@@ -1,5 +1,5 @@
 // START SNIPPET: system-info-snippet
-package com.pi4j.example;
+
 
 /*
  * #%L

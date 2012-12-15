@@ -1,5 +1,5 @@
 // START SNIPPET: blink-trigger-gpio-snippet
-package com.pi4j.example;
+
 
 /*
  * #%L

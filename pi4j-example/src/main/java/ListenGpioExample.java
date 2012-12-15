@@ -1,12 +1,12 @@
-// START SNIPPET: blink-gpio-snippet
-package com.pi4j.example;
+// START SNIPPET: listen-gpio-snippet
+
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BlinkGpioExample.java  
+ * FILENAME      :  ListenGpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,47 +32,34 @@ package com.pi4j.example;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListener;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 /**
- * This example code demonstrates how to perform simple 
- * blinking LED logic of a GPIO pin on the Raspberry Pi
- * using the Pi4J library.  
+ * This example code demonstrates how to setup a listener
+ * for GPIO pin state changes on the Raspberry Pi.  
  * 
  * @author Robert Savage
  */
-public class BlinkGpioExample
+public class ListenGpioExample
 {
-    public static void main(String[] args) throws InterruptedException
+    public static void main(String args[]) throws InterruptedException
     {
-        System.out.println("<--Pi4J--> GPIO Blink Example ... started.");
+        System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
         // create gpio controller
         GpioController gpio = GpioFactory.getInstance();
-        
-        // provision gpio pin #01 & #03 as an output pins and blink
-        GpioPinDigitalOutput led1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyBlikingLED1");
-        GpioPinDigitalOutput led2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyBlikingLED2");
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, "MyButton", PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
-        myButton.addListener(new GpioBlinkExampleListener(led2));
-
-        // continuously blink the led every 1/2 second for 15 seconds
-        led1.blink(500, 15000);
-
-        // continuously blink the led every 1 second 
-        led2.blink(1000);
+        myButton.addListener(new GpioExampleListener());
         
-        System.out.println(" ... the LED will continue blinking until the program is terminated.");
-        System.out.println(" ... PRESS <CTRL-C> TO STOP THE PROGRAM.");
+        System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
         for (;;)
@@ -90,26 +77,14 @@ public class BlinkGpioExample
  * @see GpioPinListener
  * @author Robert Savage
  */
-class GpioBlinkExampleListener implements GpioPinListenerDigital
+class GpioExampleListener implements GpioPinListenerDigital
 {
-    private final GpioPinDigitalOutput led;
-    
-    public GpioBlinkExampleListener(GpioPinDigitalOutput led)
-    {
-        this.led = led;    
-    }
-    
     @Override
     public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
     {
-        if(event.getState().isHigh())
-        {
-            led.blink(200);
-        }
-        else
-        {
-            led.blink(1000);
-        }
+        // display pin state on console
+        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                + event.getState());
     }
-}    
-//END SNIPPET: blink-gpio-snippet
+}
+// END SNIPPET: listen-gpio-snippet
