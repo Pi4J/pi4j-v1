@@ -269,7 +269,6 @@
                             <file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</file>
                             <summary>${project.version} build of the Pi4J Library for the Raspberry Pi</summary>
                             <labels>
-                                <label>Featured</label>
                                 <label>Type-Archive</label>
                                 <label>SNAPSHOT</label>
                             </labels>

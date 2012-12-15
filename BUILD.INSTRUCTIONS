@@ -65,3 +65,13 @@ Use the following Maven command to generate and deploy the project site document
 
 > mvn -N clean site ghSite:site
 
+
+--------------------
+PUBLIC DEPLOYMENT
+--------------------
+
+Use the following series of instructions to publish a public deployment of the build:
+
+> mvn clean deploy -P native -P soft-float -P hard-float
+> mvn clean install gcu:upload --projects pi4j-core,pi4j-distribution
+> mvn -N clean site ghSite:site
