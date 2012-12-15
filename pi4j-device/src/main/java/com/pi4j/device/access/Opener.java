@@ -11,5 +11,5 @@ public interface Opener extends Component {
     boolean isClosed();
     boolean isClosing();
     OpenerState getState();
-    
+    boolean isLocked();
 }

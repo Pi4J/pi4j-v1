@@ -13,7 +13,10 @@ public abstract class OpenerBase extends DeviceBase implements Opener
 
     @Override
     public abstract OpenerState getState();
-    
+
+    @Override
+    public abstract boolean isLocked();
+
     @Override
     public boolean isOpen()
     {
