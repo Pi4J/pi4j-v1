@@ -50,8 +50,8 @@
 			<item name="Downloads" href="download.html" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>
-			<item name="Wiki" href="https://github.com/Pi4J/pi4j/wiki/" target="pi4j-github"/>
 			<item name="Forum" href="https://groups.google.com/forum/#!forum/pi4j" target="pi4j-groups"/>
+			<item name="@Pi4J (Twitter)" href="https://twitter.com/pi4j" target="_blank"/>
 			<item name="Blog" href="http://www.savagehomeautomation.com/projects/category/pi4j" target="_blank"/>
 		</links>
 		<menu name="Pi4J">
