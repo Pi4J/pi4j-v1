@@ -51,8 +51,9 @@
 
 	<!-- SOURCE CONTROL -->
 	<scm>
+		<developerConnection>scm:git:ssh://git@github.com/Pi4J/pi4j.git</developerConnection>
+		<connection>scm:git:ssh://git@github.com/Pi4J/pi4j.git</connection>
 		<url>https://github.com/Pi4J/pi4j.git</url>
-		<connection>scm:git@github.com:Pi4J/pi4j.git</connection>
 	</scm>
 
 	<!-- ISSUE MANAGEMENT -->
@@ -170,6 +171,16 @@
 
 		<plugins>
 
+			<!-- USE LATEST SCM PLUGIN TO SUPPORT GIT -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.8.1</version>
+				<configuration>
+					<goals>install</goals>
+				</configuration>
+			</plugin>
+      
 			<!-- GENERATE LICENSE FILE IN PROJECT ROOT -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
