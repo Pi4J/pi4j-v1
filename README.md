@@ -41,9 +41,9 @@ Copyright (C) 2012 Pi4J
    *  Create device abstraction implementations
    *  Create pi4j-api library and move interfaces there
 
-## IN DEVELOPMENT
+## RELEASES
 
-2012-12-02 :: 0.0.4-SNAPSHOT
+2012-12-16 :: 0.0.4-SNAPSHOT
  
    *  Added support for building a Pi4J .deb installer package for Debian/Raspian Linux distribution. (BETA)
    *  Modified NetworkInfo static methods to permit empty array return values when a network property cannot be obtained.
@@ -64,8 +64,6 @@ Copyright (C) 2012 Pi4J
    *  Added getTag() and setTag() to GpioPin interface and impl. 
    *  Added TemperatureConversion utility. 
    *  Added optional blocking argument to GpioPin pulse method to support blocking pulse invocations 
-
-## RELEASES
 
 2012-10-22 :: 0.0.3-SNAPSHOT
  
