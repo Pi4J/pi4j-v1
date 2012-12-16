@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.management.RuntimeErrorException;
-
 import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioController;
