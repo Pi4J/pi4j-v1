@@ -56,7 +56,7 @@ public class GpioDimmableLightComponent extends DimmableLightBase {
     @Override
     public int getMinLevel()
     {
-        return min;
+        return min; 
     }
 
     @Override
