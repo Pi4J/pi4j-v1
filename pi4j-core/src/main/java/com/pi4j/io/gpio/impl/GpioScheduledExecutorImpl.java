@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -109,7 +110,11 @@ public class GpioScheduledExecutorImpl {
         return cleanupFutureTask;
     }
     
-    public synchronized static void pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState) {
+    public synchronized static Future<?> pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState) {
+        
+        // create future return object
+        ScheduledFuture<?> scheduledFuture = null; 
+                
         // perform the initial startup and cleanup for this pin 
         init(pin);
 
@@ -119,7 +124,7 @@ public class GpioScheduledExecutorImpl {
             pin.setState(pulseState);
             
             // create future job to return the pin to the low state
-            ScheduledFuture<?> scheduledFuture = scheduledExecutorService
+            scheduledFuture = scheduledExecutorService
                 .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState)), duration, TimeUnit.MILLISECONDS);
 
             // get pending tasks for the current pin
@@ -140,6 +145,9 @@ public class GpioScheduledExecutorImpl {
         if (pinTaskQueue.isEmpty()) {
             scheduledExecutorService.shutdown();
         }
+        
+        // return future task
+        return scheduledFuture;
     }
 
     public synchronized static void blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState) {

@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.GpioPinAnalogOutput;
@@ -245,22 +246,22 @@ public class GpioPinImpl implements GpioPin,
     }
     
     @Override
-    public void pulse(long duration) {
-        pulse(duration, false);
+    public Future<?> pulse(long duration) {
+        return pulse(duration, false);
     }
 
     @Override
-    public void pulse(long duration, PinState pulseState) {
-        pulse(duration, pulseState, false);
+    public Future<?> pulse(long duration, PinState pulseState) {
+        return pulse(duration, pulseState, false);
     }
     
     @Override
-    public void pulse(long duration, boolean blocking) {
-        pulse(duration, PinState.HIGH, blocking);
+    public Future<?> pulse(long duration, boolean blocking) {
+        return pulse(duration, PinState.HIGH, blocking);
     }
 
     @Override
-    public void pulse(long duration, PinState pulseState, boolean blocking) {
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking) {
         
         // validate duration argument
         if(duration <= 0)
@@ -283,12 +284,15 @@ public class GpioPinImpl implements GpioPin,
 
             // end the pulse state
             setState(PinState.getInverseState(pulseState));
+            
+            // we are done; no future is returned for blocking pulses
+            return null;
         }
         else {            
             // if this is not a blocking call, then setup the pulse 
             // instruction to be completed in a background worker
             // thread pool using a scheduled executor 
-            GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
+            return GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
         }
     }
     

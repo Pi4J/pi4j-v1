@@ -1,5 +1,7 @@
 package com.pi4j.io.gpio;
 
+import java.util.concurrent.Future;
+
 /*
  * #%L
  * **********************************************************************
@@ -42,10 +44,10 @@ public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput {
     void blink(long delay, PinState blinkState);
     void blink(long delay, long duration);
     void blink(long delay, long duration, PinState blinkState);
-    void pulse(long duration);    
-    void pulse(long duration, boolean blocking);    
-    void pulse(long duration, PinState pulseState);
-    void pulse(long duration, PinState pulseState, boolean blocking);
+    Future<?> pulse(long duration);    
+    Future<?> pulse(long duration, boolean blocking);    
+    Future<?> pulse(long duration, PinState pulseState);
+    Future<?> pulse(long duration, PinState pulseState, boolean blocking);
     void setState(PinState state);
     void setState(boolean state);
 
