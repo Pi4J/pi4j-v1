@@ -4,8 +4,8 @@ package com.pi4j.temperature;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerState.java  
+ * PROJECT       :  Pi4J :: Java Library (Core)
+ * FILENAME      :  TemperatureScale.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/

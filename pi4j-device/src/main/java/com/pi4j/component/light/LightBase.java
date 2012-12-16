@@ -1,13 +1,11 @@
 package com.pi4j.component.light;
 
-import com.pi4j.component.ComponentBase;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  LightBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,8 +27,10 @@ import com.pi4j.component.ComponentBase;
  * #L%
  */
 
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 
-public abstract class LightBase extends ComponentBase implements Light {
+public abstract class LightBase extends ObserveableComponentBase implements Light {
     
     @Override
     public abstract void on();
@@ -45,5 +45,20 @@ public abstract class LightBase extends ComponentBase implements Light {
     public boolean isOff() {
         return (!isOn());
     }
-    
+ 
+    @Override
+    public void addListener(LightListener... listener) {
+        super.addListener(listener);
+    }
+
+    @Override
+    public synchronized void removeListener(LightListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(LightStateChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((LightListener)listener).onStateChange(event);
+        }
+    }     
 }

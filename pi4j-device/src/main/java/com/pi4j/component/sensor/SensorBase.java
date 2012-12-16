@@ -1,13 +1,14 @@
 package com.pi4j.component.sensor;
 
-import com.pi4j.component.ComponentBase;
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  SensorBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +31,7 @@ import com.pi4j.component.ComponentBase;
  */
 
 
-public abstract class SensorBase extends ComponentBase implements Sensor {
+public abstract class SensorBase extends ObserveableComponentBase implements Sensor {
     
     @Override
     public boolean isOpen() {
@@ -44,5 +45,20 @@ public abstract class SensorBase extends ComponentBase implements Sensor {
 
     @Override
     public abstract SensorState getState();
+    
+    @Override
+    public void addListener(SensorListener... listener) {
+        super.addListener(listener);
+    }
 
+    @Override
+    public synchronized void removeListener(SensorListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(SensorStateChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((SensorListener)listener).onStateChange(event);
+        }
+    }    
 }

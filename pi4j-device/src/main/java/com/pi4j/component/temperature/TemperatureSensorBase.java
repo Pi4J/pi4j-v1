@@ -1,6 +1,7 @@
 package com.pi4j.component.temperature;
 
-import com.pi4j.component.ComponentBase;
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 import com.pi4j.temperature.TemperatureConversion;
 import com.pi4j.temperature.TemperatureScale;
 
@@ -9,7 +10,7 @@ import com.pi4j.temperature.TemperatureScale;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  TemperatureSensorBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -31,7 +32,7 @@ import com.pi4j.temperature.TemperatureScale;
  * #L%
  */
 
-public abstract class TemperatureSensorBase extends ComponentBase implements TemperatureSensor {
+public abstract class TemperatureSensorBase extends ObserveableComponentBase implements TemperatureSensor {
 
     @Override
     public abstract double getTemperature();
@@ -43,4 +44,20 @@ public abstract class TemperatureSensorBase extends ComponentBase implements Tem
     public double getTemperature(TemperatureScale scale) {
         return TemperatureConversion.convert(getScale(), scale, getTemperature());
     }    
+    
+    @Override
+    public void addListener(TemperatureListener... listener) {
+        super.addListener(listener);
+    }
+
+    @Override
+    public synchronized void removeListener(TemperatureListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(TemperatureChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((TemperatureListener)listener).onTemperatureChange(event);
+        }
+    } 
 }

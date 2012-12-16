@@ -1,11 +1,11 @@
-package com.pi4j.component.power.impl;
+package com.pi4j.component.light.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  GpioPowerController.java  
+ * FILENAME      :  GpioLightComponent.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,12 +28,12 @@ package com.pi4j.component.power.impl;
  */
 
 
-import com.pi4j.component.power.PowerBase;
-import com.pi4j.component.power.PowerState;
+import com.pi4j.component.light.LightBase;
+import com.pi4j.component.light.LightStateChangeEvent;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioPowerController extends PowerBase {
+public class GpioLightComponent extends LightBase {
     
     // internal class members
     GpioPinDigitalOutput pin = null;
@@ -42,13 +42,13 @@ public class GpioPowerController extends PowerBase {
     
     /**
      * using this constructor requires that the consumer 
-     *  define the POWER ON and POWER OFF pin states 
+     *  define the LIGHT ON and LIGHT OFF pin states 
      *  
      * @param pin GPIO digital output pin
      * @param onState pin state to set when power is ON
      * @param offState pin state to set when power is OFF
      */
-    public GpioPowerController(GpioPinDigitalOutput pin, PinState onState, PinState offState) {
+    public GpioLightComponent(GpioPinDigitalOutput pin, PinState onState, PinState offState) {
         this.pin = pin;
         this.onState = onState;
         this.offState = offState;
@@ -56,54 +56,53 @@ public class GpioPowerController extends PowerBase {
 
     /**
      * default constructor; using this constructor assumes that:
-     *  (1) a pin state of HIGH is POWER ON
-     *  (2) a pin state of LOW  is POWER OFF
+     *  (1) a pin state of HIGH is LIGHT ON
+     *  (2) a pin state of LOW  is LIGHT OFF
      *  
      * @param pin GPIO digital output pin
      */
-    public GpioPowerController(GpioPinDigitalOutput pin) {
+    public GpioLightComponent(GpioPinDigitalOutput pin) {
         this.pin = pin;        
     }
+    
+    /**
+     * Set the current GPIO digital output pin state
+     * based for LIGHT ON 
+     */
+    @Override
+    public void on()
+    {
+        // turn the light ON by settings the GPIO pin to the on state
+        pin.setState(onState);
+
+        // notify any power state change listeners
+        notifyListeners(new LightStateChangeEvent(this, true));
+    }
+
+    /**
+     * Set the current GPIO digital output pin state
+     * based for LIGHT OFF 
+     */
+    @Override
+    public void off()
+    {
+        // turn the light OFF by settings the GPIO pin to the off state
+        pin.setState(offState);
+
+        // notify any power state change listeners
+        notifyListeners(new LightStateChangeEvent(this, false));
+    }
+
 
     /**
      * Return the current power state based on the  
      * GPIO digital output pin state.
      *  
-     * @return PowerState 
+     * @return boolean is light on 
      */
     @Override
-    public PowerState getState() {
-        if(pin.isState(onState))
-            return PowerState.ON;
-        else if(pin.isState(offState))
-            return PowerState.OFF;
-        else
-            return PowerState.UNKNOWN;
+    public boolean isOn()
+    {
+        return pin.isState(onState);
     }
-
-    /**
-     * Set the current GPIO digital output pin state
-     * based on the supplied power state
-     * 
-     * @param state new power state to apply
-     */
-    @Override
-    public void setState(PowerState state) {
-        switch(state) {
-            case OFF: {
-                if(!isOff())
-                    pin.setState(offState);
-                break;
-            }
-            case ON: {
-                if(!isOn())
-                    pin.setState(onState);
-                break;
-            }
-            default: {
-                throw new UnsupportedOperationException("Cannot set power state: " + state.toString());
-            }
-        }
-    }
-    
 }

@@ -1,13 +1,14 @@
 package com.pi4j.component.power;
 
-import com.pi4j.component.ComponentBase;
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  PowerBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +31,7 @@ import com.pi4j.component.ComponentBase;
  */
 
 
-public abstract class PowerBase extends ComponentBase implements Power {
+public abstract class PowerBase extends ObserveableComponentBase implements Power {
     
     @Override
     public void on() {
@@ -58,4 +59,19 @@ public abstract class PowerBase extends ComponentBase implements Power {
     @Override
     public abstract void setState(PowerState state);
     
+    @Override
+    public void addListener(PowerListener... listener) {
+        super.addListener(listener);
+    }
+
+    @Override
+    public synchronized void removeListener(PowerListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(PowerStateChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((PowerListener)listener).onStateChange(event);
+        }
+    }    
 }

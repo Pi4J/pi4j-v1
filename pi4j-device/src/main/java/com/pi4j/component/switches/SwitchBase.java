@@ -1,13 +1,14 @@
 package com.pi4j.component.switches;
 
-import com.pi4j.component.ComponentBase;
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  SwitchBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +31,7 @@ import com.pi4j.component.ComponentBase;
  */
 
 
-public abstract class SwitchBase extends ComponentBase implements Switch {
+public abstract class SwitchBase extends ObserveableComponentBase implements Switch {
     
     @Override
     public boolean isOn() {
@@ -45,4 +46,20 @@ public abstract class SwitchBase extends ComponentBase implements Switch {
     @Override
     public abstract SwitchState getState();
     
+    
+    @Override
+    public void addListener(SwitchListener... listener) {
+        super.addListener(listener);
+    }
+
+    @Override
+    public synchronized void removeListener(SwitchListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(SwitchStateChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((SwitchListener)listener).onStateChange(event);
+        }
+    }        
 }
