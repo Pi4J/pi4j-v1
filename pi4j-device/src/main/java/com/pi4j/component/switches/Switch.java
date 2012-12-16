@@ -28,12 +28,14 @@ package com.pi4j.component.switches;
  */
 
 
-import com.pi4j.component.Component;
+import com.pi4j.component.ObserveableComponent;
 
-public interface Switch extends Component {
+public interface Switch extends ObserveableComponent {
     
     boolean isOn();
     boolean isOff();
     SwitchState getState();
-    
+ 
+    void addListener(SwitchListener... listener);
+    void removeListener(SwitchListener... listener);
 }

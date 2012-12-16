@@ -1,13 +1,14 @@
 package com.pi4j.component.relay;
 
-import com.pi4j.component.ComponentBase;
+import com.pi4j.component.ComponentListener;
+import com.pi4j.component.ObserveableComponentBase;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerControllerBase.java  
+ * FILENAME      :  RelayBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +31,7 @@ import com.pi4j.component.ComponentBase;
  */
 
 
-public abstract class RelayBase extends ComponentBase implements Relay {
+public abstract class RelayBase extends ObserveableComponentBase implements Relay {
     
     @Override
     public void open() {
@@ -58,4 +59,19 @@ public abstract class RelayBase extends ComponentBase implements Relay {
     @Override
     public abstract void setState(RelayState state);
     
+    @Override
+    public void addListener(RelayListener... listener) {
+        super.addListener(listener);
+    }
+
+    @Override
+    public synchronized void removeListener(RelayListener... listener) {
+        super.removeListener(listener);
+    }
+
+    protected synchronized void notifyListeners(RelayStateChangeEvent event) {
+        for(ComponentListener listener : super.listeners) {
+            ((RelayListener)listener).onStateChange(event);
+        }
+    } 
 }

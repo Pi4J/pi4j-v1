@@ -1,13 +1,13 @@
 package com.pi4j.component.power;
 
-import com.pi4j.component.Component;
+import com.pi4j.component.ObserveableComponent;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PowerController.java  
+ * FILENAME      :  Power.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +30,7 @@ import com.pi4j.component.Component;
  */
 
 
-public interface Power extends Component {
+public interface Power extends ObserveableComponent {
     
     void on();
     void off();
@@ -39,4 +39,6 @@ public interface Power extends Component {
     PowerState getState();
     void setState(PowerState state);
     
+    void addListener(PowerListener... listener);
+    void removeListener(PowerListener... listener);
 }
