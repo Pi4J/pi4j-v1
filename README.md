@@ -63,6 +63,7 @@ Copyright (C) 2012 Pi4J
    *  Added Google Groups discussion forum to project docs. 
    *  Added getTag() and setTag() to GpioPin interface and impl. 
    *  Added TemperatureConversion utility. 
+   *  Added optional blocking argument to GpioPin pulse method to support blocking pulse invocations 
 
 ## RELEASES
 

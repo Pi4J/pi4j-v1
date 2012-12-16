@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.management.RuntimeErrorException;
+
 import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioController;
@@ -246,12 +248,50 @@ public class GpioPinImpl implements GpioPin,
     
     @Override
     public void pulse(long duration) {
-        pulse(duration, PinState.HIGH);
+        pulse(duration, false);
     }
 
     @Override
     public void pulse(long duration, PinState pulseState) {
-        GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
+        pulse(duration, pulseState, false);
+    }
+    
+    @Override
+    public void pulse(long duration, boolean blocking) {
+        pulse(duration, PinState.HIGH, blocking);
+    }
+
+    @Override
+    public void pulse(long duration, PinState pulseState, boolean blocking) {
+        
+        // validate duration argument
+        if(duration <= 0)
+            throw new IllegalArgumentException("Pulse duration must be greater than 0 milliseconds.");
+        
+        // if this is a blocking pulse, then execute the pulse 
+        // and sleep the caller's thread to block the operation 
+        // until the pulse is complete
+        if(blocking) {
+            // start the pulse state
+            setState(pulseState);
+            
+            // block the current thread for the pulse duration 
+            try {
+                Thread.sleep(duration);
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException("Pulse blocking thread interrupted.", e);
+            }
+
+            // end the pulse state
+            setState(PinState.getInverseState(pulseState));
+        }
+        else {            
+            // if this is not a blocking call, then setup the pulse 
+            // instruction to be completed in a background worker
+            // thread pool using a scheduled executor 
+            GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
+        }
     }
     
     @Override
@@ -486,4 +526,5 @@ public class GpioPinImpl implements GpioPin,
         shutdownOptions.setMode(mode);
         shutdownOptions.setPullResistor(resistance);
     }
+
 }
