@@ -153,14 +153,6 @@
 			</modules>
 		</profile>
 
-		<!-- SPECIAL PROFILE TO BUILD .DEB DISTRIBUTION PROJECT -->
-		<profile>
-			<id>distro</id>
-			<modules>
-				<module>pi4j-distribution</module>
-			</modules>
-		</profile>
-
 		<!-- SPECIAL PROFILE FOR RELEASE DEPLOYMENT BUILDS -->
 		<profile>
 			<id>release</id>
@@ -193,6 +185,19 @@
 					</plugin>				
 				</plugins>
 			</build>
+			<repositories>
+				<repository>
+					<id>sonatype-oss-staging</id>
+					<name>Sonatype Open Source Maven Repository</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
 		</profile>
 
 	</profiles>
@@ -340,25 +345,6 @@
 					<message>Generating site content for ${project.version}</message>
 				</configuration>
 			</plugin>
-
-			<!-- DEPLOY DOWNLOADABLE ARTIFACTS TO GITHUB !! GITHUB HAS DEPRECATED 
-				DOWNLOADS !! -->
-			<!-- <plugin> -->
-			<!-- <groupId>com.github.github</groupId> -->
-			<!-- <artifactId>downloads-maven-plugin</artifactId> -->
-			<!-- <version>0.5</version> -->
-			<!-- <configuration> -->
-			<!-- <description>${project.version} build of the Pi4J Library for the -->
-			<!-- Raspberry Pi</description> -->
-			<!-- <override>true</override> -->
-			<!-- <repositoryOwner>Pi4J</repositoryOwner> -->
-			<!-- <repositoryName>pi4j</repositoryName> -->
-			<!-- <includeAttached>true</includeAttached> -->
-			<!-- <includes> -->
-			<!-- <include>pi4j-core*</include> -->
-			<!-- </includes> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
 
 			<!-- ATTACH LICENSE AS ARTIFACT -->
 			<plugin>
@@ -667,17 +653,6 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>sonatype-oss-staging</id>
-			<name>Sonatype Open Source Maven Repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>

@@ -238,45 +238,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
-			<!-- DEPLOY DOWNLOADABLE ARTIFACTS TO GOOGLE CODE -->
-			<!-- http://code.google.com/p/maven-gcu-plugin/wiki/Usage -->
-            <plugin>
-                <groupId>com.googlecode.maven-gcu-plugin</groupId>
-                <artifactId>maven-gcu-plugin</artifactId>
-                <configuration>
-                    <serverId>googlecode</serverId>
-                    <failsOnError>true</failsOnError>
-                    <projectName>pi4j</projectName>
-                    <uploads>
-                         <upload>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-sources.${project.packaging}</file>
-                            <summary>${project.version} sources of the Pi4J Library for the Raspberry Pi</summary>
-                            <labels>
-                                <label>Type-Source</label>
-                                <label>${googlecode.upload.label}</label>
-                            </labels>
-                         </upload>
-                         <upload>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-javadoc.${project.packaging}</file>
-                            <summary>${project.version} documentation of the Pi4J Library for the Raspberry Pi</summary>
-                            <labels>
-                                <label>Type-Docs</label>
-                                <label>${googlecode.upload.label}</label>
-                            </labels>
-                         </upload>
-                         <upload>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</file>
-                            <summary>${project.version} build of the Pi4J Library for the Raspberry Pi</summary>
-                            <labels>
-                                <label>Type-Archive</label>
-                                <label>${googlecode.upload.label}</label>
-                            </labels>
-                         </upload>
-                    </uploads>
-                </configuration>
-            </plugin>			
-
 		</plugins>
 
 		<pluginManagement>

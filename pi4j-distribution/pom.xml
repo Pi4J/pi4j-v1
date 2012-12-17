@@ -21,8 +21,32 @@
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-core</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-core</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-device</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-device</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-device</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
@@ -31,8 +55,32 @@
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-service</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-service</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-gpio-extension</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-gpio-extension</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-gpio-extension</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
@@ -44,6 +92,12 @@
 			<artifactId>pi4j-example</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-example</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 	</dependencies>
 
@@ -186,6 +240,11 @@
 									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
 								</data>
 								<data>
+									<src>${project.build.directory}/distro-contents/libs/pi4j-core.jar</src>
+									<type>file</type>
+									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
+								</data>
+								<data>
 									<src>${project.build.directory}/distro-contents/libs/pi4j-device.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-device.jar</dst>
@@ -268,25 +327,28 @@
 				</dependencies>
 			</plugin>
 
-			<!-- DEPLOY .DEB PACAKGE TO GITHUB DOWNLOADS PAGE -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>com.github.github</groupId> -->
-<!-- 				<artifactId>downloads-maven-plugin</artifactId> -->
-<!-- 				<version>0.5</version> -->
-<!-- 				<configuration> -->
-<!-- 					<description>Debian installer package of the Pi4J Library for the -->
-<!-- 						Raspberry Pi</description> -->
-<!-- 					<override>true</override> -->
-<!-- 					<repositoryOwner>Pi4J</repositoryOwner> -->
-<!-- 					<repositoryName>pi4j</repositoryName> -->
-<!-- 					<includeAttached>true</includeAttached> -->
-<!-- 					<includes> -->
-<!-- 						<include>pi4j-${project.version}.deb</include> -->
-<!-- 					</includes> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-			
-			
+			<!-- CREATE .ZIP PACKAGE OF Pi4J DISTRIBUTION -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>pi4j-${project.version}</finalName>
+					<descriptors>
+				    	<descriptor>src/assembly/distribution.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-distribution-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+        		</executions>				
+			</plugin>
+        			
 			<!-- DEPLOY .DEP PACKAGE TO GOOGLE CODE -->
 			<!-- http://code.google.com/p/maven-gcu-plugin/wiki/Usage -->
             <plugin>
@@ -303,6 +365,15 @@
                             <labels>
                                 <label>Featured</label>
                                 <label>Type-Package</label>
+                                <label>${googlecode.upload.label}</label>
+                            </labels>
+                         </upload>
+                         <upload>
+                            <file>${project.build.directory}/pi4j-${project.version}.zip</file>
+                            <summary>${project.version} archive package of the Pi4J Library for the Raspberry Pi</summary>
+                            <labels>
+                                <label>Featured</label>
+                                <label>Type-Archive</label>
                                 <label>${googlecode.upload.label}</label>
                             </labels>
                          </upload>
