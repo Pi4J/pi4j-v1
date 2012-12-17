@@ -66,12 +66,29 @@ Use the following Maven command to generate and deploy the project site document
 > mvn -N clean site ghSite:site
 
 
---------------------
-PUBLIC DEPLOYMENT
---------------------
+---------------------------
+PUBLIC SNAPSHOT DEPLOYMENT
+---------------------------
 
-Use the following series of instructions to publish a public deployment of the build:
+Use the following series of instructions to publish a public deployment of a snapshot build:
 
 > mvn clean deploy -P native -P soft-float -P hard-float
-> mvn clean install gcu:upload --projects pi4j-core,pi4j-distribution
+> mvn gcu:upload --projects pi4j-core,pi4j-distribution
 > mvn -N clean site ghSite:site
+
+
+---------------------------
+PUBLIC RELEASE DEPLOYMENT
+---------------------------
+
+Use the following series of instructions to publish a public deployment of a release build:
+
+- remove "-SNAPSHOT" from all project pom.xml files
+
+> mvn clean deploy -Drelease-build -Dgpg.passphrase=your-passphrase
+> mvn gcu:upload   -Drelease-build --projects pi4j-distribution
+> mvn -N clean site ghSite:site
+
+- create source tag for release
+- send release notification via @Pi4J on Twitter
+- create next development source branch

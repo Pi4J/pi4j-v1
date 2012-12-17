@@ -29,7 +29,7 @@ Installation
   
   This will install the Pi4J libraries and example source files to: \
   <<</opt/pi4j/lib>>> \
-  <<</opt/pi4j/example>>>
+  <<</opt/pi4j/examples>>>
 
   When attempting to compile a Java program using the Pi4J libraries, make sure to include the Pi4J lib folder in the classpath: \
   <<<javac -classpath .:classes:/opt/pi4j/lib/'*' ... >>>
