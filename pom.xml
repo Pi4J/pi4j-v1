@@ -116,6 +116,9 @@
 		<!-- GITHUB PROPERTIES -->
 		<github.global.server>github</github.global.server>
 
+		<!-- GOOGLE CODE UPLOAD FILE LABEL -->
+		<googlecode.upload.label>SNAPSHOT</googlecode.upload.label>
+
 	</properties>
 
 	<!-- BUILD PROFILES -->
@@ -140,6 +143,11 @@
 		<!-- SPECIAL PROFILE TO BUILD JNI NATIVE LIBRARY -->
 		<profile>
 			<id>native</id>
+			<activation>
+				<property>
+					<name>release-build</name>
+				</property>
+			</activation>
 			<modules>
 				<module>pi4j-native</module>
 			</modules>
@@ -151,6 +159,40 @@
 			<modules>
 				<module>pi4j-distribution</module>
 			</modules>
+		</profile>
+
+		<!-- SPECIAL PROFILE FOR RELEASE DEPLOYMENT BUILDS -->
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>release-build</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- GOOGLE CODE UPLOAD FILE LABEL -->
+				<googlecode.upload.label>RELEASE</googlecode.upload.label>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<keyname>Robert Savage (Pi4J GPG Key) &lt;robert@pi4j.com&gt;</keyname>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>				
+				</plugins>
+			</build>
 		</profile>
 
 	</profiles>
@@ -180,7 +222,7 @@
 					<goals>install</goals>
 				</configuration>
 			</plugin>
-      
+
 			<!-- GENERATE LICENSE FILE IN PROJECT ROOT -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -353,28 +395,29 @@
 				<inherited>false</inherited>
 			</plugin>
 
-     			<!-- TWEET PROJECT DEPLOYMENT ANNOUNCEMENT --> 
-<!-- 			<plugin> -->
-<!-- 				<groupId>com.vineetmanohar</groupId> -->
-<!-- 				<artifactId>maven-twitter-plugin</artifactId> -->
-<!-- 				<version>0.2</version> -->
+			<!-- TWEET PROJECT DEPLOYMENT ANNOUNCEMENT -->
+			<!-- <plugin> -->
+			<!-- <groupId>com.vineetmanohar</groupId> -->
+			<!-- <artifactId>maven-twitter-plugin</artifactId> -->
+			<!-- <version>0.2</version> -->
 
-<!-- 				<executions> -->
-<!-- 					phase: deploy -->
-<!-- 					<execution> -->
-<!-- 						<configuration> -->
-<!-- 							Tell users that the project is deployed -->
-<!-- 							<twitterStatus>#Pi4J build ${project.version} has been deployed to the repository.</twitterStatus> -->
-<!-- 						</configuration> -->
-<!-- 						<id>deploy</id> -->
-<!-- 						<phase>deploy</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>tweet</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
-			
+			<!-- <executions> -->
+			<!-- phase: deploy -->
+			<!-- <execution> -->
+			<!-- <configuration> -->
+			<!-- Tell users that the project is deployed -->
+			<!-- <twitterStatus>#Pi4J build ${project.version} has been deployed to 
+				the repository.</twitterStatus> -->
+			<!-- </configuration> -->
+			<!-- <id>deploy</id> -->
+			<!-- <phase>deploy</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>tweet</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+
 		</plugins>
 
 		<pluginManagement>
@@ -619,9 +662,22 @@
 			<id>oss-snapshots-repo</id>
 			<name>Sonatype OSS Maven Repository</name>
 			<url>https://oss.sonatype.org/content/groups/public</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>sonatype-oss-staging</id>
+			<name>Sonatype Open Source Maven Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>

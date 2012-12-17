@@ -303,7 +303,7 @@
                             <labels>
                                 <label>Featured</label>
                                 <label>Type-Package</label>
-                                <label>RELEASE</label>
+                                <label>${googlecode.upload.label}</label>
                             </labels>
                          </upload>
                     </uploads>

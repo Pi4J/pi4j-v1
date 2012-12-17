@@ -88,6 +88,11 @@
 		
 		<profile>
 			<id>soft-float</id>
+			<activation>
+			  <property>
+			    <name>release-build</name>
+			  </property>
+			</activation>			
 			<properties>
 				<pi.build.soft-float>true</pi.build.soft-float>
 			</properties>
@@ -122,6 +127,11 @@
 
 		<profile>
 			<id>hard-float</id>
+			<activation>
+			  <property>
+			    <name>release-build</name>
+			  </property>
+			</activation>						
 			<properties>
 				<pi.build.hard-float>true</pi.build.hard-float>
 			</properties>

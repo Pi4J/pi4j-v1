@@ -254,7 +254,7 @@
                             <summary>${project.version} sources of the Pi4J Library for the Raspberry Pi</summary>
                             <labels>
                                 <label>Type-Source</label>
-                                <label>RELEASE</label>
+                                <label>${googlecode.upload.label}</label>
                             </labels>
                          </upload>
                          <upload>
@@ -262,7 +262,7 @@
                             <summary>${project.version} documentation of the Pi4J Library for the Raspberry Pi</summary>
                             <labels>
                                 <label>Type-Docs</label>
-                                <label>RELEASE</label>
+                                <label>${googlecode.upload.label}</label>
                             </labels>
                          </upload>
                          <upload>
@@ -270,7 +270,7 @@
                             <summary>${project.version} build of the Pi4J Library for the Raspberry Pi</summary>
                             <labels>
                                 <label>Type-Archive</label>
-                                <label>RELEASE</label>
+                                <label>${googlecode.upload.label}</label>
                             </labels>
                          </upload>
                     </uploads>
