@@ -41,6 +41,11 @@ Copyright (C) 2012 Pi4J
    *  Create device abstraction implementations
    *  Create pi4j-api library and move interfaces there
 
+## IN DEVELOPMENT
+
+2012-12-16 :: 0.0.5-SNAPSHOT
+
+
 ## RELEASES
 
 2012-12-16 :: 0.0.4
