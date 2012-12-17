@@ -43,7 +43,7 @@ Copyright (C) 2012 Pi4J
 
 ## RELEASES
 
-2012-12-16 :: 0.0.4-SNAPSHOT
+2012-12-16 :: 0.0.4
  
    *  Added support for building a Pi4J .deb installer package for Debian/Raspian Linux distribution. (BETA)
    *  Modified NetworkInfo static methods to permit empty array return values when a network property cannot be obtained.
