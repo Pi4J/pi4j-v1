@@ -21,6 +21,7 @@
 			<version>${project.version}</version>
 			<type>so</type>
 			<classifier>hard-float</classifier>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
@@ -28,6 +29,7 @@
 			<version>${project.version}</version>
 			<type>so</type>
 			<classifier>soft-float</classifier>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
