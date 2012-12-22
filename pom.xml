@@ -128,7 +128,7 @@
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
+				<pi.host.hard-float>pi-512-wifi</pi.host.hard-float>
 				<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
 			</properties>
 			<activation>

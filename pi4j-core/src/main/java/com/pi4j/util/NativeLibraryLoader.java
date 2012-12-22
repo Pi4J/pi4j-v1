@@ -81,7 +81,7 @@ public class NativeLibraryLoader {
                 catch (IOException e) {} 
             }
         }
-
+        
         // debug
         if (fileName == null || fileName.length() == 0) {
             logger.fine("Load library [" + libraryName + "] (no alternate embedded file provided)");
@@ -117,7 +117,7 @@ public class NativeLibraryLoader {
                 // if a filename was not provided, then throw exception
                 if (fileName == null) {
                     // debug
-                    logger.severe("Library [" + libraryName + "] could not be using the System.loadLibrary(name) method and no embedded file path was provided as an auxillary lookup.");                            
+                    logger.severe("Library [" + libraryName + "] could not be located using the System.loadLibrary(name) method and no embedded file path was provided as an auxillary lookup.");                            
 
                     // library load failed, remove from tracking collection
                     loadedLibraries.remove(libraryName);
@@ -125,22 +125,39 @@ public class NativeLibraryLoader {
                 }
 
                 // debug
-                logger.fine("Library [" + libraryName + "] could not be using the System.loadLibrary(name) method; attempting to resolve the library using embedded resources in the JAR file.");                            
+                logger.fine("Library [" + libraryName + "] could not be located using the System.loadLibrary(name) method; attempting to resolve the library using embedded resources in the JAR file.");                            
 
                 
                 // ---------------------------------------------
                 // ATTEMPT LOAD BASED ON EDUCATED GUESS OF ABI
                 // ---------------------------------------------
                 
+                // check for system properties
+                boolean armhf_force = false;
+                if(System.getProperty("pi4j.armhf") != null)
+                    armhf_force = true; 
+                boolean armel_force = false;
+                if(System.getProperty("pi4j.armel") != null)
+                    armel_force = true; 
+                        
                 URL resourceUrl;
                 
                 // first attempt to determine if we are running on a hard float (armhf) based system  
-                if(SystemInfo.isHardFloatAbi()) {
+                if(armhf_force) {
                     // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
                     resourceUrl = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
-                } else {
+                } else if(armel_force){
                     // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
                     resourceUrl = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
+                } else {                
+                    logger.fine("AUTO-DETECTED HARD-FLOAT ABI : " + SystemInfo.isHardFloatAbi());
+                    if(SystemInfo.isHardFloatAbi()) {
+                        // attempt to get the native library from the JAR file in the 'lib/hard-float' directory
+                        resourceUrl = NativeLibraryLoader.class.getResource("/lib/hard-float/" + fileName);
+                    } else {
+                        // attempt to get the native library from the JAR file in the 'lib/soft-float' directory
+                        resourceUrl = NativeLibraryLoader.class.getResource("/lib/soft-float/" + fileName);
+                    }
                 }
                 
                 try {               
@@ -149,7 +166,9 @@ public class NativeLibraryLoader {
                     
                     // debug
                     logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrl.toString() + "]");
-                } catch(Exception ex) {
+                } 
+                
+                catch(Exception|UnsatisfiedLinkError ex) {
                     // ---------------------------------------------
                     // ATTEMPT LOAD BASED USING HARD-FLOAT (armhf)
                     // ---------------------------------------------
@@ -313,3 +332,4 @@ public class NativeLibraryLoader {
         }
     }
 }
+
