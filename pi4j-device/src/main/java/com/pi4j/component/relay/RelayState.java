@@ -31,6 +31,13 @@ package com.pi4j.component.relay;
 public enum RelayState {
     
     OPEN,
-    CLOSED
+    CLOSED;
+    
+    public static RelayState getInverseState(RelayState state) {
+        if(state.equals(OPEN))
+            return CLOSED;
+        else
+            return OPEN;
+    }
     
 }

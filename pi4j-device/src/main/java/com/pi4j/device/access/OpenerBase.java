@@ -35,10 +35,10 @@ import com.pi4j.device.access.OpenerState;
 public abstract class OpenerBase extends ObserveableDeviceBase implements Opener
 {
     @Override
-    public abstract void open();
+    public abstract void open() throws OpenerLockedException;
 
     @Override
-    public abstract void close();
+    public abstract void close() throws OpenerLockedException;
 
     @Override
     public abstract OpenerState getState();

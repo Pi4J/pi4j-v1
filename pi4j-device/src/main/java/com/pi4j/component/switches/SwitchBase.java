@@ -46,6 +46,10 @@ public abstract class SwitchBase extends ObserveableComponentBase implements Swi
     @Override
     public abstract SwitchState getState();
     
+    @Override
+    public boolean isState(SwitchState state) {
+        return getState().equals(state);
+    }
     
     @Override
     public void addListener(SwitchListener... listener) {

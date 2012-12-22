@@ -38,6 +38,10 @@ public interface Relay extends ObserveableComponent {
     boolean isClosed();
     RelayState getState();
     void setState(RelayState state);
+    boolean isState(RelayState state);
+    void toggle();
+    void pulse();
+    void pulse(int milliseconds);
 
     void addListener(RelayListener... listener);
     void removeListener(RelayListener... listener);    

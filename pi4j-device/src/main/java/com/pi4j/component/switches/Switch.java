@@ -35,6 +35,7 @@ public interface Switch extends ObserveableComponent {
     boolean isOn();
     boolean isOff();
     SwitchState getState();
+    boolean isState(SwitchState state);
  
     void addListener(SwitchListener... listener);
     void removeListener(SwitchListener... listener);

@@ -47,6 +47,11 @@ public abstract class SensorBase extends ObserveableComponentBase implements Sen
     public abstract SensorState getState();
     
     @Override
+    public boolean isState(SensorState state) {
+        return getState().equals(state);
+    }
+    
+    @Override
     public void addListener(SensorListener... listener) {
         super.addListener(listener);
     }

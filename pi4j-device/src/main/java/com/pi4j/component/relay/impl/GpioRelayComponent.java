@@ -115,4 +115,9 @@ public class GpioRelayComponent extends RelayBase {
             }
         }
     }
+
+    @Override
+    public void pulse(int milliseconds) {
+        pin.pulse(milliseconds, closedState);
+    }
 }

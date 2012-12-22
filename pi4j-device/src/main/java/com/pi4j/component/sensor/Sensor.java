@@ -35,6 +35,7 @@ public interface Sensor extends ObserveableComponent {
     boolean isOpen();
     boolean isClosed();
     SensorState getState();
+    boolean isState(SensorState state);
 
     void addListener(SensorListener... listener);
     void removeListener(SensorListener... listener);
