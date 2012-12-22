@@ -37,6 +37,7 @@ import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinInput;
@@ -55,6 +56,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
 public class GpioPinImpl implements GpioPin, 
                                     GpioPinDigitalInput, 
                                     GpioPinDigitalOutput, 
+                                    GpioPinDigitalMultipurpose,
                                     GpioPinAnalogInput, 
                                     GpioPinAnalogOutput,
                                     GpioPinPwmOutput,

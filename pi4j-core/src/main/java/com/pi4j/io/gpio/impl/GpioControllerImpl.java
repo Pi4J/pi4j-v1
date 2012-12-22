@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.GpioPinAnalog;
 import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinDigital;
 import com.pi4j.io.gpio.GpioFactory;
@@ -533,6 +534,58 @@ public class GpioControllerImpl implements GpioController {
     public GpioPin provisionPin(Pin pin, PinMode mode) {
         return provisionPin(defaultProvider, pin, mode);
     }
+    
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(GpioProvider provider, Pin pin, String name, PinMode mode) {
+        // return new new pin instance
+        return (GpioPinDigitalMultipurpose)provisionPin(provider, pin, name, mode);
+    }
+
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(GpioProvider provider, Pin pin, PinMode mode) {
+        // return new new pin instance
+        return (GpioPinDigitalMultipurpose)provisionPin(provider, pin, mode);
+    }
+    
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, String name, PinMode mode) {
+        return provisionDigitalMultipurposePin(defaultProvider, pin, name, mode);
+    }
+    
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, PinMode mode) {
+        return provisionDigitalMultipurposePin(defaultProvider, pin, mode);
+    }
+
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(GpioProvider provider, Pin pin, PinMode mode, PinPullResistance resistance) {
+        // create new GPIO pin instance
+        return provisionDigitalMultipurposePin(provider, pin, pin.getName(), mode, resistance);
+    }
+    
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(GpioProvider provider, Pin pin, String name, PinMode mode, PinPullResistance resistance) {
+        // create new GPIO pin instance
+        GpioPinDigitalMultipurpose gpioPin = provisionDigitalMultipurposePin(provider, pin, name, mode);
+
+        // set the gpio pull resistor
+        if (resistance != null) {
+            gpioPin.setPullResistance(resistance);
+        }
+        // return new new pin instance
+        return gpioPin;
+    }
+
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, String name, PinMode mode, PinPullResistance resistance) {
+        return provisionDigitalMultipurposePin(defaultProvider, pin, name, mode, resistance);
+    }
+
+    @Override
+    public GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, PinMode mode, PinPullResistance resistance) {
+        return provisionDigitalMultipurposePin(defaultProvider, pin, mode, resistance);
+    }
+    
     
     @Override
     public GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, String name) {
