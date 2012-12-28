@@ -45,6 +45,8 @@ Copyright (C) 2012 Pi4J
 
 2012-12-16 :: 0.0.5-SNAPSHOT
 
+  *  Added support for PCF8574 GpioProvider
+  *  Added sample code for using PCF8574 GpioProvider
 
 ## RELEASES
 

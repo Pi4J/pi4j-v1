@@ -1,4 +1,4 @@
-package com.pi4j.gpio.extension.mcp;
+package com.pi4j.gpio.extension.microchip;
 
 import java.io.IOException;
 
@@ -62,7 +62,7 @@ import com.pi4j.io.i2c.I2CFactory;
  */
 public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider
 {
-    public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23017GpioProvider";
+    public static final String NAME = "com.pi4j.gpio.extension.microchip.MCP23017GpioProvider";
     public static final String DESCRIPTION = "MCP23017 GPIO Provider";
     public static final int DEFAULT_ADDRESS = 0x20;
 
