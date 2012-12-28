@@ -95,6 +95,9 @@ public class PCF8574GpioExample
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_05, PinState.LOW),
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_06, PinState.LOW)
           };
+
+        // on program shutdown, set the pins back to their default state: HIGH 
+        gpio.setShutdownOptions(true, PinState.HIGH, myOutputs);
         
         // keep program running for 20 seconds
         for (int count = 0; count < 10; count++)
@@ -104,9 +107,6 @@ public class PCF8574GpioExample
             gpio.setState(false, myOutputs);
             Thread.sleep(1000);
         }
-        
-        // on program shutdown, set the pins HIGH 
-        gpio.setShutdownOptions(true, PinState.HIGH, myOutputs);
         
         // shutdown the GPIO provider
         gpioProvider.shutdown();
