@@ -66,15 +66,14 @@ public class PCF8574GpioExample
         final GpioController gpio = GpioFactory.getInstance();
         
         // create custom MCP23017 GPIO provider
-        final PCF8574GpioProvider gpioProvider = new PCF8574GpioProvider(I2CBus.BUS_0, PCF8574GpioProvider.PCF8574_0x20);
+        final PCF8574GpioProvider gpioProvider = new PCF8574GpioProvider(I2CBus.BUS_1, PCF8574GpioProvider.PCF8574A_0x3F);
         
         // provision gpio input pins from MCP23017
         GpioPinDigitalInput myInputs[] =
             {
                 gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_00),
                 gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_01),
-                gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_02),
-                gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_03)
+                gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_02)
             };
         
         // create and register gpio pin listener
@@ -94,8 +93,7 @@ public class PCF8574GpioExample
           { 
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_04, PinState.LOW),
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_05, PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_06, PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_07, PinState.LOW)
+            gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_06, PinState.LOW)
           };
         
         // keep program running for 20 seconds
@@ -106,6 +104,9 @@ public class PCF8574GpioExample
             gpio.setState(false, myOutputs);
             Thread.sleep(1000);
         }
+        
+        // on program shutdown, set the pins HIGH 
+        gpio.setShutdownOptions(true, PinState.HIGH, myOutputs);
         
         // shutdown the GPIO provider
         gpioProvider.shutdown();
