@@ -26,8 +26,8 @@
  */
 import java.io.IOException;
 
-import com.pi4j.gpio.extension.ti.PCF8574GpioProvider;
-import com.pi4j.gpio.extension.ti.PCF8574Pin;
+import com.pi4j.gpio.extension.pcf.PCF8574GpioProvider;
+import com.pi4j.gpio.extension.pcf.PCF8574Pin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;

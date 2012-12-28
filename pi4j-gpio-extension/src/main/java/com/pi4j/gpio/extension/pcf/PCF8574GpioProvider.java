@@ -1,4 +1,4 @@
-package com.pi4j.gpio.extension.ti;
+package com.pi4j.gpio.extension.pcf;
 
 /*
  * #%L
@@ -31,7 +31,6 @@ package com.pi4j.gpio.extension.ti;
 import java.io.IOException;
 import java.util.BitSet;
 
-import com.pi4j.gpio.extension.microchip.MCP23017Pin;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.GpioProviderBase;
 import com.pi4j.io.gpio.Pin;
@@ -100,17 +99,16 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         // create I2C device instance
         device = bus.getDevice(address);
 
-        // set all default pin states on power up
+        // set all default pin cache states to match documented chip power up states
         for(Pin pin : PCF8574Pin.ALL)
-            super.setState(pin, PinState.HIGH);
-        
-        // if the monitor has not been started, then start it now
-        if (monitor == null)
         {
-            // start monitoring thread            
-            monitor = new PCF8574GpioProvider.GpioStateMonitor(device);
-            monitor.start();
-        }        
+            getPinCache(pin).setState(PinState.HIGH);
+            currentStates.set(pin.getAddress(), true);
+        }
+        
+        // start monitoring thread            
+        monitor = new PCF8574GpioProvider.GpioStateMonitor(device);
+        monitor.start();
     }
 
 
@@ -254,7 +252,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                     {
                         if(pinStates.get(index) != currentStates.get(index))
                         {
-                            Pin pin = MCP23017Pin.ALL_B_PINS[index];
+                            Pin pin = PCF8574Pin.ALL[index];
                             PinState newState = (pinStates.get(index)) ? PinState.HIGH : PinState.LOW;
 
                             // cache state

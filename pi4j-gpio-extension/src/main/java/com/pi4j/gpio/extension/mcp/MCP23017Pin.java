@@ -1,4 +1,4 @@
-package com.pi4j.gpio.extension.microchip;
+package com.pi4j.gpio.extension.mcp;
 
 import java.util.EnumSet;
 import com.pi4j.io.gpio.Pin;

@@ -1,4 +1,4 @@
-package com.pi4j.gpio.extension.ti;
+package com.pi4j.gpio.extension.pcf;
 
 /*
  * #%L
