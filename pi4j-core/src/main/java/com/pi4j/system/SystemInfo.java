@@ -150,21 +150,92 @@ public class SystemInfo {
     }
     
     /*
-     * this method was derived from :: (project) jogamp / (developer) sgothel
+     * this method was partially derived from :: (project) jogamp / (developer) sgothel
      * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
      * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
      */
     public static boolean isHardFloatAbi() {
+        
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             private final String[] gnueabihf = new String[] { "gnueabihf", "armhf" };
             public Boolean run() {                    
                 if ( contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
                      contains(System.getProperty("java.library.path"), gnueabihf) ||
-                     contains(System.getProperty("java.home"), gnueabihf) ) {
-                    return true;
+                     contains(System.getProperty("java.home"), gnueabihf) || 
+                     getBashVersionInfo().contains("gnueabihf") ||
+                     hasReadElfTag("Tag_ABI_HardFP_use")) {
+                        return true; //
                 }
                 return false;
             } } );
+    }
+    
+    /*
+     * this method will to obtain the version info string from the 'bash' program
+     * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
+     */
+    public static String getBashVersionInfo() {
+        String versionInfo = "";
+        try {
+            
+            String cmd = "bash --version";
+            Process p = Runtime.getRuntime().exec(cmd); 
+            p.waitFor(); 
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream())); 
+            String line = reader.readLine();
+            if(p.exitValue() == 0) {
+                while(line != null) {
+                    if(!line.isEmpty()) { 
+                        versionInfo = line; // return only first output line of version info
+                        break;
+                    }
+                    line = reader.readLine();
+                }
+            }
+        }
+        catch (IOException ioe) { ioe.printStackTrace(); }
+        catch (InterruptedException ie) { ie.printStackTrace(); }
+        return versionInfo;
+    }
+
+    /*
+     * this method will determine if a specified tag exists from the elf info in the '/proc/self/exe' program
+     * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
+     */    
+    public static boolean hasReadElfTag(String tag) {
+        String tagValue = getReadElfTag(tag);
+        if(tagValue != null && !tagValue.isEmpty())
+            return true;
+        return false;
+    }
+    
+    /*
+     * this method will obtain a specified tag value from the elf info in the '/proc/self/exe' program
+     * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
+     */    
+    public static String getReadElfTag(String tag) {
+        String tagValue = null;
+        try {
+            String cmd = "/usr/bin/readelf -A /proc/self/exe";
+            Process p = Runtime.getRuntime().exec(cmd); 
+            p.waitFor();
+            if(p.exitValue() == 0) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream())); 
+                String line = reader.readLine();
+                while(line != null) {
+                    line = line.trim();
+                    if (line.startsWith(tag) && line.contains(":")) {
+                        String lineParts[] = line.split(":", 2);
+                        tagValue = lineParts[1].trim();
+                        break;
+                    }
+                    line = reader.readLine();
+                }
+            }
+        }
+        catch (IOException ioe) { ioe.printStackTrace(); }
+        catch (InterruptedException ie) { ie.printStackTrace(); }
+        return tagValue;
     }
     
     /*
