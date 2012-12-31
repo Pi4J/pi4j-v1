@@ -174,7 +174,7 @@ public class SystemInfo {
      * this method will to obtain the version info string from the 'bash' program
      * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
      */
-    public static String getBashVersionInfo() {
+    private static String getBashVersionInfo() {
         String versionInfo = "";
         try {
             
@@ -202,7 +202,7 @@ public class SystemInfo {
      * this method will determine if a specified tag exists from the elf info in the '/proc/self/exe' program
      * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
      */    
-    public static boolean hasReadElfTag(String tag) {
+    private static boolean hasReadElfTag(String tag) {
         String tagValue = getReadElfTag(tag);
         if(tagValue != null && !tagValue.isEmpty())
             return true;
@@ -213,7 +213,7 @@ public class SystemInfo {
      * this method will obtain a specified tag value from the elf info in the '/proc/self/exe' program
      * (this method is used to help determine the HARD-FLOAT / SOFT-FLOAT ABI of the system)
      */    
-    public static String getReadElfTag(String tag) {
+    private static String getReadElfTag(String tag) {
         String tagValue = null;
         try {
             String cmd = "/usr/bin/readelf -A /proc/self/exe";
@@ -226,7 +226,8 @@ public class SystemInfo {
                     line = line.trim();
                     if (line.startsWith(tag) && line.contains(":")) {
                         String lineParts[] = line.split(":", 2);
-                        tagValue = lineParts[1].trim();
+                        if(lineParts.length > 1)
+                            tagValue = lineParts[1].trim();
                         break;
                     }
                     line = reader.readLine();
