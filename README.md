@@ -47,6 +47,11 @@ Copyright (C) 2012 Pi4J
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
+  *  Fixed issue where hard-float ABI was not detected properly when using Oracle JDK 8 early access edition.
+     https://github.com/Pi4J/pi4j/issues/26
+  *  Added support for Motor and Stepper motor components. 
+  *  Added GPIO based stepper motor implementation and sample program. 
+  
 
 ## RELEASES
 
