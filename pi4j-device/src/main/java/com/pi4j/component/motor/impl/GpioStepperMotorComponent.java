@@ -35,12 +35,13 @@ import com.pi4j.io.gpio.PinState;
 public class GpioStepperMotorComponent extends StepperMotorBase {
     
     // internal class members
-    GpioPinDigitalOutput pins[];
-    PinState onState = PinState.HIGH;
-    PinState offState = PinState.LOW;
-    MotorState currentState = MotorState.STOP;
-    GpioStepperMotorControl controlThread = new GpioStepperMotorControl();
-    
+    private GpioPinDigitalOutput pins[];
+    private PinState onState = PinState.HIGH;
+    private PinState offState = PinState.LOW;
+    private MotorState currentState = MotorState.STOP;
+    private GpioStepperMotorControl controlThread = new GpioStepperMotorControl();
+    private int sequenceIndex = 0;
+
     /**
      * using this constructor requires that the consumer 
      *  define the STEP ON and STEP OFF pin states 
@@ -51,7 +52,6 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
      */
     public GpioStepperMotorComponent(GpioPinDigitalOutput pins[], PinState onState, PinState offState) {
         this.pins = pins;
-        this.stepCount = pins.length;
         this.onState = onState;
         this.offState = offState;
     }
@@ -65,7 +65,6 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
      */
     public GpioStepperMotorComponent(GpioPinDigitalOutput pins[]) {
         this.pins = pins;
-        this.stepCount = pins.length;
     }
 
     /**
@@ -85,6 +84,7 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
      */
     @Override
     public void setState(MotorState state) {
+        
         switch(state) {
             case STOP: {
                 // set internal tracking state
@@ -101,8 +101,7 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
                 currentState = MotorState.FORWARD;
                 
                 // start control thread if not already running
-                if(!controlThread.isAlive())
-                {
+                if(!controlThread.isAlive()) {
                     controlThread = new GpioStepperMotorControl();                    
                     controlThread.start();
                 }
@@ -114,8 +113,7 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
                 currentState = MotorState.REVERSE;
                 
                 // start control thread if not already running
-                if(!controlThread.isAlive())
-                {
+                if(!controlThread.isAlive()) {
                     controlThread = new GpioStepperMotorControl();
                     controlThread.start();
                 }
@@ -130,38 +128,15 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
     
     private class GpioStepperMotorControl extends Thread {
         public void run() {
-         
-            int sequenceIndex = 0;
-            //BitSet sequence = BitSet.valueOf(stepSequence);
-            
-            while(currentState != MotorState.STOP) {
-                
-                // start cycling GPIO pins to move the motor forward or reverse
-                for(int pinIndex = 0; pinIndex <= 3; pinIndex++) {
 
-                    // apply step sequence 
-                    double nib = Math.pow(2, pinIndex);
-                    if((stepSequence[sequenceIndex] & (int)nib) > 0)
-                        pins[pinIndex].setState(onState);
-                    else
-                        pins[pinIndex].setState(offState);
-                }            
-                try {
-                    Thread.sleep(stepIntervalMilliseconds, stepIntervalNanoseconds);
-                }
-                catch (InterruptedException e) {}
+            // continuous loop until stopped
+            while(currentState != MotorState.STOP) {
                 
                 // control direction 
                 if(currentState == MotorState.FORWARD)
-                    sequenceIndex++;
+                    doStep(true);
                 else if(currentState == MotorState.REVERSE)
-                    sequenceIndex--;
-                
-                // check sequence bounds
-                if(sequenceIndex >= stepSequence.length)
-                    sequenceIndex = 0;
-                if(sequenceIndex < 0)
-                    sequenceIndex = (stepSequence.length - 1);
+                    doStep(false);
             }
             
             // turn all GPIO pins to OFF state
@@ -169,4 +144,61 @@ public class GpioStepperMotorComponent extends StepperMotorBase {
                 pin.setState(offState);            
         }        
     }
+    
+    @Override
+    public void step(long steps)
+    {        
+        // validate parameters
+        if (steps == 0) {        
+            setState(MotorState.STOP);
+            return;
+        }
+
+        // perform step in positive or negative direction from current position
+        if (steps > 0){
+            for(long index = 1; index <= steps; index++)
+                doStep(true);
+        }
+        else {
+            for(long index = steps; index < 0; index++)
+                doStep(false);
+        }
+        
+        // stop motor movement
+        this.stop();
+    }
+    
+    /**
+     * this method performs the calculations and work to control the GPIO pins
+     * to move the stepper motor forward or reverse 
+     * @param forward
+     */
+    private void doStep(boolean forward) {
+
+        // increment or decrement sequence
+        if(forward)
+            sequenceIndex++;
+        else
+            sequenceIndex--;
+        
+        // check sequence bounds; rollover if needed
+        if(sequenceIndex >= stepSequence.length)
+            sequenceIndex = 0;
+        else if(sequenceIndex < 0)
+            sequenceIndex = (stepSequence.length - 1);
+
+        // start cycling GPIO pins to move the motor forward or reverse
+        for(int pinIndex = 0; pinIndex < pins.length; pinIndex++) {
+            // apply step sequence 
+            double nib = Math.pow(2, pinIndex);
+            if((stepSequence[sequenceIndex] & (int)nib) > 0)
+                pins[pinIndex].setState(onState);
+            else
+                pins[pinIndex].setState(offState);
+        }            
+        try {
+            Thread.sleep(stepIntervalMilliseconds, stepIntervalNanoseconds);
+        }
+        catch (InterruptedException e) {}        
+    }    
 }

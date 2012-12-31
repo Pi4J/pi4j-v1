@@ -27,22 +27,21 @@ package com.pi4j.component.motor;
  * #L%
  */
 
-
 public abstract class StepperMotorBase extends MotorBase implements StepperMotor {
 
     protected long stepIntervalMilliseconds = 100;
     protected int stepIntervalNanoseconds = 0;
     protected byte[] stepSequence;
-    protected int stepCount = 0;
+    protected int stepsPerRevolution = 0;
 
     @Override
-    public int getStepCount() {
-        return stepCount;
+    public float getStepsPerRevolution() {
+        return stepsPerRevolution;        
     }
     
     @Override
-    public void setStepCount(int count){
-        stepCount = count;                
+    public void setStepsPerRevolution(int steps) {
+        stepsPerRevolution = steps;
     }
     
     @Override
@@ -66,4 +65,13 @@ public abstract class StepperMotorBase extends MotorBase implements StepperMotor
     public byte[] getStepSequence() {
         return stepSequence;
     }
+    
+    @Override
+    public void rotate(double revolutions) {
+        long steps = Math.round(stepsPerRevolution * revolutions);
+        step(steps);
+    }    
+
+    @Override
+    public abstract void step(long steps);
 }

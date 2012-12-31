@@ -3,7 +3,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  StepperMotorGpioExample2.java  
+ * FILENAME      :  StepperMotorGpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -24,7 +24,6 @@
  * limitations under the License.
  * #L%
  */
-// START SNIPPET: stepper-motor-gpio-snippet
 
 import com.pi4j.component.motor.impl.GpioStepperMotorComponent;
 import com.pi4j.io.gpio.GpioController;
@@ -61,42 +60,96 @@ public class StepperMotorGpioExample
         // create motor component
         GpioStepperMotorComponent motor = new GpioStepperMotorComponent(pins);
 
-        // create byte array for eight sequence steps
-        byte[] sequence = new byte[8];
-        sequence[0] = (byte) 0b0001;  
-        sequence[1] = (byte) 0b0011;
-        sequence[2] = (byte) 0b0010;
-        sequence[3] = (byte) 0b0110;
-        sequence[4] = (byte) 0b0100;
-        sequence[5] = (byte) 0b1100;
-        sequence[6] = (byte) 0b1000;
-        sequence[7] = (byte) 0b1001;
+        // @see http://www.lirtex.com/robotics/stepper-motor-controller-circuit/
+        //      for additional details on stepping techniques
+
+        // create byte array to demonstrate a single-step sequencing
+        // (This is the most basic method, turning on a single electromagnet every time.
+        //  This sequence requires the least amount of energy and generates the smoothest movement.)
+        byte[] single_step_sequence = new byte[4];
+        single_step_sequence[0] = (byte) 0b0001;  
+        single_step_sequence[1] = (byte) 0b0010;
+        single_step_sequence[2] = (byte) 0b0100;
+        single_step_sequence[3] = (byte) 0b1000;
+
+        // create byte array to demonstrate a double-step sequencing
+        // (In this method two coils are turned on simultaneously.  This method does not generate 
+        //  a smooth movement as the previous method, and it requires double the current, but as 
+        //  return it generates double the torque.)
+        byte[] double_step_sequence = new byte[4];
+        double_step_sequence[0] = (byte) 0b0011;  
+        double_step_sequence[1] = (byte) 0b0110;
+        double_step_sequence[2] = (byte) 0b1100;
+        double_step_sequence[3] = (byte) 0b1001;
+        
+        // create byte array to demonstrate a half-step sequencing
+        // (In this method two coils are turned on simultaneously.  This method does not generate 
+        //  a smooth movement as the previous method, and it requires double the current, but as 
+        //  return it generates double the torque.)
+        byte[] half_step_sequence = new byte[8];
+        half_step_sequence[0] = (byte) 0b0001;  
+        half_step_sequence[1] = (byte) 0b0011;
+        half_step_sequence[2] = (byte) 0b0010;
+        half_step_sequence[3] = (byte) 0b0110;
+        half_step_sequence[4] = (byte) 0b0100;
+        half_step_sequence[5] = (byte) 0b1100;
+        half_step_sequence[6] = (byte) 0b1000;
+        half_step_sequence[7] = (byte) 0b1001;
 
         // define stepper parameters before attempting to control motor
-        motor.setStepInterval(1);
-        motor.setStepSequence(sequence);
+        // anything lower than 2 ms does not work for my sample motor using single step sequence
+        motor.setStepInterval(2);  
+        motor.setStepSequence(single_step_sequence);
 
-        // test motor control 
+        // There are 32 steps per revolution on my sample motor, and inside is a ~1/64 reduction gear set.
+        // Gear reduction is actually: (32/9)/(22/11)x(26/9)x(31/10)=63.683950617
+        // This means is that there are really 32*63.683950617 steps per revolution =  2037.88641975 ~ 2038 steps! 
+        motor.setStepsPerRevolution(2038);
 
+        // test motor control : STEPPING FORWARD 
+        System.out.println("   Motor FORWARD for 2038 steps.");
+        motor.step(2038);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
+        
+        // test motor control : STEPPING REVERSE
+        System.out.println("   Motor REVERSE for 2038 steps.");
+        motor.step(-2038);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
+
+        // test motor control : ROTATE FORWARD
+        System.out.println("   Motor FORWARD for 2 revolutions.");
+        motor.rotate(2);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
+
+        // test motor control : ROTATE REVERSE
+        System.out.println("   Motor REVERSE for 2 revolutions.");
+        motor.rotate(-2);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
+        
+        // test motor control : TIMED FORWARD 
         System.out.println("   Motor FORWARD for 5 seconds.");
         motor.forward(5000);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
         
-        System.out.println("   Motor STOPPED for 3 seconds.");
-        Thread.sleep(3000);
+        // test motor control : TIMED REVERSE
+        System.out.println("   Motor REVERSE for 5 seconds.");
+        motor.reverse(5000);
+        System.out.println("   Motor STOPPED for 2 seconds.");
+        Thread.sleep(2000);
         
-        System.out.println("   Motor REVERSE for 7 seconds.");
-        motor.reverse(7000);
-        
-        System.out.println("   Motor STOPPED for 3 seconds.");
-        Thread.sleep(3000);
-        
-        System.out.println("   Motor FORWARD with slower speed for 10 seconds.");
+        // test motor control : ROTATE FORWARD with different timing and sequence
+        System.out.println("   Motor FORWARD with slower speed and higher torque for 1 revolution.");
+        motor.setStepSequence(double_step_sequence);
         motor.setStepInterval(10);
-        motor.forward(10000);
-
+        motor.rotate(1);
         System.out.println("   Motor STOPPED.");
 
+        // final stop to ensure no motor activity
         motor.stop();
     }
 }
-//END SNIPPET: stepper-motor-gpio-snippet
