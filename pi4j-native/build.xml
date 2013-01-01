@@ -12,7 +12,7 @@
 		<!-- ensure the target directory exists on the Raspberry Pi -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
 			password="${pi-password}" trust="true" failonerror="false"
-			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}/*" />
+			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}" />
 	
 		<!-- copy all the necessary source files to the Raspberry Pi -->
 		<scp todir="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}"

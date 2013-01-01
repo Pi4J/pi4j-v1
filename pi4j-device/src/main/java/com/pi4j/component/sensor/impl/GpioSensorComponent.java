@@ -11,7 +11,7 @@ package com.pi4j.component.sensor.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 Pi4J 
+ * Copyright (C) 2012 - 2013 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -90,24 +90,34 @@
 	<!-- BUILD PROPERTIES -->
 	<properties>
 
-		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
-		<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
-		<pi.port.hard-float>22</pi.port.hard-float>
-		<pi.user.hard-float>pi</pi.user.hard-float>
-		<pi.password.hard-float>raspberry</pi.password.hard-float>
-
-		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
-		<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
-		<pi.port.soft-float>22</pi.port.soft-float>
-		<pi.user.soft-float>pi</pi.user.soft-float>
-		<pi.password.soft-float>raspberry</pi.password.soft-float>
+		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
+		<pi.host>192.168.1.1</pi.host>
+		<pi.port>22</pi.port>
+		<pi.user>pi</pi.user>
+		<pi.password>raspberry</pi.password>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
 		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
 
-		<!-- SETTINGS FOR COPYING Pi4J DISTRIBUTION JAR TO RASPBERRY PI -->
-		<pi.transfer>false</pi.transfer>
-		<pi.dirCopyTo>/home/pi/test</pi.dirCopyTo>
+		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
+		<pi.host.hard-float>192.168.1.1</pi.host.hard-float>
+		<pi.port.hard-float>${pi.port}</pi.port.hard-float>
+		<pi.user.hard-float>${pi.user}</pi.user.hard-float>
+		<pi.password.hard-float>${pi.password}</pi.password.hard-float>
+
+		<!-- DEFAULT RASPBERRY PI (SOFT-FLOAT) PROPERTIES -->
+		<pi.host.soft-float>192.168.1.2</pi.host.soft-float>
+		<pi.port.soft-float>${pi.port}</pi.port.soft-float>
+		<pi.user.soft-float>${pi.user}</pi.user.soft-float>
+		<pi.password.soft-float>${pi.password}</pi.password.soft-float>
+
+		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
+		<pi.transfer.dev>false</pi.transfer.dev>
+		<pi.host.dev>${pi.host}</pi.host.dev>
+		<pi.port.dev>${pi.port}</pi.port.dev>
+		<pi.user.dev>${pi.user}</pi.user.dev>
+		<pi.password.dev>${pi.password}</pi.password.dev>
+		<pi.dirCopyTo.dev>/home/pi/pi4j-dev</pi.dirCopyTo.dev>
 
 		<!-- PROJECT ENCODING PROPERTIES -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -128,8 +138,12 @@
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host.hard-float>pi-512-wifi</pi.host.hard-float>
+				<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
 				<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
+				<pi.host.dev>pi-512-wifi</pi.host.dev>
+
+				<!-- enable development transfers -->
+				<pi.transfer.dev>true</pi.transfer.dev>
 			</properties>
 			<activation>
 				<!-- automatically set user profile based on environment setting -->

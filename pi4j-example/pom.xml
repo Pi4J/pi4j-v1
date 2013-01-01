@@ -79,6 +79,62 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
+			
+			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASBERRY PI -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+
+					<!-- copy the compiled JAR file to the Raspberry Pi platform platform -->
+					<execution>
+						<id>transfer-compiled-pi4j-example-jar</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+									classpathref="maven.plugin.classpath" />
+								<if>
+									<equals arg1="${pi.transfer.dev}" arg2="true" />
+									<then>
+									
+										<!-- ensure the target directory exists on the Raspberry Pi -->
+										<sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
+											password="${pi.password.dev}" trust="true" failonerror="false"
+											verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
+												
+										<!-- copy the JAR file to the Raspberry Pi -->
+										<scp
+											file="${project.build.directory}/${project.build.finalName}.jar"
+											todir="${pi.user.dev}:${pi.password.dev}@${pi.host.dev}:${pi.dirCopyTo.dev}"
+											port="${pi.port.dev}" trust="true" verbose="true" failonerror="true">
+										</scp>
+									</then>
+								</if>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.7.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>0.1.42</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>20020829</version>
+					</dependency>
+				</dependencies>
+			</plugin>			
 		</plugins>
 
 		<pluginManagement>
