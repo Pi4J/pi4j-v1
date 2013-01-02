@@ -164,7 +164,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/distro-contents/libs</outputDirectory>
+							<outputDirectory>${project.build.directory}/distro-contents/lib</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 							<excludeTransitive>true</excludeTransitive>
@@ -235,27 +235,27 @@
 									<dst>/opt/pi4j/README</dst>
 								</data>
 								<data>
-									<src>${project.build.directory}/distro-contents/libs/pi4j-core.jar</src>
+									<src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
 								</data>
 								<data>
-									<src>${project.build.directory}/distro-contents/libs/pi4j-core.jar</src>
+									<src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
 								</data>
 								<data>
-									<src>${project.build.directory}/distro-contents/libs/pi4j-device.jar</src>
+									<src>${project.build.directory}/distro-contents/lib/pi4j-device.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-device.jar</dst>
 								</data>
 								<data>
-									<src>${project.build.directory}/distro-contents/libs/pi4j-service.jar</src>
+									<src>${project.build.directory}/distro-contents/lib/pi4j-service.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-service.jar</dst>
 								</data>
 								<data>
-									<src>${project.build.directory}/distro-contents/libs/pi4j-gpio-extension.jar</src>
+									<src>${project.build.directory}/distro-contents/lib/pi4j-gpio-extension.jar</src>
 									<type>file</type>
 									<dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
 								</data>

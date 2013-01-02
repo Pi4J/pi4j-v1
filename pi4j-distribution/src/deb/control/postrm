@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -r /opt/pi4j
+rm -f -r /opt/pi4j
