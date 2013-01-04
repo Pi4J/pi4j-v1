@@ -47,31 +47,23 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage
  * 
  */
-public class OlimexAVRIOPin
-{
-    public static final Pin RELAY_01 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 1, "RELAY 1",
-            EnumSet.of(PinMode.DIGITAL_OUTPUT));
+public class OlimexAVRIOPin {
 
-    public static final Pin RELAY_02 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 2, "RELAY 2",
-            EnumSet.of(PinMode.DIGITAL_OUTPUT));
+    public static final Pin RELAY_01 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 1, "RELAY 1", EnumSet.of(PinMode.DIGITAL_OUTPUT));
 
-    public static final Pin RELAY_03 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 3, "RELAY 3",
-            EnumSet.of(PinMode.DIGITAL_OUTPUT));
+    public static final Pin RELAY_02 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 2, "RELAY 2", EnumSet.of(PinMode.DIGITAL_OUTPUT));
 
-    public static final Pin RELAY_04 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 4, "RELAY 4",
-            EnumSet.of(PinMode.DIGITAL_OUTPUT));
+    public static final Pin RELAY_03 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 3, "RELAY 3", EnumSet.of(PinMode.DIGITAL_OUTPUT));
 
-    public static final Pin IN_01 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 5, "INPUT 1",
-            EnumSet.of(PinMode.DIGITAL_INPUT));
+    public static final Pin RELAY_04 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 4, "RELAY 4", EnumSet.of(PinMode.DIGITAL_OUTPUT));
 
-    public static final Pin IN_02 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 6, "INPUT 2",
-            EnumSet.of(PinMode.DIGITAL_INPUT));
+    public static final Pin IN_01 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 5, "INPUT 1", EnumSet.of(PinMode.DIGITAL_INPUT));
 
-    public static final Pin IN_03 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 7, "INPUT 3",
-            EnumSet.of(PinMode.DIGITAL_INPUT));
+    public static final Pin IN_02 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 6, "INPUT 2", EnumSet.of(PinMode.DIGITAL_INPUT));
 
-    public static final Pin IN_04 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 8, "INPUT 4",
-            EnumSet.of(PinMode.DIGITAL_INPUT));
+    public static final Pin IN_03 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 7, "INPUT 3", EnumSet.of(PinMode.DIGITAL_INPUT));
+
+    public static final Pin IN_04 = new PinImpl(OlimexAVRIOGpioProvider.NAME, 8, "INPUT 4", EnumSet.of(PinMode.DIGITAL_INPUT));
     
     public static Pin[] INPUTS = { OlimexAVRIOPin.IN_01, OlimexAVRIOPin.IN_02, OlimexAVRIOPin.IN_03, OlimexAVRIOPin.IN_04 };
     public static Pin[] RELAYS = { OlimexAVRIOPin.RELAY_01, OlimexAVRIOPin.RELAY_02, OlimexAVRIOPin.RELAY_03, OlimexAVRIOPin.RELAY_04 };    

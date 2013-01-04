@@ -60,8 +60,8 @@ import com.pi4j.io.i2c.I2CFactory;
  * @author Robert Savage
  * 
  */
-public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvider
-{
+public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvider {
+
     public static final String NAME = "com.pi4j.gpio.extension.ti.PCF8574GpioProvider";
     public static final String DESCRIPTION = "PCF8574 GPIO Provider";
 
@@ -91,8 +91,8 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     private GpioStateMonitor monitor = null;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
 
-    public PCF8574GpioProvider(int busNumber, int address) throws IOException
-    {
+    public PCF8574GpioProvider(int busNumber, int address) throws IOException {
+
         // create I2C communications bus instance
         bus = I2CFactory.getInstance(busNumber);
 
@@ -100,8 +100,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         device = bus.getDevice(address);
 
         // set all default pin cache states to match documented chip power up states
-        for(Pin pin : PCF8574Pin.ALL)
-        {
+        for (Pin pin : PCF8574Pin.ALL) {
             getPinCache(pin).setState(PinState.HIGH);
             currentStates.set(pin.getAddress(), true);
         }
@@ -113,72 +112,65 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
 
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public void export(Pin pin, PinMode mode)
-    {
+    public void export(Pin pin, PinMode mode) {
         // make sure to set the pin mode
         super.export(pin, mode);
         setMode(pin, mode);
     }
 
     @Override
-    public void unexport(Pin pin)
-    {
+    public void unexport(Pin pin) {
         super.unexport(pin);
         setMode(pin, PinMode.DIGITAL_OUTPUT);
     }
 
     @Override
-    public void setMode(Pin pin, PinMode mode)
-    {
+    public void setMode(Pin pin, PinMode mode) {
         // validate
-        if (!pin.getSupportedPinModes().contains(mode))
+        if (!pin.getSupportedPinModes().contains(mode)) {
             throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName()
                     + "]; pin [" + pin.getName() + "] does not support this mode.");
-
+        }
         // validate
-        if (!pin.getSupportedPinModes().contains(mode))
+        if (!pin.getSupportedPinModes().contains(mode)) {
             throw new UnsupportedPinModeException(pin, mode);
-
+        }
         // cache mode
         getPinCache(pin).setMode(mode);
     }
 
 
     @Override
-    public PinMode getMode(Pin pin)
-    {
+    public PinMode getMode(Pin pin) {
         return super.getMode(pin);
     }
 
     @Override
-    public void setState(Pin pin, PinState state)
-    {
+    public void setState(Pin pin, PinState state) {
         // validate
-        if (hasPin(pin) == false)
+        if (hasPin(pin) == false) {
             throw new InvalidPinException(pin);
-
+        }
+        
         // only permit invocation on pins set to DIGITAL_OUTPUT modes
-        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT)
+        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName()
                     + "]; cannot setState() when pin mode is ["
                     + getPinCache(pin).getMode().getName() + "]");
-
-        try
-        {
+        }
+        
+        try {
             // set state value for pin bit 
             currentStates.set(pin.getAddress(), state.isHigh());
             
             // update state value
             device.write(currentStates.toByteArray()[0]);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
@@ -187,19 +179,15 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     }
 
     @Override
-    public PinState getState(Pin pin)
-    {
+    public PinState getState(Pin pin) {
         return super.getState(pin);
     }
 
     @Override
-    public void shutdown()
-    {
-        try
-        {
+    public void shutdown() {
+        try {
             // if a monitor is running, then shut it down now
-            if (monitor != null)
-            {
+            if (monitor != null) {
                 // shutdown monitoring thread
                 monitor.shutdown();
                 monitor = null;
@@ -207,9 +195,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
 
             // close the I2C bus communication
             bus.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }   
@@ -221,37 +207,30 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
      * @author Robert Savage
      * 
      */
-    private class GpioStateMonitor extends Thread
-    {
+    private class GpioStateMonitor extends Thread {
+        
         private I2CDevice device;
         private boolean shuttingDown = false;
 
-        public GpioStateMonitor(I2CDevice device)
-        {
+        public GpioStateMonitor(I2CDevice device) {
             this.device = device;
         }
 
-        public void shutdown()
-        {
+        public void shutdown() {
             shuttingDown = true;
         }
 
-        public void run()
-        {
-            while (!shuttingDown)
-            {
-                try
-                {
+        public void run() {
+            while (!shuttingDown) {
+                try {
                     // read device pins state
                     byte[] buffer = new byte[1];
                     device.read(buffer, 0, 1);
                     BitSet pinStates = BitSet.valueOf(buffer);
                     
                     // determine if there is a pin state difference
-                    for(int index = 0; index < pinStates.size(); index++)
-                    {
-                        if(pinStates.get(index) != currentStates.get(index))
-                        {
+                    for (int index = 0; index < pinStates.size(); index++) {
+                        if (pinStates.get(index) != currentStates.get(index)) {
                             Pin pin = PCF8574Pin.ALL[index];
                             PinState newState = (pinStates.get(index)) ? PinState.HIGH : PinState.LOW;
 
@@ -260,8 +239,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                             currentStates.set(index, pinStates.get(index));
                             
                             // only dispatch events for input pins
-                            if(getMode(pin) == PinMode.DIGITAL_INPUT)
-                            {
+                            if (getMode(pin) == PinMode.DIGITAL_INPUT) {
                                 // change detected for INPUT PIN
                                 // System.out.println("<<< CHANGE >>> " + pin.getName() + " : " + state);
                                 dispatchPinChangeEvent(pin.getAddress(), newState);
@@ -272,29 +250,23 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                     // ... lets take a short breather ...
                     Thread.currentThread();
                     Thread.sleep(50);
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
 
-        private void dispatchPinChangeEvent(int pinAddress, PinState state)
-        {
+        private void dispatchPinChangeEvent(int pinAddress, PinState state) {
             // iterate over the pin listeners map
-            for (Pin pin : listeners.keySet())
-            {
+            for (Pin pin : listeners.keySet()) {
                 // System.out.println("<<< DISPATCH >>> " + pin.getName() + " : " +
                 // state.getName());
 
                 // dispatch this event to the listener
                 // if a matching pin address is found
-                if (pin.getAddress() == pinAddress)
-                {
+                if (pin.getAddress() == pinAddress) {
                     // dispatch this event to all listener handlers
-                    for (PinListener listener : listeners.get(pin))
-                    {
+                    for (PinListener listener : listeners.get(pin)) {
                         listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
                     }
                 }

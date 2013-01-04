@@ -48,8 +48,8 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage
  * 
  */
-public class MCP23008Pin
-{
+public class MCP23008Pin {
+
     public static final Pin GPIO_00 = createDigitalPin(1, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(2, "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(4, "GPIO 2");
@@ -62,8 +62,7 @@ public class MCP23008Pin
     public static Pin[] ALL = { MCP23008Pin.GPIO_00, MCP23008Pin.GPIO_01, MCP23008Pin.GPIO_02, MCP23008Pin.GPIO_03,
                                 MCP23008Pin.GPIO_04, MCP23008Pin.GPIO_05, MCP23008Pin.GPIO_06, MCP23008Pin.GPIO_07 };
     
-    private static Pin createDigitalPin(int address, String name)
-    {
+    private static Pin createDigitalPin(int address, String name) {
         return new PinImpl(MCP23008GpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     EnumSet.of(PinPullResistance.PULL_UP, PinPullResistance.OFF));

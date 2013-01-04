@@ -32,8 +32,7 @@ import java.util.concurrent.LinkedTransferQueue;
 import com.pi4j.io.serial.Serial;
 
 
-public class SerialCommandQueueProcessingThread extends Thread
-{
+public class SerialCommandQueueProcessingThread extends Thread {
     public static final int DEAFULT_DELAY = 100; // milliseconds
     private boolean exiting = false;
     private final Serial serial;
@@ -41,14 +40,12 @@ public class SerialCommandQueueProcessingThread extends Thread
     private final LinkedTransferQueue<String> queue = new LinkedTransferQueue<String>();
 
 
-    public SerialCommandQueueProcessingThread(Serial serial, int delay)
-    {
+    public SerialCommandQueueProcessingThread(Serial serial, int delay) {
         this.serial = serial;
         this.delay = delay;
     }
 
-    public SerialCommandQueueProcessingThread(Serial serial)
-    {
+    public SerialCommandQueueProcessingThread(Serial serial) {
         this(serial, DEAFULT_DELAY);
     }
 
@@ -57,8 +54,7 @@ public class SerialCommandQueueProcessingThread extends Thread
      * Exit the monitoring thread.
      * </p>
      */
-    public synchronized void shutdown()
-    {
+    public synchronized void shutdown() {
         exiting = true;
     }
 
@@ -67,8 +63,7 @@ public class SerialCommandQueueProcessingThread extends Thread
      * Exit the monitoring thread.
      * </p>
      */
-    public void put(String data)
-    {
+    public void put(String data) {
         queue.add(data);
     }
     
@@ -77,27 +72,20 @@ public class SerialCommandQueueProcessingThread extends Thread
      * This method is called when this monitoring thread starts
      * </p>
      */
-    public void run()
-    {
-        while (!exiting)
-        {
-            if (!queue.isEmpty())
-            {
+    public void run() {
+        while (!exiting) {
+            if (!queue.isEmpty()) {
                 // wait for a small interval before attempting next transmission
-                try            
-                {
+                try {
                     String data = queue.take();
                     
-                    if(serial.isOpen())
-                    {
+                    if (serial.isOpen()) {
                         serial.write(data);
                         serial.flush();
                     }
                     
                     Thread.sleep(delay);
-                }
-                catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     //e.printStackTrace();
                 }
             }

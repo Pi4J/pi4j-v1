@@ -56,16 +56,15 @@ import com.pi4j.io.serial.SerialFactory;
  * @author Robert Savage
  * 
  */
-public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioProvider
-{
+public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioProvider {
+
     public static final String NAME = "com.pi4j.gpio.extension.olimex.OlimexAVRIOGpioProvider";
     public static final String DESCRIPTION = "Olimex AVR-IO GPIO Provider";
     private Serial com;
     private int currentStates = 0;
     private SerialCommandQueueProcessingThread queue;
 
-    public OlimexAVRIOGpioProvider(String serialDevice)
-    {
+    public OlimexAVRIOGpioProvider(String serialDevice) {
         // create serial communications instance
         com = SerialFactory.createInstance();
         
@@ -86,14 +85,12 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     }
     
     @Override
-    public String getName()
-    {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public void setMode(Pin pin, PinMode mode)
-    {
+    public void setMode(Pin pin, PinMode mode) {
         // ALL PIN MODES ARE PREDEFINED
         //
         // an exception will be throw by the base impl 
@@ -103,8 +100,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     }
 
     @Override
-    public PinMode getMode(Pin pin)
-    {
+    public PinMode getMode(Pin pin) {
         super.getMode(pin);
         
         // return first mode found; this device has singular fixed pin modes
@@ -115,20 +111,19 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     }
 
     @Override
-    public void setState(Pin pin, PinState state)
-    {
+    public void setState(Pin pin, PinState state) {
         super.setState(pin, state);
 
         // turn ON/OFF relay pins
-        if(state == PinState.HIGH)
+        if (state == PinState.HIGH) {
             queue.put("+" + pin.getAddress());
-        else
+        } else {
             queue.put("-" + pin.getAddress());
+        }
     }
 
     @Override
-    public PinState getState(Pin pin)
-    {
+    public PinState getState(Pin pin) {
         super.getState(pin);
 
         // calculate current state from the bitmask value
@@ -139,11 +134,9 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     
     
     @Override
-    public void shutdown()
-    {
+    public void shutdown() {
         // if a serial processing queue is running, then shut it down now
-        if (queue != null)
-        {
+        if (queue != null) {
             // shutdown serial data processing thread
             queue.shutdown();
             queue = null;
@@ -160,26 +153,23 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
      * @see SerialDataListener
      * @author Robert Savage
      */
-    class SerialExampleListener implements SerialDataListener
-    {
+    class SerialExampleListener implements SerialDataListener {
         private StringBuilder buffer = new StringBuilder();
         
-        public void dataReceived(SerialDataEvent event)
-        {
+        public void dataReceived(SerialDataEvent event) {
            String data = event.getData();
            
            // append received data into buffer
-           if(data != null && !data.isEmpty())
+           if (data != null && !data.isEmpty()) {
                buffer.append(data);
+           }
            
            int start = buffer.indexOf("$");
            int stop = buffer.indexOf("\n");
            
-           while(stop >= 0)
-           {
+           while (stop >= 0) {
                // process data buffer
-               if(start >= 0 && stop > start)
-               {
+               if(start >= 0 && stop > start) {
                    // get command
                    String command = buffer.substring(start, stop+1);
                    buffer.delete(start, stop+1).toString();
@@ -196,14 +186,13 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
                    
                    // process each INPUT pin for changes; 
                    // dispatch change events if needed
-                   for(Pin pin : OlimexAVRIOPin.INPUTS)
+                   for (Pin pin : OlimexAVRIOPin.INPUTS) {
                        evaluatePinForChange(pin, value);
+                   }
                    
                    // update the current value tracking variable
                    currentStates = value;
-               }
-               else if(stop >= 0)
-               {
+               } else if (stop >= 0) {
                    // invalid data command; purge
                    buffer.delete(0, stop+1);
                    
@@ -217,11 +206,9 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         }
         
         
-        private void evaluatePinForChange(Pin pin, int value)
-        {
+        private void evaluatePinForChange(Pin pin, int value) {
             int bit = (int)Math.pow(2, (pin.getAddress()-1));
-            if((value & bit) != (currentStates & bit))
-            {
+            if ((value & bit) != (currentStates & bit)) {
                 // change detected for INPUT PIN
                 //System.out.println("<<< CHANGE >>> " + pin.getName());
                 dispatchPinChangeEvent(pin.getAddress(), ((value & bit) == bit) ? PinState.HIGH : PinState.LOW);
@@ -229,20 +216,16 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         }
         
         
-        private void dispatchPinChangeEvent(int pinAddress, PinState state)
-        {
+        private void dispatchPinChangeEvent(int pinAddress, PinState state) {
             // iterate over the pin listeners map
-            for(Pin pin : listeners.keySet())
-            {
+            for (Pin pin : listeners.keySet()) {
                 //System.out.println("<<< DISPATCH >>> " + pin.getName() + " : " + state.getName());
                 
                 // dispatch this event to the listener 
                 // if a matching pin address is found
-                if(pin.getAddress() == pinAddress)
-                {
+                if (pin.getAddress() == pinAddress) {
                     // dispatch this event to all listener handlers
-                    for(PinListener listener : listeners.get(pin))
-                    {
+                    for (PinListener listener : listeners.get(pin)) {
                         listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
                     }
                 }            

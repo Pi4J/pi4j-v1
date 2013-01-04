@@ -49,8 +49,8 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage
  * 
  */
-public class PCF8574Pin
-{
+public class PCF8574Pin {
+
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");
@@ -63,8 +63,7 @@ public class PCF8574Pin
     public static Pin[] ALL = { PCF8574Pin.GPIO_00, PCF8574Pin.GPIO_01, PCF8574Pin.GPIO_02, PCF8574Pin.GPIO_03,
                                 PCF8574Pin.GPIO_04, PCF8574Pin.GPIO_05, PCF8574Pin.GPIO_06, PCF8574Pin.GPIO_07 };
     
-    private static Pin createDigitalPin(int address, String name)
-    {
+    private static Pin createDigitalPin(int address, String name) {
         return new PinImpl(PCF8574GpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT));
     }       
