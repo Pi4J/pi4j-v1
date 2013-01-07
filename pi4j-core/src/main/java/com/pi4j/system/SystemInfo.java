@@ -36,6 +36,8 @@ import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pi4j.util.StringUtil;
+
 public class SystemInfo {
 
     // private constructor 
@@ -159,9 +161,9 @@ public class SystemInfo {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             private final String[] gnueabihf = new String[] { "gnueabihf", "armhf" };
             public Boolean run() {                    
-                if ( contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
-                     contains(System.getProperty("java.library.path"), gnueabihf) ||
-                     contains(System.getProperty("java.home"), gnueabihf) || 
+                if ( StringUtil.contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
+                     StringUtil.contains(System.getProperty("java.library.path"), gnueabihf) ||
+                     StringUtil.contains(System.getProperty("java.home"), gnueabihf) || 
                      getBashVersionInfo().contains("gnueabihf") ||
                      hasReadElfTag("Tag_ABI_HardFP_use")) {
                         return true; //
@@ -239,19 +241,5 @@ public class SystemInfo {
         return tagValue;
     }
     
-    /*
-     * this supporting method was derived from this source:
-     * https://github.com/sgothel/gluegen/blob/master/src/java/jogamp/common/os/PlatformPropsImpl.java#L160
-     * https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
-     */
-    private static final boolean contains(String data, String[] search)  {
-        if (null != data && null != search) { 
-            for (int i=0; i<search.length; i++) {
-                if (data.indexOf(search[i]) >= 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }    
+    
 }

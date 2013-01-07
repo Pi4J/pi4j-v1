@@ -32,10 +32,42 @@ import com.pi4j.component.Component;
 
 public interface LCD extends Component {
  
-    int getLineCount();
+    int getRowCount();
+    int getColumnCount();
+
     void clear();
-    void clearLine(int line);
-    void setLine(int line, String data);
-    void setLine(int line, char[] data);
-    void setLine(int line, byte[] data);
+    void clear(int row);
+    void clear(int row, int column, int length);
+    
+    void setCursorHome();
+    void setCursorPosition(int row);
+    void setCursorPosition(int row, int column);
+    
+    void write(String data);
+    void write(String data, Object...arguments);
+    void write(char[] data);
+    void write(byte[] data);
+    void write(char data);
+    void write(byte data);
+
+    void write(int row, String data, LCDTextAlignment alignment);
+    void write(int row, String data, LCDTextAlignment alignment, Object...arguments);
+    void write(int row, String data);
+    void write(int row, String data, Object...arguments);
+    void write(int row, char[] data);
+    void write(int row, byte[] data);
+    void write(int row, char data);
+    void write(int row, byte data);
+    
+    void write(int row, int column, String data);
+    void write(int row, int column, String data, Object...arguments);
+    void write(int row, int column, char[] data);
+    void write(int row, int column, byte[] data);
+    void write(int row, int column, char data);
+    void write(int row, int column, byte data);
+    
+    void writeln(int row, String data);
+    void writeln(int row, String data, Object...arguments);
+    void writeln(int row, String data, LCDTextAlignment alignment);
+    void writeln(int row, String data, LCDTextAlignment alignment, Object...arguments);    
 }

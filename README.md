@@ -43,7 +43,7 @@ Copyright (C) 2012 Pi4J
 
 ## IN DEVELOPMENT
 
-2012-12-16 :: 0.0.5-SNAPSHOT
+2013-01-07 :: 0.0.5-SNAPSHOT
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -53,7 +53,9 @@ Copyright (C) 2012 Pi4J
   *  Added GPIO based stepper motor implementation and sample program. 
   *  Added support for Motion sensor component interface. 
   *  Added GPIO based motion sensor implementation. 
-  
+  *  Added LCD component interface 
+  *  Added GPIO based 4/8 bit LCD display component implementation and sample program.
+  *  Added GPIO based 4/8 bit LCD WiringPi example program
 
 ## RELEASES
 
