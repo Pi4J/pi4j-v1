@@ -60,8 +60,8 @@ import com.pi4j.io.i2c.I2CFactory;
  * @author Robert Savage
  * 
  */
-public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider
-{
+public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider {
+
     public static final String NAME = "com.pi4j.gpio.extension.microchip.MCP23017GpioProvider";
     public static final String DESCRIPTION = "MCP23017 GPIO Provider";
     public static final int DEFAULT_ADDRESS = 0x20;
@@ -97,8 +97,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private I2CDevice device;
     private GpioStateMonitor monitor = null;
 
-    public MCP23017GpioProvider(int busNumber, int address) throws IOException
-    {
+    public MCP23017GpioProvider(int busNumber, int address) throws IOException {
         // create I2C communications bus instance
         bus = I2CFactory.getInstance(busNumber);
 
@@ -131,48 +130,42 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public void export(Pin pin, PinMode mode)
-    {
+    public void export(Pin pin, PinMode mode) {
         // make sure to set the pin mode
         super.export(pin, mode);
         setMode(pin, mode);
     }
 
     @Override
-    public void unexport(Pin pin)
-    {
+    public void unexport(Pin pin) {
         super.unexport(pin);
         setMode(pin, PinMode.DIGITAL_OUTPUT);
     }
 
     @Override
-    public void setMode(Pin pin, PinMode mode)
-    {
+    public void setMode(Pin pin, PinMode mode) {
         // validate
-        if (!pin.getSupportedPinModes().contains(mode))
+        if (!pin.getSupportedPinModes().contains(mode)) {
             throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName()
                     + "]; pin [" + pin.getName() + "] does not support this mode.");
-
-        // validate
-        if (!pin.getSupportedPinModes().contains(mode))
-            throw new UnsupportedPinModeException(pin, mode);
-
-        // determine A or B port based on pin address
-        try
-        {
-            if (pin.getAddress() < GPIO_B_OFFSET)
-                setModeA(pin, mode);
-            else
-                setModeB(pin, mode);
         }
-        catch (IOException ex)
-        {
+        // validate
+        if (!pin.getSupportedPinModes().contains(mode)) {
+            throw new UnsupportedPinModeException(pin, mode);
+        }
+        // determine A or B port based on pin address
+        try {
+            if (pin.getAddress() < GPIO_B_OFFSET) {
+                setModeA(pin, mode);
+            } else {
+                setModeB(pin, mode);
+            }
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
@@ -181,39 +174,30 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
         // if any pins are configured as input pins, then we need to start the interrupt monitoring
         // thread
-        if (currentDirectionA > 0 || currentDirectionB > 0)
-        {
+        if (currentDirectionA > 0 || currentDirectionB > 0) {
             // if the monitor has not been started, then start it now
-            if (monitor == null)
-            {
+            if (monitor == null) {
                 // start monitoring thread
                 monitor = new GpioStateMonitor(device);
                 monitor.start();
             }
-        }
-        else
-        {
+        } else {
             // shutdown and destroy monitoring thread since there are no input pins configured
-            if (monitor != null)
-            {
+            if (monitor != null) {
                 monitor.shutdown();
                 monitor = null;
             }
         }
     }
 
-    private void setModeA(Pin pin, PinMode mode) throws IOException
-    {
+    private void setModeA(Pin pin, PinMode mode) throws IOException {
         // determine register and pin address
         int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
 
         // determine update direction value based on mode
-        if (mode == PinMode.DIGITAL_INPUT)
-        {
+        if (mode == PinMode.DIGITAL_INPUT) {
             currentDirectionA |= pinAddress;
-        }
-        else if (mode == PinMode.DIGITAL_OUTPUT)
-        {
+        } else if (mode == PinMode.DIGITAL_OUTPUT) {
             currentDirectionA &= ~pinAddress;
         }
 
@@ -224,18 +208,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         device.write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
     }
 
-    private void setModeB(Pin pin, PinMode mode) throws IOException
-    {
+    private void setModeB(Pin pin, PinMode mode) throws IOException {
         // determine register and pin address
         int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
 
         // determine update direction value based on mode
-        if (mode == PinMode.DIGITAL_INPUT)
-        {
+        if (mode == PinMode.DIGITAL_INPUT) {
             currentDirectionB |= pinAddress;
-        }
-        else if (mode == PinMode.DIGITAL_OUTPUT)
-        {
+        } else if (mode == PinMode.DIGITAL_OUTPUT) {
             currentDirectionB &= ~pinAddress;
         }
 
@@ -247,34 +227,30 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     @Override
-    public PinMode getMode(Pin pin)
-    {
+    public PinMode getMode(Pin pin) {
         return super.getMode(pin);
     }
 
     @Override
-    public void setState(Pin pin, PinState state)
-    {
+    public void setState(Pin pin, PinState state) {
         // validate
-        if (hasPin(pin) == false)
+        if (hasPin(pin) == false) {
             throw new InvalidPinException(pin);
-
+        }
         // only permit invocation on pins set to DIGITAL_OUTPUT modes
-        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT)
+        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName()
                     + "]; cannot setState() when pin mode is ["
                     + getPinCache(pin).getMode().getName() + "]");
-
-        try
-        {
-            // determine A or B port based on pin address
-            if (pin.getAddress() < GPIO_B_OFFSET)
-                setStateA(pin, state);
-            else
-                setStateB(pin, state);
         }
-        catch (IOException ex)
-        {
+        try {
+            // determine A or B port based on pin address
+            if (pin.getAddress() < GPIO_B_OFFSET) {
+                setStateA(pin, state);
+            } else {
+                setStateB(pin, state);
+            }
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
@@ -282,18 +258,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         getPinCache(pin).setState(state);
     }
 
-    private void setStateA(Pin pin, PinState state) throws IOException
-    {
+    private void setStateA(Pin pin, PinState state) throws IOException {
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
 
         // determine state value for pin bit
-        if (state.isHigh())
-        {
+        if (state.isHigh()) {
             currentStatesA |= pinAddress;
-        }
-        else
-        {
+        } else {
             currentStatesA &= ~pinAddress;
         }
 
@@ -301,18 +273,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         device.write(REGISTER_GPIO_A, (byte) currentStatesA);
     }
 
-    private void setStateB(Pin pin, PinState state) throws IOException
-    {
+    private void setStateB(Pin pin, PinState state) throws IOException {
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
 
         // determine state value for pin bit
-        if (state.isHigh())
-        {
+        if (state.isHigh()) {
             currentStatesB |= pinAddress;
-        }
-        else
-        {
+        } else {
             currentStatesB &= ~pinAddress;
         }
 
@@ -321,32 +289,28 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     @Override
-    public PinState getState(Pin pin)
-    {
+    public PinState getState(Pin pin) {
         return super.getState(pin);
     }
 
     @Override
-    public void setPullResistance(Pin pin, PinPullResistance resistance)
-    {
+    public void setPullResistance(Pin pin, PinPullResistance resistance) {
         // validate
-        if (hasPin(pin) == false)
+        if (hasPin(pin) == false) {
             throw new InvalidPinException(pin);
-
-        // validate
-        if (!pin.getSupportedPinPullResistance().contains(resistance))
-            throw new UnsupportedPinPullResistanceException(pin, resistance);
-
-        try
-        {
-            // determine A or B port based on pin address
-            if (pin.getAddress() < GPIO_B_OFFSET)
-                setPullResistanceA(pin, resistance);
-            else
-                setPullResistanceB(pin, resistance);
         }
-        catch (IOException ex)
-        {
+        // validate
+        if (!pin.getSupportedPinPullResistance().contains(resistance)) {
+            throw new UnsupportedPinPullResistanceException(pin, resistance);
+        }
+        try {
+            // determine A or B port based on pin address
+            if (pin.getAddress() < GPIO_B_OFFSET) {
+                setPullResistanceA(pin, resistance);
+            } else {
+                setPullResistanceB(pin, resistance);
+            }
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
@@ -354,18 +318,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         getPinCache(pin).setResistance(resistance);
     }
 
-    private void setPullResistanceA(Pin pin, PinPullResistance resistance) throws IOException
-    {
+    private void setPullResistanceA(Pin pin, PinPullResistance resistance) throws IOException {
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
 
         // determine pull up value for pin bit
-        if (resistance == PinPullResistance.PULL_UP)
-        {
+        if (resistance == PinPullResistance.PULL_UP) {
             currentPullupA |= pinAddress;
-        }
-        else
-        {
+        } else {
             currentPullupA &= ~pinAddress;
         }
 
@@ -373,18 +333,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         device.write(REGISTER_GPPU_A, (byte) currentPullupA);
     }
 
-    private void setPullResistanceB(Pin pin, PinPullResistance resistance) throws IOException
-    {
+    private void setPullResistanceB(Pin pin, PinPullResistance resistance) throws IOException {
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
 
         // determine pull up value for pin bit
-        if (resistance == PinPullResistance.PULL_UP)
-        {
+        if (resistance == PinPullResistance.PULL_UP) {
             currentPullupB |= pinAddress;
-        }
-        else
-        {
+        } else {
             currentPullupB &= ~pinAddress;
         }
 
@@ -393,20 +349,16 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     @Override
-    public PinPullResistance getPullResistance(Pin pin)
-    {
+    public PinPullResistance getPullResistance(Pin pin) {
         return super.getPullResistance(pin);
     }
     
     
     @Override
-    public void shutdown()
-    {
-        try
-        {
+    public void shutdown() {
+        try {
             // if a monitor is running, then shut it down now
-            if (monitor != null)
-            {
+            if (monitor != null) {
                 // shutdown monitoring thread
                 monitor.shutdown();
                 monitor = null;
@@ -414,9 +366,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
             // close the I2C bus communication
             bus.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }   
@@ -428,45 +378,35 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
      * @author Robert Savage
      * 
      */
-    private class GpioStateMonitor extends Thread
-    {
+    private class GpioStateMonitor extends Thread {
         private I2CDevice device;
         private boolean shuttingDown = false;
 
-        public GpioStateMonitor(I2CDevice device)
-        {
+        public GpioStateMonitor(I2CDevice device) {
             this.device = device;
         }
 
-        public void shutdown()
-        {
+        public void shutdown() {
             shuttingDown = true;
         }
 
-        public void run()
-        {
-            while (!shuttingDown)
-            {
-                try
-                {
+        public void run() {
+            while (!shuttingDown) {
+                try {
                     // only process for interrupts if a pin on port A is configured as an input pin
-                    if (currentDirectionA > 0)
-                    {
+                    if (currentDirectionA > 0) {
                         // process interrupts for port A
                         int pinInterruptA = device.read(REGISTER_INTF_A);
 
                         // validate that there is at least one interrupt active on port A
-                        if (pinInterruptA > 0)
-                        {
+                        if (pinInterruptA > 0) {
                             // read the current pin states on port A
                             int pinInterruptState = device.read(REGISTER_GPIO_A);
 
                             // loop over the available pins on port B
-                            for (Pin pin : MCP23017Pin.ALL_A_PINS)
-                            {
+                            for (Pin pin : MCP23017Pin.ALL_A_PINS) {
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptA & pin.getAddress()) > 0)
-                                {
+                                if ((pinInterruptA & pin.getAddress()) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeA(pin, pinInterruptState);
                                 }
@@ -475,23 +415,19 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     }
 
                     // only process for interrupts if a pin on port B is configured as an input pin
-                    if (currentDirectionB > 0)
-                    {
+                    if (currentDirectionB > 0) {
                         // process interrupts for port B
                         int pinInterruptB = device.read(REGISTER_INTF_B);
 
                         // validate that there is at least one interrupt active on port B
-                        if (pinInterruptB > 0)
-                        {
+                        if (pinInterruptB > 0) {
                             // read the current pin states on port B
                             int pinInterruptState = device.read(REGISTER_GPIO_B);
 
                             // loop over the available pins on port B
-                            for (Pin pin : MCP23017Pin.ALL_B_PINS)
-                            {
+                            for (Pin pin : MCP23017Pin.ALL_B_PINS) {
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptB & pin.getAddress()) > 0)
-                                {
+                                if ((pinInterruptB & pin.getAddress()) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeB(pin, pinInterruptState);
                                 }
@@ -502,23 +438,18 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     // ... lets take a short breather ...
                     Thread.currentThread();
                     Thread.sleep(50);
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
 
-        private void evaluatePinForChangeA(Pin pin, int state)
-        {
-            if (getPinCache(pin).isExported())
-            {
+        private void evaluatePinForChangeA(Pin pin, int state) {
+            if (getPinCache(pin).isExported()) {
                 // determine pin address
                 int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
 
-                if ((state & pinAddress) != (currentStatesA & pinAddress))
-                {
+                if ((state & pinAddress) != (currentStatesA & pinAddress)) {
                     PinState newState = (state & pinAddress) == pinAddress ? PinState.HIGH
                             : PinState.LOW;
 
@@ -526,12 +457,9 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     getPinCache(pin).setState(newState);
 
                     // determine and cache state value for pin bit
-                    if (newState.isHigh())
-                    {
+                    if (newState.isHigh()) {
                         currentStatesA |= pinAddress;
-                    }
-                    else
-                    {
+                    } else {
                         currentStatesA &= ~pinAddress;
                     }
 
@@ -542,15 +470,12 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
             }
         }
 
-        private void evaluatePinForChangeB(Pin pin, int state)
-        {
-            if (getPinCache(pin).isExported())
-            {
+        private void evaluatePinForChangeB(Pin pin, int state) {
+            if (getPinCache(pin).isExported()) {
                 // determine pin address
                 int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
 
-                if ((state & pinAddress) != (currentStatesB & pinAddress))
-                {
+                if ((state & pinAddress) != (currentStatesB & pinAddress)) {
                     PinState newState = (state & pinAddress) == pinAddress ? PinState.HIGH
                             : PinState.LOW;
 
@@ -558,12 +483,9 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     getPinCache(pin).setState(newState);
 
                     // determine and cache state value for pin bit
-                    if (newState.isHigh())
-                    {
+                    if (newState.isHigh()) {
                         currentStatesB |= pinAddress;
-                    }
-                    else
-                    {
+                    } else {
                         currentStatesB &= ~pinAddress;
                     }
 
@@ -574,21 +496,17 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
             }
         }
 
-        private void dispatchPinChangeEvent(int pinAddress, PinState state)
-        {
+        private void dispatchPinChangeEvent(int pinAddress, PinState state) {
             // iterate over the pin listeners map
-            for (Pin pin : listeners.keySet())
-            {
+            for (Pin pin : listeners.keySet()) {
                 // System.out.println("<<< DISPATCH >>> " + pin.getName() + " : " +
                 // state.getName());
 
                 // dispatch this event to the listener
                 // if a matching pin address is found
-                if (pin.getAddress() == pinAddress)
-                {
+                if (pin.getAddress() == pinAddress) {
                     // dispatch this event to all listener handlers
-                    for (PinListener listener : listeners.get(pin))
-                    {
+                    for (PinListener listener : listeners.get(pin)) {
                         listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
                     }
                 }

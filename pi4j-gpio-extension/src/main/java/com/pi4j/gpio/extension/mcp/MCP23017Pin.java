@@ -48,8 +48,8 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage
  * 
  */
-public class MCP23017Pin
-{
+public class MCP23017Pin {
+
     public static final Pin GPIO_A0 = createDigitalPin(1, "GPIO A0");
     public static final Pin GPIO_A1 = createDigitalPin(2, "GPIO A1");
     public static final Pin GPIO_A2 = createDigitalPin(4, "GPIO A2");
@@ -78,8 +78,7 @@ public class MCP23017Pin
                                 MCP23017Pin.GPIO_B0, MCP23017Pin.GPIO_B1, MCP23017Pin.GPIO_B2, MCP23017Pin.GPIO_B3,
                                 MCP23017Pin.GPIO_B4, MCP23017Pin.GPIO_B5, MCP23017Pin.GPIO_B6, MCP23017Pin.GPIO_B7 };
     
-    private static Pin createDigitalPin(int address, String name)
-    {
+    private static Pin createDigitalPin(int address, String name) {
         return new PinImpl(MCP23017GpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     EnumSet.of(PinPullResistance.PULL_UP, PinPullResistance.OFF));
