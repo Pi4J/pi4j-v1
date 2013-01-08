@@ -46,8 +46,16 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIGetFd
  * Method:    wiringPiSPIDataRW
  * Signature: (ILjava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang_String_2I
   (JNIEnv *, jclass, jint, jstring, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPIDataRW
+ * Signature: (I[BI)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
+  (JNIEnv *, jclass, jint, jbyteArray, jint);
 
 /*
  * Class:     com_pi4j_wiringpi_Spi

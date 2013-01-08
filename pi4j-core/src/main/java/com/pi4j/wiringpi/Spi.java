@@ -121,6 +121,25 @@ public class Spi {
     public static native int wiringPiSPIDataRW(int channel, String data, int len);
 
     /**
+     * <p>wiringPiSPIDataRW:</p>
+     * 
+     * <p>
+     * Write and Read a block of data over the SPI bus. Note the data is being read into the
+     * transmit buffer, so will overwrite it! This is also a full-duplex operation.
+     * </p>
+     * 
+     * <p>
+     * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
+     * </p>
+     * 
+     * @param channel SPI channel</p>
+     * @param data
+     * @param len
+     * @return return -1 on error
+     */
+    public static native int wiringPiSPIDataRW(int channel, byte[] data, int len);
+    
+    /**
      * <p>wiringPiSPISetup:</p>
      * 
      * <p>

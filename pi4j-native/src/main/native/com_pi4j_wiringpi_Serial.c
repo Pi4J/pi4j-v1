@@ -86,7 +86,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
   (JNIEnv *env, jobject obj, jint fd, jstring data)
 {
 	char datachararr[2048];
-	int len = (*env)->GetStringLength(env, data);
+	int len = (*env)->GetStringUTFLength(env, data);
 	(*env)->GetStringUTFRegion(env, data, 0, len, datachararr);
 	serialPuts(fd, datachararr);
 }
