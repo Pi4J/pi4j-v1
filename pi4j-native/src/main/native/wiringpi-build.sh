@@ -24,7 +24,6 @@
 # limitations under the License.
 # #L%
 ###
-
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
@@ -36,7 +35,6 @@ sudo apt-get install git-core -y
 # ----------------------------------
 git clone git://github.com/WiringPi/WiringPi.git wiringPi
 cd wiringPi
-git pull origin
 
 # ----------------------------------
 # uninstall any previous copies

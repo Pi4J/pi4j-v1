@@ -73,7 +73,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	// copy the bytes from the data array argument into a native character buffer
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
     for (i = 0; i < length; i++) {
-    	buffer[i] = body[i + offset];
+    	buffer[i] = body[i];
     }
 
 	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
@@ -82,7 +82,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	for (i = 0; i < length; i++) {
 		body[i] = buffer[i];
 	}
-	(*env)->ReleaseByteArrayElements(env, data, bodyReturn, 0);
+	(*env)->ReleaseByteArrayElements(env, data, body, 0);
 
 	return result;
 }
