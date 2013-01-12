@@ -71,8 +71,9 @@ public interface Serial {
      * @param baudRate The baud rate to use with the serial port.
      *            
      * @return The return value is the file descriptor or -1 for any error.
+     * @throws SerialException 
      */
-    int open(String device, int baudRate);
+    int open(String device, int baudRate) throws SerialException;
 
     /**
      * This method is called to close a currently open open serial port.
