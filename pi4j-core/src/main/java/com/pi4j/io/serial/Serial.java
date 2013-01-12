@@ -70,9 +70,10 @@ public interface Serial {
      *            GPIO header.
      * @param baudRate The baud rate to use with the serial port.
      *            
-     * @return The return value is the file descriptor or -1 for any error.
+     * @return The return value is the file descriptor.
+     * @throws SerialException Exception thrown on any error.
      */
-    int open(String device, int baudRate);
+    int open(String device, int baudRate) throws SerialException;
 
     /**
      * This method is called to close a currently open open serial port.
