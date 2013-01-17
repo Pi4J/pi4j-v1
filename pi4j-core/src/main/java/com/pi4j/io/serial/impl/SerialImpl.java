@@ -76,12 +76,11 @@ public class SerialImpl implements Serial {
      * @return The return value is the file descriptor.
      * @throws SerialException Exception thrown on any error.
      */
-    public int open(String device, int baudRate) throws SerialException {
+    public void open(String device, int baudRate) throws SerialException {
         fileDescriptor = com.pi4j.wiringpi.Serial.serialOpen(device, baudRate);
         if (fileDescriptor == -1) {
         	throw new SerialException("Cannot open serial port");
         }
-        return fileDescriptor;
     }
 
     /**

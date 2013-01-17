@@ -73,7 +73,7 @@ public interface Serial {
      * @return The return value is the file descriptor.
      * @throws SerialException Exception thrown on any error.
      */
-    int open(String device, int baudRate) throws SerialException;
+    void open(String device, int baudRate) throws SerialException;
 
     /**
      * This method is called to close a currently open open serial port.
