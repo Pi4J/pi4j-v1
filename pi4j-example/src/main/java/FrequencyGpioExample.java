@@ -42,10 +42,10 @@ import com.pi4j.io.gpio.RaspiPin;
  * 
  * @author Robert Savage
  */
-public class FrequencyGpioExample
-{
-    public static void main(String[] args) 
-    {
+public class FrequencyGpioExample {
+    
+    public static void main(String[] args) {
+        
         System.out.println("<--Pi4J--> GPIO Frequency Example ... started.");
         
         // create gpio controller
@@ -55,11 +55,14 @@ public class FrequencyGpioExample
         final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
 
         // continuous loop
-        while(true)
-        {
+        while(true) {            
             pin.setState(true);
             pin.setState(false);
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }
 //END SNIPPET: frequency-gpio-snippet

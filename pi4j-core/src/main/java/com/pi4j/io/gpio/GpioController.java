@@ -145,4 +145,6 @@ public interface GpioController {
     Collection<GpioPin> getProvisionedPins();
     
     void unprovisionPin(GpioPin... pin);
+    boolean isShutdown();
+    void shutdown();
 }

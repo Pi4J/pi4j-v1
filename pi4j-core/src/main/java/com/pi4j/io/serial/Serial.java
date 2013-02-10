@@ -201,4 +201,8 @@ public interface Serial {
      * @param listener A class instance that implements the SerialListener interface.
      */
     void removeListener(SerialDataListener... listener);
+    
+    
+    boolean isShutdown();
+    void shutdown();
 }

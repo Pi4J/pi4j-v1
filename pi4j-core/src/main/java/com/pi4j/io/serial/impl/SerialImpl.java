@@ -59,9 +59,10 @@ import com.pi4j.io.serial.SerialDataListener;
  */
 public class SerialImpl implements Serial {
 
-    private int fileDescriptor = -1;
-    private final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<SerialDataListener>();
-    private SerialDataMonitorThread monitor;
+    protected int fileDescriptor = -1;
+    protected final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<SerialDataListener>();
+    protected SerialDataMonitorThread monitor;
+    protected boolean isshutdown = false;
 
     /**
      * This method is call to open a serial port for communication.
@@ -265,8 +266,35 @@ public class SerialImpl implements Serial {
         // if there are not more listeners, then exit and destroy
         // the monitor thread now
         if (listeners.isEmpty() && monitor != null) {
-            monitor.exit();
+            monitor.shutdown();
             monitor = null;
         }
+    }
+    
+    /**
+     * This method returns TRUE if the serial interface has been shutdown.
+     * 
+     * @return shutdown state
+     */
+    @Override
+    public boolean isShutdown(){
+        return isshutdown;
+    }
+
+    
+    /**
+     * This method can be called to forcefully shutdown all 
+     * serial data monitoring threads.
+     */
+    @Override
+    public synchronized void shutdown()
+    {
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // shutdown monitoring thread
+        if(monitor != null)
+            monitor.shutdown();
     }
 }

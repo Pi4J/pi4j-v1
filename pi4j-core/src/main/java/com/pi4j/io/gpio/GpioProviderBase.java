@@ -53,6 +53,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<Pin, List<PinListener>>();
     protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<Pin, GpioProviderPinCache>();
+    protected boolean isshutdown = false;
     
     @Override
     public boolean hasPin(Pin pin) {
@@ -311,5 +312,22 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public void shutdown() {
+        
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // set shutdown tracking state variable
+        isshutdown = true;
     }     
+        
+    /**
+     * This method returns TRUE if the GPIO provider has been shutdown.
+     * 
+     * @return shutdown state
+     */
+    @Override
+    public boolean isShutdown(){
+        return isshutdown;
+    }    
 }

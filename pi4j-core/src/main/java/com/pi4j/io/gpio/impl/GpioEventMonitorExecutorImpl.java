@@ -27,7 +27,7 @@ package com.pi4j.io.gpio.impl;
  */
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinInput;
 import com.pi4j.io.gpio.event.PinEvent;
 import com.pi4j.io.gpio.event.PinListener;
@@ -40,17 +40,11 @@ public class GpioEventMonitorExecutorImpl implements PinListener {
     
     public GpioEventMonitorExecutorImpl(GpioPinInput pin) {
         this.pin = pin;        
-        executor = Executors.newSingleThreadExecutor();
+        executor = GpioFactory.getExecutorServiceFactory().newSingleThreadExecutorService();
     }
     
     @Override
     public void handlePinEvent(PinEvent event) {
         executor.execute(new GpioEventDispatchTaskImpl(pin, event));
     }
-    
-    public synchronized static void shutdown() {
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdownNow();
-        }
-    }      
 }

@@ -28,6 +28,8 @@ package com.pi4j.io.gpio;
  */
 
 
+import com.pi4j.concurrent.DefaultExecutorServiceFactory;
+import com.pi4j.concurrent.ExecutorServiceFactory;
 import com.pi4j.io.gpio.impl.GpioControllerImpl;
 
 /**
@@ -59,6 +61,9 @@ public class GpioFactory {
 
     // we only allow a single default provider to exists
     private static GpioProvider provider = null;
+
+    // we only allow a single default scheduled executor service factory to exists
+    private static ExecutorServiceFactory executorServiceFactory = null;
     
     // private constructor 
     private GpioFactory() {
@@ -110,4 +115,29 @@ public class GpioFactory {
         GpioFactory.provider = provider;
     }
     
+    
+    /**
+     * <p>Return instance of {@link ExecutorServiceFactory}.</p>
+     * <p>Note: .</p>
+     * 
+     * @return Return a new GpioController impl instance.
+     */
+    public static ExecutorServiceFactory getExecutorServiceFactory() {
+        // if an executor service provider factory has not been created, then create a new default instance
+        if (executorServiceFactory == null) {
+            executorServiceFactory = new DefaultExecutorServiceFactory();
+        }
+        // return the provider instance
+        return executorServiceFactory;
+    }
+
+    /**
+     * Sets default {@link ExecutorServiceFactory}.
+     * 
+     * @param executor service factory instance
+     */
+    public static void setExecutorServiceFactory(ExecutorServiceFactory executorServiceFactory) {
+        // set the default factory instance
+        GpioFactory.executorServiceFactory = executorServiceFactory;
+    }    
 }

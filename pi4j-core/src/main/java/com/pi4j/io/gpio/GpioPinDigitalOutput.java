@@ -40,10 +40,10 @@ public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput {
     void high();
     void low();    
     void toggle();
-    void blink(long delay);
-    void blink(long delay, PinState blinkState);
-    void blink(long delay, long duration);
-    void blink(long delay, long duration, PinState blinkState);
+    Future<?> blink(long delay);
+    Future<?> blink(long delay, PinState blinkState);
+    Future<?> blink(long delay, long duration);
+    Future<?> blink(long delay, long duration, PinState blinkState);
     Future<?> pulse(long duration);    
     Future<?> pulse(long duration, boolean blocking);    
     Future<?> pulse(long duration, PinState pulseState);

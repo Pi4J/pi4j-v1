@@ -31,13 +31,13 @@ package com.pi4j.io.gpio.impl;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.tasks.impl.GpioBlinkStopTaskImpl;
@@ -50,8 +50,8 @@ public class GpioScheduledExecutorImpl {
     private static ScheduledExecutorService scheduledExecutorService;
 
     private synchronized static void init(GpioPinDigitalOutput pin) {
-        if (scheduledExecutorService == null || scheduledExecutorService.isShutdown()) {
-            scheduledExecutorService = Executors.newScheduledThreadPool(5);
+        if (scheduledExecutorService == null) {
+            scheduledExecutorService = GpioFactory.getExecutorServiceFactory().getScheduledExecutorService();
         }
 
         // determine if any existing future tasks are already scheduled for this pin
@@ -97,12 +97,6 @@ public class GpioScheduledExecutorImpl {
                         }
                     }
                 }
-                
-                // shutdown service when tasks are complete
-                if (pinTaskQueue.isEmpty()) {
-                    scheduledExecutorService.shutdown();
-                }
-                
                 return null;
             }
         }, delay, TimeUnit.MILLISECONDS);
@@ -141,16 +135,11 @@ public class GpioScheduledExecutorImpl {
             createCleanupTask(duration + 500);
         }
 
-        // shutdown service when tasks are complete
-        if (pinTaskQueue.isEmpty()) {
-            scheduledExecutorService.shutdown();
-        }
-        
         // return future task
         return scheduledFuture;
     }
 
-    public synchronized static void blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState) {
+    public synchronized static Future<?> blink(GpioPinDigitalOutput pin, long delay, long duration, PinState blinkState) {
 
         // perform the initial startup and cleanup for this pin 
         init(pin);
@@ -185,18 +174,13 @@ public class GpioScheduledExecutorImpl {
 
                 // create future task to clean up completed tasks
                 createCleanupTask(duration + 500);                
-            }            
+            }      
+
+            // return future task
+            return scheduledFutureBlinkTask;
         }
-                
-        // shutdown service when tasks are complete
-        if (pinTaskQueue.isEmpty()) {
-            scheduledExecutorService.shutdown();
-        }
+        
+        // no future task when a delay time has not been specified
+        return null;
     }
-    
-    public synchronized static void shutdown() {
-        if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
-            scheduledExecutorService.shutdownNow();
-        }
-    }    
 }

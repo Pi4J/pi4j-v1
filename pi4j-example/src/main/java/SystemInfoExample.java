@@ -40,10 +40,10 @@ import com.pi4j.system.SystemInfo;
  * 
  * @author Robert Savage
  */
-public class SystemInfoExample
-{
-    public static void main(String[] args) throws InterruptedException, IOException
-    {
+public class SystemInfoExample {
+    
+    public static void main(String[] args) throws InterruptedException, IOException {
+        
         // display a few of the available system information properties
         System.out.println("----------------------------------------------------");
         System.out.println("HARDWARE INFO");

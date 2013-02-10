@@ -39,10 +39,10 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
  * 
  * @author Robert Savage
  */
-public class MultipurposePinGpioExample
-{
-    public static void main(String args[]) throws InterruptedException
-    {
+public class MultipurposePinGpioExample {
+    
+    public static void main(String args[]) throws InterruptedException {
+    
         System.out.println("<--Pi4J--> GPIO Multipurpose Pin Example ... started.");
         
         // create gpio controller
@@ -53,22 +53,18 @@ public class MultipurposePinGpioExample
         final GpioPinDigitalMultipurpose pin = gpio.provisionDigitalMultipurposePin(RaspiPin.GPIO_02, PinMode.DIGITAL_INPUT, PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
-        pin.addListener(new GpioPinListenerDigital()
-        {
+        pin.addListener(new GpioPinListenerDigital() {
             @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-            {
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-            }
-            
+            }            
         });
         
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(5000);
 
             // here we want to control the multi-purpose GPIO pin
@@ -83,5 +79,9 @@ public class MultipurposePinGpioExample
             pin.setMode(PinMode.DIGITAL_INPUT);
             System.out.println(" --> GPIO PIN - RECONFIGURED AS INPUT PIN");
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }

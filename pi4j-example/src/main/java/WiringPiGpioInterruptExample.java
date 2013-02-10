@@ -31,19 +31,29 @@ import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioUtil;
 
-public class WiringPiGpioInterruptExample
-{
-    public static void main(String args[]) throws InterruptedException
-    {
+public class WiringPiGpioInterruptExample {
+    
+    public static void main(String args[]) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO INTERRUPT test program");
         
-        // create test listener and add as a GPIO listener
-        GpioTestInterruptListener lsnr = new GpioTestInterruptListener();
-        GpioInterrupt.addListener(lsnr);
-
+        // create and add GPIO listener 
+        GpioInterrupt.addListener(new GpioInterruptListener() {
+            @Override
+            public void pinStateChange(GpioInterruptEvent event) {
+                System.out.println("Raspberry Pi PIN [" + event.getPin() +"] is in STATE [" + event.getState() + "]");
+                
+                if(event.getPin() == 7) {
+                    Gpio.digitalWrite(6, event.getStateValue());
+                }
+                if(event.getPin() == 0) {
+                    Gpio.digitalWrite(5, event.getStateValue());
+                }
+            }
+        });
+        
         // setup wiring pi
-        if (Gpio.wiringPiSetup() == -1)
-        {
+        if (Gpio.wiringPiSetup() == -1) {
             System.out.println(" ==>> GPIO SETUP FAILED");
             return;
         }
@@ -73,26 +83,8 @@ public class WiringPiGpioInterruptExample
         GpioInterrupt.enablePinStateChangeCallback(7);
 
         // continuously loop to prevent program from exiting
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(5000);
-        }
-    }
-}
-
-class GpioTestInterruptListener implements GpioInterruptListener
-{
-    public void pinStateChange(GpioInterruptEvent event)
-    {
-        System.out.println("Raspberry Pi PIN [" + event.getPin() +"] is in STATE [" + event.getState() + "]");
-        
-        if(event.getPin() == 7)
-        {
-            Gpio.digitalWrite(6, event.getStateValue());
-        }
-        if(event.getPin() == 0)
-        {
-            Gpio.digitalWrite(5, event.getStateValue());
         }
     }
 }

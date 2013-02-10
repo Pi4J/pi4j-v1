@@ -41,10 +41,10 @@ import com.pi4j.io.serial.SerialFactory;
  * 
  * @author Robert Savage
  */
-public class SerialExample
-{
-    public static void main(String args[]) throws InterruptedException
-    {
+public class SerialExample {
+    
+    public static void main(String args[]) throws InterruptedException {
+        
         // !! ATTENTION !!
         // By default, the serial port is configured as a console port 
         // for interacting with the Linux OS shell.  If you want to use 
@@ -62,11 +62,9 @@ public class SerialExample
         final Serial serial = SerialFactory.createInstance();
 
         // create and register the serial data listener
-        serial.addListener(new SerialDataListener()
-        {
+        serial.addListener(new SerialDataListener() {
             @Override
-            public void dataReceived(SerialDataEvent event)
-            {
+            public void dataReceived(SerialDataEvent event) {
                 // print out the data received to the console
                 System.out.print(event.getData());
             }            
@@ -74,15 +72,13 @@ public class SerialExample
         
         // open the default serial port provided on the GPIO header
         int ret = serial.open(Serial.DEFAULT_COM_PORT, 38400);
-        if (ret == -1)
-        {
+        if (ret == -1) {
             System.out.println(" ==>> SERIAL SETUP FAILED");
             return;
         }
 
         // continuous loop to keep the program running until the user terminates the program
-        for (;;)
-        {
+        for (;;) {
             // write a formatted string to the serial transmit buffer
             serial.write("CURRENT TIME: %s", new Date().toString());
 

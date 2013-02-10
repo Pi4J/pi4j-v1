@@ -38,10 +38,10 @@ import com.pi4j.io.gpio.RaspiPin;
  * 
  * @author Robert Savage
  */
-public class StepperMotorGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class StepperMotorGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Stepper Motor Example ... started.");
         
         // create gpio controller
@@ -151,5 +151,9 @@ public class StepperMotorGpioExample
 
         // final stop to ensure no motor activity
         motor.stop();
+
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        gpio.shutdown();        
     }
 }

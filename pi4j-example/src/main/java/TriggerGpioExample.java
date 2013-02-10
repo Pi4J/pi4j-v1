@@ -48,10 +48,10 @@ import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
  * 
  * @author Robert Savage
  */
-public class TriggerGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class TriggerGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Trigger Example ... started.");
 
         // create gpio controller
@@ -64,8 +64,7 @@ public class TriggerGpioExample
         System.out.println(" ... complete the GPIO #02 circuit and see the triggers take effect.");
         
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
-        GpioPinDigitalOutput myLed[] =
-          { 
+        GpioPinDigitalOutput myLed[] = { 
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "LED #1", PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "LED #2", PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "LED #3", PinState.LOW) 
@@ -85,20 +84,21 @@ public class TriggerGpioExample
 
         // create a gpio callback trigger on gpio pin#4; when #4 changes state, perform a callback
         // invocation on the user defined 'Callable' class instance
-        myButton.addTrigger(new GpioCallbackTrigger(new Callable<Void>()
-        {
-            public Void call() throws Exception
-            {
+        myButton.addTrigger(new GpioCallbackTrigger(new Callable<Void>() {
+            public Void call() throws Exception {
                 System.out.println(" --> GPIO TRIGGER CALLBACK RECEIVED ");
                 return null;
             }
         }));
 
         // keep program running until user aborts (CTRL-C)
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(500);
         }
+
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }
 // END SNIPPET: trigger-gpio-snippet

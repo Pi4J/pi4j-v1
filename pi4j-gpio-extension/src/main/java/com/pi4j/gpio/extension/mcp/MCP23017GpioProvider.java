@@ -356,6 +356,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     
     @Override
     public void shutdown() {
+        
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // perform shutdown login in base
+        super.shutdown();
+        
         try {
             // if a monitor is running, then shut it down now
             if (monitor != null) {

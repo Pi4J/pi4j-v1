@@ -43,7 +43,7 @@ Copyright (C) 2012 Pi4J
 
 ## IN DEVELOPMENT
 
-2013-01-07 :: 0.0.5-SNAPSHOT
+2013-02-09 :: 0.0.5-SNAPSHOT
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -56,6 +56,18 @@ Copyright (C) 2012 Pi4J
   *  Added LCD component interface 
   *  Added GPIO based 4/8 bit LCD display component implementation and sample program.
   *  Added GPIO based 4/8 bit LCD WiringPi example program
+  *  Added support for a GpioController.shutdown() method to cleanup terminate all Pi4J threads and executors.
+     https://github.com/Pi4J/pi4j/issues/9
+  *  Added support for a user-definable ExecutorServiceFactory to allow user program to provide the implementation
+     for executor service instances and managed thread pools.  
+     https://github.com/Pi4J/pi4j/issues/10
+  *  Fixed 'java.util.concurrent.RejectedExecutionException' issue where there were not 
+     enough default thread in the pool for concurrent tasks.
+     https://github.com/Pi4J/pi4j/issues/31
+  *  Fixed issue where SerialDataMonitorThread was not shutting down on program exit.
+     https://github.com/Pi4J/pi4j/issues/33
+  *  Fixed issue where hard-float ABI was not detected properly when using Oracle JDK 8 early access edition.
+     https://github.com/Pi4J/pi4j/issues/26
 
 ## RELEASES
 

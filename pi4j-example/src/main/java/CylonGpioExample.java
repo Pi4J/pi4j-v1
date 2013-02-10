@@ -41,10 +41,10 @@ import com.pi4j.io.gpio.RaspiPin;
  * 
  * @author Robert Savage
  */
-public class CylonGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class CylonGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Cylon Example ... started.");
         
         // create gpio controller
@@ -65,20 +65,23 @@ public class CylonGpioExample
         // set shutdown options on all pins
         gpio.setShutdownOptions(true, PinState.LOW, pins);
         
-        while(true)
-        {
-            for(int index = 0; index <= 6; index++)
-            {
+        // infinite loop
+        while(true) {
+            
+            for(int index = 0; index <= 6; index++) {
                 pins[index].pulse(50);
                 Thread.sleep(50);
             }
             
-            for(int index = 6; index >= 0; index--)
-            {
+            for(int index = 6; index >= 0; index--) {
                 pins[index].pulse(50);
                 Thread.sleep(50);
             }
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }
 //END SNIPPET: cylon-gpio-snippet

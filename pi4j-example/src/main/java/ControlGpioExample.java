@@ -1,6 +1,5 @@
 // START SNIPPET: control-gpio-snippet
 
-
 /*
  * #%L
  * **********************************************************************
@@ -40,10 +39,10 @@ import com.pi4j.io.gpio.RaspiPin;
  * 
  * @author Robert Savage
  */
-public class ControlGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class ControlGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
         
         // create gpio controller
@@ -75,7 +74,11 @@ public class ControlGpioExample
 
         // turn on gpio pin #01 for 1 second and then off
         System.out.println("--> GPIO state should be: ON for only 1 second");
-        pin.pulse(1000);
+        pin.pulse(1000, true); // set second argument to 'true' use a blocking call
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        gpio.shutdown();
     }
 }
 //END SNIPPET: control-gpio-snippet
