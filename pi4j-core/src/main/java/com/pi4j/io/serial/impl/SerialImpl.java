@@ -32,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataListener;
+import com.pi4j.io.serial.SerialException;
 
 /**
  * <p> This implementation class implements the 'Serial' interface using the WiringPi Serial library.</p>
@@ -65,7 +66,7 @@ public class SerialImpl implements Serial {
     protected boolean isshutdown = false;
 
     /**
-     * This method is call to open a serial port for communication.
+     * This method is call to open a serial port for communication. Throws SerialException on error.
      * 
      * @see #DEFAULT_COM_PORT
      * 
@@ -73,11 +74,14 @@ public class SerialImpl implements Serial {
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
      *            GPIO header.
      * @param baudRate The baud rate to use with the serial port.
-     * @return The return value is the file descriptor or -1 for any error.
+     * @return The return value is the file descriptor.
+     * @throws SerialException Exception thrown on any error.
      */
-    public int open(String device, int baudRate) {
+    public void open(String device, int baudRate) throws SerialException {
         fileDescriptor = com.pi4j.wiringpi.Serial.serialOpen(device, baudRate);
-        return fileDescriptor;
+        if (fileDescriptor == -1) {
+        	throw new SerialException("Cannot open serial port");
+        }
     }
 
     /**
@@ -93,8 +97,12 @@ public class SerialImpl implements Serial {
     /**
      * This method is called to close a currently open open serial port.
      */
-    public void close() {
-        com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
+    public void close() throws IllegalStateException {
+    	if (isOpen()) {
+    		com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
+    	} else {
+    		throw new IllegalStateException("Serial connection is not open, cannot close");
+    	}
     }
 
     /**
