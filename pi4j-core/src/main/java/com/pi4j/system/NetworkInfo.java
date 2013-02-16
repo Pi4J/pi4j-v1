@@ -28,11 +28,11 @@ package com.pi4j.system;
  */
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.pi4j.util.ExecUtil;
 
 public class NetworkInfo  {
 
@@ -41,61 +41,28 @@ public class NetworkInfo  {
         // forbid object construction 
     }
     
-    private static String[] executeCommand(String command) throws IOException, InterruptedException {
-        return executeCommand(command, null);
-    }
-    
-    private static String[] executeCommand(String command, String split) throws IOException, InterruptedException {
-        List<String> result = new ArrayList<String>();
-        Process p = Runtime.getRuntime().exec(command);
-        p.waitFor();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = reader.readLine();
-        while (line != null) {
-            if (!line.isEmpty()) {
-                if (split == null || split.isEmpty()) {
-                    result.add(line.trim());
-                } else {
-                    String[] parts = line.trim().split(split);
-                    for(String part : parts) {
-                        if (part != null && !part.isEmpty()) {
-                            result.add(part.trim());
-                        }
-                    }
-                }
-            }
-            line = reader.readLine();
-        }
-
-        if (result.size() > 0) {
-            return (String[])result.toArray(new String[0]);
-        } else {
-            return new String[0];
-        }
-    }
-
     public static String getHostname() throws IOException, InterruptedException {
-        return executeCommand("hostname --short")[0];
+        return ExecUtil.execute("hostname --short")[0];
     }
 
     public static String getFQDN() throws IOException, InterruptedException {
-        return executeCommand("hostname --fqdn")[0];
+        return ExecUtil.execute("hostname --fqdn")[0];
     }
 
     public static String[] getIPAddresses() throws IOException, InterruptedException {
-        return executeCommand("hostname --all-ip-addresses", " ");
+        return ExecUtil.execute("hostname --all-ip-addresses", " ");
     }
 
     public static String getIPAddress() throws IOException, InterruptedException {
-        return executeCommand("hostname --ip-address")[0];
+        return ExecUtil.execute("hostname --ip-address")[0];
     }
 
     public static String[] getFQDNs() throws IOException, InterruptedException {
-        return executeCommand("hostname --all-fqdns", " ");
+        return ExecUtil.execute("hostname --all-fqdns", " ");
     }
 
     public static String[] getNameservers() throws IOException, InterruptedException {
-        String[] nameservers = executeCommand("cat /etc/resolv.conf");
+        String[] nameservers = ExecUtil.execute("cat /etc/resolv.conf");
         List<String> result = new ArrayList<String>();
         for (String nameserver : nameservers) {
             if (nameserver.startsWith("nameserver")) {

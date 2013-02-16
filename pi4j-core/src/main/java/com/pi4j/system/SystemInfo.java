@@ -28,14 +28,13 @@ package com.pi4j.system;
  */
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pi4j.util.ExecUtil;
 import com.pi4j.util.StringUtil;
 
 public class SystemInfo {
@@ -51,16 +50,14 @@ public class SystemInfo {
         // if the CPU data has not been previously acquired, then acquire it now
         if (cpuInfo == null) {
             cpuInfo = new HashMap<String, String>();
-            Process p = Runtime.getRuntime().exec("cat /proc/cpuinfo");
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = reader.readLine();
-            while (line != null) {
-                String parts[] = line.split(":", 2);
-                if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty()) {
-                    cpuInfo.put(parts[0].trim(), parts[1].trim());
+            String result[] = ExecUtil.execute("cat /proc/cpuinfo");
+            if(result != null){
+                for(String line : result) {
+                    String parts[] = line.split(":", 2);
+                    if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty()) {
+                        cpuInfo.put(parts[0].trim(), parts[1].trim());
+                    }
                 }
-                line = reader.readLine();
             }
         }
 
@@ -179,19 +176,11 @@ public class SystemInfo {
     private static String getBashVersionInfo() {
         String versionInfo = "";
         try {
-            
-            String cmd = "bash --version";
-            Process p = Runtime.getRuntime().exec(cmd); 
-            p.waitFor(); 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream())); 
-            String line = reader.readLine();
-            if(p.exitValue() == 0) {
-                while(line != null) {
-                    if(!line.isEmpty()) { 
-                        versionInfo = line; // return only first output line of version info
-                        break;
-                    }
-                    line = reader.readLine();
+            String result[] = ExecUtil.execute("bash --version");
+            for(String line : result) {
+                if(!line.isEmpty()) { 
+                    versionInfo = line; // return only first output line of version info
+                    break;
                 }
             }
         }
@@ -218,13 +207,9 @@ public class SystemInfo {
     private static String getReadElfTag(String tag) {
         String tagValue = null;
         try {
-            String cmd = "/usr/bin/readelf -A /proc/self/exe";
-            Process p = Runtime.getRuntime().exec(cmd); 
-            p.waitFor();
-            if(p.exitValue() == 0) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream())); 
-                String line = reader.readLine();
-                while(line != null) {
+            String result[] = ExecUtil.execute("/usr/bin/readelf -A /proc/self/exe");
+            if(result != null){
+                for(String line : result) {
                     line = line.trim();
                     if (line.startsWith(tag) && line.contains(":")) {
                         String lineParts[] = line.split(":", 2);
@@ -232,14 +217,11 @@ public class SystemInfo {
                             tagValue = lineParts[1].trim();
                         break;
                     }
-                    line = reader.readLine();
                 }
-            }
+            }            
         }
         catch (IOException ioe) { ioe.printStackTrace(); }
         catch (InterruptedException ie) { ie.printStackTrace(); }
         return tagValue;
     }
-    
-    
 }
