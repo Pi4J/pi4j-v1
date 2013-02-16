@@ -210,8 +210,11 @@ public class SerialImpl implements Serial {
         if (isClosed()) 
             throw new IllegalStateException("Serial connection is not open; cannot 'write(byte[])'.");
 
-        // write byte array to serial port        
-        write(new String(data));
+        // write byte array to serial port
+        for(byte b : data){
+            // write byte to serial port        
+            com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, (char)b);
+        }
     }
 
     /**

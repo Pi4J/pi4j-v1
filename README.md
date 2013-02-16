@@ -72,6 +72,8 @@ Copyright (C) 2012 Pi4J
      https://github.com/Pi4J/pi4j/issues/8
   *  Fixed issue where process streams were not being closed properly
      https://github.com/Pi4J/pi4j/issues/35
+  *  Fixed issue where serial.write(byte[]) was throwing java.lang.StringIndexOutOfBoundsException
+     https://github.com/Pi4J/pi4j/issues/37
 
 ## RELEASES
 
