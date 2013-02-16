@@ -71,14 +71,14 @@ public interface Serial {
      * @param baudRate The baud rate to use with the serial port.
      *            
      * @return The return value is the file descriptor.
-     * @throws SerialException Exception thrown on any error.
+     * @throws SerialPortException Exception thrown on any error.
      */
-    void open(String device, int baudRate) throws SerialException;
+    void open(String device, int baudRate) throws SerialPortException;
 
     /**
      * This method is called to close a currently open open serial port.
      */
-    void close();
+    void close() throws IllegalStateException;
 
     /**
      * This method is called to determine if the serial port is already open.
@@ -89,10 +89,18 @@ public interface Serial {
     boolean isOpen();
 
     /**
+     * This method is called to determine if the serial port is already closed.
+     * 
+     * @see #open(String, int)
+     * @return a value of 'true' is returned if the serial port is already in the closed state.
+     */
+    boolean isClosed();
+    
+    /**
      * This method is called to immediately flush the serial data transmit buffer and force any
      * pending data to be sent to the serial port immediately.
      */
-    void flush();
+    void flush() throws IllegalStateException;
 
     /**
      * <p>This method will read the next character available from the serial port receive buffer.</p>
@@ -105,7 +113,7 @@ public interface Serial {
      * 
      * @return next available character in the serial data buffer
      */
-    char read();
+    char read() throws IllegalStateException;
 
     /**
      * This method is called to submit a single character of data to the serial port transmit
@@ -113,35 +121,35 @@ public interface Serial {
      * 
      * @param data A single character to be transmitted.
      */
-    void write(char data);
+    void write(char data) throws IllegalStateException;
 
     /**
      * This method is called to submit a character array of data to the serial port transmit buffer.
      * 
      * @param data  A character array of data to be transmitted.
      */
-    void write(char data[]);
+    void write(char data[]) throws IllegalStateException;
 
     /**
      * This method is called to submit a single byte of data to the serial port transmit buffer.
      * 
      * @param data  A single byte to be transmitted.
      */
-    void write(byte data);
+    void write(byte data) throws IllegalStateException;
 
     /**
      * This method is called to submit a byte array of data to the serial port transmit buffer.
      * 
      * @param data A byte array of data to be transmitted.
      */
-    void write(byte data[]);
+    void write(byte data[]) throws IllegalStateException;
 
     /**
      * This method is called to submit a string of data to the serial port transmit buffer.
      * 
      * @param data  A string of data to be transmitted.
      */
-    void write(String data);
+    void write(String data) throws IllegalStateException;
 
     /**
      * This method is called to submit a string of data with trailing CR + LF characters to the
@@ -149,7 +157,7 @@ public interface Serial {
      * 
      * @param data  A string of data to be transmitted.
      */
-    void writeln(String data);
+    void writeln(String data) throws IllegalStateException;
 
     /**
      * This method is called to submit a string of formatted data to the serial port transmit
@@ -159,7 +167,7 @@ public interface Serial {
      * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
      */
-    void write(String data, String... args);
+    void write(String data, String... args) throws IllegalStateException;
 
     /**
      * This method is called to submit a string of formatted data with trailing CR + LF characters
@@ -169,7 +177,7 @@ public interface Serial {
      * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
      */
-    void writeln(String data, String... args);
+    void writeln(String data, String... args) throws IllegalStateException;
 
     /**
      * This method is called to determine if and how many bytes are available on the serial received
@@ -177,7 +185,7 @@ public interface Serial {
      * 
      * @return The number of available bytes pending in the serial received buffer is returned.
      */
-    int availableBytes();
+    int availableBytes() throws IllegalStateException;
 
     /**
      * <p>
@@ -202,8 +210,17 @@ public interface Serial {
      * @param listener A class instance that implements the SerialListener interface.
      */
     void removeListener(SerialDataListener... listener);
-    
-    
+        
+    /**
+     * This method returns TRUE if the serial interface has been shutdown.
+     * 
+     * @return shutdown state
+     */    
     boolean isShutdown();
+    
+    
+    /**
+     * This method can be called to forcefully shutdown all serial data monitoring threads.
+     */    
     void shutdown();
 }

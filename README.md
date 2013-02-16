@@ -43,7 +43,7 @@ Copyright (C) 2012 Pi4J
 
 ## IN DEVELOPMENT
 
-2013-02-09 :: 0.0.5-SNAPSHOT
+2013-02-16 :: 0.0.5-SNAPSHOT
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -68,6 +68,10 @@ Copyright (C) 2012 Pi4J
      https://github.com/Pi4J/pi4j/issues/33
   *  Fixed issue where hard-float ABI was not detected properly when using Oracle JDK 8 early access edition.
      https://github.com/Pi4J/pi4j/issues/26
+  *  Added support for exceptions on serial port access methods. 
+     https://github.com/Pi4J/pi4j/issues/8
+  *  Fixed issue where process streams were not beling closed properly
+     https://github.com/Pi4J/pi4j/issues/35
 
 ## RELEASES
 

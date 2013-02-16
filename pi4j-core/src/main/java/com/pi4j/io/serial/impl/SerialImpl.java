@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataListener;
-import com.pi4j.io.serial.SerialException;
+import com.pi4j.io.serial.SerialPortException;
 
 /**
  * <p> This implementation class implements the 'Serial' interface using the WiringPi Serial library.</p>
@@ -75,12 +75,12 @@ public class SerialImpl implements Serial {
      *            GPIO header.
      * @param baudRate The baud rate to use with the serial port.
      * @return The return value is the file descriptor.
-     * @throws SerialException Exception thrown on any error.
+     * @throws SerialPortException Exception thrown on any error.
      */
-    public void open(String device, int baudRate) throws SerialException {
+    public void open(String device, int baudRate) throws SerialPortException {
         fileDescriptor = com.pi4j.wiringpi.Serial.serialOpen(device, baudRate);
         if (fileDescriptor == -1) {
-        	throw new SerialException("Cannot open serial port");
+        	throw new SerialPortException("Cannot open serial port");
         }
     }
 
@@ -93,23 +93,42 @@ public class SerialImpl implements Serial {
     public boolean isOpen() {
         return (fileDescriptor >= 0);
     }
+    
+    /**
+     * This method is called to determine if the serial port is already closed.
+     * 
+     * @see #open(String, int)
+     * @return a value of 'true' is returned if the serial port is already in the closed state.
+     */
+    public boolean isClosed(){
+        return !(isOpen());
+    }
+    
 
     /**
      * This method is called to close a currently open open serial port.
      */
     public void close() throws IllegalStateException {
-    	if (isOpen()) {
-    		com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
-    	} else {
-    		throw new IllegalStateException("Serial connection is not open, cannot close");
-    	}
-    }
+    	
+        // validate state
+        if (isClosed()) 
+    	    throw new IllegalStateException("Serial connection is not open; cannot 'close()'.");
+    	
+    	// close serial port now    
+    	com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
+	}
 
     /**
      * This method is called to immediately flush the serial data transmit buffer and force any
      * pending data to be sent to the serial port immediately.
      */
-    public void flush() {
+    public void flush() throws IllegalStateException {
+
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'flush()'.");
+        
+        // flush data to serial port immediately
         com.pi4j.wiringpi.Serial.serialFlush(fileDescriptor);
     }
 
@@ -124,7 +143,13 @@ public class SerialImpl implements Serial {
      * 
      * @return next available character in the serial data buffer
      */
-    public char read() {
+    public char read() throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        // attempt read byte from serial port 
         return (char) com.pi4j.wiringpi.Serial.serialGetchar(fileDescriptor);
     }
 
@@ -134,7 +159,13 @@ public class SerialImpl implements Serial {
      * 
      * @param data  A single character to be transmitted.
      */
-    public void write(char data) {
+    public void write(char data) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(char)'.");
+        
+        // write character to serial port
         com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, data);
     }
 
@@ -143,7 +174,13 @@ public class SerialImpl implements Serial {
      * 
      * @param data A character array of data to be transmitted.
      */
-    public void write(char data[]) {
+    public void write(char data[]) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(char[])'.");
+
+        // write character array to serial port
         write(new String(data));
     }
 
@@ -152,7 +189,13 @@ public class SerialImpl implements Serial {
      * 
      * @param data  A single byte to be transmitted.
      */
-    public void write(byte data) {
+    public void write(byte data) throws IllegalStateException {
+
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(byte)'.");
+
+        // write byte to serial port        
         com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, (char) data);
     }
 
@@ -161,7 +204,13 @@ public class SerialImpl implements Serial {
      * 
      * @param data  A byte array of data to be transmitted.
      */
-    public void write(byte data[]) {
+    public void write(byte data[]) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(byte[])'.");
+
+        // write byte array to serial port        
         write(new String(data));
     }
 
@@ -170,7 +219,12 @@ public class SerialImpl implements Serial {
      * 
      * @param data A string of data to be transmitted.
      */
-    public void write(String data) {
+    public void write(String data) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(String)'.");
+
         // break data into packets of 1024 bytes
         int position = 0;
         while (position < data.length()) {
@@ -191,7 +245,13 @@ public class SerialImpl implements Serial {
      * 
      * @param data A string of data to be transmitted.
      */
-    public void writeln(String data) {
+    public void writeln(String data) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln(String)'.");
+        
+        // write string with CR+LF to serial port 
         write(data + "\r\n");
     }
 
@@ -203,7 +263,13 @@ public class SerialImpl implements Serial {
      * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
      */
-    public void write(String data, String... args) {
+    public void write(String data, String... args) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'write(String data, String...args)'.");
+        
+        // write formatted string to serial port 
         write(String.format(data, (Object[]) args));
     }
 
@@ -215,7 +281,13 @@ public class SerialImpl implements Serial {
      * @param args  A series of arguments that can be included for the format string variable
      *            replacements.
      */
-    public void writeln(String data, String... args) {
+    public void writeln(String data, String... args) throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln(String data, String...args)'.");
+        
+        // write formatted string with CR+LF to serial port         
         write(data + "\r\n", args);
     }
     
@@ -225,7 +297,13 @@ public class SerialImpl implements Serial {
      * 
      * @return  The number of available bytes pending in the serial received buffer is returned.
      */
-    public int availableBytes() {
+    public int availableBytes() throws IllegalStateException {
+        
+        // validate state
+        if (isClosed()) 
+            throw new IllegalStateException("Serial connection is not open; cannot 'availableBytes()'.");
+        
+        // return the number of bytes available in the serial buffer                 
         return com.pi4j.wiringpi.Serial.serialDataAvail(fileDescriptor);
     }
 
@@ -297,6 +375,10 @@ public class SerialImpl implements Serial {
     @Override
     public synchronized void shutdown()
     {
+        // close serial port if still open
+        if(isOpen())
+            close();
+
         // prevent reentrant invocation
         if(isShutdown())
             return;

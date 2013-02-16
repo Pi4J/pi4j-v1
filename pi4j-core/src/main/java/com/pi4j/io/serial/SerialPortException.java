@@ -5,13 +5,13 @@ package com.pi4j.io.serial;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SerialException.java  
+ * FILENAME      :  SerialPortException.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2013 Pi4J
+ * Copyright (C) 2012 - 2013 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ package com.pi4j.io.serial;
  * @author Jakub Derda (<a
  *         href="http://www.ardeo.pl">http://www.ardeo.pl</a>)
  */
-public class SerialException extends Exception {
+public class SerialPortException extends RuntimeException {
 	
 	/**
 	 * Default serial version ID
@@ -59,7 +59,7 @@ public class SerialException extends Exception {
 	/**
 	 * Default no argument constructor.
 	 */
-	public SerialException() {
+	public SerialPortException() {
 		super();
 	}
 	
@@ -68,7 +68,7 @@ public class SerialException extends Exception {
 	 * 
 	 * @param message Description of error that occured.
 	 */
-	public SerialException(String message) {
+	public SerialPortException(String message) {
 		super(message);
 	}
 	
@@ -78,7 +78,7 @@ public class SerialException extends Exception {
 	 * 
 	 * @param cause Cause of SerialException.
 	 */
-	public SerialException(Throwable cause) {
+	public SerialPortException(Throwable cause) {
 		super(cause);
 	}
 
