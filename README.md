@@ -70,7 +70,7 @@ Copyright (C) 2012 Pi4J
      https://github.com/Pi4J/pi4j/issues/26
   *  Added support for exceptions on serial port access methods. 
      https://github.com/Pi4J/pi4j/issues/8
-  *  Fixed issue where process streams were not beling closed properly
+  *  Fixed issue where process streams were not being closed properly
      https://github.com/Pi4J/pi4j/issues/35
 
 ## RELEASES
