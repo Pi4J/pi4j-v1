@@ -5,7 +5,7 @@ package com.pi4j.gpio.extension.mcp;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP23017Pin.java  
+ * FILENAME      :  MCP23S17Pin.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,20 +28,19 @@ package com.pi4j.gpio.extension.mcp;
 
 /**
  * <p>
- * This GPIO provider implements the MCP23017 I2C GPIO expansion board as native Pi4J GPIO pins.
+ * This GPIO provider implements the MCP23S17 SPI GPIO expansion board as native Pi4J GPIO pins.
  * More information about the board can be found here: *
  * http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
- * http://learn.adafruit.com/mcp230xx-gpio-expander-on-the-raspberry-pi/overview
  * </p>
  * 
  * <p>
- * The MCP23017 is connected via I2C connection to the Raspberry Pi and provides
+ * The MCP23S17 is connected via SPI connection to the Raspberry Pi and provides
  * 16 GPIO pins that can be used for either digital input or digital output pins.
  * </p>
  * 
  * @author Robert Savage
  * 
  */
-public class MCP23017Pin extends MCP23x17Pin {
+public class MCP23S17Pin extends MCP23x17Pin {
 
 }

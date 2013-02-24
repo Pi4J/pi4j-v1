@@ -79,6 +79,9 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class Spi {
 
+    public static int CHANNEL_0 = 0;
+    public static int CHANNEL_1 = 1;
+    
     // private constructor 
     private Spi()  {
         // forbid object construction 

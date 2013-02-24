@@ -1,4 +1,4 @@
-package com.pi4j.gpio.extension.mcp;
+package com.pi4j.gpio.extension.piface;
 
 import java.io.IOException;
 
@@ -14,16 +14,14 @@ import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.wiringpi.Spi;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP23017GpioProvider.java  
+ * FILENAME      :  PiFaceGpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -46,89 +44,127 @@ import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * <p>
- * This GPIO provider implements the MCP23017 I2C GPIO expansion board as native Pi4J GPIO pins.
+ * This GPIO provider implements the Pi-FACE GPIO expansion board as native Pi4J GPIO pins.
  * More information about the board can be found here: *
- * http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
- * http://learn.adafruit.com/mcp230xx-gpio-expander-on-the-raspberry-pi/overview
+ * http://piface.openlx.org.uk/174770794
  * </p>
  * 
  * <p>
- * The MCP23017 is connected via I2C connection to the Raspberry Pi and provides 16 GPIO pins that
- * can be used for either digital input or digital output pins.
+ * The Pi-FACE board used a MCP23S17 connected via SPI connection to the Raspberry Pi and provides 8 
+ * GPIO digital input pins and 8 GPIO digital output pins. 
  * </p>
  * 
  * @author Robert Savage
  * 
  */
-public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider {
+public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider {
 
-    public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23017GpioProvider";
-    public static final String DESCRIPTION = "MCP23017 GPIO Provider";
-    public static final int DEFAULT_ADDRESS = 0x20;
+    public static final String NAME = "com.pi4j.gpio.extension.piface.PiFaceGpioProvider";
+    public static final String DESCRIPTION = "Pi-Face GPIO Provider";
+    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
 
-    private static final int REGISTER_IODIR_A = 0x00;
-    private static final int REGISTER_IODIR_B = 0x01;
-    private static final int REGISTER_GPINTEN_A = 0x04;
-    private static final int REGISTER_GPINTEN_B = 0x05;
-    private static final int REGISTER_DEFVAL_A = 0x06;
-    private static final int REGISTER_DEFVAL_B = 0x07;
-    private static final int REGISTER_INTCON_A = 0x08;
-    private static final int REGISTER_INTCON_B = 0x09;
-    private static final int REGISTER_GPPU_A = 0x0C;
-    private static final int REGISTER_GPPU_B = 0x0D;
-    private static final int REGISTER_INTF_A = 0x0E;
-    private static final int REGISTER_INTF_B = 0x0F;
-    // private static final int REGISTER_INTCAP_A = 0x10;
-    // private static final int REGISTER_INTCAP_B = 0x11;
-    private static final int REGISTER_GPIO_A = 0x12;
-    private static final int REGISTER_GPIO_B = 0x13;
+    private static final byte REGISTER_IODIR_A = 0x00;
+    private static final byte REGISTER_IODIR_B = 0x01;
+    private static final byte REGISTER_GPINTEN_A = 0x04;
+    private static final byte REGISTER_GPINTEN_B = 0x05;
+    private static final byte REGISTER_DEFVAL_A = 0x06;
+    private static final byte REGISTER_DEFVAL_B = 0x07;
+    private static final byte REGISTER_INTCON_A = 0x08;
+    private static final byte REGISTER_INTCON_B = 0x09;
+    private static final byte REGISTER_IOCON = 0x0A;
+    private static final byte REGISTER_GPPU_A = 0x0C;
+    private static final byte REGISTER_GPPU_B = 0x0D;
+    private static final byte REGISTER_INTF_A = 0x0E;
+    private static final byte REGISTER_INTF_B = 0x0F;
+    // private static final byte REGISTER_INTCAP_A = 0x10;
+    // private static final byte REGISTER_INTCAP_B = 0x11;
+    private static final byte REGISTER_GPIO_A = 0x12;
+    private static final byte REGISTER_GPIO_B = 0x13;
 
     private static final int GPIO_A_OFFSET = 0;
     private static final int GPIO_B_OFFSET = 1000;
 
-    private int currentStatesA = 0;
-    private int currentStatesB = 0;
-    private int currentDirectionA = 0;
-    private int currentDirectionB = 0;
-    private int currentPullupA = 0;
-    private int currentPullupB = 0;
+    private int currentStatesA = 0b00000000;
+    private int currentStatesB = 0b11111111;
+    private int currentDirectionA = 0b00000000;
+    private int currentDirectionB = 0b11111111;
+    private int currentPullupA = 0b00000000;
+    private int currentPullupB = 0b11111111;
+    private byte address = DEFAULT_ADDRESS;
 
-    private I2CBus bus;
-    private I2CDevice device;
     private GpioStateMonitor monitor = null;
+    
+    public static final int SPI_SPEED = 1000000;    
+    public static final byte WRITE_FLAG = 0b00000000;    // 0x00
+    public static final byte READ_FLAG  = 0b00000001;    // 0x01
+    
+    public PiFaceGpioProvider(byte spiAddress, int spiChannel) throws IOException {
+        this(spiAddress, spiChannel, SPI_SPEED);
+    }
+    
+    public PiFaceGpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
 
-    public MCP23017GpioProvider(int busNumber, int address) throws IOException {
-        // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber);
-
-        // create I2C device instance
-        device = bus.getDevice(address);
-
+        // setup SPI for communication
+        int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
+        if (fd <= -1) {
+            throw new IOException("SPI port setup failed.");
+        }
+        
+        // enable hardware addressing
+        write(REGISTER_IOCON, (byte) 8);
+        
         // set all default pins directions
-        device.write(REGISTER_IODIR_A, (byte) currentDirectionA);
-        device.write(REGISTER_IODIR_B, (byte) currentDirectionB);
+        write(REGISTER_IODIR_A, (byte) currentDirectionA);
+        write(REGISTER_IODIR_B, (byte) currentDirectionB);
 
         // set all default pin interrupts
-        device.write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
-        device.write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
+        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
+        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
 
         // set all default pin interrupt default values
-        device.write(REGISTER_DEFVAL_A, (byte) 0x00);
-        device.write(REGISTER_DEFVAL_B, (byte) 0x00);
+        write(REGISTER_DEFVAL_A, (byte) 0x00);
+        write(REGISTER_DEFVAL_B, (byte) 0x00);
 
         // set all default pin interrupt comparison behaviors
-        device.write(REGISTER_INTCON_A, (byte) 0x00);
-        device.write(REGISTER_INTCON_B, (byte) 0x00);
+        write(REGISTER_INTCON_A, (byte) 0x00);
+        write(REGISTER_INTCON_B, (byte) 0x00);
 
         // set all default pin states
-        device.write(REGISTER_GPIO_A, (byte) currentStatesA);
-        device.write(REGISTER_GPIO_B, (byte) currentStatesB);
+        write(REGISTER_GPIO_A, (byte) currentStatesA);
+        write(REGISTER_GPIO_B, (byte) currentStatesB);
 
         // set all default pin pull up resistors
-        device.write(REGISTER_GPPU_A, (byte) currentPullupA);
-        device.write(REGISTER_GPPU_B, (byte) currentPullupB);
+        write(REGISTER_GPPU_A, (byte) currentPullupA);
+        write(REGISTER_GPPU_B, (byte) currentPullupB);
     }
 
+    protected void write(byte register, byte data) {
+
+        // create packet in data buffer
+        byte packet[] = new byte[3];
+        packet[0] = (byte)(address|WRITE_FLAG);   // address byte
+        packet[1] = register;                     // register byte
+        packet[2] = data;                         // data byte
+           
+        // send data packet
+        Spi.wiringPiSPIDataRW(0, packet, 3);        
+    }
+
+    protected byte read(byte register){
+        
+        // create packet in data buffer
+        byte packet[] = new byte[3];
+        packet[0] = (byte)(address|READ_FLAG);   // address byte
+        packet[1] = register;                    // register byte
+        packet[2] = 0b00000000;                  // data byte
+        
+        int result = Spi.wiringPiSPIDataRW(0, packet, 3); 
+        if(result >= 0)
+            return packet[2];
+        else
+            throw new RuntimeException("Invalid SPI read operation: " + result);
+    }    
+    
     @Override
     public String getName() {
         return NAME;
@@ -171,14 +207,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
         // cache mode
         getPinCache(pin).setMode(mode);
-
+        
         // if any pins are configured as input pins, then we need to start the interrupt monitoring
         // thread
         if (currentDirectionA > 0 || currentDirectionB > 0) {
             // if the monitor has not been started, then start it now
             if (monitor == null) {
                 // start monitoring thread
-                monitor = new GpioStateMonitor(device);
+                monitor = new GpioStateMonitor(this);
                 monitor.start();
             }
         } else {
@@ -202,10 +238,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // next update direction value
-        device.write(REGISTER_IODIR_A, (byte) currentDirectionA);
+        write(REGISTER_IODIR_A, (byte) currentDirectionA);
 
         // enable interrupts; interrupt on any change from previous state
-        device.write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
+        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
     }
 
     private void setModeB(Pin pin, PinMode mode) throws IOException {
@@ -220,10 +256,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // next update direction (mode) value
-        device.write(REGISTER_IODIR_B, (byte) currentDirectionB);
+        write(REGISTER_IODIR_B, (byte) currentDirectionB);
 
         // enable interrupts; interrupt on any change from previous state
-        device.write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
+        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
     }
 
     @Override
@@ -270,7 +306,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // update state value
-        device.write(REGISTER_GPIO_A, (byte) currentStatesA);
+        write(REGISTER_GPIO_A, (byte) currentStatesA);
     }
 
     private void setStateB(Pin pin, PinState state) throws IOException {
@@ -285,7 +321,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // update state value
-        device.write(REGISTER_GPIO_B, (byte) currentStatesB);
+        write(REGISTER_GPIO_B, (byte) currentStatesB);
     }
 
     @Override
@@ -330,7 +366,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         getPinCache(pin).setState(state);
         
         return state;
-    }  
+    }    
 
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
@@ -369,7 +405,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // next update pull up resistor value
-        device.write(REGISTER_GPPU_A, (byte) currentPullupA);
+        write(REGISTER_GPPU_A, (byte) currentPullupA);
     }
 
     private void setPullResistanceB(Pin pin, PinPullResistance resistance) throws IOException {
@@ -384,7 +420,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
 
         // next update pull up resistor value
-        device.write(REGISTER_GPPU_B, (byte) currentPullupB);
+        write(REGISTER_GPPU_B, (byte) currentPullupB);
     }
 
     @Override
@@ -403,18 +439,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         // perform shutdown login in base
         super.shutdown();
         
-        try {
-            // if a monitor is running, then shut it down now
-            if (monitor != null) {
-                // shutdown monitoring thread
-                monitor.shutdown();
-                monitor = null;
-            }
-
-            // close the I2C bus communication
-            bus.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // if a monitor is running, then shut it down now
+        if (monitor != null) {
+            // shutdown monitoring thread
+            monitor.shutdown();
+            monitor = null;
         }
     }   
 
@@ -426,11 +455,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
      * 
      */
     private class GpioStateMonitor extends Thread {
-        private I2CDevice device;
+        private PiFaceGpioProvider provider;
         private boolean shuttingDown = false;
 
-        public GpioStateMonitor(I2CDevice device) {
-            this.device = device;
+        public GpioStateMonitor(PiFaceGpioProvider provider) {
+            this.provider = provider;
         }
 
         public void shutdown() {
@@ -443,15 +472,15 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port A is configured as an input pin
                     if (currentDirectionA > 0) {
                         // process interrupts for port A
-                        int pinInterruptA = device.read(REGISTER_INTF_A);
+                        byte pinInterruptA = provider.read(REGISTER_INTF_A);
 
                         // validate that there is at least one interrupt active on port A
                         if (pinInterruptA > 0) {
                             // read the current pin states on port A
-                            int pinInterruptState = device.read(REGISTER_GPIO_A);
+                            byte pinInterruptState = provider.read(REGISTER_GPIO_A);
 
                             // loop over the available pins on port B
-                            for (Pin pin : MCP23x17Pin.ALL_A_PINS) {
+                            for (Pin pin : PiFacePin.OUTPUTS) {
                                 int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
                                 
                                 // is there an interrupt flag on this pin?
@@ -466,20 +495,20 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port B is configured as an input pin
                     if (currentDirectionB > 0) {
                         // process interrupts for port B
-                        int pinInterruptB = device.read(REGISTER_INTF_B);
+                        int pinInterruptB = (int)provider.read(REGISTER_INTF_B);
 
                         // validate that there is at least one interrupt active on port B
                         if (pinInterruptB > 0) {
                             // read the current pin states on port B
-                            int pinInterruptState = device.read(REGISTER_GPIO_B);
+                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_B);
 
                             // loop over the available pins on port B
-                            for (Pin pin : MCP23x17Pin.ALL_B_PINS) {
+                            for (Pin pin : PiFacePin.INPUTS) {
                                 int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
-                                
+
                                 // is there an interrupt flag on this pin?
                                 if ((pinInterruptB & pinAddressB) > 0) {
-                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
+                                    //System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeB(pin, pinInterruptState);
                                 }
                             }

@@ -63,7 +63,7 @@ import com.pi4j.io.i2c.I2CFactory;
  */
 public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvider {
 
-    public static final String NAME = "com.pi4j.gpio.extension.microchip.MCP23008GpioProvider";
+    public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23008GpioProvider";
     public static final String DESCRIPTION = "MCP23008 GPIO Provider";
     
     public static final int REGISTER_IODIR = 0x00;
@@ -220,9 +220,21 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
 
     @Override
     public PinState getState(Pin pin) {
-        return super.getState(pin);
-    }
+        // call super method to perform validation on pin
+        PinState result  = super.getState(pin);
+                
+        // determine pin address
+        int pinAddress = pin.getAddress();
+        
+        // determine pin state
+        result = (currentStates & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
 
+        // cache state
+        getPinCache(pin).setState(result);
+        
+        return result;
+    }
+    
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
         // validate
