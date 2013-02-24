@@ -43,7 +43,7 @@ Copyright (C) 2012 Pi4J
 
 ## IN DEVELOPMENT
 
-2013-02-16 :: 0.0.5-SNAPSHOT
+2013-02-23 :: 0.0.5-SNAPSHOT
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -74,6 +74,8 @@ Copyright (C) 2012 Pi4J
      https://github.com/Pi4J/pi4j/issues/35
   *  Fixed issue where serial.write(byte[]) was throwing java.lang.StringIndexOutOfBoundsException
      https://github.com/Pi4J/pi4j/issues/37
+  *  Added additional system information API methods to access memory, frequency, CPU temperature, voltage, and board model data.
+     https://github.com/Pi4J/pi4j/issues/30
 
 ## RELEASES
 
