@@ -5,7 +5,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  PiFaceGpioExample.java  
+ * FILENAME      :  PiFaceExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -33,10 +33,10 @@ import com.pi4j.component.switches.SwitchListener;
 import com.pi4j.component.switches.SwitchState;
 import com.pi4j.component.switches.SwitchStateChangeEvent;
 import com.pi4j.device.piface.PiFace;
-import com.pi4j.device.piface.PiFace.PiFaceLed;
-import com.pi4j.device.piface.PiFace.PiFaceRelay;
-import com.pi4j.device.piface.PiFace.PiFaceSwitch;
-import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
+import com.pi4j.device.piface.PiFaceLed;
+import com.pi4j.device.piface.PiFaceRelay;
+import com.pi4j.device.piface.PiFaceSwitch;
+import com.pi4j.device.piface.impl.PiFaceDevice;
 import com.pi4j.wiringpi.Spi;
 
 /**
@@ -56,7 +56,7 @@ public class PiFaceExample {
         System.out.println("<--Pi4J--> Pi-Face GPIO Example ... started.");
         
         // create the Pi-Face controller
-        final PiFace piface = new PiFace(PiFaceGpioProvider.DEFAULT_ADDRESS, Spi.CHANNEL_0);
+        final PiFace piface = new PiFaceDevice(PiFace.DEFAULT_ADDRESS, Spi.CHANNEL_0);
 
         // -----------------------------------------------------------------
         // create a button listener for SWITCH #1

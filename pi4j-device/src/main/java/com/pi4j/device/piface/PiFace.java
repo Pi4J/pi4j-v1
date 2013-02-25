@@ -27,239 +27,79 @@ package com.pi4j.device.piface;
  * #L%
  */
 
-
-import java.io.IOException;
-
 import com.pi4j.component.light.LED;
-import com.pi4j.component.light.impl.GpioLEDComponent;
 import com.pi4j.component.relay.Relay;
-import com.pi4j.component.relay.impl.GpioRelayComponent;
 import com.pi4j.component.switches.Switch;
-import com.pi4j.component.switches.impl.GpioSwitchComponent;
-import com.pi4j.device.DeviceBase;
-import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
-import com.pi4j.gpio.extension.piface.PiFacePin;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.device.Device;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinState;
 
-public class PiFace  extends DeviceBase {
+public interface PiFace extends Device {
     
-    private final GpioController gpio = GpioFactory.getInstance();
-    private PiFaceGpioProvider gpioProvider;
-    private GpioPinDigitalInput inputPins[];
-    private GpioPinDigitalOutput outputPins[];
-    private Relay relays[];
-    private Switch switches[];
-    private LED leds[];
+    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
     
-    public enum PiFaceSwitch {
-        S1(0),
-        S2(1),
-        S3(2),
-        S4(3);
-        
-        private int index = -1;
-        
-        private PiFaceSwitch(int index){
-            this.index = index;
-        }
-        
-        public int getIndex(){
-            return index;
-        }
-    }
-
-    public enum PiFaceLed {
-        LED0(0),
-        LED1(1),
-        LED2(2),
-        LED3(3),
-        LED4(4),
-        LED5(5),
-        LED6(6),
-        LED7(7);
-        
-        private int index = -1;
-        
-        private PiFaceLed(int index){
-            this.index = index;
-        }
-        
-        public int getIndex(){
-            return index;
-        }                
-    }
-
-    public enum PiFaceRelay {
-        K0(0),
-        K1(1);
-        
-        private int index = -1;
-        
-        private PiFaceRelay(int index){
-            this.index = index;
-        }
-        
-        public int getIndex(){
-            return index;
-        }        
-    }
-    
-    
-    // default constructor
-    public PiFace(byte spiAddress, int spiChannel) throws IOException {
-    
-        // create Pi-Face GPIO provider
-        gpioProvider = new PiFaceGpioProvider(spiAddress, spiChannel);
-
-        // provision gpio input pins for the Pi-Face board 
-        inputPins = new GpioPinDigitalInput[] {
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_00),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_01),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_02),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_03),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_04),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_05),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_06),
-                                  gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_07) };
-        
-        // provision gpio output pins for the Pi-Face board    
-        outputPins = new GpioPinDigitalOutput[] {
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_00),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_01),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_02),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_03),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_04),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_05),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_06),
-                                  gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_07) };
-        
-        // create relay components for the first two output pins on the Pi-Face board
-        relays = new Relay[] {    new GpioRelayComponent(outputPins[0]),
-                                  new GpioRelayComponent(outputPins[1]) };
-
-        // create switch components for the first four input pins on the Pi-Face board
-        switches = new Switch[] { new GpioSwitchComponent(inputPins[0], PinState.HIGH, PinState.LOW),
-                                  new GpioSwitchComponent(inputPins[1], PinState.HIGH, PinState.LOW),
-                                  new GpioSwitchComponent(inputPins[2], PinState.HIGH, PinState.LOW),
-                                  new GpioSwitchComponent(inputPins[3], PinState.HIGH, PinState.LOW) };
-        
-        // create LED components for the eight output pins on the Pi-Face board
-        leds = new LED[] {        new GpioLEDComponent(outputPins[0]),
-                                  new GpioLEDComponent(outputPins[1]),
-                                  new GpioLEDComponent(outputPins[2]),
-                                  new GpioLEDComponent(outputPins[3]),
-                                  new GpioLEDComponent(outputPins[4]),
-                                  new GpioLEDComponent(outputPins[5]),
-                                  new GpioLEDComponent(outputPins[6]),
-                                  new GpioLEDComponent(outputPins[7]) };
-    }
-
-    /**
-     * @return the gpio
-     */
-    public GpioController getGpio() {
-        return gpio;
-    }
-
-    /**
-     * @return the gpioProvider
-     */
-    public PiFaceGpioProvider getGpioProvider() {
-        return gpioProvider;
-    }
-
     /**
      * @return the inputPins
      */
-    public GpioPinDigitalInput[] getInputPins() {
-        return inputPins;
-    }
+    GpioPinDigitalInput[] getInputPins();
 
     /**
      * @return an inputPin
      */
-    public GpioPinDigitalInput getInputPin(int index) {
-        return inputPins[index];
-    }
+    GpioPinDigitalInput getInputPin(int index);
     
     /**
      * @return the outputPins
      */
-    public GpioPinDigitalOutput[] getOutputPins() {
-        return outputPins;
-    }
+    GpioPinDigitalOutput[] getOutputPins();
 
     /**
      * @return an outputPin
      */
-    public GpioPinDigitalOutput getOutputPin(int index) {
-        return outputPins[index];
-    }
+    GpioPinDigitalOutput getOutputPin(int index);
     
     /**
      * @return the relays
      */
-    public Relay[] getRelays() {
-        return relays;
-    }
+    Relay[] getRelays();
 
     /**
      * @return a relay
      */
-    public Relay getRelay(int index) {
-        return relays[index];
-    }
+    Relay getRelay(int index);
 
     /**
      * @return a relay
      */
-    public Relay getRelay(PiFaceRelay relay) {
-        return relays[relay.getIndex()];
-    }
+    Relay getRelay(PiFaceRelay relay);
     
     /**
      * @return the switches
      */
-    public Switch[] getSwitches() {
-        return switches;
-    }
+    Switch[] getSwitches();
 
     /**
      * @return a switch
      */
-    public Switch getSwitch(int index) {
-        return switches[index];
-    }
+    Switch getSwitch(int index);
 
     /**
      * @return a switch
      */
-    public Switch getSwitch(PiFaceSwitch switchValue) {
-        return switches[switchValue.getIndex()];
-    }
+    Switch getSwitch(PiFaceSwitch switchValue);
     
     /**
      * @return the leds
      */
-    public LED[] getLeds() {
-        return leds;
-    }
+    LED[] getLeds();
     
     /**
      * @return a led
      */
-    public LED getLed(int index) {
-        return leds[index];
-    }
+    LED getLed(int index);
     
     /**
      * @return a led
      */
-    public LED getLed(PiFaceLed led) {
-        return leds[led.getIndex()];
-    }    
+    LED getLed(PiFaceLed led);
 }
