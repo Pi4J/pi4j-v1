@@ -30,17 +30,15 @@
 
 import java.io.IOException;
 
-import com.pi4j.gpio.extension.mcp.MCP23017GpioProvider;
-import com.pi4j.gpio.extension.mcp.MCP23017Pin;
+import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
+import com.pi4j.gpio.extension.piface.PiFacePin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.wiringpi.Spi;
 
 /**
  * <p>
@@ -61,28 +59,28 @@ import com.pi4j.io.i2c.I2CBus;
  * 
  * @author Robert Savage
  */
-public class MCP23017GpioExample {
+public class PiFaceGpioExample {
     
     public static void main(String args[]) throws InterruptedException, IOException {
         
-        System.out.println("<--Pi4J--> MCP23017 GPIO Example ... started.");
+        System.out.println("<--Pi4J--> PiFace (MCP23017) GPIO Example ... started.");
         
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
         
-        // create custom MCP23017 GPIO provider
-        final MCP23017GpioProvider gpioProvider = new MCP23017GpioProvider(I2CBus.BUS_1, 0x21);
+        // create custom PiFace GPIO provider
+        final PiFaceGpioProvider gpioProvider = new PiFaceGpioProvider(PiFaceGpioProvider.DEFAULT_ADDRESS,Spi.CHANNEL_0);
         
-        // provision gpio input pins from MCP23017
+        // provision gpio input pins from PiFaceGpioProvider
         GpioPinDigitalInput myInputs[] = {
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A0, "MyInput-A0", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A1, "MyInput-A1", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A2, "MyInput-A2", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A3, "MyInput-A3", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A4, "MyInput-A4", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A5, "MyInput-A5", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A6, "MyInput-A6", PinPullResistance.PULL_UP),
-                gpio.provisionDigitalInputPin(gpioProvider, MCP23017Pin.GPIO_A7, "MyInput-A7", PinPullResistance.PULL_UP),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_00),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_01),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_02),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_03),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_04),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_05),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_06),
+                gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_07)
             };
         
         // create and register gpio pin listener
@@ -97,14 +95,14 @@ public class MCP23017GpioExample {
         
         // provision gpio output pins and make sure they are all LOW at startup
         GpioPinDigitalOutput myOutputs[] = { 
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B0, "MyOutput-B0", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B1, "MyOutput-B1", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B2, "MyOutput-B2", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B3, "MyOutput-B3", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B4, "MyOutput-B4", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B5, "MyOutput-B5", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B6, "MyOutput-B6", PinState.LOW),
-            gpio.provisionDigitalOutputPin(gpioProvider, MCP23017Pin.GPIO_B7, "MyOutput-B7", PinState.LOW)
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_00),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_01),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_02),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_03),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_04),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_05),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_06),
+            gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_07),
           };
         
         // keep program running for 20 seconds

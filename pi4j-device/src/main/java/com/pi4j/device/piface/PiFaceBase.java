@@ -5,7 +5,7 @@ package com.pi4j.device.piface;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PiFace.java  
+ * FILENAME      :  PiFaceBase.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -44,6 +44,8 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public abstract class PiFaceBase extends DeviceBase implements PiFace {
     
@@ -102,6 +104,16 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
                                   new GpioLEDComponent(outputPins[5]),
                                   new GpioLEDComponent(outputPins[6]),
                                   new GpioLEDComponent(outputPins[7]) };
+        
+        gpio.addListener(new GpioPinListenerDigital()
+        {
+
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+            {
+                System.out.println("RX PIN EVENT " + event.getPin().getName() + " : " + event.getState().getName());                
+            }
+        }, inputPins);
     }
 
     /**
