@@ -38,6 +38,12 @@ Copyright (C) 2012-2013 Pi4J
    *  See future enhancements here:  
       https://github.com/Pi4J/pi4j/issues?labels=enhancement&page=1&state=open
 
+## IN DEVEOPMENT
+
+2013-03-17 :: 1.0-SNAPSHOT
+
+  * Plans for major refactoring to support hardware/platform abstraction and emulation. 
+
 ## RELEASES
 
 2013-03-17 :: 0.0.5

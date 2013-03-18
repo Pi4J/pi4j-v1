@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-		<version>0.0.5</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-distribution</artifactId>
 	<name>Pi4J :: Distribution</name>
