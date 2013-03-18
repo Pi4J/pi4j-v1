@@ -17,7 +17,7 @@ Snapshot builds are available from
    *  [Google Code] http://code.google.com/p/pi4j/downloads
 
  
-Copyright (C) 2012 Pi4J
+Copyright (C) 2012-2013 Pi4J
 
 ## LICENSE
  
@@ -35,15 +35,12 @@ Copyright (C) 2012 Pi4J
  
 ## FUTURE PLANS
 
-   *  Add Java API support for SPI communication. (JNI wrapper for wiringPi SPI already exists)
-   *  Enhance/replace serial communication API.
-   *  Create additional GpioProvider implementations
-   *  Create device abstraction implementations
-   *  Create pi4j-api library and move interfaces there
+   *  See future enhancements here:  
+      https://github.com/Pi4J/pi4j/issues?labels=enhancement&page=1&state=open
 
-## IN DEVELOPMENT
+## RELEASES
 
-2013-02-24 :: 0.0.5-SNAPSHOT
+2013-03-17 :: 0.0.5
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -85,8 +82,6 @@ Copyright (C) 2012 Pi4J
   *  Added WiringPiSPIExample sample code    
   *  Added LED component interface and GpioLEDCompoment impl    
   *  Added GpioSwitchCompoment impl    
-
-## RELEASES
 
 2012-12-16 :: 0.0.4
  
