@@ -72,7 +72,7 @@ PUBLIC SNAPSHOT DEPLOYMENT
 
 Use the following series of instructions to publish a public deployment of a snapshot build:
 
-> mvn clean deploy -P native -P soft-float -P hard-float`
+> mvn clean deploy -P native -P soft-float -P hard-float
 > mvn gcu:upload --projects pi4j-distribution
 > mvn -N clean site ghSite:site
 
