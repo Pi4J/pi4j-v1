@@ -140,7 +140,7 @@
 				<!-- IP address/Hostname of Raspberry Pi -->
 				<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
 				<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
-				<pi.host.dev>pi-hf-wifi</pi.host.dev>
+				<pi.host.dev>pi-512-wifi</pi.host.dev>
 
 				<!-- enable development transfers -->
 				<pi.transfer.dev>true</pi.transfer.dev>

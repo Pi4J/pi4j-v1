@@ -43,7 +43,12 @@ cd wiringPi
 sudo make uninstall
 
 # ----------------------------------
-# build latest wiringPi
+# build latest wiringPi 
 # ----------------------------------
-cd ..
-./build
+echo "wiringPi Build script"
+echo "====================="
+echo
+echo "Compiling WiringPi STATIC library"
+make static
+sudo make install
+sudo make install-static
