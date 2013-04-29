@@ -47,6 +47,13 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+                <developer>
+                        <name>Daniel Sendula</name>
+                        <email>daniel@pi4j.com</email>
+                        <roles>
+                                <role>developer</role>
+                        </roles>
+                </developer>
 	</developers>
 
 	<!-- SOURCE CONTROL -->
