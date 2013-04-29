@@ -28,13 +28,11 @@
  * #L%
  */
 
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
@@ -44,61 +42,50 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
  * 
  * @author Robert Savage
  */
-public class ListenMultipleGpioExample
-{
-    public static void main(String args[]) throws InterruptedException
-    {
+public class ListenMultipleGpioExample {
+    
+    public static void main(String args[]) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
-        // create gpio controller
+        // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        GpioPinDigitalInput myButton0 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton1 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton2 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton3 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton4 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton5 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton6 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN);
-        GpioPinDigitalInput myButton7 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_DOWN);
+        // create GPIO listener
+        GpioPinListenerDigital listener  = new GpioPinListenerDigital() {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                // display pin state on console
+                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+            }        
+        };
+        
+        // provision gpio input pins with its internal pull down resistor enabled
+        GpioPinDigitalInput[] pins = {
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN),
+            gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_DOWN)
+        };
 
         // create and register gpio pin listener
-        myButton0.addListener(new GpioExampleMultiListener());
-        myButton1.addListener(new GpioExampleMultiListener());
-        myButton2.addListener(new GpioExampleMultiListener());
-        myButton3.addListener(new GpioExampleMultiListener());
-        myButton4.addListener(new GpioExampleMultiListener());
-        myButton5.addListener(new GpioExampleMultiListener());
-        myButton6.addListener(new GpioExampleMultiListener());
-        myButton7.addListener(new GpioExampleMultiListener());
+        gpio.addListener(listener, pins);
         
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(500);
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }
 
-/**
- * This class implements the GPIO listener interface
- * with the callback method for event notifications
- * when GPIO pin states change.
- * 
- * @see GpioPinListener
- * @author Robert Savage
- */
-class GpioExampleMultiListener implements GpioPinListenerDigital
-{
-    @Override
-    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-    {
-        // display pin state on console
-        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                + event.getState());
-    }
-}
 // END SNIPPET: listen-multi-gpio-snippet

@@ -64,10 +64,10 @@ import com.pi4j.io.serial.Serial;
  * @see https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * @author Robert Savage
  */
-public class OlimexGpioExample
-{
-    public static void main(String args[]) throws InterruptedException
-    {
+public class OlimexGpioExample {
+    
+    public static void main(String args[]) throws InterruptedException {
+
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         
         // create gpio controller
@@ -82,14 +82,22 @@ public class OlimexGpioExample
         // provision gpio input pin #01 from Olimex
         final GpioPinDigitalInput myInput = gpio.provisionDigitalInputPin(olimexProvider, OlimexAVRIOPin.IN_01);
         
-        // create and register gpio pin listener
-        GpioExampleListener listener = new GpioExampleListener();
+        // create gpio pin listener
+        GpioPinListenerDigital listener = new GpioPinListenerDigital() {            
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                // display pin state on console
+                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                        + event.getState());
+            }
+        };
+        
+        // register gpio pin listener for each input pin 
         myButton.addListener(listener);
         myInput.addListener(listener);
         
         // setup gpio pins #04, #05, #06 as an output pins and make sure they are all LOW at startup
-        GpioPinDigitalOutput myRelays[] =
-          { 
+        GpioPinDigitalOutput myRelays[] = { 
             gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_01, "RELAY #1", PinState.LOW),
             gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_02, "RELAY #2", PinState.LOW),
             gpio.provisionDigitalOutputPin(olimexProvider, OlimexAVRIOPin.RELAY_03, "RELAY #3", PinState.LOW),
@@ -115,25 +123,14 @@ public class OlimexGpioExample
         
         // keep program running until user aborts (CTRL-C)
         // or we reach 60 seconds
-        for (int seconds = 0; seconds < 60; seconds++)
-        {
+        for (int seconds = 0; seconds < 60; seconds++) {
             Thread.sleep(1000);
         }
         
-        // shutdown the GPIO provider
-        olimexProvider.shutdown();        
+        System.out.println(" ... exiting program.");
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        gpio.shutdown();                 
     }
-    
-    
-    public static class GpioExampleListener implements GpioPinListenerDigital
-    {
-        @Override
-        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-        {
-            // display pin state on console
-            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                    + event.getState());
-        }
-    }    
 }
-

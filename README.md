@@ -17,7 +17,7 @@ Snapshot builds are available from
    *  [Google Code] http://code.google.com/p/pi4j/downloads
 
  
-Copyright (C) 2012 Pi4J
+Copyright (C) 2012-2013 Pi4J
 
 ## LICENSE
  
@@ -35,15 +35,18 @@ Copyright (C) 2012 Pi4J
  
 ## FUTURE PLANS
 
-   *  Add Java API support for SPI communication. (JNI wrapper for wiringPi SPI already exists)
-   *  Enhance/replace serial communication API.
-   *  Create additional GpioProvider implementations
-   *  Create device abstraction implementations
-   *  Create pi4j-api library and move interfaces there
+   *  See future enhancements here:  
+      https://github.com/Pi4J/pi4j/issues?labels=enhancement&page=1&state=open
 
-## IN DEVELOPMENT
+## IN DEVEOPMENT
 
-2013-01-07 :: 0.0.5-SNAPSHOT
+2013-03-17 :: 1.0-SNAPSHOT
+
+  * Plans for major refactoring to support hardware/platform abstraction and emulation. 
+
+## RELEASES
+
+2013-03-17 :: 0.0.5
 
   *  Added support for PCF8574 GpioProvider
   *  Added sample code for using PCF8574 GpioProvider
@@ -56,8 +59,35 @@ Copyright (C) 2012 Pi4J
   *  Added LCD component interface 
   *  Added GPIO based 4/8 bit LCD display component implementation and sample program.
   *  Added GPIO based 4/8 bit LCD WiringPi example program
-
-## RELEASES
+  *  Added support for a GpioController.shutdown() method to cleanup terminate all Pi4J threads and executors.
+     https://github.com/Pi4J/pi4j/issues/9
+  *  Added support for a user-definable ExecutorServiceFactory to allow user program to provide the implementation
+     for executor service instances and managed thread pools.  
+     https://github.com/Pi4J/pi4j/issues/10
+  *  Fixed 'java.util.concurrent.RejectedExecutionException' issue where there were not 
+     enough default thread in the pool for concurrent tasks.
+     https://github.com/Pi4J/pi4j/issues/31
+  *  Fixed issue where SerialDataMonitorThread was not shutting down on program exit.
+     https://github.com/Pi4J/pi4j/issues/33
+  *  Fixed issue where hard-float ABI was not detected properly when using Oracle JDK 8 early access edition.
+     https://github.com/Pi4J/pi4j/issues/26
+  *  Added support for exceptions on serial port access methods. 
+     https://github.com/Pi4J/pi4j/issues/8
+  *  Fixed issue where process streams were not being closed properly
+     https://github.com/Pi4J/pi4j/issues/35
+  *  Fixed issue where serial.write(byte[]) was throwing java.lang.StringIndexOutOfBoundsException
+     https://github.com/Pi4J/pi4j/issues/37
+  *  Added additional system information API methods to access memory, frequency, CPU temperature, voltage, and board model data.
+     https://github.com/Pi4J/pi4j/issues/30
+  *  Fixed MCP23008 and MCP23017 getState() return values  
+  *  Added support for MCP23S17 GpioProvider
+  *  Added support for Pi-Face GpioProvider 
+  *  Added support for Pi-Face Device Interface 
+  *  Added MCP23S17GpioExample sample code    
+  *  Added PiFaceExample sample code 
+  *  Added WiringPiSPIExample sample code    
+  *  Added LED component interface and GpioLEDCompoment impl    
+  *  Added GpioSwitchCompoment impl    
 
 2012-12-16 :: 0.0.4
  

@@ -62,7 +62,7 @@ import com.pi4j.io.i2c.I2CFactory;
  */
 public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider {
 
-    public static final String NAME = "com.pi4j.gpio.extension.microchip.MCP23017GpioProvider";
+    public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23017GpioProvider";
     public static final String DESCRIPTION = "MCP23017 GPIO Provider";
     public static final int DEFAULT_ADDRESS = 0x20;
 
@@ -290,8 +290,47 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
     @Override
     public PinState getState(Pin pin) {
-        return super.getState(pin);
+        // call super method to perform validation on pin
+        PinState result  = super.getState(pin);
+        
+        // determine A or B port based on pin address 
+        if (pin.getAddress() < GPIO_B_OFFSET) {
+            result = getStateA(pin); // get pin state
+        } else {
+            result = getStateB(pin); // get pin state
+        }
+        
+        // return pin state
+        return result;
     }
+    
+    private PinState getStateA(Pin pin){
+        
+        // determine pin address
+        int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
+        
+        // determine pin state
+        PinState state = (currentStatesA & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
+
+        // cache state
+        getPinCache(pin).setState(state);
+        
+        return state;
+    }
+    
+    private PinState getStateB(Pin pin){
+        
+        // determine pin address
+        int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
+        
+        // determine pin state
+        PinState state = (currentStatesB & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
+
+        // cache state
+        getPinCache(pin).setState(state);
+        
+        return state;
+    }  
 
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
@@ -356,6 +395,14 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     
     @Override
     public void shutdown() {
+        
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // perform shutdown login in base
+        super.shutdown();
+        
         try {
             // if a monitor is running, then shut it down now
             if (monitor != null) {
@@ -405,8 +452,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23017Pin.ALL_A_PINS) {
+                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
+                                
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptA & pin.getAddress()) > 0) {
+                                if ((pinInterruptA & pinAddressA) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeA(pin, pinInterruptState);
                                 }
@@ -426,8 +475,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23017Pin.ALL_B_PINS) {
+                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
+                                
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptB & pin.getAddress()) > 0) {
+                                if ((pinInterruptB & pinAddressB) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeB(pin, pinInterruptState);
                                 }

@@ -32,25 +32,73 @@ public class StringUtil {
     
     public static final String EMPTY = "";
     public static final char DEFAULT_PAD_CHAR = ' ';
+
+    public static boolean isNullOrEmpty(String data, boolean trim){
+        if(data == null)
+            return true;
+        
+        // trim if requested
+        String test = data;
+        if(trim)
+            test = data.trim();
+            
+        return (test.length() <= 0);        
+    }
     
     public static boolean isNullOrEmpty(String data){
-        return (data == null || data.length() <= 0);        
+        return isNullOrEmpty(data, false);        
     }
 
     public static boolean isNotNullOrEmpty(String data){
-        return !isNullOrEmpty(data);        
+        return isNotNullOrEmpty(data, false);        
+    }
+
+    public static boolean isNotNullOrEmpty(String data, boolean trim){
+        return !(isNullOrEmpty(data, trim));        
     }
     
-    public static boolean contains(String data, String[] search)  {
-        if (null != data && null != search) { 
-            for (int i=0; i<search.length; i++) {
-                if (data.indexOf(search[i]) >= 0) {
+    public static boolean contains(String source, String target)  {
+        
+        if (null != source && null != target) { 
+            return source.contains(target);
+        }
+        return false;
+    }     
+
+    public static boolean contains(String source, String[] targets)  {
+        if (null != source && null != targets) { 
+            for (int i=0; i<targets.length; i++) {
+                if (source.indexOf(targets[i]) >= 0) {
                     return true;
                 }
             }
         }
         return false;
     }     
+
+    public static boolean contains(String[] sources, String target)  {
+        if (null != sources && null != target) { 
+            for (String source : sources) {
+                if(contains(source, target))
+                    return true;
+            }
+        }
+        return false;
+    }     
+
+    public static boolean contains(String[] sources, String[] targets)  {
+        if (null != sources && null != targets) { 
+            for (String source : sources) {
+                if(contains(source, targets))
+                    return true;
+            }
+        }
+        return false;
+    }     
+    
+    public static String create(int length)  {
+        return create(DEFAULT_PAD_CHAR, length);
+    }
     
     public static String create(char c, int length)  {
         StringBuilder sb = new StringBuilder(length);
@@ -106,6 +154,26 @@ public class StringUtil {
         return sb.toString();
     }     
 
+    public static String pad(String data, int length)  {
+        return pad(data, DEFAULT_PAD_CHAR, length);
+    }
+    
+    public static String pad(String data, char pad, int length)  {
+        StringBuilder sb = new StringBuilder(data.length() + length);
+        sb.append(create(pad, length));
+        sb.append(data);
+        sb.append(create(pad, length));
+        return sb.toString();
+    }     
+
+    public static String pad(String data, String pad, int length)  {
+        StringBuilder sb = new StringBuilder(data.length() + length);
+        sb.append(create(pad, length));
+        sb.append(data);
+        sb.append(create(pad, length));
+        return sb.toString();
+    }     
+
     public static String padCenter(String data, int length) {
         return padCenter(data, DEFAULT_PAD_CHAR, length);
     }
@@ -124,22 +192,39 @@ public class StringUtil {
         }
         return data;
     }
-    
+
     public static String trimLeft(String data)  {
+        return trimLeft(data, DEFAULT_PAD_CHAR);
+    }
+    
+    public static String trimLeft(String data, char trim)  {
         for(int index = 0; index < data.length(); index++)
-            if(!data.substring(index, 1).equals(" "))
+            if(!(data.charAt(index) == trim))
                 return data.substring(index);
         return EMPTY;
     }     
 
     public static String trimRight(String data)  {
+        return trimRight(data, DEFAULT_PAD_CHAR);
+    }
+    
+    public static String trimRight(String data, char trim)  {
         int count = 0;
-        for(int index = data.length(); index > 0; index++)
-            if(data.substring(index-1, 1).equals(" "))
+        for(int index = data.length(); index > 0; index--)
+            if(data.charAt(index-1) == trim)
                 count++;
             else
                 return data.substring(0, data.length() - count);
         return EMPTY;
     }     
+
+    public static String trim(String data)  {
+        return trim(data, DEFAULT_PAD_CHAR);
+    }
+    
+    public static String trim(String data, char trim)  {
+        String result = trimLeft(data, trim);
+        return trimRight(result, trim);
+    }
     
 }

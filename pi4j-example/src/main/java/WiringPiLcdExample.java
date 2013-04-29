@@ -4,7 +4,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  WiringPiGpioExample.java  
+ * FILENAME      :  WiringPiLcdExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -25,6 +25,7 @@
  * limitations under the License.
  * #L%
  */
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,7 +38,7 @@ public class WiringPiLcdExample {
     public final static int LCD_COLUMNS = 16;
     public final static int LCD_BITS = 4;
     
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, UnsupportedEncodingException {
         System.out.println("<--Pi4J--> Wiring Pi LCD test program");
 
         // setup wiringPi
@@ -73,7 +74,8 @@ public class WiringPiLcdExample {
         Thread.sleep(1000);
         
         // write line 1 to LCD
-        Lcd.lcdPosition (lcdHandle, 0, 0) ; 
+        Lcd.lcdHome(lcdHandle);
+        //Lcd.lcdPosition (lcdHandle, 0, 0) ; 
         Lcd.lcdPuts (lcdHandle, "The Pi4J Project") ;
 
         // write line 2 to LCD        
@@ -81,8 +83,8 @@ public class WiringPiLcdExample {
         Lcd.lcdPuts (lcdHandle, "----------------") ;
 
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        
-        // update time
+
+        // update time every one second
         while(true){
             // write time to line 2 on LCD            
             Lcd.lcdPosition (lcdHandle, 0, 1) ; 

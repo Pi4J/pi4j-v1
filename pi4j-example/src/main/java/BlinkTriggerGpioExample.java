@@ -28,7 +28,6 @@
  * #L%
  */
 
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -44,10 +43,10 @@ import com.pi4j.io.gpio.trigger.GpioBlinkStopStateTrigger;
  * 
  * @author Robert Savage
  */
-public class BlinkTriggerGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class BlinkTriggerGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         System.out.println("<--Pi4J--> GPIO Blink Trigger Example ... started.");
 
         // create gpio controller
@@ -69,10 +68,13 @@ public class BlinkTriggerGpioExample
         myButton.addTrigger(new GpioBlinkStopStateTrigger(PinState.LOW, myLed));
 
         // keep program running until user aborts (CTRL-C)
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(500);
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
 }
 // END SNIPPET: blink-trigger-gpio-snippet

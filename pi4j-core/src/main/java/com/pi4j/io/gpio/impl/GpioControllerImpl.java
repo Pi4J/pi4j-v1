@@ -57,6 +57,7 @@ public class GpioControllerImpl implements GpioController {
 
     private final List<GpioPin> pins = Collections.synchronizedList(new ArrayList<GpioPin>());
     private final GpioProvider defaultProvider;
+    private boolean isshutdown = false;
     
     /**
      * Default Constructor
@@ -886,35 +887,73 @@ public class GpioControllerImpl implements GpioController {
      */
     private class ShutdownHook extends Thread { 
         public void run() {
-            // shutdown executor services
-            GpioScheduledExecutorImpl.shutdown();
-            GpioEventMonitorExecutorImpl.shutdown();
+            // perform shutdown
+            shutdown();
+        }
+    }
+    
+    /**
+     * This method returns TRUE if the GPIO controller has been shutdown.
+     * 
+     * @return shutdown state
+     */
+    @Override
+    public boolean isShutdown(){
+        return isshutdown;
+    }
+
+    
+    /**
+     * This method can be called to forcefully shutdown all GPIO controller
+     * monitoring, listening, and task threads/executors.
+     */
+    @Override
+    public synchronized void shutdown()
+    {
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // shutdown all executor services
+        //
+        // NOTE: we are not permitted to access the shutdown() method of the individual 
+        // executor services, we must perform the shutdown with the factory
+        GpioFactory.getExecutorServiceFactory().shutdown();
+        
+        // shutdown explicit configured GPIO pins
+        for (GpioPin pin : pins) {
             
-            // shutdown explicit configured GPIO pins
-            for (GpioPin pin : pins) {
-                GpioPinShutdown shutdownOptions = pin.getShutdownOptions(); 
-                if (shutdownOptions != null) {
-                    // get shutdown option configuration 
-                    PinState state = shutdownOptions.getState();
-                    PinMode mode = shutdownOptions.getMode();
-                    PinPullResistance resistance = shutdownOptions.getPullResistor();
-                    Boolean unexport = shutdownOptions.getUnexport();
-                    
-                    // perform shutdown actions
-                    if ((state != null) && (pin instanceof GpioPinDigitalOutput)) {
-                        ((GpioPinDigitalOutput)pin).setState(state);
-                    }
-                    if (resistance != null) {
-                        pin.setPullResistance(resistance);
-                    }
-                    if (mode != null) {
-                        pin.setMode(mode);
-                    }
-                    if (unexport != null && unexport == Boolean.TRUE) {
-                        pin.unexport();
-                    }
+            // perform a shutdown on the GPIO provider for this pin
+            if(!pin.getProvider().isShutdown()){
+                pin.getProvider().shutdown();
+            }
+            
+            // perform the shutdown options if configured for the pin
+            GpioPinShutdown shutdownOptions = pin.getShutdownOptions(); 
+            if (shutdownOptions != null) {
+                // get shutdown option configuration 
+                PinState state = shutdownOptions.getState();
+                PinMode mode = shutdownOptions.getMode();
+                PinPullResistance resistance = shutdownOptions.getPullResistor();
+                Boolean unexport = shutdownOptions.getUnexport();
+                
+                // perform shutdown actions
+                if ((state != null) && (pin instanceof GpioPinDigitalOutput)) {
+                    ((GpioPinDigitalOutput)pin).setState(state);
+                }
+                if (resistance != null) {
+                    pin.setPullResistance(resistance);
+                }
+                if (mode != null) {
+                    pin.setMode(mode);
+                }
+                if (unexport != null && unexport == Boolean.TRUE) {
+                    pin.unexport();
                 }
             }
         }
+        
+        // set is shutdown tracking variable
+        isshutdown = true;
     }
 }

@@ -56,10 +56,10 @@ import com.pi4j.io.i2c.I2CBus;
  * 
  * @author Robert Savage
  */
-public class PCF8574GpioExample
-{
-    public static void main(String args[]) throws InterruptedException, IOException
-    {
+public class PCF8574GpioExample {
+    
+    public static void main(String args[]) throws InterruptedException, IOException {
+        
         System.out.println("<--Pi4J--> PCF8574 GPIO Example ... started.");
         
         // create gpio controller
@@ -69,19 +69,16 @@ public class PCF8574GpioExample
         final PCF8574GpioProvider gpioProvider = new PCF8574GpioProvider(I2CBus.BUS_1, PCF8574GpioProvider.PCF8574A_0x3F);
         
         // provision gpio input pins from MCP23017
-        GpioPinDigitalInput myInputs[] =
-            {
+        GpioPinDigitalInput myInputs[] = {
                 gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_00),
                 gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_01),
                 gpio.provisionDigitalInputPin(gpioProvider, PCF8574Pin.GPIO_02)
             };
         
         // create and register gpio pin listener
-        gpio.addListener(new GpioPinListenerDigital()
-        {
+        gpio.addListener(new GpioPinListenerDigital() {
             @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-            {
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
                         + event.getState());
@@ -89,8 +86,7 @@ public class PCF8574GpioExample
         }, myInputs);
         
         // provision gpio output pins and make sure they are all LOW at startup
-        GpioPinDigitalOutput myOutputs[] =
-          { 
+        GpioPinDigitalOutput myOutputs[] = { 
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_04, PinState.LOW),
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_05, PinState.LOW),
             gpio.provisionDigitalOutputPin(gpioProvider, PCF8574Pin.GPIO_06, PinState.LOW)
@@ -100,16 +96,15 @@ public class PCF8574GpioExample
         gpio.setShutdownOptions(true, PinState.HIGH, myOutputs);
         
         // keep program running for 20 seconds
-        for (int count = 0; count < 10; count++)
-        {
+        for (int count = 0; count < 10; count++) {
             gpio.setState(true, myOutputs);
             Thread.sleep(1000);
             gpio.setState(false, myOutputs);
             Thread.sleep(1000);
         }
         
-        // shutdown the GPIO provider
-        gpioProvider.shutdown();
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        gpio.shutdown();
     }
 }
-

@@ -135,15 +135,27 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     
     @Override
     public void shutdown() {
+        
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+        
+        // perform shutdown login in base
+        super.shutdown();
+        
         // if a serial processing queue is running, then shut it down now
         if (queue != null) {
             // shutdown serial data processing thread
             queue.shutdown();
+            //queue.interrupt();
             queue = null;
         }
 
         // close the serial port communication
         com.close();
+        
+        // shutdown any serial data monitoring threads
+        com.shutdown();
     }      
     
     /**

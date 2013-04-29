@@ -1,5 +1,3 @@
-
-
 /*
  * #%L
  * **********************************************************************
@@ -29,10 +27,10 @@
 
 import com.pi4j.wiringpi.SoftPwm;
 
-public class WiringPiSoftPWMExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class WiringPiSoftPWMExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         // initialize wiringPi library
         com.pi4j.wiringpi.Gpio.wiringPiSetup();
 
@@ -40,18 +38,15 @@ public class WiringPiSoftPWMExample
         SoftPwm.softPwmCreate(1, 0, 100);
 
         // continuous loop
-        while (true)
-        {
+        while (true) {            
             // fade LED to fully ON
-            for (int i = 0; i <= 100; i++)
-            {
+            for (int i = 0; i <= 100; i++) {
                 SoftPwm.softPwmWrite(1, i);
                 Thread.sleep(100);
             }
 
             // fade LED to fully OFF
-            for (int i = 100; i >= 0; i--)
-            {
+            for (int i = 100; i >= 0; i--) {
                 SoftPwm.softPwmWrite(1, i);
                 Thread.sleep(100);
             }

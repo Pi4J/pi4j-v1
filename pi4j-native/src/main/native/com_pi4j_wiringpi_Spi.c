@@ -9,7 +9,7 @@
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 Pi4J
+ * Copyright (C) 2012 - 2013 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,13 +46,45 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIGetFd
  * Method:    wiringPiSPIDataRW
  * Signature: (ILjava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang_String_2I
   (JNIEnv *env, jclass class, jint channel, jstring data, jint length)
 {
-	char datachararr[2048];
-	int len = (*env)->GetStringLength(env, data);
-	(*env)->GetStringUTFRegion(env, data, 0, len, datachararr);
-	return wiringPiSPIDataRW(channel, (unsigned char *)datachararr, length);
+	char buffer[2048];
+	int len = (*env)->GetStringUTFLength(env, data);
+	(*env)->GetStringUTFRegion(env, data, 0, len, buffer);
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+	jstring returnString = (*env)->NewStringUTF(env, buffer);
+    data = returnString;
+
+	return result;
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPIDataRW
+ * Signature: (I[BI)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
+(JNIEnv *env, jclass class, jint channel, jbyteArray data, jint length)
+{
+    int i;
+    unsigned char buffer[2048];
+
+	// copy the bytes from the data array argument into a native character buffer
+    jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
+    for (i = 0; i < length; i++) {
+    	buffer[i] = body[i];
+    }
+
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+
+	// copy the resulting buffer bytes back into the data array argument
+	for (i = 0; i < length; i++) {
+		body[i] = buffer[i];
+	}
+	(*env)->ReleaseByteArrayElements(env, data, body, 0);
+
+	return result;
 }
 
 

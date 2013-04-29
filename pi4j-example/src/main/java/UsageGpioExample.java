@@ -57,10 +57,10 @@ import com.pi4j.io.gpio.event.PinEventType;
  * @author Robert Savage
  */
 @SuppressWarnings("unused")
-public class UsageGpioExample
-{
-    public static void main(String[] args) throws InterruptedException
-    {
+public class UsageGpioExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        
         // START SNIPPET: usage-create-controller-snippet
         // create gpio controller instance
         final GpioController gpio = GpioFactory.getInstance();
@@ -125,18 +125,19 @@ public class UsageGpioExample
         // END SNIPPET: usage-trigger-snippet
 
         // keep program running until user aborts (CTRL-C)
-        for (;;)
-        {
+        for (;;) {
             Thread.sleep(500);
         }
+        
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller                
     }
 
  //START SNIPPET: usage-listener-snippet    
-    public static class GpioUsageExampleListener implements GpioPinListenerDigital
-    {
+    public static class GpioUsageExampleListener implements GpioPinListenerDigital {
         @Override
-        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-        {
+        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
             // display pin state on console
             System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
                     + event.getState());

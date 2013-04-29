@@ -84,7 +84,7 @@ public class SerialDataMonitorThread extends Thread {
     /**
      * Exit the monitoring thread.
      */
-    public synchronized void exit() {
+    public synchronized void shutdown() {
         exiting = true;
     }
 

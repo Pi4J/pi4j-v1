@@ -165,7 +165,7 @@ public class NativeLibraryLoader {
                     loadLibraryFromResource(resourceUrl, libraryName, fileName);
                     
                     // debug
-                    logger.info("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrl.toString() + "]");
+                    logger.fine("Library [" + libraryName + "] loaded successfully using embedded resource file: [" + resourceUrl.toString() + "]");
                 } 
                 
                 catch(Exception|UnsatisfiedLinkError ex) {

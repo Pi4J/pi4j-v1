@@ -9,7 +9,7 @@
 # this project can be found here:  http://www.pi4j.com/
 # **********************************************************************
 # %%
-# Copyright (C) 2012 Pi4J
+# Copyright (C) 2012 - 2013 Pi4J
 # %%
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@
 # limitations under the License.
 # #L%
 ###
-
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
@@ -34,9 +33,8 @@ sudo apt-get install git-core -y
 # ----------------------------------
 # clone wiringPi from github
 # ----------------------------------
-git clone git://git.drogon.net/wiringPi
+git clone git://github.com/WiringPi/WiringPi.git wiringPi
 cd wiringPi
-git pull origin
 
 # ----------------------------------
 # uninstall any previous copies
@@ -45,7 +43,12 @@ cd wiringPi
 sudo make uninstall
 
 # ----------------------------------
-# build latest wiringPi
+# build latest wiringPi 
 # ----------------------------------
-cd ..
-./build
+echo "wiringPi Build script"
+echo "====================="
+echo
+echo "Compiling WiringPi STATIC library"
+make static
+sudo make install
+sudo make install-static
