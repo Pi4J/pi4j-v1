@@ -5,7 +5,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  ADS1115DistanceSensorExample.java  
+ * FILENAME      :  ADS1015DistanceSensorExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,8 +34,8 @@ import java.text.DecimalFormat;
 import com.pi4j.component.sensor.DistanceSensorChangeEvent;
 import com.pi4j.component.sensor.DistanceSensorListener;
 import com.pi4j.component.sensor.impl.DistanceSensorComponent;
-import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
-import com.pi4j.gpio.extension.ads.ADS1115Pin;
+import com.pi4j.gpio.extension.ads.ADS1015GpioProvider;
+import com.pi4j.gpio.extension.ads.ADS1015Pin;
 import com.pi4j.gpio.extension.ads.ADS1x15GpioProvider.ProgrammableGainAmplifierValue;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -44,18 +44,18 @@ import com.pi4j.io.i2c.I2CBus;
 
 /**
  * <p>
- * This example code demonstrates how to use the ADS1115 Pi4J GPIO interface
+ * This example code demonstrates how to use the ADS1015 Pi4J GPIO interface
  * for analog input pins.
  * </p>  
  * 
  * @author Robert Savage
  */
-public class ADS1115DistanceSensorExample {
+public class ADS1015DistanceSensorExample {
     
     
     public static void main(String args[]) throws InterruptedException, IOException {
         
-        System.out.println("<--Pi4J--> ADS1115 Distance Sensor Example ... started.");
+        System.out.println("<--Pi4J--> ADS1015 Distance Sensor Example ... started.");
 
         // number formatters
         final DecimalFormat df = new DecimalFormat("#.##");
@@ -64,11 +64,11 @@ public class ADS1115DistanceSensorExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
         
-        // create custom ADS1115 GPIO provider
-        final ADS1115GpioProvider gpioProvider = new ADS1115GpioProvider(I2CBus.BUS_1, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
+        // create custom ADS1015 GPIO provider
+        final ADS1015GpioProvider gpioProvider = new ADS1015GpioProvider(I2CBus.BUS_1, ADS1015GpioProvider.ADS1015_ADDRESS_0x48);
         
-        // provision gpio analog input pins from ADS1115
-        final GpioPinAnalogInput distanceSensorPin = gpio.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A0, "DistanceSensor-A0");
+        // provision gpio analog input pins from ADS1015
+        final GpioPinAnalogInput distanceSensorPin = gpio.provisionAnalogInputPin(gpioProvider, ADS1015Pin.INPUT_A0, "DistanceSensor-A0");
         
         // ATTENTION !!          
         // It is important to set the PGA (Programmable Gain Amplifier) for all analog input pins. 
@@ -80,12 +80,12 @@ public class ADS1115DistanceSensorExample {
         //
         // PGA value PGA_4_096V is a 1:1 scaled input, 
         // so the output values are in direct proportion to the detected voltage on the input pins
-        gpioProvider.setProgrammableGainAmplifier(ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
+        gpioProvider.setProgrammableGainAmplifier(ProgrammableGainAmplifierValue.PGA_4_096V, ADS1015Pin.ALL);
                 
         
         // Define a threshold value for each pin for analog value change events to be raised.
         // It is important to set this threshold high enough so that you don't overwhelm your program with change events for insignificant changes
-        gpioProvider.setEventThreshold(150, ADS1115Pin.ALL);
+        gpioProvider.setEventThreshold(150, ADS1015Pin.ALL);
 
         
         // Define the monitoring thread refresh interval (in milliseconds).
@@ -124,7 +124,7 @@ public class ADS1115DistanceSensorExample {
                 double distance =  event.getDistance();
                 
                 // percentage
-                double percent =  ((value * 100) / ADS1115GpioProvider.ADS1115_RANGE_MAX_VALUE);
+                double percent =  ((value * 100) / ADS1015GpioProvider.ADS1015_RANGE_MAX_VALUE);
                 
                 // approximate voltage ( *scaled based on PGA setting )
                 double voltage = gpioProvider.getProgrammableGainAmplifier(distanceSensorPin).getVoltage() * (percent/100);

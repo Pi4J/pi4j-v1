@@ -5,7 +5,7 @@ package com.pi4j.gpio.extension.ads;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  ADS1115GpioProvider.java  
+ * FILENAME      :  ADS1015GpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,57 +34,59 @@ import com.pi4j.io.gpio.GpioProvider;
 
 /**
  * <p>
- * This GPIO provider implements the TI ADS1115 analog to digital converter chip as native Pi4J GPIO pins.
+ * This GPIO provider implements the TI ADS1015 analog to digital converter chip as native Pi4J GPIO pins.
  * 
  * More information about the board can be found here: *
- * http://www.ti.com/lit/ds/symlink/ads1115.pdf
- * http://adafruit.com/datasheets/ads1115.pdf
+ * http://www.ti.com/lit/ds/symlink/ads1015.pdf
+ * http://adafruit.com/datasheets/ads1015.pdf
  * 
  * </p>
  * 
  * <p>
- * The ADS1115 is connected via I2C connection to the Raspberry Pi and provides
+ * The ADS1015 is connected via I2C connection to the Raspberry Pi and provides
  * 2 GPIO pins that can be used for analog input pins.
  * </p>
+ * 
  * 
  * @author Robert Savage
  * 
  */
-public class ADS1115GpioProvider extends ADS1x15GpioProvider implements GpioProvider {
+public class ADS1015GpioProvider extends ADS1x15GpioProvider implements GpioProvider {
 
-    public static final String NAME = "com.pi4j.gpio.extension.ads.ADS1115GpioProvider";
-    public static final String DESCRIPTION = "ADS1115 GPIO Provider";
+    public static final String NAME = "com.pi4j.gpio.extension.ads.ADS1015GpioProvider";
+    public static final String DESCRIPTION = "ADS1015 GPIO Provider";
 
-    protected static final int ADS1115_MAX_IO_PINS = 4;
+    protected static final int ADS1015_MAX_IO_PINS = 4;
     
     // =======================================================================
-    // ADS1115 I2C ADDRESS
+    // ADS1015 I2C ADDRESS
     // =======================================================================
-    public static final int ADS1115_ADDRESS_0x48 = 0x48; // ADDRESS 1 : 0x48 (1001000) ADR -> GND
-    public static final int ADS1115_ADDRESS_0x49 = 0x49; // ADDRESS 2 : 0x49 (1001001) ADR -> VDD
-    public static final int ADS1115_ADDRESS_0x4A = 0x4A; // ADDRESS 3 : 0x4A (1001010) ADR -> SDA
-    public static final int ADS1115_ADDRESS_0x4B = 0x4B; // ADDRESS 4 : 0x4B (1001011) ADR -> SCL
+    public static final int ADS1015_ADDRESS_0x48 = 0x48; // ADDRESS 1 : 0x48 (1001000) ADR -> GND
+    public static final int ADS1015_ADDRESS_0x49 = 0x49; // ADDRESS 2 : 0x49 (1001001) ADR -> VDD
+    public static final int ADS1015_ADDRESS_0x4A = 0x4A; // ADDRESS 3 : 0x4A (1001010) ADR -> SDA
+    public static final int ADS1015_ADDRESS_0x4B = 0x4B; // ADDRESS 4 : 0x4B (1001011) ADR -> SCL
     
     // =======================================================================
-    // ADS1115 VALUE RANGES
+    // ADS1015 VALUE RANGES
     // =======================================================================
-    public static final int ADS1115_RANGE_MAX_VALUE =  32767; //0x7FFF (16 bits)
-    public static final int ADS1115_RANGE_MIN_VALUE = -32768; //0xFFFF (16 bits)
+    public static final int ADS1015_RANGE_MAX_VALUE =  32752; //0x7FF0 (12 bits)
+    public static final int ADS1015_RANGE_MIN_VALUE = -32753; //0x8000 (12 bits)
     
     // =======================================================================
     // CONVERSION DELAY (in mS)
     // =======================================================================
-    protected static final int ADS1115_CONVERSIONDELAY       = 0x08;
+    protected static final int ADS1015_CONVERSIONDELAY       = 0x01;
     
     
-    public ADS1115GpioProvider(int busNumber, int address) throws IOException {
+    // default constructor
+    public ADS1015GpioProvider(int busNumber, int address) throws IOException {
         // call super constructor in abstract class
         super(busNumber, address);
 
         // define specific chip configuration properties
-        this.allPins = ADS1115Pin.ALL;
-        this.conversionDelay = ADS1115_CONVERSIONDELAY;
-        this.bitShift = 0; // no bit shifting required for the ADS1115
+        this.allPins = ADS1015Pin.ALL;
+        this.conversionDelay = ADS1015_CONVERSIONDELAY;
+        this.bitShift = 4; // Shift 12-bit results right 4 bits for the ADS1015
     }
     
     @Override
