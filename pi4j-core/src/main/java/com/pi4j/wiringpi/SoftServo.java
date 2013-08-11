@@ -5,7 +5,7 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SoftPwm.java  
+ * FILENAME      :  SoftServo.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,10 +32,10 @@ import com.pi4j.util.NativeLibraryLoader;
 /**
  * This class was generated with the com.pi4j.nativ.generator.JavaClassGenerator. Please don't change this class manually
  */
-public class SoftPwm {
+public class SoftServo {
 
     // private constructor
-    private SoftPwm() {
+    private SoftServo() {
         // forbid object construction
     }
 
@@ -45,6 +45,6 @@ public class SoftPwm {
     }
 
 
-    public static native int softPwmCreate (int pin, int value, int range) ;
-    public static native void softPwmWrite (int pin, int value) ;
+    public static native void softServoWrite (int pin, int value) ;
+    public static native int softServoSetup (int p0, int p1, int p2, int p3, int p4, int p5, int p6, int p7) ;
 }

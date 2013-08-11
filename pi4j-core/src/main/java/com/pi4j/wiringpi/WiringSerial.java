@@ -5,7 +5,7 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SoftPwm.java  
+ * FILENAME      :  WiringSerial.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,10 +32,10 @@ import com.pi4j.util.NativeLibraryLoader;
 /**
  * This class was generated with the com.pi4j.nativ.generator.JavaClassGenerator. Please don't change this class manually
  */
-public class SoftPwm {
+public class WiringSerial {
 
     // private constructor
-    private SoftPwm() {
+    private WiringSerial() {
         // forbid object construction
     }
 
@@ -45,6 +45,12 @@ public class SoftPwm {
     }
 
 
-    public static native int softPwmCreate (int pin, int value, int range) ;
-    public static native void softPwmWrite (int pin, int value) ;
+    public static native int serialOpen( String device, int baud) ;
+    public static native void serialClose( int fd) ;
+    public static native void serialFlush( int fd) ;
+    public static native void serialPutString( int fd, String c) ;
+    public static native void serialPuts( int fd, String s) ;
+    public static native void serialPrintf( int fd, String message, String... args) ;
+    public static native int serialDataAvail( int fd) ;
+    public static native int serialGetString( int fd) ;
 }

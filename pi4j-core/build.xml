@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pi4j-core" default="generate-wiringpi-wrappers" basedir=".">
+	<property name="wiringPi-basedir" value="../../../wiringPi/wiringPi"/>
+	<property name="wiringPi-dir" value="${wiringPi-basedir}/wiringPi" />
+	<property name="wiringPi-devLib-dir" value="${wiringPi-basedir}/devLib"/>
+	<property name="outputdir" value="./src/main/java" />
+	<property name="wiringPi-package" value="com.pi4j.wiringpi"/>
+	<property name="package" value="${wiringPi-package}"/>
+	<property name="wiringPi-devlib-package" value="com.pi4j.wiringpi.devlib"/>
+
+	<target name="generate-wiringpi-wrappers">
+		<echo message="Generating the WiringPi wrapper java files" />
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/drcSerial.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/max31855.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/max5322.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23008.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23016.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23016reg.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23017.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23s08.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23s17.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23x08.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp23x0817.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp3002.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp3004.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp3422.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp3422.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/mcp4802.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/pcf8574.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/pcf8591.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/sn3218.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/softPwm.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/softServo.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/softTone.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/sr595.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/wiringPiSPI.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/wiringSerial.h" />
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-dir}/wiringShift.h" />
+		</antcall>
+
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-devLib-dir}/ds1302.h" />
+			<param name="package" value="${wiringPi-devlib-package}"/>
+		</antcall>
+
+		
+	</target>
+
+	<target name="generate-wiringpi-wrapper">
+		<echo message="- ${inputFile}" />
+
+		<java classname="com.pi4j.nativ.generator.JavaClassGenerator" classpath="./target/classes/">
+			<arg file="${inputFile}" />
+			<arg value="${package}"/>
+			<arg value="${outputdir}" />
+		</java>
+	</target>
+</project>

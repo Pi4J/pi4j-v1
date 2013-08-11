@@ -80,6 +80,12 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/JavaClassGeneratorTest-expectedfile.java</exclude>
+						<exclude>**/JavaClassGeneratorTest-inputfile.h</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 			<!-- RETRIEVE THE JNI NATIVE LIBRARY DEPENDENCY -->
