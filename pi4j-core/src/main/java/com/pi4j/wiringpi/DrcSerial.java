@@ -5,7 +5,7 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SoftPwm.java  
+ * FILENAME      :  DrcSerial.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,10 +32,10 @@ import com.pi4j.util.NativeLibraryLoader;
 /**
  * This class was generated with the com.pi4j.nativ.generator.JavaClassGenerator. Please don't change this class manually
  */
-public class SoftPwm {
+public class DrcSerial {
 
     // private constructor
-    private SoftPwm() {
+    private DrcSerial() {
         // forbid object construction
     }
 
@@ -45,6 +45,5 @@ public class SoftPwm {
     }
 
 
-    public static native int softPwmCreate (int pin, int value, int range) ;
-    public static native void softPwmWrite (int pin, int value) ;
+    public static native int drcSetupSerial( int pinBase, int numPins, String device, int baud) ;
 }
