@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="pi4j-core" default="generate-wiringpi-wrappers" basedir=".">
-	<property name="wiringPi-basedir" value="../../../wiringPi/wiringPi"/>
+	<property name="wiringPi-basedir" value="../../../../wiringPi/wiringPi"/>
 	<property name="wiringPi-dir" value="${wiringPi-basedir}/wiringPi" />
 	<property name="wiringPi-devLib-dir" value="${wiringPi-basedir}/devLib"/>
 	<property name="outputdir" value="./src/main/java" />
@@ -91,6 +91,10 @@
 
 		<antcall target="generate-wiringpi-wrapper">
 			<param name="inputFile" location="${wiringPi-devLib-dir}/ds1302.h" />
+			<param name="package" value="${wiringPi-devlib-package}"/>
+		</antcall>
+		<antcall target="generate-wiringpi-wrapper">
+			<param name="inputFile" location="${wiringPi-devLib-dir}/lcd.h" />
 			<param name="package" value="${wiringPi-devlib-package}"/>
 		</antcall>
 

@@ -45,6 +45,6 @@ public class WiringShift {
     }
 
 
-    public static native int shiftIn (int dPin, int cPin, int order) ;
-    public static native void shiftOut (int dPin, int cPin, int order, int val) ;
+    public static native byte shiftIn (byte dPin, byte cPin, byte order) ;
+    public static native void shiftOut (byte dPin, byte cPin, byte order, byte val) ;
 }

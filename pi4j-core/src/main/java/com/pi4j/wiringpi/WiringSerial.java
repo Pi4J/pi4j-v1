@@ -48,9 +48,9 @@ public class WiringSerial {
     public static native int serialOpen( String device, int baud) ;
     public static native void serialClose( int fd) ;
     public static native void serialFlush( int fd) ;
-    public static native void serialPutString( int fd, String c) ;
+    public static native void serialPutchar ( int fd, char c) ;
     public static native void serialPuts( int fd, String s) ;
     public static native void serialPrintf( int fd, String message, String... args) ;
     public static native int serialDataAvail( int fd) ;
-    public static native int serialGetString( int fd) ;
+    public static native int serialGetchar ( int fd) ;
 }

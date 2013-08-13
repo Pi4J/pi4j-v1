@@ -19,5 +19,6 @@ public class JavaClassGeneratorTest-inputfile {
 
 
     public static native void myFunction( int test, String text );
-    public static native void mySecondFunction( int test,String text);
+    public static native void mySecondFunction( int test,String  text);
+    public static native void myStringAndCharFunction( String aString, String  anotherString, char aCharacter);
 }

@@ -122,11 +122,18 @@ public class JavaClassGenerator {
 					while (stringTokenizer.hasMoreTokens()
 							&& functionDefinition) {
 						String nextToken = stringTokenizer.nextToken();
+						if (nextToken.endsWith("char")) {
+							String afterNextToken = stringTokenizer.nextToken();
+							if (afterNextToken.startsWith("*")) {
+								nextToken = nextToken.replaceAll("char", "String ") + afterNextToken;
+							} else {
+								nextToken = nextToken + " " + afterNextToken;
+							}
+						}
 						nextToken = nextToken.replaceAll("const", "");
-						nextToken = nextToken.replaceAll("char", "String");
 						nextToken = nextToken.replaceAll("\\*", "");
 						nextToken = nextToken.replaceAll("\\.\\.\\.", "String... args");
-						nextToken = nextToken.replaceAll("uint8_t", "int");
+						nextToken = nextToken.replaceAll("uint8_t", "byte");
 						nextToken = nextToken.replaceAll("\\[.+\\]", "[]");
 						nextToken = nextToken.replace("unsigned", "");
 						if (!nextToken.equals("extern")) {
