@@ -33,13 +33,13 @@ import com.pi4j.component.lcd.LCDBase;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.wiringpi.Lcd;
 
-public class PCF8574LcdDisplay extends LCDBase implements LCD 
+public class GpioLcdDisplay extends LCDBase implements LCD 
 {
     protected int rows;
     protected int columns;
     private int lcdHandle;
     
-    public PCF8574LcdDisplay(int rows, int columns, Pin rsPin, Pin strobePin, Pin... dataPins) {
+    public GpioLcdDisplay(int rows, int columns, Pin rsPin, Pin strobePin, Pin... dataPins) {
         this.rows = rows;
         this.columns = columns;
         int bits[] = { 0,0,0,0,0,0,0,0 };
