@@ -74,7 +74,15 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
 
     // private int           lcdHandle;
     private int   pulseData = 0;
+
+    /**
+     *
+     */
     protected int rows;
+
+    /**
+     *
+     */
     protected int columns;
 
     /**
@@ -113,6 +121,9 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         this.init();
     }
 
+    /**
+     *
+     */
     @Override
     public void clear() {
         try {
@@ -122,6 +133,10 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }
 
+    /**
+     *
+     * @param data
+     */
     @Override
     public void write(byte data) {
         try {
@@ -131,6 +146,10 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }
 
+    /**
+     *
+     * @param data
+     */
     @Override
     public void write(String data) {
         for (int i = 0; i < data.length(); i++) {
@@ -142,6 +161,12 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }
 
+    /**
+     *
+     * @param val
+     * @param type   true = display data, false = LCD cmd
+     * @throws Exception
+     */
     public void lcd_byte(int val, boolean type) throws Exception {
 
         // typ zapisu
@@ -190,16 +215,27 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         dev.write(out);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getRowCount() {
         return rows;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getColumnCount() {
         return columns;
     }
 
+    /**
+     *
+     */
     @Override
     public void setCursorHome() {
         try {
@@ -209,6 +245,11 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }
 
+    /**
+     *
+     * @param row
+     * @param column
+     */
     @Override
     public void setCursorPosition(int row, int column) {
         validateCoordinates(row, column);
