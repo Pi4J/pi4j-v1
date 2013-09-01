@@ -1,13 +1,4 @@
-/*
- * @(#)I2CLcdDisplay.java   08/29/13
- * 
- * Copyright (c) 2012 Williams Company
- *
- * License agreement text here ...
- *
- *
- *
- */
+
 
 
 
