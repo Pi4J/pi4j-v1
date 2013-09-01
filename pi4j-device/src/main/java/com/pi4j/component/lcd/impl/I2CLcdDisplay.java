@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  *
  *
  * @version        1.0, 08/29/13
- * @author         schandle
+ * @author         Andrew Chandler
  */
 public class I2CLcdDisplay extends LCDBase implements LCD {
     boolean             backLightDesiredState = true;
