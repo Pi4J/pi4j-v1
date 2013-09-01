@@ -1,4 +1,8 @@
-
+/*
+ * @(#)I2CLcdDisplay.java   08/31/13
+ * 
+ *
+ */
 
 
 
@@ -11,9 +15,9 @@ package com.pi4j.component.lcd.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  I2CLcdDisplay.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CLcdDisplay.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -22,9 +26,9 @@ package com.pi4j.component.lcd.impl;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +43,9 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.wiringpi.Lcd;
+
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,10 +71,11 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
 
     /** posilame command */
     private final boolean LCD_CMD = false;
-    protected int         rows;
-    protected int         columns;
-  //  private int           lcdHandle;
-    private int pulseData = 0;
+
+    // private int           lcdHandle;
+    private int   pulseData = 0;
+    protected int rows;
+    protected int columns;
 
     /**
      * Constructs ...
@@ -108,7 +116,7 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     @Override
     public void clear() {
         try {
-            lcd_byte(0x01,LCD_CMD);
+            lcd_byte(0x01, LCD_CMD);
         } catch (Exception ex) {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,7 +125,7 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     @Override
     public void write(byte data) {
         try {
-            lcd_byte(data,LCD_CHR);
+            lcd_byte(data, LCD_CHR);
         } catch (Exception ex) {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -125,13 +133,27 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
 
     @Override
     public void write(String data) {
-        for(int i = 0; i < data.length(); i++){
-            try{
-                lcd_byte(data.charAt(i),LCD_CHR);
-            }catch(Exception e){
+        for (int i = 0; i < data.length(); i++) {
+            try {
+                lcd_byte(data.charAt(i), LCD_CHR);
+            } catch (Exception e) {
                 System.out.println("Problems writing data");
             }
+        }
     }
+
+    public void lcd_byte(int val, boolean type) throws Exception {
+
+        // typ zapisu
+        setRS(type);
+
+        // High Bit
+        write(val >> 4);
+        pulse_en(type, val >> 4);    // cmd or display data
+
+        // lowbit
+        write(val & 0x0f);
+        pulse_en(type, val & 0x0f);
     }
 
     private void init() throws Exception {
@@ -142,20 +164,6 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         lcd_byte(0x01, LCD_CMD);    // clear and home display
         lcd_byte(0x06, LCD_CMD);    // move cursor right
         lcd_byte(0x0c, LCD_CMD);    // turn on
-    }
-
-    public void lcd_byte(int val, boolean type) throws Exception {
-
-        // typ zapisu
-        setRS(type);
-
-        // High Bit
-        write(val >> 4);
-        pulse_en(type,val >>4 );    // cmd or display data
-
-        // lowbit
-        write(val & 0x0f);
-        pulse_en(type,val & 0x0f);
     }
 
     private void pulse_en(boolean type, int val) throws Exception {
@@ -171,11 +179,13 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     }    // private voi
 
     private void write(int tmpData) throws Exception {
-        byte out = 
-                (byte) (tmpData 
-                | (backlight ? 128 : 0) 
-                | (rsFlag ? 64 : 0) 
-                | (eFlag  ? 16 : 0));
+        byte out = (byte) (tmpData | (backlight
+                                      ? 128
+                                      : 0) | (rsFlag
+                ? 64
+                : 0) | (eFlag
+                        ? 16
+                        : 0));
 
         dev.write(out);
     }
@@ -193,7 +203,7 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     @Override
     public void setCursorHome() {
         try {
-            lcd_byte(0x02,LCD_CMD);
+            lcd_byte(0x02, LCD_CMD);
         } catch (Exception ex) {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -202,8 +212,10 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     @Override
     public void setCursorPosition(int row, int column) {
         validateCoordinates(row, column);
+
         try {
-            lcd_byte(LCD_LINE_ADDRESS[row] + column,LCD_CMD);
+            lcd_byte(LCD_LINE_ADDRESS[row] + column, LCD_CMD);
+
             // Lcd.lcdPosition(lcdHandle, column, row);
         } catch (Exception ex) {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
