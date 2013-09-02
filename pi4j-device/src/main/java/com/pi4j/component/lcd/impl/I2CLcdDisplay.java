@@ -184,6 +184,9 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
      */
     public void lcd_byte(int val, boolean type) throws Exception {
 
+        
+        
+        
         // typ zapisu
         setRS(type);
 
@@ -262,19 +265,39 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-      private void write(int tmpData) throws Exception {
+      private void write(int incomingData) throws Exception {
+         
+        int tmpData = incomingData;
+        
+          System.out.println("Incoming = :" + Integer.toBinaryString(tmpData));
+         
+          System.out.println("BackLightBit = : " + backlightBit);
+          System.out.println("BackLightBit:"  + (1 << backlightBit));
+          
         byte out = (byte) (tmpData | (backlight
-                                      ? 1>>backlightBit
-                                      : 0>>backlightBit) | (rsFlag
-                ? 1>>rsBit
-                : 0>>rsBit) | (eFlag
-                        ? 1>>eBit
-                        : 0>>eBit));
+                                      ? 1<<backlightBit
+                                      : 0<<backlightBit) | (rsFlag
+                ? 1<<rsBit
+                : 0<<rsBit) | (eFlag
+                        ? 1<<eBit
+                        : 0<<eBit));
+//          System.out.println("New Out :" + Integer.toBinaryString(newOut));
+//          
+//          
+//        byte out = (byte) (tmpData | (backlight
+//                                      ? 128
+//                                      : 0) | (rsFlag
+//                ? 64
+//                : 0) | (eFlag
+//                        ? 16
+//                        : 0));          
+           System.out.println("Old Out :" + Integer.toBinaryString(out));        
+          
         System.out.println("Out Byte = :" + out);
         dev.write(out);
             System.out.println("Out Byte = :" + out);
         String s = Integer.toBinaryString(out);
-        System.out.println(s.substring(s.length()-8));
+        System.out.println(s);
     }
 
     /**
