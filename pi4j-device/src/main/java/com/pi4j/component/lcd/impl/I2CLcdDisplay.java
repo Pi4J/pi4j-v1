@@ -38,11 +38,10 @@ package com.pi4j.component.lcd.impl;
  */
 import com.pi4j.component.lcd.LCD;
 import com.pi4j.component.lcd.LCDBase;
-import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.wiringpi.Lcd;
+import java.util.BitSet;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -273,14 +272,17 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
          
           System.out.println("BackLightBit = : " + backlightBit);
           System.out.println("BackLightBit:"  + (1 << backlightBit));
-          
-        byte out = (byte) (tmpData | (backlight
-                                      ? 1<<backlightBit
-                                      : 0<<backlightBit) | (rsFlag
-                ? 1<<rsBit
-                : 0<<rsBit) | (eFlag
-                        ? 1<<eBit
-                        : 0<<eBit));
+             BitSet bits =  fromByte((byte)tmpData);
+        byte out = (byte) ((bits.get(3) ? 1 << d7Bit: 0<<d7Bit)
+                | (bits.get(2) ? 1 << d6Bit: 0<<d6Bit)
+                | (bits.get(1) ? 1 << d5Bit: 0<<d5Bit)
+                | (bits.get(0) ? 1 << d4Bit: 0<<d4Bit)
+                | (backlight ? 1<<backlightBit : 0<<backlightBit) 
+                | (rsFlag    ? 1<<rsBit : 0<<rsBit) 
+                | (eFlag     ? 1<<eBit  : 0<<eBit));
+        
+       
+        
 //          System.out.println("New Out :" + Integer.toBinaryString(newOut));
 //          
 //          
@@ -294,6 +296,32 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
            System.out.println("Old Out :" + Integer.toBinaryString(out));        
           
         System.out.println("Out Byte = :" + out);
+        // ReMap - Default case where everything just works is 
+     /* 7 backlightBit 
+     *  6 rsBit
+     *  5 rwBit
+     *  4 eBit
+     *  3 d7
+     *  2 d6
+     *  1 d5
+     *  0 d4
+     */   
+    /* Sainsmart Use case:
+     * 3 backlightBit 
+     * 0 rsBit
+     * 1 rwBit
+     * 2 eBit
+     * 7 d7
+     * 6 d6
+     * 5 d5
+     * 4 d4
+     */   
+//      BitSet bits =  fromByte(out);
+//      for(int i=0; i < 8; i++){
+//          System.out.println("Bit " + i+ " is: " + bits.get(i));
+//      }
+//        
+        
         dev.write(out);
             System.out.println("Out Byte = :" + out);
         String s = Integer.toBinaryString(out);
@@ -333,6 +361,17 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+ public static BitSet fromByte(byte b)
+{
+    BitSet bits = new BitSet(8);
+    for (int i = 0; i < 8; i++)
+    {
+        bits.set(i, (b & 1) == 1);
+        b >>= 1;
+    }
+    return bits;
+}
     
     
 }
