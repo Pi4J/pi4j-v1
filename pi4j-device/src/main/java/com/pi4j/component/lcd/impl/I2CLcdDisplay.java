@@ -15,9 +15,9 @@ package com.pi4j.component.lcd.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  I2CLcdDisplay.java
- *
- * This file is part of the Pi4J project. More information about
+ * FILENAME      :  I2CLcdDisplay.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -26,9 +26,9 @@ package com.pi4j.component.lcd.impl;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,11 +60,19 @@ import java.util.logging.Logger;
  */
 public class I2CLcdDisplay extends LCDBase implements LCD {
     boolean             backLightDesiredState = true;
-    boolean             backlight             = false;
+    boolean             backlight             = true;
     boolean             rsFlag                = false;
     boolean             eFlag                 = false;
     private I2CDevice   dev                   = null;
     private final int[] LCD_LINE_ADDRESS      = { 0x80, 0xC0, 0x94, 0xD4 };
+    int  backlightBit;
+    int  rsBit;
+    int  rwBit;
+    int  eBit;
+    int  d7Bit;
+    int  d6Bit;
+    int  d5Bit;
+    int  d4Bit;
 
     /** posilame text */
     private final boolean LCD_CHR = true;
@@ -109,9 +117,16 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             throws Exception {
         this.rows    = rows;
         this.columns = columns;
-
-        int bits[] = { d7, d6, d5, d4 };
-
+        
+        //int bits[] = { d7, d6, d5, d4 };
+        this.d7Bit = d7;
+        this.d6Bit = d6;
+        this.d5Bit = d5;
+        this.d4Bit = d4;
+        this.backlightBit = backlightBit;
+        this.rsBit = rsBit;
+        this.eBit = eBit;
+       
         this.rows    = rows;
         this.columns = columns;
 
@@ -213,6 +228,9 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
                         : 0));
 
         dev.write(out);
+        System.out.println("Out Byte = :" + out);
+        String s = Integer.toBinaryString(out);
+        System.out.println(s.substring(s.length()-8));
     }
 
     /**
@@ -244,6 +262,17 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+//      private void write(int tmpData) throws Exception {
+//        byte out = (byte) (tmpData | (backlight
+//                                      ? 1>>backlightBit
+//                                      : 0>>backlightBit) | (rsFlag
+//                ? 1>>rsBit
+//                : 0>>rsBit) | (eFlag
+//                        ? 1>>eBit
+//                        : 0>>eBit));
+//        System.out.println("Out Byte = :" + out);
+//        dev.write(out);
+//    }
 
     /**
      *
@@ -270,4 +299,14 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     private void setE(boolean val) {
         eFlag = val;
     }
+    
+    public void diagnostics(){
+        try {
+            lcd_byte(1,LCD_CHR);
+        } catch (Exception ex) {
+            Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
 }
