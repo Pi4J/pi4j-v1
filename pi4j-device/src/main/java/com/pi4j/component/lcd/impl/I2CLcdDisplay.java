@@ -218,20 +218,20 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }    // private voi
 
-    private void write(int tmpData) throws Exception {
-        byte out = (byte) (tmpData | (backlight
-                                      ? 128
-                                      : 0) | (rsFlag
-                ? 64
-                : 0) | (eFlag
-                        ? 16
-                        : 0));
-
-        dev.write(out);
-        System.out.println("Out Byte = :" + out);
-        String s = Integer.toBinaryString(out);
-        System.out.println(s.substring(s.length()-8));
-    }
+//    private void write(int tmpData) throws Exception {
+//        byte out = (byte) (tmpData | (backlight
+//                                      ? 128
+//                                      : 0) | (rsFlag
+//                ? 64
+//                : 0) | (eFlag
+//                        ? 16
+//                        : 0));
+//
+//        dev.write(out);
+//        System.out.println("Out Byte = :" + out);
+//        String s = Integer.toBinaryString(out);
+//        System.out.println(s.substring(s.length()-8));
+//    }
 
     /**
      *
@@ -262,17 +262,20 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-//      private void write(int tmpData) throws Exception {
-//        byte out = (byte) (tmpData | (backlight
-//                                      ? 1>>backlightBit
-//                                      : 0>>backlightBit) | (rsFlag
-//                ? 1>>rsBit
-//                : 0>>rsBit) | (eFlag
-//                        ? 1>>eBit
-//                        : 0>>eBit));
-//        System.out.println("Out Byte = :" + out);
-//        dev.write(out);
-//    }
+      private void write(int tmpData) throws Exception {
+        byte out = (byte) (tmpData | (backlight
+                                      ? 1>>backlightBit
+                                      : 0>>backlightBit) | (rsFlag
+                ? 1>>rsBit
+                : 0>>rsBit) | (eFlag
+                        ? 1>>eBit
+                        : 0>>eBit));
+        System.out.println("Out Byte = :" + out);
+        dev.write(out);
+            System.out.println("Out Byte = :" + out);
+        String s = Integer.toBinaryString(out);
+        System.out.println(s.substring(s.length()-8));
+    }
 
     /**
      *
