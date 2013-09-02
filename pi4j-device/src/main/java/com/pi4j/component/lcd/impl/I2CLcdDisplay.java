@@ -1,23 +1,12 @@
 /*
- * @(#)I2CLcdDisplay.java   08/31/13
- * 
- *
- */
-
-
-
-package com.pi4j.component.lcd.impl;
-
-//~--- non-JDK imports --------------------------------------------------------
-
-/*
+ * @(#)I2CLcdDisplay.java   09/02/13
 * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  I2CLcdDisplay.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CLcdDisplay.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -26,9 +15,9 @@ package com.pi4j.component.lcd.impl;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,15 +25,22 @@ package com.pi4j.component.lcd.impl;
  * limitations under the License.
  * #L%
  */
+
+
+
+package com.pi4j.component.lcd.impl;
+
+//~--- non-JDK imports --------------------------------------------------------
+
 import com.pi4j.component.lcd.LCD;
 import com.pi4j.component.lcd.LCDBase;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import java.util.BitSet;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.util.BitSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,19 +55,11 @@ import java.util.logging.Logger;
  */
 public class I2CLcdDisplay extends LCDBase implements LCD {
     boolean             backLightDesiredState = true;
-    boolean             backlight             = true;
+    private boolean     backlight             = true;
     boolean             rsFlag                = false;
     boolean             eFlag                 = false;
     private I2CDevice   dev                   = null;
     private final int[] LCD_LINE_ADDRESS      = { 0x80, 0xC0, 0x94, 0xD4 };
-    int  backlightBit;
-    int  rsBit;
-    int  rwBit;
-    int  eBit;
-    int  d7Bit;
-    int  d6Bit;
-    int  d5Bit;
-    int  d4Bit;
 
     /** posilame text */
     private final boolean LCD_CHR = true;
@@ -80,7 +68,15 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     private final boolean LCD_CMD = false;
 
     // private int           lcdHandle;
-    private int   pulseData = 0;
+    private int pulseData = 0;
+    int         backlightBit;
+    int         rsBit;
+    int         rwBit;
+    int         eBit;
+    int         d7Bit;
+    int         d6Bit;
+    int         d5Bit;
+    int         d4Bit;
 
     /**
      *
@@ -116,18 +112,17 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             throws Exception {
         this.rows    = rows;
         this.columns = columns;
-        
-        //int bits[] = { d7, d6, d5, d4 };
-        this.d7Bit = d7;
-        this.d6Bit = d6;
-        this.d5Bit = d5;
-        this.d4Bit = d4;
+
+        // int bits[] = { d7, d6, d5, d4 };
+        this.d7Bit        = d7;
+        this.d6Bit        = d6;
+        this.d5Bit        = d5;
+        this.d4Bit        = d4;
         this.backlightBit = backlightBit;
-        this.rsBit = rsBit;
-        this.eBit = eBit;
-       
-        this.rows    = rows;
-        this.columns = columns;
+        this.rsBit        = rsBit;
+        this.eBit         = eBit;
+        this.rows         = rows;
+        this.columns      = columns;
 
         I2CBus bus = I2CFactory.getInstance(i2cBus);
 
@@ -183,9 +178,6 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
      */
     public void lcd_byte(int val, boolean type) throws Exception {
 
-        
-        
-        
         // typ zapisu
         setRS(type);
 
@@ -196,6 +188,25 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         // lowbit
         write(val & 0x0f);
         pulse_en(type, val & 0x0f);
+    }
+
+    public void diagnostics() {
+        try {
+            lcd_byte(1, LCD_CHR);
+        } catch (Exception ex) {
+            Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static BitSet fromByte(byte b) {
+        BitSet bits = new BitSet(8);
+
+        for (int i = 0; i < 8; i++) {
+            bits.set(i, (b & 1) == 1);
+            b >>= 1;
+        }
+
+        return bits;
     }
 
     private void init() throws Exception {
@@ -220,20 +231,51 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }    // private voi
 
-//    private void write(int tmpData) throws Exception {
-//        byte out = (byte) (tmpData | (backlight
-//                                      ? 128
-//                                      : 0) | (rsFlag
-//                ? 64
-//                : 0) | (eFlag
-//                        ? 16
-//                        : 0));
-//
-//        dev.write(out);
-//        System.out.println("Out Byte = :" + out);
-//        String s = Integer.toBinaryString(out);
-//        System.out.println(s.substring(s.length()-8));
-//    }
+    private void write(int incomingData) throws Exception {
+        int    tmpData = incomingData;
+        BitSet bits    = fromByte((byte) tmpData);
+        byte   out     = (byte) ((bits.get(3)
+                                  ? 1 << d7Bit
+                                  : 0 << d7Bit) | (bits.get(2)
+                ? 1 << d6Bit
+                : 0 << d6Bit) | (bits.get(1)
+                                 ? 1 << d5Bit
+                                 : 0 << d5Bit) | (bits.get(0)
+                ? 1 << d4Bit
+                : 0 << d4Bit) | (isBacklight()
+                                 ? 1 << backlightBit
+                                 : 0 << backlightBit) | (rsFlag
+                ? 1 << rsBit
+                : 0 << rsBit) | (eFlag
+                                 ? 1 << eBit
+                                 : 0 << eBit));
+
+        // ReMap - Default case where everything just works is
+
+        /*
+         *  7 backlightBit
+         *  6 rsBit
+         *  5 rwBit
+         *  4 eBit
+         *  3 d7
+         *  2 d6
+         *  1 d5
+         *  0 d4
+         */
+
+        /*
+         *  Sainsmart Use case:
+         * 3 backlightBit
+         * 0 rsBit
+         * 1 rwBit
+         * 2 eBit
+         * 7 d7
+         * 6 d6
+         * 5 d5
+         * 4 d4
+         */
+        dev.write(out);
+    }
 
     /**
      *
@@ -264,69 +306,6 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
             Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-      private void write(int incomingData) throws Exception {
-         
-        int tmpData = incomingData;
-        
-          System.out.println("Incoming = :" + Integer.toBinaryString(tmpData));
-         
-          System.out.println("BackLightBit = : " + backlightBit);
-          System.out.println("BackLightBit:"  + (1 << backlightBit));
-             BitSet bits =  fromByte((byte)tmpData);
-        byte out = (byte) ((bits.get(3) ? 1 << d7Bit: 0<<d7Bit)
-                | (bits.get(2) ? 1 << d6Bit: 0<<d6Bit)
-                | (bits.get(1) ? 1 << d5Bit: 0<<d5Bit)
-                | (bits.get(0) ? 1 << d4Bit: 0<<d4Bit)
-                | (backlight ? 1<<backlightBit : 0<<backlightBit) 
-                | (rsFlag    ? 1<<rsBit : 0<<rsBit) 
-                | (eFlag     ? 1<<eBit  : 0<<eBit));
-        
-       
-        
-//          System.out.println("New Out :" + Integer.toBinaryString(newOut));
-//          
-//          
-//        byte out = (byte) (tmpData | (backlight
-//                                      ? 128
-//                                      : 0) | (rsFlag
-//                ? 64
-//                : 0) | (eFlag
-//                        ? 16
-//                        : 0));          
-           System.out.println("Old Out :" + Integer.toBinaryString(out));        
-          
-        System.out.println("Out Byte = :" + out);
-        // ReMap - Default case where everything just works is 
-     /* 7 backlightBit 
-     *  6 rsBit
-     *  5 rwBit
-     *  4 eBit
-     *  3 d7
-     *  2 d6
-     *  1 d5
-     *  0 d4
-     */   
-    /* Sainsmart Use case:
-     * 3 backlightBit 
-     * 0 rsBit
-     * 1 rwBit
-     * 2 eBit
-     * 7 d7
-     * 6 d6
-     * 5 d5
-     * 4 d4
-     */   
-//      BitSet bits =  fromByte(out);
-//      for(int i=0; i < 8; i++){
-//          System.out.println("Bit " + i+ " is: " + bits.get(i));
-//      }
-//        
-        
-        dev.write(out);
-            System.out.println("Out Byte = :" + out);
-        String s = Integer.toBinaryString(out);
-        System.out.println(s);
-    }
 
     /**
      *
@@ -346,6 +325,13 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
         }
     }
 
+    /**
+     * @param backlight the backlight to set
+     */
+    public void setBacklight(boolean backlight) {
+        this.backlight = backlight;
+    }
+
     private void setRS(boolean val) {
         rsFlag = val;
     }
@@ -353,25 +339,11 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     private void setE(boolean val) {
         eFlag = val;
     }
-    
-    public void diagnostics(){
-        try {
-            lcd_byte(1,LCD_CHR);
-        } catch (Exception ex) {
-            Logger.getLogger(I2CLcdDisplay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+    /**
+     * @return the backlight
+     */
+    public boolean isBacklight() {
+        return backlight;
     }
-    
- public static BitSet fromByte(byte b)
-{
-    BitSet bits = new BitSet(8);
-    for (int i = 0; i < 8; i++)
-    {
-        bits.set(i, (b & 1) == 1);
-        b >>= 1;
-    }
-    return bits;
-}
-    
-    
 }
