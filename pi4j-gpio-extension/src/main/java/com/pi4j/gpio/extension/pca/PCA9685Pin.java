@@ -56,7 +56,7 @@ public class PCA9685Pin {
     public static final Pin PWM_13 = createPwmPin(13, "PWM 13");
     public static final Pin PWM_14 = createPwmPin(14, "PWM 14");
     public static final Pin PWM_15 = createPwmPin(15, "PWM 15");
-    //
+
     public static final Pin[] ALL = {
             PCA9685Pin.PWM_00,
             PCA9685Pin.PWM_01,

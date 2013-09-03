@@ -62,6 +62,15 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     public static final int INTERNAL_CLOCK_FREQ = 25 * 1000 * 1000; // 25 MHz
     public static final BigDecimal MIN_FREQUENCY = new BigDecimal("40"); // 40 Hz
     public static final BigDecimal MAX_FREQUENCY = new BigDecimal("1000"); // 1 kHz
+    /**
+     * This would result in a period duration of ~22ms which is save for all type of servo
+     */
+    public static final BigDecimal ANALOG_SERVO_FREQUENCY = new BigDecimal("45.454");
+    /**
+     * This would result in a period duration of ~11ms which is recommended when using digital servos ONLY! 
+     */
+    public static final BigDecimal DIGITAL_SERVO_FREQUENCY = new BigDecimal("90.909");
+    public static final BigDecimal DEFAULT_FREQUENCY = ANALOG_SERVO_FREQUENCY;
     public static final int PWM_STEPS = 4096; // 12 Bit
     // Registers
     private static final int PCA9685A_MODE1 = 0x00;
@@ -73,18 +82,24 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     //
     private final I2CBus bus;
     private final I2CDevice device;
-    private BigDecimal frequency = new BigDecimal("200"); // Default of 1Eh in PRE_SCALE register results in a 200 Hz refresh rate with oscillator clock of 25 MHz.
-    private int periodDurationMicros = calculatePeriodDuration();
-    
-    // default address
-    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
+    private BigDecimal frequency;
+    private int periodDurationMicros;
 
     public PCA9685GpioProvider(int busNumber, int address) throws IOException {
+        this(busNumber, address, DEFAULT_FREQUENCY, BigDecimal.ONE);
+    }
+
+    public PCA9685GpioProvider(int busNumber, int address, BigDecimal targetFrequency) throws IOException {
+        this(busNumber, address, targetFrequency, BigDecimal.ONE);
+    }
+
+    public PCA9685GpioProvider(int busNumber, int address, BigDecimal targetFrequency, BigDecimal frequencyCorrectionFactor) throws IOException {
         // create I2C communications bus instance
         bus = I2CFactory.getInstance(busNumber); // 1
         // create I2C device instance
         device = bus.getDevice(address); // 0x40
         device.write(PCA9685A_MODE1, (byte) 0);
+        setFrequency(targetFrequency, frequencyCorrectionFactor);
     }
 
     /**

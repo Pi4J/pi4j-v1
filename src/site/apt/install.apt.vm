@@ -38,8 +38,7 @@ Installation
   <<<sudo java -classpath .:classes:/opt/pi4j/lib/'*' ... >>>
   
   If you would like to explore the examples, you can compile all the examples with the following commands: \
-  <<<cd /opt/pi4j/examples>>> \
-  <<<./build>>>
+  <<</opt/pi4j/examples/build>>>
 
 ** Uninstall Pi4J
  
