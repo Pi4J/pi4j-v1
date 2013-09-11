@@ -5,7 +5,7 @@ package com.pi4j.servo.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CDeviceImpl.java  
+ * FILENAME      :  RPIServoBlasterDriver.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -135,7 +135,7 @@ public class RPIServoBlasterDriver implements ServoDriver {
             this.position = position;
             FileOutputStream out = new FileOutputStream(servoBlasterDev);
             try {
-                out.write((index + "=" + position).getBytes());
+                out.write((index + "=" + position + "\n").getBytes());
                 out.flush();
             } finally {
                 out.close();
