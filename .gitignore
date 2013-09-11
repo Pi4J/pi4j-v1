@@ -35,6 +35,10 @@ maven-eclipse.xml
 /pi4j-device/.settings
 /pi4j-device/.classpath
 /pi4j-device/.project
+/pi4j-i2c-device/.settings
+/pi4j-i2c-device/.project
+/pi4j-i2c-device/.classpath
+/pi4j-i2c-device/target
 
 /pi4j-distribution/target
 /pi4j-distribution/target
