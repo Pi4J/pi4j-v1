@@ -80,7 +80,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 			
-			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASBERRY PI -->
+			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASPBERRY PI -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>

@@ -39,21 +39,13 @@
 				<role>developer</role>
 			</roles>
 		</developer>
-		<developer>
-			<name>Chris Walzl</name>
-			<email>chris@pi4j.com</email>
-			<roles>
-				<role>sponsor</role>
-				<role>developer</role>
-			</roles>
-		</developer>
-                <developer>
-                        <name>Daniel Sendula</name>
-                        <email>daniel@pi4j.com</email>
-                        <roles>
-                                <role>developer</role>
-                        </roles>
-                </developer>
+        <developer>
+            <name>Daniel Sendula</name>
+            <email>daniel@pi4j.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
 	</developers>
 
 	<!-- SOURCE CONTROL -->
@@ -630,6 +622,16 @@
 		</pluginManagement>
 
 	</build>
+
+    <!-- GLOBAL DEPENDENCIES -->
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<!-- PROJECT DEPENDENCIES -->
 	<dependencyManagement>

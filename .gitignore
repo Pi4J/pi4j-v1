@@ -9,13 +9,12 @@ maven-eclipse.xml
 .externalToolBuilders
 /target
 /.settings
+/.project
 /pi4j-core/.settings
 /pi4j-core/.classpath
 /pi4j-example/.settings
 /pi4j-example/.classpath
 /pi4j-native/.settings
-
-/.project
 /pi4j-native/.project
 /pi4j-core/.project
 /pi4j-example/.project
@@ -35,6 +34,14 @@ maven-eclipse.xml
 /pi4j-device/.settings
 /pi4j-device/.classpath
 /pi4j-device/.project
+/pi4j-i2c-device/.settings
+/pi4j-i2c-device/.project
+/pi4j-i2c-device/.classpath
+/pi4j-i2c-device/target
+/pi4j-distribution/target
+/pi4j-distribution/target
+/pi4j-core/bin/
+/pi4j-example/bin/
+/pi4j-gpio-extension/bin/
+/pi4j-service/bin/
 
-/pi4j-distribution/target
-/pi4j-distribution/target
