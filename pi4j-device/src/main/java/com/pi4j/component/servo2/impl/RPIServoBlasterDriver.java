@@ -4,7 +4,7 @@ package com.pi4j.component.servo2.impl;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
+ * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  RPIServoBlasterDriver.java  
  * 
  * This file is part of the Pi4J project. More information about 
@@ -27,8 +27,8 @@ package com.pi4j.component.servo2.impl;
  * #L%
  */
 
-import com.pi4j.servo.Servo;
-import com.pi4j.servo.ServoDriver;
+import com.pi4j.component.servo2.Servo;
+import com.pi4j.component.servo2.ServoDriver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
