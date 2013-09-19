@@ -1,4 +1,4 @@
-package com.pi4j.servo.impl;
+package com.pi4j.component.servo2.impl;
 
 /*
  * #%L
@@ -27,15 +27,15 @@ package com.pi4j.servo.impl;
  * #L%
  */
 
+import com.pi4j.servo.Servo;
+import com.pi4j.servo.ServoDriver;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
-import com.pi4j.servo.Servo;
-import com.pi4j.servo.ServoDriver;
 
 /**
  * Implementation of https://github.com/richardghirst/PiBits/tree/master/ServoBlaster

@@ -1,4 +1,4 @@
-package com.pi4j.gyroscope;
+package com.pi4j.component.gyroscope;
 
 import java.io.IOException;
 

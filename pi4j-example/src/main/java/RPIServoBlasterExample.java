@@ -24,9 +24,9 @@
  * limitations under the License.
  * #L%
  */
-import com.pi4j.servo.Servo;
-import com.pi4j.servo.ServoDriver;
-import com.pi4j.servo.impl.RPIServoBlasterDriver;
+import com.pi4j.component.servo2.Servo;
+import com.pi4j.component.servo2.ServoDriver;
+import com.pi4j.component.servo2.impl.RPIServoBlasterDriver;
 
 
 public class RPIServoBlasterExample {

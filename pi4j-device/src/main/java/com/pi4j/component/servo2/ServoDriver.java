@@ -1,4 +1,4 @@
-package com.pi4j.servo;
+package com.pi4j.component.servo2;
 
 /*
  * #%L
