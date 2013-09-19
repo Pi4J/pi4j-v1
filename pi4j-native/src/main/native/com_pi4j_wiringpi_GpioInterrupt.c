@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -14,9 +14,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,6 +202,9 @@ int monitorPinInterrupt(void *threadarg)
 						else
 							(*env)->CallStaticVoidMethod(env, callback_class, callback_method, (jint)pin, (jboolean)0);
 					}
+
+                    // detach from thread
+                    (*callback_jvm)->DetachCurrentThread(callback_jvm);
 				}
 			}
 		}
@@ -373,5 +376,3 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 
 	return;
 }
-
-
