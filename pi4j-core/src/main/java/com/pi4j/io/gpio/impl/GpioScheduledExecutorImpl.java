@@ -28,21 +28,16 @@ package com.pi4j.io.gpio.impl;
  */
 
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.tasks.impl.GpioBlinkStopTaskImpl;
 import com.pi4j.io.gpio.tasks.impl.GpioBlinkTaskImpl;
 import com.pi4j.io.gpio.tasks.impl.GpioPulseTaskImpl;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
 
 public class GpioScheduledExecutorImpl {
 
@@ -103,8 +98,12 @@ public class GpioScheduledExecutorImpl {
         
         return cleanupFutureTask;
     }
-    
+
     public synchronized static Future<?> pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState) {
+        return pulse(pin, duration, pulseState, null);
+    }
+
+    public synchronized static Future<?> pulse(GpioPinDigitalOutput pin, long duration, PinState pulseState, Callable<?> callback) {
         
         // create future return object
         ScheduledFuture<?> scheduledFuture = null; 
@@ -119,7 +118,7 @@ public class GpioScheduledExecutorImpl {
             
             // create future job to return the pin to the low state
             scheduledFuture = scheduledExecutorService
-                .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState)), duration, TimeUnit.MILLISECONDS);
+                .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState), callback), duration, TimeUnit.MILLISECONDS);
 
             // get pending tasks for the current pin
             ArrayList<ScheduledFuture<?>> tasks;

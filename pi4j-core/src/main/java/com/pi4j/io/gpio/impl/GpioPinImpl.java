@@ -26,32 +26,18 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinListener;
+import com.pi4j.io.gpio.event.PinListener;
+import com.pi4j.io.gpio.trigger.GpioTrigger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
-
-import com.pi4j.io.gpio.GpioPinAnalogInput;
-import com.pi4j.io.gpio.GpioPinAnalogOutput;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinInput;
-import com.pi4j.io.gpio.GpioPinOutput;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.GpioPinShutdown;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.GpioPinListener;
-import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioPinImpl implements GpioPin, 
                                     GpioPinDigitalInput, 
@@ -253,17 +239,37 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> pulse(long duration, Callable<Void> callback) {
+        return pulse(duration, false, callback);
+    }
+
+    @Override
     public Future<?> pulse(long duration, PinState pulseState) {
         return pulse(duration, pulseState, false);
     }
-    
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback) {
+        return pulse(duration, pulseState, false, callback);
+    }
+
     @Override
     public Future<?> pulse(long duration, boolean blocking) {
         return pulse(duration, PinState.HIGH, blocking);
     }
 
     @Override
+    public Future<?> pulse(long duration, boolean blocking, Callable<Void> callback) {
+        return pulse(duration, PinState.HIGH, blocking, callback);
+    }
+
+    @Override
     public Future<?> pulse(long duration, PinState pulseState, boolean blocking) {
+        return pulse(duration, pulseState, blocking, null);
+    }
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
         
         // validate duration argument
         if(duration <= 0)
@@ -286,6 +292,15 @@ public class GpioPinImpl implements GpioPin,
 
             // end the pulse state
             setState(PinState.getInverseState(pulseState));
+
+            // invoke callback if one was defined
+            if(callback != null){
+                try {
+                    callback.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             
             // we are done; no future is returned for blocking pulses
             return null;
@@ -294,7 +309,7 @@ public class GpioPinImpl implements GpioPin,
             // if this is not a blocking call, then setup the pulse 
             // instruction to be completed in a background worker
             // thread pool using a scheduled executor 
-            return GpioScheduledExecutorImpl.pulse(this, duration, pulseState);
+            return GpioScheduledExecutorImpl.pulse(this, duration, pulseState, callback);
         }
     }
     

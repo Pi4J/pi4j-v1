@@ -33,6 +33,8 @@ import com.pi4j.component.power.PowerState;
 import com.pi4j.component.power.PowerStateChangeEvent;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public class GpioPowerComponent extends PowerBase {
     
@@ -40,7 +42,22 @@ public class GpioPowerComponent extends PowerBase {
     GpioPinDigitalOutput pin = null;
     PinState onState = PinState.HIGH;
     PinState offState = PinState.LOW;
-    
+
+
+    // create a GPIO PIN listener for change changes; use this to send POWER state change events
+    private GpioPinListenerDigital listener = new GpioPinListenerDigital() {
+        @Override
+        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+            // notify any state change listeners
+            if(event.getState() == onState){
+                notifyListeners(new PowerStateChangeEvent(GpioPowerComponent.this, PowerState.OFF, PowerState.ON));
+            }
+            if(event.getState() == offState){
+                notifyListeners(new PowerStateChangeEvent(GpioPowerComponent.this, PowerState.ON, PowerState.OFF));
+            }
+        }
+    };
+
     /**
      * using this constructor requires that the consumer 
      *  define the POWER ON and POWER OFF pin states 
@@ -50,7 +67,7 @@ public class GpioPowerComponent extends PowerBase {
      * @param offState pin state to set when power is OFF
      */
     public GpioPowerComponent(GpioPinDigitalOutput pin, PinState onState, PinState offState) {
-        this.pin = pin;
+        this(pin);
         this.onState = onState;
         this.offState = offState;
     }
@@ -63,7 +80,8 @@ public class GpioPowerComponent extends PowerBase {
      * @param pin GPIO digital output pin
      */
     public GpioPowerComponent(GpioPinDigitalOutput pin) {
-        this.pin = pin;        
+        this.pin = pin;
+        this.pin.addListener(listener);
     }
 
     /**
@@ -96,9 +114,6 @@ public class GpioPowerComponent extends PowerBase {
                     
                     // apply the new pin state                    
                     pin.setState(offState);
-                    
-                    // notify any power state change listeners
-                    notifyListeners(new PowerStateChangeEvent(this, PowerState.ON, PowerState.OFF));
                 }
                 break;
             }
@@ -107,9 +122,6 @@ public class GpioPowerComponent extends PowerBase {
                     
                     // apply the new pin state
                     pin.setState(onState);
-                    
-                    // notify any power state change listeners
-                    notifyListeners(new PowerStateChangeEvent(this, PowerState.OFF, PowerState.ON));
                 }
                 break;
             }

@@ -1,10 +1,9 @@
 package com.pi4j.io.gpio;
 
+import com.pi4j.io.gpio.trigger.GpioTrigger;
+
 import java.util.Collection;
 import java.util.List;
-
-import com.pi4j.io.gpio.event.GpioPinListener;
-import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 /*
  * #%L
@@ -34,7 +33,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  */
 
 /**
- * Gpio input pin interface. This interface is extension of {@link GpioPin} interface
+ * Gpio input pin interface. This interface is extension of {@link com.pi4j.io.gpio.GpioPin} interface
  * with listeners and triggers support..
  *
  * @author Robert Savage (<a
@@ -42,19 +41,11 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  */
 public interface GpioPinInput extends GpioPin {
 
-    Collection<GpioPinListener> getListeners();
-    void addListener(GpioPinListener... listener);
-    void addListener(List<? extends GpioPinListener> listeners);
-    boolean hasListener(GpioPinListener... listener);
-    void removeListener(GpioPinListener... listener);
-    void removeListener(List<? extends GpioPinListener> listeners);
-    void removeAllListeners();
-    
     Collection<GpioTrigger> getTriggers();
     void addTrigger(GpioTrigger... trigger);
     void addTrigger(List<? extends GpioTrigger> triggers);
-    
-    void removeTrigger(GpioTrigger... trigger);    
+
+    void removeTrigger(GpioTrigger... trigger);
     void removeTrigger(List<? extends GpioTrigger> triggers);
     void removeAllTriggers();
 

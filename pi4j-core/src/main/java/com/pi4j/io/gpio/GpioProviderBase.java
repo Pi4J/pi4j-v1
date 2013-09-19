@@ -28,11 +28,6 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
@@ -41,8 +36,13 @@ import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * Abstract base implementation of {@link GpioProvider}.
+ * Abstract base implementation of {@link com.pi4j.io.gpio.GpioProvider}.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
@@ -165,7 +165,10 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (mode != PinMode.DIGITAL_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + mode.getName() + "]");
         }
-        
+
+        // for digital output pins, we will echo the event feedback
+        dispatchPinDigitalStateChangeEvent(pin, state);
+
         // cache pin state
         getPinCache(pin).setState(state);
     }
@@ -199,7 +202,10 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (!PinMode.allOutput().contains(mode)) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setValue(" + value + ") when pin mode is [" + mode.getName() + "]");
         }
-        
+
+        // for digital analog pins, we will echo the event feedback
+        dispatchPinAnalogValueChangeEvent(pin, value);
+
         // cache pin analog value
         getPinCache(pin).setAnalogValue(value);                        
     }
@@ -284,7 +290,9 @@ public abstract class GpioProviderBase implements GpioProvider {
         for (Pin pin : listeners.keySet()) {
             // iterate over all listener handler in the map entry
             // and remove each listener handler instance
-            for (PinListener listener : listeners.get(pin)) {
+            List<PinListener> lsnrs = listeners.get(pin);
+            for (int index = lsnrs.size() - 1; index >= 0; index--) {
+                PinListener listener = lsnrs.get(index);
                 removeListener(pin, listener);
             }
         }
@@ -316,6 +324,9 @@ public abstract class GpioProviderBase implements GpioProvider {
         // prevent reentrant invocation
         if(isShutdown())
             return;
+
+        // remove all listeners
+        removeAllListeners();
         
         // set shutdown tracking state variable
         isshutdown = true;
