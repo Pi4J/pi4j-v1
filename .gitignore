@@ -1,47 +1,32 @@
-*.class
+# Build files
+out
+target
+gen
+build
+
+# IntelliJ files
+.idea
+*.iml
+
+# Eclipse files
+.settings
+.classpath
+.project
+.externalToolBuilders
+maven-eclipse.xml
+
+# Vim files
+*.swp
+
+# Mac files
+.DS_Store
+
+# Windows files
+Thumbs.db
 
 # Package Files #
 *.jar
 *.war
 *.ear
-
-maven-eclipse.xml
-.externalToolBuilders
-/target
-/.settings
-/.project
-/pi4j-core/.settings
-/pi4j-core/.classpath
-/pi4j-example/.settings
-/pi4j-example/.classpath
-/pi4j-native/.settings
-/pi4j-native/.project
-/pi4j-core/.project
-/pi4j-example/.project
-/pi4j-core/target
-/pi4j-example/target
-/pi4j-native/target
-/pi4j-core/target
-/pi4j-service/.project
-/pi4j-service/.classpath
-/pi4j-service/.settings
-/pi4j-service/target
-/pi4j-gpio-extension/target
-/pi4j-gpio-extension/.classpath
-/pi4j-gpio-extension/.project
-/pi4j-gpio-extension/.settings
-/pi4j-device/target
-/pi4j-device/.settings
-/pi4j-device/.classpath
-/pi4j-device/.project
-/pi4j-i2c-device/.settings
-/pi4j-i2c-device/.project
-/pi4j-i2c-device/.classpath
-/pi4j-i2c-device/target
-/pi4j-distribution/target
-/pi4j-distribution/target
-/pi4j-core/bin/
-/pi4j-example/bin/
-/pi4j-gpio-extension/bin/
-/pi4j-service/bin/
-
+*.zip
+*.deb
