@@ -71,12 +71,13 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     private static final byte REGISTER_DEFVAL_B = 0x07;
     private static final byte REGISTER_INTCON_A = 0x08;
     private static final byte REGISTER_INTCON_B = 0x09;
+    private static final byte REGISTER_IOCON  = 0x0A;
     private static final byte REGISTER_GPPU_A = 0x0C;
     private static final byte REGISTER_GPPU_B = 0x0D;
     private static final byte REGISTER_INTF_A = 0x0E;
     private static final byte REGISTER_INTF_B = 0x0F;
-    // private static final byte REGISTER_INTCAP_A = 0x10;
-    // private static final byte REGISTER_INTCAP_B = 0x11;
+    private static final byte REGISTER_INTCAP_A = 0x10;
+    private static final byte REGISTER_INTCAP_B = 0x11;
     private static final byte REGISTER_GPIO_A = 0x12;
     private static final byte REGISTER_GPIO_B = 0x13;
 
@@ -108,30 +109,75 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         if (fd <= -1) {
             throw new IOException("SPI port setup failed.");
         }
-        
+
+
+        // IOCON – I/O EXPANDER CONFIGURATION REGISTER
+        //
+        // bit 7 BANK: Controls how the registers are addressed
+        //     1 = The registers associated with each port are separated into different banks
+        //     0 = The registers are in the same bank (addresses are sequential)
+        // bit 6 MIRROR: INT Pins Mirror bit
+        //     1 = The INT pins are internally connected
+        //     0 = The INT pins are not connected. INTA is associated with PortA and INTB is associated with PortB
+        // bit 5 SEQOP: Sequential Operation mode bit.
+        //     1 = Sequential operation disabled, address pointer does not increment.
+        //     0 = Sequential operation enabled, address pointer increments.
+        // bit 4 DISSLW: Slew Rate control bit for SDA output.
+        //     1 = Slew rate disabled.
+        //     0 = Slew rate enabled.
+        // bit 3 HAEN: Hardware Address Enable bit (MCP23S17 only).
+        //     Address pins are always enabled on MCP23017.
+        //     1 = Enables the MCP23S17 address pins.
+        //     0 = Disables the MCP23S17 address pins.
+        // bit 2 ODR: This bit configures the INT pin as an open-drain output.
+        //     1 = Open-drain output (overrides the INTPOL bit).
+        //     0 = Active driver output (INTPOL bit sets the polarity).
+        // bit 1 INTPOL: This bit sets the polarity of the INT output pin.
+        //     1 = Active-high.
+        //     0 = Active-low.
+        // bit 0 Unimplemented: Read as ‘0’.
+        //
+        write(REGISTER_IOCON, (byte) 0x00000000);
+
         // set all default pins directions
+        // (1 = Pin is configured as an input.)
+        // (0 = Pin is configured as an output.)
         write(REGISTER_IODIR_A, (byte) currentDirectionA);
         write(REGISTER_IODIR_B, (byte) currentDirectionB);
-
-        // set all default pin interrupts
-        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
-        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
-
-        // set all default pin interrupt default values
-        write(REGISTER_DEFVAL_A, (byte) 0x00);
-        write(REGISTER_DEFVAL_B, (byte) 0x00);
-
-        // set all default pin interrupt comparison behaviors
-        write(REGISTER_INTCON_A, (byte) 0x00);
-        write(REGISTER_INTCON_B, (byte) 0x00);
 
         // set all default pin states
         write(REGISTER_GPIO_A, (byte) currentStatesA);
         write(REGISTER_GPIO_B, (byte) currentStatesB);
 
         // set all default pin pull up resistors
+        // (1 = Pull-up enabled.)
+        // (0 = Pull-up disabled.)
         write(REGISTER_GPPU_A, (byte) currentPullupA);
         write(REGISTER_GPPU_B, (byte) currentPullupB);
+
+        // set all default pin interrupts
+        // (if pin direction is input (1), then enable interrupt for pin)
+        // (1 = Enable GPIO input pin for interrupt-on-change event.)
+        // (0 = Disable GPIO input pin for interrupt-on-change event.)
+        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
+        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
+
+        // set all default pin interrupt default values
+        // (comparison value registers are not used in this implementation)
+        write(REGISTER_DEFVAL_A, (byte) 0x00);
+        write(REGISTER_DEFVAL_B, (byte) 0x00);
+
+        // set all default pin interrupt comparison behaviors
+        // (1 = Controls how the associated pin value is compared for interrupt-on-change.)
+        // (0 = Pin value is compared against the previous pin value.)
+        write(REGISTER_INTCON_A, (byte) 0x00);
+        write(REGISTER_INTCON_B, (byte) 0x00);
+
+        // reset/clear interrupt flags
+        if(currentDirectionA > 0)
+            read(REGISTER_INTCAP_A);
+        if(currentDirectionB > 0)
+            read(REGISTER_INTCAP_B);
     }
 
     protected void write(byte register, byte data) {
