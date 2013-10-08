@@ -142,7 +142,7 @@
 				<pi.host.dev>pi-hf-wifi</pi.host.dev>
 
 				<!-- enable development transfers -->
-				<pi.transfer.dev>true</pi.transfer.dev>
+				<pi.transfer.dev>false</pi.transfer.dev>
 			</properties>
 			<activation>
 				<!-- automatically set user profile based on environment setting -->
