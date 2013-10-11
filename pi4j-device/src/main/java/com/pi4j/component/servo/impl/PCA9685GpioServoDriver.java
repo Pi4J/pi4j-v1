@@ -37,14 +37,14 @@ import com.pi4j.io.gpio.Pin;
 /**
  * @author Christian Wehrli
  */
-public class PCA9685GpioServo implements ServoDriver {
+public class PCA9685GpioServoDriver implements ServoDriver {
 
     private PCA9685GpioProvider provider;
     private Pin pin;
     private int position;
     private int resolution;
     
-    public PCA9685GpioServo(PCA9685GpioProvider provider, Pin pin) {
+    public PCA9685GpioServoDriver(PCA9685GpioProvider provider, Pin pin) {
         setProvider(provider);
         setPin(pin);
         updateResolution();

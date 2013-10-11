@@ -34,6 +34,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * <p>
@@ -56,6 +57,7 @@ public class PCA9685GpioExample {
     private static final int SERVO_DURATION_NEUTRAL = 1500;
     private static final int SERVO_DURATION_MAX = 2100;
 
+    @SuppressWarnings("resource")
     public static void main(String args[]) throws Exception {
         System.out.println("<--Pi4J--> PCA9685 PWM Example ... started.");
         // This would theoretically lead into a resolution of 5 microseconds per step:
@@ -69,7 +71,8 @@ public class PCA9685GpioExample {
         // --> To measure actual frequency set frequency without correction factor(or set to 1)
         BigDecimal frequencyCorrectionFactor = new BigDecimal("1.0578");
         // Create custom PCA9685 GPIO provider
-        final PCA9685GpioProvider gpioProvider = new PCA9685GpioProvider(I2CBus.BUS_1, 0x40, frequency, frequencyCorrectionFactor);
+        I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
+        final PCA9685GpioProvider gpioProvider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
         // Define outputs in use for this example
         GpioPinPwmOutput[] myOutputs = provisionPwmOutputs(gpioProvider);
         // Reset outputs

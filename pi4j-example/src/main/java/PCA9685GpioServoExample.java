@@ -29,14 +29,16 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 import com.pi4j.component.servo.Servo;
-import com.pi4j.component.servo.ServoBase.Orientation;
-import com.pi4j.component.servo.impl.PCA9685GpioServo;
+import com.pi4j.component.servo.impl.GenericServo;
+import com.pi4j.component.servo.impl.GenericServo.Orientation;
+import com.pi4j.component.servo.impl.PCA9685GpioServoProvider;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
 import com.pi4j.gpio.extension.pca.PCA9685Pin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * Simple servo tester application demonstrating Pi4J's Servo component.
@@ -124,7 +126,9 @@ public class PCA9685GpioServoExample {
     // PCA9685GpioProvider
     //------------------------------------------------------------------------------------------------------------------
     private final PCA9685GpioProvider gpioProvider;
-    private final PCA9685GpioServo[] servos;
+    private final PCA9685GpioServoProvider gpioServoProvider;
+    
+    private final Servo[] servos;
     private int activeServo;
 
     public PCA9685GpioServoExample() throws Exception {
@@ -132,22 +136,25 @@ public class PCA9685GpioServoExample {
 
         // Define outputs in use for this example
         provisionPwmOutputs(gpioProvider);
-        servos = new PCA9685GpioServo[16];
+        
+        gpioServoProvider = new PCA9685GpioServoProvider(gpioProvider);
+        
+        servos = new Servo[16];
 
         // Provide servo on channel 0
-        servos[0] = new PCA9685GpioServo(gpioProvider, PCA9685Pin.PWM_00, "Servo_1 (default settings)");
+        servos[0] = new GenericServo(gpioServoProvider.getServoDriver(PCA9685Pin.PWM_00), "Servo_1 (default settings)");
 
         // Provide servo on channel 1
-        servos[1] = new PCA9685GpioServo(gpioProvider, PCA9685Pin.PWM_01, "Servo_2 (max. endpoints)");
-        servos[1].setProperty(Servo.PROP_END_POINT_LEFT, Integer.toString(Servo.END_POINT_MAX));
-        servos[1].setProperty(Servo.PROP_END_POINT_RIGHT, Integer.toString(Servo.END_POINT_MAX));
+        servos[1] = new GenericServo(gpioServoProvider.getServoDriver(PCA9685Pin.PWM_01), "Servo_2 (max. endpoints)");
+        servos[1].setProperty(Servo.PROP_END_POINT_LEFT, Float.toString(Servo.END_POINT_MAX));
+        servos[1].setProperty(Servo.PROP_END_POINT_RIGHT, Float.toString(Servo.END_POINT_MAX));
 
         // Provide servo on channel 2
-        servos[2] = new PCA9685GpioServo(gpioProvider, PCA9685Pin.PWM_02, "Servo_3 (subtrim)");
-        servos[2].setProperty(Servo.PROP_SUBTRIM, Integer.toString(Servo.SUBTRIM_MAX_LEFT));
+        servos[2] = new GenericServo(gpioServoProvider.getServoDriver(PCA9685Pin.PWM_02), "Servo_3 (subtrim)");
+        servos[2].setProperty(Servo.PROP_SUBTRIM, Float.toString(Servo.SUBTRIM_MAX_LEFT));
 
         // Provide servo on channel 3
-        servos[3] = new PCA9685GpioServo(gpioProvider, PCA9685Pin.PWM_03, "Servo_4 (reverse)");
+        servos[3] = new GenericServo(gpioServoProvider.getServoDriver(PCA9685Pin.PWM_03), "Servo_4 (reverse)");
         servos[3].setProperty(Servo.PROP_IS_REVERSE, Boolean.toString(true));
 
         // Set active servo
@@ -201,7 +208,7 @@ public class PCA9685GpioServoExample {
 
         String command = null;
         while ("x".equals(command) == false) {
-            int currentPosition = servos[activeServo].getPosition();
+            float currentPosition = servos[activeServo].getPosition();
             System.out.println("Current servo position: " + currentPosition);
             String input = scanner.nextLine();
             if (input.trim().isEmpty() == false) {
@@ -232,7 +239,7 @@ public class PCA9685GpioServoExample {
                 } catch (Exception e) {
                     System.out.println("Move amount defaulted to [1].");
                 }
-                int newPosition = currentPosition + moveAmount * sign;
+                float newPosition = currentPosition + moveAmount * sign;
                 if (newPosition < Servo.POS_MAX_LEFT) {
                     newPosition = Servo.POS_MAX_LEFT;
                     System.out.println("Max left position exceeded - set position to " + Servo.POS_MAX_LEFT + "%");
@@ -283,7 +290,7 @@ public class PCA9685GpioServoExample {
                     continue;
                 }
 
-                int newSubtrim = currentSubtrim + moveAmount;
+                float newSubtrim = currentSubtrim + moveAmount;
                 if (newSubtrim < Servo.SUBTRIM_MAX_LEFT) {
                     newSubtrim = Servo.SUBTRIM_MAX_LEFT;
                     System.out.println("Max left subtrim exceeded - set value to " + Servo.SUBTRIM_MAX_LEFT);
@@ -291,7 +298,7 @@ public class PCA9685GpioServoExample {
                     newSubtrim = Servo.SUBTRIM_MAX_RIGHT;
                     System.out.println("Max right subtrim exceeded - set value to " + Servo.SUBTRIM_MAX_RIGHT);
                 }
-                servos[activeServo].setProperty(Servo.PROP_SUBTRIM, Integer.toString(newSubtrim));
+                servos[activeServo].setProperty(Servo.PROP_SUBTRIM, Float.toString(newSubtrim));
             }
         }
     }
@@ -392,7 +399,7 @@ public class PCA9685GpioServoExample {
 
     public void info() {
         for (int i = 0; i < servos.length; i++) {
-            PCA9685GpioServo servo = servos[i];
+            Servo servo = servos[i];
             System.out.println("Channel " + (i < 10 ? " " : "") + i + ": " + (servo != null ? servo.toString() : "N.A."));
         }
     }
@@ -403,7 +410,9 @@ public class PCA9685GpioServoExample {
     private PCA9685GpioProvider createProvider() throws IOException {
         BigDecimal frequency = PCA9685GpioProvider.ANALOG_SERVO_FREQUENCY;
         BigDecimal frequencyCorrectionFactor = new BigDecimal("1.0578");
-        return new PCA9685GpioProvider(I2CBus.BUS_1, 0x40, frequency, frequencyCorrectionFactor);
+        
+        I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
+        return new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
     }
 
     private GpioPinPwmOutput[] provisionPwmOutputs(final PCA9685GpioProvider gpioProvider) {

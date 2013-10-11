@@ -16,7 +16,7 @@ public class PCA9685GpioServoProvider implements ServoProvider {
 
     private PCA9685GpioProvider provider;
 
-    protected Map<Pin, PCA9685GpioServo> allocatedDrivers = new HashMap<Pin, PCA9685GpioServo>();
+    protected Map<Pin, PCA9685GpioServoDriver> allocatedDrivers = new HashMap<Pin, PCA9685GpioServoDriver>();
     
     public PCA9685GpioServoProvider(PCA9685GpioProvider provider) {
         this.provider = provider;
@@ -35,9 +35,9 @@ public class PCA9685GpioServoProvider implements ServoProvider {
             throw new IllegalArgumentException("Servo driver cannot drive pin " + servoPin);
         }
 
-        PCA9685GpioServo driver = allocatedDrivers.get(servoPin);
+        PCA9685GpioServoDriver driver = allocatedDrivers.get(servoPin);
         if (driver == null) {
-            driver = new PCA9685GpioServo(provider, servoPin);
+            driver = new PCA9685GpioServoDriver(provider, servoPin);
         }
         
         return driver;
