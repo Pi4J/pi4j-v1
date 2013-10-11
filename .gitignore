@@ -3,6 +3,7 @@ out
 target
 gen
 build
+bin
 
 # IntelliJ files
 .idea

@@ -39,7 +39,6 @@ import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.ValidationException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * <p>
@@ -85,17 +84,17 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     private BigDecimal frequency;
     private int periodDurationMicros;
 
-    public PCA9685GpioProvider(int busNumber, int address) throws IOException {
-        this(busNumber, address, DEFAULT_FREQUENCY, BigDecimal.ONE);
+    public PCA9685GpioProvider(I2CBus bus, int address) throws IOException {
+        this(bus, address, DEFAULT_FREQUENCY, BigDecimal.ONE);
     }
 
-    public PCA9685GpioProvider(int busNumber, int address, BigDecimal targetFrequency) throws IOException {
-        this(busNumber, address, targetFrequency, BigDecimal.ONE);
+    public PCA9685GpioProvider(I2CBus bus, int address, BigDecimal targetFrequency) throws IOException {
+        this(bus, address, targetFrequency, BigDecimal.ONE);
     }
 
-    public PCA9685GpioProvider(int busNumber, int address, BigDecimal targetFrequency, BigDecimal frequencyCorrectionFactor) throws IOException {
+    public PCA9685GpioProvider(I2CBus bus, int address, BigDecimal targetFrequency, BigDecimal frequencyCorrectionFactor) throws IOException {
         // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber); // 1
+        this.bus = bus; // 1
         // create I2C device instance
         device = bus.getDevice(address); // 0x40
         device.write(PCA9685A_MODE1, (byte) 0);

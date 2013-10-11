@@ -27,15 +27,14 @@ package com.pi4j.component.servo;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.pi4j.component.servo.Servo;
-import com.pi4j.component.servo.ServoBase;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.pi4j.component.servo.ServoBase.Orientation;
+import com.pi4j.component.servo.impl.GenericServo;
 
 /*
  * Class:     ServoBaseTest
@@ -51,66 +50,79 @@ public class ServoBaseTest {
     //------------------------------------------------------------------------------------------------------------------
     @Test
     public void testCalculatePwmDurationTESTmidLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         int positionMidLeft = -50;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionMidLeft);
+        sut.setPosition(positionMidLeft);
+        
         // Verify outcome
         int expectedPwmValue = 1300; // 1500 + ((1500-900) / 150*100 / 100*(-50))
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTfullRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         int positionFullRight = 100;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionFullRight);
+        sut.setPosition(positionFullRight);
         // Verify outcome
         int expectedPwmValue = 1900; // 1500 + ((2100-1500) / 150*100 / 100*100)
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTsubtrimAndMaxTravel() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "150");
         sut.setProperty(Servo.PROP_SUBTRIM, "-200");
         int positionMidRight = 50;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionMidRight);
+        sut.setPosition(positionMidRight);
         // Verify outcome
         int expectedPwmValue = 1600; // 1300 + ((2100-1500) / 150*150 / 100*50)
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTisReversed() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_IS_REVERSE, Boolean.TRUE.toString());
         int positionMidLeft = -50;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionMidLeft);
+        sut.setPosition(positionMidLeft);
         // Verify outcome
         int expectedPwmValue = 1700; // 1500 + ((2100-1500) / 150*100 / 100*50)
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTisReversedAndSubtrim() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_IS_REVERSE, Boolean.TRUE.toString());
         sut.setProperty(Servo.PROP_SUBTRIM, "-125");
         int positionMidRight = 50;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionMidRight);
+        sut.setPosition(positionMidRight);
         // Verify outcome
         int expectedPwmValue = 1175; // 1375 + ((2100-1500) / 150*100 / 100*(-50))
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTisReversedAndSubtrimAndCustomEndpoint() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_IS_REVERSE, Boolean.TRUE.toString());
         sut.setProperty(Servo.PROP_SUBTRIM, "-125");
@@ -119,22 +131,24 @@ public class ServoBaseTest {
         //    max. left position is limited to 900us!
         int positionMidRight = 50;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionMidRight);
+        sut.setPosition(positionMidRight);
         // Verify outcome
-        int expectedPwmValue = 1138; // 1375 + ((1375-900) / 100*(-50))
-        assertEquals(expectedPwmValue, actual);
+        int expectedPwmValue = 1137; // 1375 + ((1375-900) / 100*(-50))
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     @Test
     public void testCalculatePwmDurationTESTsmallTravel() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "10");
         int positionFullLeft = -100;
         // Exercise SUT
-        int actual = sut.calculatePwmDuration(positionFullLeft);
+        sut.setPosition(positionFullLeft);
         // Verify outcome
         int expectedPwmValue = 1460; // 1500 + ((1500-900) / 150*10 / 100*(-100))
-        assertEquals(expectedPwmValue, actual);
+        verify(mockServoDriver).setServoPulseWidth(expectedPwmValue);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -142,32 +156,38 @@ public class ServoBaseTest {
     //------------------------------------------------------------------------------------------------------------------
     @Test
     public void testCalculateNeutralPwmDurationTESTnoSubtrim() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "0");
         // Exercise SUT
-        int actual = sut.calculateNeutralPwmDuration();
+        sut.setPosition(0);
         // Verify outcome
-        Assert.assertEquals(ServoBase.PWM_NEUTRAL, actual);
+        verify(mockServoDriver).setServoPulseWidth((int)GenericServo.PWM_NEUTRAL);
     }
 
     @Test
     public void testCalculateNeutralPwmDurationTESTsubtrimMaxLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "-200");
         // Exercise SUT
-        int actual = sut.calculateNeutralPwmDuration();
+        sut.setPosition(0);
         // Verify outcome
-        assertEquals(ServoBase.PWM_NEUTRAL - 200, actual);
+        verify(mockServoDriver).setServoPulseWidth((int)GenericServo.PWM_NEUTRAL - 200);
     }
 
     @Test
     public void testCalculateNeutralPwmDurationTESTsubtrimMaxRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "200");
         // Exercise SUT
-        int actual = sut.calculateNeutralPwmDuration();
+        sut.setPosition(0);
         // Verify outcome
-        assertEquals(ServoBase.PWM_NEUTRAL + 200, actual);
+        verify(mockServoDriver).setServoPulseWidth((int)GenericServo.PWM_NEUTRAL + 200);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -175,161 +195,214 @@ public class ServoBaseTest {
     //------------------------------------------------------------------------------------------------------------------
     @Test
     public void testCalculateEndPointPwmDurationTESTfullLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "150");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.LEFT);
+        sut.setPosition(-100);
+
         // Verify outcome
-        assertEquals(900, actual);
+        verify(mockServoDriver).setServoPulseWidth(900);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTEST100PercentLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "100");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.LEFT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(1100, actual);
+        verify(mockServoDriver).setServoPulseWidth(1100);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTEST33PercentLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "33");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.LEFT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(1368, actual);
+        verify(mockServoDriver).setServoPulseWidth(1368);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTzeroTravelLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "0");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.LEFT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(1500, actual);
+        verify(mockServoDriver).setServoPulseWidth(1500);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTzeroTravelRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "0");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(100);
         // Verify outcome
-        assertEquals(1500, actual);
+        verify(mockServoDriver).setServoPulseWidth(1500);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTEST100PercentRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "100");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(100);
         // Verify outcome
-        assertEquals(1900, actual);
+        verify(mockServoDriver).setServoPulseWidth(1900);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTEST66PercentRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "66");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(100);
         // Verify outcome
-        assertEquals(1764, actual);
+        verify(mockServoDriver).setServoPulseWidth(1764);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTfullRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
+
         // Setup fixture
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "150");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(100);
         // Verify outcome
-        assertEquals(2100, actual);
+        verify(mockServoDriver).setServoPulseWidth(2100);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTsubtrimLeft() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "-200");
         // Exercise SUT
-        int actualLeft = sut.calculateEndPointPwmDuration(Orientation.LEFT);
-        int actualRight = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(900, actualLeft);
-        assertEquals(1700, actualRight);
+        verify(mockServoDriver).setServoPulseWidth(900);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(1700);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTsubtrimRight() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "50");
         // Exercise SUT
-        int actualLeft = sut.calculateEndPointPwmDuration(Orientation.LEFT);
-        int actualRight = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(1150, actualLeft);
-        assertEquals(1950, actualRight);
+        verify(mockServoDriver).setServoPulseWidth(1150);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(1950);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTmaxSubtrimLeftMaxEndpoints() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "-200");
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "150");
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "150");
         // Exercise SUT
-        int actualLeft = sut.calculateEndPointPwmDuration(Orientation.LEFT);
-        int actualRight = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(900, actualLeft);
-        assertEquals(1900, actualRight);
+        verify(mockServoDriver).setServoPulseWidth(900);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(1900);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTsubtrimRightCustomEndpoints() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "75");
         sut.setProperty(Servo.PROP_END_POINT_LEFT, "125");
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "80");
         // Exercise SUT
-        int actualLeft = sut.calculateEndPointPwmDuration(Orientation.LEFT);
-        int actualRight = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(-100);
         // Verify outcome
-        assertEquals(1075, actualLeft);
-        assertEquals(1895, actualRight);
+        verify(mockServoDriver).setServoPulseWidth(1075);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(1895);
     }
 
     @Test
     public void testCalculateEndPointPwmDurationTESTsubtrimRightCausesEndpointOverflow() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(1000);
         // Setup fixture
         sut.setProperty(Servo.PROP_SUBTRIM, "150");
         sut.setProperty(Servo.PROP_END_POINT_RIGHT, "140");
         // Exercise SUT
-        int actual = sut.calculateEndPointPwmDuration(Orientation.RIGHT);
+        sut.setPosition(100);
         // Verify outcome
-        assertEquals(2100, actual);
+        verify(mockServoDriver).setServoPulseWidth(2100);
     }
+    
+    public void testCalculateEndPointPwmDurationTESTmaxSubtrimLeftMaxEndpointsDifferentResolution1() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(100);
+        // Setup fixture
+        sut.setProperty(Servo.PROP_SUBTRIM, "-200");
+        sut.setProperty(Servo.PROP_END_POINT_LEFT, "150");
+        sut.setProperty(Servo.PROP_END_POINT_RIGHT, "150");
+        // Exercise SUT
+        sut.setPosition(-100);
+        // Verify outcome
+        verify(mockServoDriver).setServoPulseWidth(90);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(190);
+    }
+
+    public void testCalculateEndPointPwmDurationTESTmaxSubtrimLeftMaxEndpointsDifferentResolution2() {
+        when(mockServoDriver.getServoPulseResolution()).thenReturn(50);
+        // Setup fixture
+        sut.setProperty(Servo.PROP_SUBTRIM, "-200");
+        sut.setProperty(Servo.PROP_END_POINT_LEFT, "150");
+        sut.setProperty(Servo.PROP_END_POINT_RIGHT, "150");
+        // Exercise SUT
+        sut.setPosition(-100);
+        // Verify outcome
+        verify(mockServoDriver).setServoPulseWidth(45);
+
+        sut.setPosition(100);
+        verify(mockServoDriver).setServoPulseWidth(95);
+    }
+
 
     //------------------------------------------------------------------------------------------------------------------
     // Setup
     //------------------------------------------------------------------------------------------------------------------
-    private ServoBase sut;
+    private GenericServo sut;
+    private ServoDriver mockServoDriver;
 
     @Before
     public void setUp() throws Exception {
-        sut = new TestServoBase();
-    }
-
-    private class TestServoBase extends ServoBase {
-
-        public TestServoBase() {
-            init();
-        }
+        mockServoDriver = mock(ServoDriver.class);
+        sut = new GenericServo(mockServoDriver, "GenericServo", null);
+        
     }
 }
