@@ -42,12 +42,12 @@ public class RPIServoBlasterExample {
             
             for (int i = 50; i < 150; i++) {
                 servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
-                Thread.sleep(50);
+                Thread.sleep(10);
             }
             
             for (int i = 150; i > 50; i--) {
                 servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
-                Thread.sleep(50);
+                Thread.sleep(10);
             }
             
         }

@@ -1,12 +1,36 @@
 package com.pi4j.component.servo.impl;
 
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  RPIServoBlasterServoDriver.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 - 2013 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.IOException;
 
 import com.pi4j.component.servo.ServoDriver;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiGpioProvider;
 
 public class RPIServoBlasterServoDriver implements ServoDriver {
 
@@ -15,16 +39,6 @@ public class RPIServoBlasterServoDriver implements ServoDriver {
     protected String pinString;
     protected int servoPosition;
     protected RPIServoBlasterProvider provider;
-    protected static GpioProvider gpioProvider;
-    
-    static {
-        GpioProvider provider = GpioFactory.getDefaultProvider();
-        if (provider instanceof RaspiGpioProvider) {
-            gpioProvider = provider; 
-        } else {
-            gpioProvider = new RaspiGpioProvider();
-        }
-    }
     
     protected RPIServoBlasterServoDriver(Pin servoPin, int index, String pinString, RPIServoBlasterProvider provider) throws IOException {
         this.index = index;
@@ -45,11 +59,6 @@ public class RPIServoBlasterServoDriver implements ServoDriver {
     
     public int getServoPulseResolution() {
         return 100;
-    }
-
-    @Override
-    public GpioProvider getProvider() {
-        return gpioProvider;
     }
 
     @Override

@@ -4,8 +4,8 @@ package com.pi4j.component.servo.impl;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  RPIServoBlasterDriver.java  
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  RPIServoBlasterProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -169,8 +169,8 @@ public class RPIServoBlasterProvider implements ServoProvider {
                     if (i > 0) {
                         try {
                             int index = Integer.parseInt(line.substring(0, i));
-                            String pin = line.substring(i + 1);
-                            i = line.indexOf(' ');
+                            String pin = line.substring(i + 4).trim();
+                            i = pin.indexOf(' ');
                             pin = pin.substring(0, i);
                             
                             Pin gpio = REVERSE_PIN_MAP.get(pin);
@@ -229,6 +229,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
         RPIServoBlasterServoDriver driver = allocatedDrivers.get(servoPin);
         if (driver == null) {
             driver = new RPIServoBlasterServoDriver(servoPin, index, PIN_MAP.get(servoPin), this);
+            ensureWriterIsCreated();
         }
         
         return driver;
@@ -246,6 +247,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
         b.append(pinName).append('=').append(Integer.toString(value)).append('\n');
         try {
             writer.write(b.toString());
+            writer.flush();
         } catch (IOException e) {
             try {
                 writer.close();
@@ -254,6 +256,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
         try {
             ensureWriterIsCreated();
             writer.write(b.toString());
+            writer.flush();
         } catch (IOException e) {
             throw new RuntimeException("Failed to write to /dev/servoblaster device", e);
         }
