@@ -147,36 +147,6 @@ public class PiFaceExample {
                 piface.getLed(index).pulse(cylonSpeed);
                 Thread.sleep(cylonSpeed);
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            System.out.print("PIN 0 : " + piface.getInputPin(0).getState());
-            System.out.print(" | PIN 1 : " + piface.getInputPin(1).getState());
-            System.out.print(" | PIN 2 : " + piface.getInputPin(2).getState());
-            System.out.println(" | PIN 3 : " + piface.getInputPin(3).getState());
         }
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
