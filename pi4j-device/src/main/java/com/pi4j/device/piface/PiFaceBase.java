@@ -104,16 +104,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
                                   new GpioLEDComponent(outputPins[5]),
                                   new GpioLEDComponent(outputPins[6]),
                                   new GpioLEDComponent(outputPins[7]) };
-        
-        gpio.addListener(new GpioPinListenerDigital()
-        {
 
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-            {
-                System.out.println("RX PIN EVENT " + event.getPin().getName() + " : " + event.getState().getName());                
-            }
-        }, inputPins);
     }
 
     /**

@@ -158,7 +158,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (hasPin(pin) == false) {
             throw new InvalidPinException(pin);
         }
-        
+
         PinMode mode = getMode(pin);
         
         // only permit invocation on pins set to DIGITAL_OUTPUT modes 

@@ -226,15 +226,8 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
 
     @Override
     public void setMode(Pin pin, PinMode mode) {
-        // validate
-        if (!pin.getSupportedPinModes().contains(mode)) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName()
-                    + "]; pin [" + pin.getName() + "] does not support this mode.");
-        }
-        // validate
-        if (!pin.getSupportedPinModes().contains(mode)) {
-            throw new UnsupportedPinModeException(pin, mode);
-        }
+        super.setMode(pin, mode);
+
         // determine A or B port based on pin address
         try {
             if (pin.getAddress() < GPIO_B_OFFSET) {
@@ -246,9 +239,6 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
             throw new RuntimeException(ex);
         }
 
-        // cache mode
-        getPinCache(pin).setMode(mode);
-        
         // if any pins are configured as input pins, then we need to start the interrupt monitoring
         // thread
         if (currentDirectionA > 0 || currentDirectionB > 0) {
@@ -310,16 +300,8 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
 
     @Override
     public void setState(Pin pin, PinState state) {
-        // validate
-        if (hasPin(pin) == false) {
-            throw new InvalidPinException(pin);
-        }
-        // only permit invocation on pins set to DIGITAL_OUTPUT modes
-        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName()
-                    + "]; cannot setState() when pin mode is ["
-                    + getPinCache(pin).getMode().getName() + "]");
-        }
+        super.setState(pin, state);
+
         try {
             // determine A or B port based on pin address
             if (pin.getAddress() < GPIO_B_OFFSET) {
@@ -330,9 +312,6 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-
-        // cache pin state
-        getPinCache(pin).setState(state);
     }
 
     private void setStateA(Pin pin, PinState state) throws IOException {
