@@ -65,12 +65,14 @@ public class SystemInfo {
                 for(String line : result) {
                     String parts[] = line.split(":", 2);
                     if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty()) {
-                        cpuInfo.put(parts[0].trim(), parts[1].trim());
+                        String cpuKey = parts[0].trim().toLowerCase();
+                        cpuInfo.put(cpuKey, parts[1].trim());
                     }
                 }
             }
         }
 
+        target = target.toLowerCase();
         if (cpuInfo.containsKey(target)) {
             return cpuInfo.get(target);
         }
