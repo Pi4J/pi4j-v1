@@ -27,45 +27,34 @@ package com.pi4j.io.gpio.trigger;
  * #L%
  */
 
-
 import java.util.List;
 
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioSyncStateTrigger extends GpioTriggerBase {
+public class GpioSyncStateTrigger extends OutputTargetedGpioTrigger {
 
-    private final GpioPinDigitalOutput targetPin;
+	public GpioSyncStateTrigger(GpioPinDigitalOutput targetPin) {
+		super(targetPin);
+	}
 
-    public GpioSyncStateTrigger(GpioPinDigitalOutput targetPin) {
-        super();
-        this.targetPin = targetPin;
-    }
-    
-    public GpioSyncStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
-        super(state);
-        this.targetPin = targetPin;
-    }
+	public GpioSyncStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
+		super(state, targetPin);
+	}
 
-    public GpioSyncStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin) {
-        super(states);
-        this.targetPin = targetPin;
-    }
+	public GpioSyncStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin) {
+		super(states, targetPin);
+	}
 
-    public GpioSyncStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin) {
-        super(states);
-        this.targetPin = targetPin;
-    }
+	public GpioSyncStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin) {
+		super(states, targetPin);
+	}
 
-    public GpioPinDigitalOutput getTargetPin() {
-        return targetPin;
-    }
-
-    @Override
-    public void invoke(GpioPin pin, PinState state) {
-        if (targetPin != null) {
-            targetPin.setState(state);
-        }
-    }
+	@Override
+	public void invoke(GpioPin pin, PinState state) {
+		if (targetPin != null) {
+			targetPin.setState(state);
+		}
+	}
 }

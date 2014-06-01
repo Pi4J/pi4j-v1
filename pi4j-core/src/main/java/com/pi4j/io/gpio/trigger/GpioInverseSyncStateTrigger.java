@@ -27,49 +27,38 @@ package com.pi4j.io.gpio.trigger;
  * #L%
  */
 
-
 import java.util.List;
 
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioInverseSyncStateTrigger extends GpioTriggerBase {
+public class GpioInverseSyncStateTrigger extends OutputTargetedGpioTrigger {
 
-    private final GpioPinDigitalOutput targetPin;
+	public GpioInverseSyncStateTrigger(GpioPinDigitalOutput targetPin) {
+		super(targetPin);
+	}
 
-    public GpioInverseSyncStateTrigger(GpioPinDigitalOutput targetPin) {
-        super();
-        this.targetPin = targetPin;
-    }
-    
-    public GpioInverseSyncStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
-        super(state);
-        this.targetPin = targetPin;
-    }
+	public GpioInverseSyncStateTrigger(PinState state, GpioPinDigitalOutput targetPin) {
+		super(state, targetPin);
+	}
 
-    public GpioInverseSyncStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin) {
-        super(states);
-        this.targetPin = targetPin;
-    }
+	public GpioInverseSyncStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin) {
+		super(states, targetPin);
+	}
 
-    public GpioInverseSyncStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin) {
-        super(states);
-        this.targetPin = targetPin;
-    }
-    
-    public GpioPinDigitalOutput getTargetPin() {
-        return targetPin;
-    }
+	public GpioInverseSyncStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin) {
+		super(states, targetPin);
+	}
 
-    @Override
-    public void invoke(GpioPin pin, PinState state) {
-        if (targetPin != null) {
-            if (state == PinState.HIGH) {
-                targetPin.setState(PinState.LOW);
-            } else {
-                targetPin.setState(PinState.HIGH);
-            }
-        }
-    }
+	@Override
+	public void invoke(GpioPin pin, PinState state) {
+		if (targetPin != null) {
+			if (state == PinState.HIGH) {
+				targetPin.setState(PinState.LOW);
+			} else {
+				targetPin.setState(PinState.HIGH);
+			}
+		}
+	}
 }
