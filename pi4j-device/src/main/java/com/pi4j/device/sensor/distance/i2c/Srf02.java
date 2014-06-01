@@ -77,6 +77,10 @@ public class Srf02 extends DistanceSensorBase{
        
         init();
     }
+      public Srf02(int devAddr){
+        this.devAddr = devAddr;
+        init();
+    }
     
     public void init(){
         try {
@@ -149,6 +153,21 @@ public class Srf02 extends DistanceSensorBase{
           //  Logger.getLogger(Srf02.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             return result;
+        }
+    }
+    
+    public void setNewAddress(int newAddress){
+        try {
+            //0xA0, 0xAA, 0xA5, 0xF2
+            dev.write(kCommandRegister, (byte) 0xA0);
+            dev.write(kCommandRegister, (byte) 0xAA);
+            dev.write(kCommandRegister, (byte) 0xA5);
+            dev.write(kCommandRegister, (byte) newAddress);
+            this.devAddr = newAddress;
+            init();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Srf02.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
