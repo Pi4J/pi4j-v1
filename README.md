@@ -139,4 +139,4 @@ Copyright (C) 2012-2013 Pi4J
  
    *  Initial ALPHA release
  
- 
+ [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/umajeric/pi4j/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
