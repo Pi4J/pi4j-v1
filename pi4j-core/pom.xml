@@ -159,6 +159,7 @@
 							com.pi4j.jni.*,
 							com.pi4j.wiringpi.*,
 							com.pi4j.system.*,
+							com.pi4j.temperature.*,
 							com.pi4j.io.serial.*,
 							com.pi4j.io.gpio.*,
 							com.pi4j.io.i2c.*
