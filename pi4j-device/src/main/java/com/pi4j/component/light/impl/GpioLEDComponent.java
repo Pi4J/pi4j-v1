@@ -28,12 +28,14 @@ package com.pi4j.component.light.impl;
  */
 
 
-import java.util.concurrent.Future;
-
 import com.pi4j.component.light.LEDBase;
 import com.pi4j.component.light.LightStateChangeEvent;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+
+import java.util.concurrent.Future;
 
 public class GpioLEDComponent extends LEDBase {
     
@@ -41,7 +43,21 @@ public class GpioLEDComponent extends LEDBase {
     GpioPinDigitalOutput pin = null;
     PinState onState = PinState.HIGH;
     PinState offState = PinState.LOW;
-    
+
+    // create a GPIO PIN listener for change changes; use this to send LED light state change events
+    private GpioPinListenerDigital listener = new GpioPinListenerDigital() {
+        @Override
+        public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+        // notify any state change listeners
+        if(event.getState() == onState){
+            notifyListeners(new LightStateChangeEvent(GpioLEDComponent.this, true));
+        }
+        if(event.getState() == offState){
+            notifyListeners(new LightStateChangeEvent(GpioLEDComponent.this, false));
+        }
+        }
+    };
+
     /**
      * using this constructor requires that the consumer 
      *  define the LIGHT ON and LIGHT OFF pin states 
@@ -51,7 +67,7 @@ public class GpioLEDComponent extends LEDBase {
      * @param offState pin state to set when power is OFF
      */
     public GpioLEDComponent(GpioPinDigitalOutput pin, PinState onState, PinState offState) {
-        this.pin = pin;
+        this(pin);
         this.onState = onState;
         this.offState = offState;
     }
@@ -64,7 +80,8 @@ public class GpioLEDComponent extends LEDBase {
      * @param pin GPIO digital output pin
      */
     public GpioLEDComponent(GpioPinDigitalOutput pin) {
-        this.pin = pin;        
+        this.pin = pin;
+        this.pin.addListener(listener);
     }
     
     /**
@@ -75,9 +92,6 @@ public class GpioLEDComponent extends LEDBase {
     public void on() {
         // turn the light ON by settings the GPIO pin to the on state
         pin.setState(onState);
-
-        // notify any power state change listeners
-        notifyListeners(new LightStateChangeEvent(this, true));
     }
 
     /**
@@ -88,9 +102,6 @@ public class GpioLEDComponent extends LEDBase {
     public void off() {
         // turn the light OFF by settings the GPIO pin to the off state
         pin.setState(offState);
-
-        // notify any power state change listeners
-        notifyListeners(new LightStateChangeEvent(this, false));
     }
 
 

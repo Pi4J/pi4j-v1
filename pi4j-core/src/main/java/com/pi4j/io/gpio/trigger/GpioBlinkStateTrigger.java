@@ -27,50 +27,40 @@ package com.pi4j.io.gpio.trigger;
  * #L%
  */
 
-
 import java.util.List;
 
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
-public class GpioBlinkStateTrigger extends GpioTriggerBase {
+public class GpioBlinkStateTrigger extends OutputTargetedGpioTrigger {
 
-    private final GpioPinDigitalOutput targetPin;
-    private final long milliseconds;
+	private final long milliseconds;
 
-    public GpioBlinkStateTrigger(GpioPinDigitalOutput targetPin, long milliseconds) {
-        super();
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
-    
-    public GpioBlinkStateTrigger(PinState state, GpioPinDigitalOutput targetPin, long milliseconds) {
-        super(state);
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
+	public GpioBlinkStateTrigger(GpioPinDigitalOutput targetPin, long milliseconds) {
+		super(targetPin);
+		this.milliseconds = milliseconds;
+	}
 
-    public GpioBlinkStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin, long milliseconds) {
-        super(states);
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
+	public GpioBlinkStateTrigger(PinState state, GpioPinDigitalOutput targetPin, long milliseconds) {
+		super(state, targetPin);
+		this.milliseconds = milliseconds;
+	}
 
-    public GpioBlinkStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin, long milliseconds) {
-        super(states);
-        this.targetPin = targetPin;
-        this.milliseconds = milliseconds;
-    }
-    
-    public GpioPinDigitalOutput getTargetPin() {
-        return targetPin;
-    }
+	public GpioBlinkStateTrigger(PinState[] states, GpioPinDigitalOutput targetPin, long milliseconds) {
+		super(states, targetPin);
+		this.milliseconds = milliseconds;
+	}
 
-    @Override
-    public void invoke(GpioPin pin, PinState state) {
-        if (targetPin != null) {
-            targetPin.blink(milliseconds);
-        }
-    }
+	public GpioBlinkStateTrigger(List<PinState> states, GpioPinDigitalOutput targetPin, long milliseconds) {
+		super(states, targetPin);
+		this.milliseconds = milliseconds;
+	}
+
+	@Override
+	public void invoke(GpioPin pin, PinState state) {
+		if (targetPin != null) {
+			targetPin.blink(milliseconds);
+		}
+	}
 }

@@ -31,17 +31,36 @@ package com.pi4j.io.gpio.tasks.impl;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.concurrent.Callable;
+
 public class GpioPulseTaskImpl implements Runnable {
 
     private final GpioPinDigitalOutput pin;
     private final PinState inactiveState;
-    
+    private final Callable<?> callback;
+
+    public GpioPulseTaskImpl(GpioPinDigitalOutput pin, PinState inactiveState, Callable<?> callback) {
+        this.pin = pin;
+        this.inactiveState = inactiveState;
+        this.callback = callback;
+    }
+
     public GpioPulseTaskImpl(GpioPinDigitalOutput pin, PinState inactiveState) {
         this.pin = pin;        
         this.inactiveState = inactiveState;
+        this.callback = null;
     }
 
     public void run() {
         pin.setState(inactiveState);
+
+        // invoke callback if one was defined
+        if(callback != null){
+            try {
+                callback.call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

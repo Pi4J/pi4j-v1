@@ -1,4 +1,4 @@
-package com.pi4j.gyroscope;
+package com.pi4j.component.gyroscope;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
+ * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  AxisGyroscope.java  
  * 
  * This file is part of the Pi4J project. More information about 

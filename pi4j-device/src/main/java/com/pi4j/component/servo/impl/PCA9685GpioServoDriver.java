@@ -5,7 +5,7 @@ package com.pi4j.component.servo.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PCA9685GpioServo.java  
+ * FILENAME      :  PCA9685GpioServoDriver.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,48 +28,60 @@ package com.pi4j.component.servo.impl;
  */
 
 
-import java.util.Map;
+import java.math.BigDecimal;
 
-import com.pi4j.component.servo.ServoBase;
+import com.pi4j.component.servo.ServoDriver;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
 import com.pi4j.io.gpio.Pin;
 
 /**
  * @author Christian Wehrli
  */
-public class PCA9685GpioServo extends ServoBase {
+public class PCA9685GpioServoDriver implements ServoDriver {
 
-    public PCA9685GpioServo(PCA9685GpioProvider provider, Pin pin, String name) {
-        this(provider, pin, name, null);
-    }
-
-    public PCA9685GpioServo(PCA9685GpioProvider provider, Pin pin, String name, Map<String, String> properties) {
+    private PCA9685GpioProvider provider;
+    private Pin pin;
+    private int position;
+    private int resolution;
+    
+    public PCA9685GpioServoDriver(PCA9685GpioProvider provider, Pin pin) {
         setProvider(provider);
         setPin(pin);
-        super.setName(name);
-        if (properties != null && properties.isEmpty() == false) {
-            for (String key : properties.keySet()) {
-                setProperty(key, properties.get(key));
-            }
-        } else {
-            init();
-        }
+        updateResolution();
     }
 
-    @Override
-    public void setPosition(int position) {
-        super.setPosition(position);
-        getProvider().setPwm(getPin(), getPwmDuration());
+    protected void setProvider(PCA9685GpioProvider provider) {
+        this.provider = provider;
     }
 
-    @Override
-    public void setProperty(String key, String value) {
-        super.setProperty(key, value);
-        setPosition(getPosition());
-    }
-
-    @Override
     public PCA9685GpioProvider getProvider() {
-        return (PCA9685GpioProvider) super.getProvider();
+        return provider;
+    }
+
+    protected void setPin(Pin pin) {
+        this.pin = pin;
+    }
+
+    public Pin getPin() {
+        return pin;
+    }
+
+    public int getServoPulseWidth() {
+        return position;
+    }
+
+    @Override
+    public void setServoPulseWidth(int position) {
+        this.position = position;
+        getProvider().setPwm(getPin(), position);
+    }
+
+    @Override
+    public int getServoPulseResolution() {
+        return resolution;
+    }
+    
+    protected void updateResolution() {
+        resolution = new BigDecimal(4096).divide(getProvider().getFrequency()).intValue();
     }
 }

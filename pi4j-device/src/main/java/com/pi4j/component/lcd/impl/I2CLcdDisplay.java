@@ -68,6 +68,7 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
     private final boolean LCD_CMD = false;
 
     // private int           lcdHandle;
+    @SuppressWarnings("unused")
     private int pulseData = 0;
     int         backlightBit;
     int         rsBit;

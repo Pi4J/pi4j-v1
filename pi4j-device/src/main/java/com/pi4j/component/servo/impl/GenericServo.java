@@ -1,11 +1,11 @@
-package com.pi4j.component.servo;
+package com.pi4j.component.servo.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ServoBase.java  
+ * FILENAME      :  GenericServo.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,64 +27,69 @@ package com.pi4j.component.servo;
  * #L%
  */
 
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pi4j.component.ComponentBase;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
+import com.pi4j.component.servo.Servo;
+import com.pi4j.component.servo.ServoDriver;
 import com.pi4j.io.gpio.exception.ValidationException;
 
 /**
  * @author Christian Wehrli
  */
-public abstract class ServoBase extends ComponentBase implements Servo {
+public class GenericServo extends ComponentBase implements Servo {
 
     public enum Orientation {
         LEFT, RIGHT
-    };
+    }
+        
+    public static final float PWM_MIN = 900; // in micro seconds
+    public static final float PWM_NEUTRAL = 1500; // in micro seconds
+    public static final float PWM_MAX = 2100; // in micro seconds
 
-    protected static final int PWM_MIN = 900;
-    protected static final int PWM_NEUTRAL = 1500;
-    protected static final int PWM_MAX = 2100;
-
-    private GpioProvider provider;
-    private Pin pin;
-    private int position;
+    private ServoDriver servoDriver;
+    private float position;
     private int pwmDuration;
-    private int pwmDurationEndPointLeft = -1;
-    private int pwmDurationNeutral = -1;
-    private int pwmDurationEndPointRight = -1;
+    private float pwmDurationEndPointLeft = -1;
+    private float pwmDurationNeutral = -1;
+    private float pwmDurationEndPointRight = -1;
     private boolean isReverse = false;
 
-    protected void setProvider(GpioProvider provider) {
-        this.provider = provider;
+    public GenericServo(ServoDriver servoDriver, String name) {
+        this(servoDriver, name, null);
     }
+    
+    public GenericServo(ServoDriver servoDriver, String name, Map<String, String> properties) {
+        setServoDriver(servoDriver);
+        setName(name);
+        if (properties != null && properties.isEmpty() == false) {
+            for (String key : properties.keySet()) {
+                setProperty(key, properties.get(key));
+            }
+        } else {
+            init();
+        }
+    }
+
+    protected void setServoDriver(ServoDriver servoDriver) {
+        this.servoDriver = servoDriver;
+    }
+
+    public ServoDriver getServoDriver() {
+        return servoDriver;
+    }
+
 
     @Override
-    public GpioProvider getProvider() {
-        return provider;
-    }
-
-    protected void setPin(Pin pin) {
-        this.pin = pin;
-    }
-
-    @Override
-    public Pin getPin() {
-        return pin;
-    }
-
-    @Override
-    public void setPosition(int position) {
+    public void setPosition(float position) {
         this.position = validatePosition(position);
         pwmDuration = calculatePwmDuration(position);
+        servoDriver.setServoPulseWidth(pwmDuration);
     }
 
     @Override
-    public int getPosition() {
+    public float getPosition() {
         return position;
     }
 
@@ -105,28 +110,27 @@ public abstract class ServoBase extends ComponentBase implements Servo {
         isReverse = Boolean.parseBoolean(getProperty(PROP_IS_REVERSE, PROP_IS_REVERSE_DEFAULT));
     }
 
-    int calculateEndPointPwmDuration(Orientation orientation) {
-        int result;
+    float calculateEndPointPwmDuration(Orientation orientation) {
+        float result;
         String propertyName;
-        int sign;
-        switch (orientation) {
-            case LEFT : {
-                propertyName = PROP_END_POINT_LEFT;
-                sign = -1;
-                break;
-            }
-            case RIGHT : {
-                propertyName = PROP_END_POINT_RIGHT;
-                sign = 1;
-                break;
-            }
-            default : {
-                throw new UnsupportedOperationException("Unsupported orientation: " + orientation.toString());
-            }
+        if (orientation == Orientation.LEFT) {
+            propertyName = PROP_END_POINT_LEFT;
+        } else if (orientation == Orientation.RIGHT) {
+            propertyName = PROP_END_POINT_RIGHT;
+        } else {
+            throw new UnsupportedOperationException("Unsupported orientation: " + orientation.toString());
         }
-        int endPointValue = Integer.parseInt(getProperty(propertyName, PROP_END_POINT_DEFAULT));
+        float endPointValue = Float.parseFloat(getProperty(propertyName, PROP_END_POINT_DEFAULT));
         validateEndPoint(endPointValue, propertyName);
-        int calculatedPwmDuration = calculateNeutralPwmDuration() + ((PWM_MAX - PWM_NEUTRAL) / 150 * endPointValue * sign);
+        
+        float calculatedPwmDuration;
+        if (orientation == Orientation.LEFT) {
+            calculatedPwmDuration = calculateNeutralPwmDuration() - ((PWM_MAX - PWM_NEUTRAL) / 150 * endPointValue);
+        } else {
+            calculatedPwmDuration = calculateNeutralPwmDuration() + ((PWM_MAX - PWM_NEUTRAL) / 150 * endPointValue);
+        }
+        
+        
         if (calculatedPwmDuration < PWM_MIN) {
             result = PWM_MIN;
         } else if (calculatedPwmDuration > PWM_MAX) {
@@ -140,29 +144,29 @@ public abstract class ServoBase extends ComponentBase implements Servo {
     /**
      * @return pwm pulse duration in microseconds for neutral position considering subtrim
      */
-    int calculateNeutralPwmDuration() {
-        int subtrimValue = Integer.parseInt(getProperty(PROP_SUBTRIM, PROP_SUBTRIM_DEFAULT));
+    float calculateNeutralPwmDuration() {
+        float subtrimValue = Float.parseFloat(getProperty(PROP_SUBTRIM, PROP_SUBTRIM_DEFAULT));
         validateSubtrim(subtrimValue, PROP_SUBTRIM);
         return PWM_NEUTRAL + subtrimValue;
     }
 
     /**
      * @param position value between -100 and +100%
-     * @return pwm pulse duration in microseconds
+     * @return pwm pulse duration in servo driver resolution
      */
-    int calculatePwmDuration(int position) {
-        int result;
+    int calculatePwmDuration(float position) {
+        float result;
         if (isReverse) {
-            position *= -1;
+            position = -position;
         }
         if (position < 0) {
-            result = pwmDurationNeutral + new BigDecimal(pwmDurationNeutral - pwmDurationEndPointLeft).divide(new BigDecimal("100.00"), 3, RoundingMode.HALF_UP).multiply(new BigDecimal(position)).intValue();
+            result = (int)(pwmDurationNeutral + (pwmDurationNeutral - pwmDurationEndPointLeft) * position / 100.00);
         } else if (position > 0) {
-            result = pwmDurationNeutral + new BigDecimal(pwmDurationEndPointRight - pwmDurationNeutral).divide(new BigDecimal("100.00"), 3, RoundingMode.HALF_UP).multiply(new BigDecimal(position)).intValue();
+            result = (int)(pwmDurationNeutral + (pwmDurationEndPointRight - pwmDurationNeutral) * position / 100.00);
         } else {
-            result = pwmDurationNeutral;
+            result = (int)pwmDurationNeutral;
         }
-        return result;
+        return (int)((result * servoDriver.getServoPulseResolution()) / 1000);
     }
 
     @Override
@@ -178,21 +182,21 @@ public abstract class ServoBase extends ComponentBase implements Servo {
     //------------------------------------------------------------------------------------------------------------------
     // Validator
     //------------------------------------------------------------------------------------------------------------------
-    private int validateEndPoint(int endPoint, String propertyName) {
+    private float validateEndPoint(float endPoint, String propertyName) {
         if (endPoint < Servo.END_POINT_MIN || endPoint > Servo.END_POINT_MAX) {
             throw new ValidationException("Value of property [" + propertyName + "] must be between " + Servo.END_POINT_MIN + " and " + Servo.END_POINT_MAX + " but is [" + endPoint + "]");
         }
         return endPoint;
     }
 
-    private int validateSubtrim(int subtrim, String propertyName) {
+    private float validateSubtrim(float subtrim, String propertyName) {
         if (subtrim < Servo.SUBTRIM_MAX_LEFT || subtrim > Servo.SUBTRIM_MAX_RIGHT) {
             throw new ValidationException("Value of property [" + propertyName + "] must be between " + Servo.SUBTRIM_MAX_LEFT + " and +" + Servo.SUBTRIM_MAX_RIGHT + " but is [" + subtrim + "]");
         }
         return subtrim;
     }
 
-    private int validatePosition(int position) {
+    private float validatePosition(float position) {
         if (position < Servo.POS_MAX_LEFT || position > Servo.POS_MAX_RIGHT) {
             throw new ValidationException("Position [" + position + "] must be between " + Servo.POS_MAX_LEFT + "(%) and +" + Servo.POS_MAX_RIGHT + "(%) but is [" + position + "]");
         }

@@ -131,17 +131,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
 
     @Override
     public void setMode(Pin pin, PinMode mode) {
-        // validate
-        if (!pin.getSupportedPinModes().contains(mode)) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName()
-                    + "]; pin [" + pin.getName() + "] does not support this mode.");
-        }
-        // validate
-        if (!pin.getSupportedPinModes().contains(mode)) {
-            throw new UnsupportedPinModeException(pin, mode);
-        }
-        // cache mode
-        getPinCache(pin).setMode(mode);
+        super.setMode(pin, mode);
     }
 
 
@@ -152,18 +142,8 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
 
     @Override
     public void setState(Pin pin, PinState state) {
-        // validate
-        if (hasPin(pin) == false) {
-            throw new InvalidPinException(pin);
-        }
-        
-        // only permit invocation on pins set to DIGITAL_OUTPUT modes
-        if (getPinCache(pin).getMode() != PinMode.DIGITAL_OUTPUT) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName()
-                    + "]; cannot setState() when pin mode is ["
-                    + getPinCache(pin).getMode().getName() + "]");
-        }
-        
+        super.setState(pin, state);
+
         try {
             // set state value for pin bit 
             currentStates.set(pin.getAddress(), state.isHigh());
@@ -173,9 +153,6 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-
-        // cache pin state
-        getPinCache(pin).setState(state);
     }
 
     @Override

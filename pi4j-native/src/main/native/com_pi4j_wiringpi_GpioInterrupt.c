@@ -202,6 +202,9 @@ int monitorPinInterrupt(void *threadarg)
 						else
 							(*env)->CallStaticVoidMethod(env, callback_class, callback_method, (jint)pin, (jboolean)0);
 					}
+
+                    // detach from thread
+                    (*callback_jvm)->DetachCurrentThread(callback_jvm);
 				}
 			}
 		}
@@ -373,5 +376,3 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 
 	return;
 }
-
-

@@ -52,10 +52,10 @@ public class GpioSensorComponent extends SensorBase {
             
             // notify any sensor state change listeners
             if(event.getState() == openState) {
-                notifyListeners(new SensorStateChangeEvent(sensor, SensorState.CLOSED, SensorState.OPEN));                
+                notifyListeners(new SensorStateChangeEvent(sensor, SensorState.CLOSED, SensorState.OPEN));
             }
             else if(event.getState() == closedState) {
-                notifyListeners(new SensorStateChangeEvent(sensor, SensorState.CLOSED, SensorState.OPEN));
+                notifyListeners(new SensorStateChangeEvent(sensor, SensorState.OPEN, SensorState.CLOSED));
             }
         }
     };
@@ -69,12 +69,9 @@ public class GpioSensorComponent extends SensorBase {
      * @param closedState pin state to set when SENSOR is CLOSED
      */
     public GpioSensorComponent(GpioPinDigitalInput pin, PinState openState, PinState closedState) {
-        this.pin = pin;
+        this(pin);
         this.openState = openState;
         this.closedState = closedState;
-        
-        // add pin listener
-        this.pin.addListener(pinListener);
     }
 
     /**
@@ -86,9 +83,7 @@ public class GpioSensorComponent extends SensorBase {
      */
     public GpioSensorComponent(GpioPinDigitalInput pin) {
         this.pin = pin;
-        
-        // add pin listener
-        this.pin.addListener(pinListener); 
+        this.pin.addListener(pinListener);
     }
 
     /**

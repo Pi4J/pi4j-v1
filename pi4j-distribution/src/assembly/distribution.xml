@@ -9,7 +9,6 @@
     <fileSet>
       <directory>target/distro-contents</directory>
       <outputDirectory>/</outputDirectory>
-      <lineEnding>unix</lineEnding>
     </fileSet>
   </fileSets>
 </assembly>

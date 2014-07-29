@@ -118,8 +118,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     @Override
     public void setState(Pin pin, PinState state) {
         super.setState(pin, state);
-
-        com.pi4j.wiringpi.Gpio.digitalWrite(pin.getAddress(), state.getValue());        
+        com.pi4j.wiringpi.Gpio.digitalWrite(pin.getAddress(), state.getValue());
     }
 
     @Override

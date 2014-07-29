@@ -29,8 +29,6 @@ package com.pi4j.component.servo;
 
 
 import com.pi4j.component.Component;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
 
 /**
  * Represents characteristics/settings of an R/C-Servo.
@@ -42,23 +40,23 @@ public interface Servo extends Component {
     //------------------------------------------------------------------------------------------------------------------
     // Limits
     //------------------------------------------------------------------------------------------------------------------
-    int POS_MAX_LEFT = -100; // Consider this to be the max. left position of an R/C-Radio stick
-    int POS_NEUTRAL = 0; // Consider this to be the neutral position of an R/C-Radio stick
-    int POS_MAX_RIGHT = 100; // Consider this to be the max. right position of an R/C-Radio stick
+    float POS_MAX_LEFT = -100.0f; // Consider this to be the max. left position of an R/C-Radio stick
+    float POS_NEUTRAL = 0.0f; // Consider this to be the neutral position of an R/C-Radio stick
+    float POS_MAX_RIGHT = 100.0f; // Consider this to be the max. right position of an R/C-Radio stick
 
-    int END_POINT_MIN = 0;
-    int END_POINT_MAX = 150;
+    float END_POINT_MIN = 0.0f;
+    float END_POINT_MAX = 150.0f;
 
-    int SUBTRIM_MAX_LEFT = -200;
-    int SUBTRIM_NEUTRAL = 0;
-    int SUBTRIM_MAX_RIGHT = 200;
+    float SUBTRIM_MAX_LEFT = -200.0f;
+    float SUBTRIM_NEUTRAL = 0.0f;
+    float SUBTRIM_MAX_RIGHT = 200.0f;
 
     //------------------------------------------------------------------------------------------------------------------
     // Defaults
     //------------------------------------------------------------------------------------------------------------------
-    String PROP_END_POINT_DEFAULT = "100";
+    String PROP_END_POINT_DEFAULT = "100.0";
 
-    String PROP_SUBTRIM_DEFAULT = Integer.toString(SUBTRIM_NEUTRAL);
+    String PROP_SUBTRIM_DEFAULT = Float.toString(SUBTRIM_NEUTRAL);
 
     String PROP_IS_REVERSE_DEFAULT = "false";
 
@@ -100,14 +98,16 @@ public interface Servo extends Component {
      *       property {@link #PROP_END_POINT_LEFT}.
      * @param position value between -100 and +100 according to {@link #POS_MAX_LEFT} respectively {@link #POS_MAX_RIGHT}.
      */
-    void setPosition(int position);
+    void setPosition(float position);
 
     /**
      * @return current position value between -100 and +100[%]
      */
-    int getPosition();
+    float getPosition();
 
-    GpioProvider getProvider();
-
-    Pin getPin();
+    /**
+     * Returns servo driver this servo is attached to
+     * @return servo driver
+     */
+    ServoDriver getServoDriver();
 }

@@ -24,30 +24,30 @@
  * limitations under the License.
  * #L%
  */
-import com.pi4j.servo.Servo;
-import com.pi4j.servo.ServoDriver;
-import com.pi4j.servo.impl.RPIServoBlasterDriver;
+import com.pi4j.component.servo.ServoDriver;
+import com.pi4j.component.servo.ServoProvider;
+import com.pi4j.component.servo.impl.RPIServoBlasterProvider;
 
 
 public class RPIServoBlasterExample {
 
     public static void main(String[] args) throws Exception {
-        ServoDriver driver = new RPIServoBlasterDriver();
+        ServoProvider servoProvider = new RPIServoBlasterProvider();
         
-        Servo servo7 = driver.getServo(RPIServoBlasterDriver.SERVO_7);
+        ServoDriver servo7 = servoProvider.getServoDriver(servoProvider.getDefinedServoPins().get(7));
         
         long start = System.currentTimeMillis();
         
         while (System.currentTimeMillis() - start < 120000) { // 2 minutes
             
             for (int i = 50; i < 150; i++) {
-                servo7.setRawPosition(i);
-                Thread.sleep(50);
+                servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
+                Thread.sleep(10);
             }
             
             for (int i = 150; i > 50; i--) {
-                servo7.setRawPosition(i);
-                Thread.sleep(50);
+                servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
+                Thread.sleep(10);
             }
             
         }

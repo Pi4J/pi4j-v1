@@ -146,7 +146,7 @@ public class PiFaceExample {
             for(int index = PiFaceLed.LED7.getIndex(); index >= PiFaceLed.LED3.getIndex(); index--) {
                 piface.getLed(index).pulse(cylonSpeed);
                 Thread.sleep(cylonSpeed);
-            }            
+            }
         }
         
         // stop all GPIO activity/threads by shutting down the GPIO controller

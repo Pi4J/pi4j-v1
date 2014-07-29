@@ -5,7 +5,7 @@ package com.pi4j.i2c.devices;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  HMC5883L.java  
+ * FILENAME      :  ADXL345.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,9 +29,9 @@ package com.pi4j.i2c.devices;
 
 import java.io.IOException;
 
-import com.pi4j.gyroscope.AxisGyroscope;
-import com.pi4j.gyroscope.Gyroscope;
-import com.pi4j.gyroscope.MultiAxisGyro;
+import com.pi4j.component.gyroscope.AxisGyroscope;
+import com.pi4j.component.gyroscope.Gyroscope;
+import com.pi4j.component.gyroscope.MultiAxisGyro;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;

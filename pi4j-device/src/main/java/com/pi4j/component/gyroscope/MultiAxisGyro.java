@@ -1,13 +1,11 @@
-package com.pi4j.gyroscope;
-
-import java.io.IOException;
+package com.pi4j.component.gyroscope;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  Gyroscope.java  
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  MultiAxisGyro.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,26 +27,18 @@ import java.io.IOException;
  * #L%
  */
 
-public interface Gyroscope {
-    
-    int READ_NOT_TRIGGERED = 0;
-    int GET_ANGLE_TRIGGER_READ = 1;
-    int GET_ANGULAR_VELOCITY_TRIGGER_READ = 2;
-    int GET_RAW_VALUE_TRIGGER_READ = 4;
+import java.io.IOException;
 
-    float getAngularVelocity() throws IOException;
+public interface MultiAxisGyro {
+    
+    Gyroscope init(Gyroscope triggeringAxis, int triggeringMode) throws IOException;
+
+    void enable() throws IOException;
+    void disable() throws IOException;
+
+    void readGyro() throws IOException;
+    
+    int getTimeDelta();
 
     void recalibrateOffset() throws IOException;
-    
-    void setReadTrigger(int readTrigger);
-    
-    void setRawValue(int value);
-    int getRawValue() throws IOException;
-    
-    void setOffset(int offset);
-    int getOffset();
-
-    void setAngle(float angle);
-    float getAngle() throws IOException;
-
 }
