@@ -2,7 +2,7 @@
 <project name="pi4j-native" default="build-libpi4j.so" basedir=".">
     <target name="build-libpi4j.so">
     
-        <echo message="Building native libpi4j shared library for ABI: ${pi-abi}"/>
+        <echo message="Building native libpi4j shared library"/>
     
 		<!-- ensure the target directory is empty on the Raspberry Pi -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
@@ -20,6 +20,11 @@
 			<fileset dir="src/main/native" />
 		</scp>
 
+        <!-- download and install development prerequisites on the Raspberry Pi platform -->
+        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+                 password="${pi-password}" trust="true" failonerror="true"
+                 verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x install-prerequisites.sh; ./install-prerequisites.sh" />
+
 		<!-- download and compile the 'wiringPi.a' native static library on the Raspberry 
 			Pi platform -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
@@ -35,7 +40,7 @@
 		<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
 		<scp
 			file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/libpi4j.so"
-			todir="${project-build-directory}/${pi-abi}/" port="${pi-port}" trust="true"
+			todir="${project-build-directory}/libpi4j.so" port="${pi-port}" trust="true"
 			verbose="true" failonerror="true">
 		</scp>
 	

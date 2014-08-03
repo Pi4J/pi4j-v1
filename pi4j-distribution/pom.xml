@@ -9,7 +9,7 @@
 	<artifactId>pi4j-distribution</artifactId>
 	<name>Pi4J :: Distribution</name>
 	<description>Packaged Pi4J Distributions</description>
-	<packaging>pom</packaging>
+	<packaging>deb</packaging>
 
 
 	<!-- PROJECT DEPENDENCIES -->
@@ -103,6 +103,15 @@
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
+        <extensions>
+            <!-- Add support for the "deb" packaging -->
+            <extension>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+                <version>1.3</version>
+            </extension>
+        </extensions>
+
 		<plugins>
 
 			<!-- ACQUIRE DEPENDENCIES -->
@@ -208,7 +217,7 @@
                 <executions>
                     <execution>
                         <id>ant-test</id>
-                        <phase>prepare-sources</phase>
+                        <phase>process-sources</phase>
                         <configuration>
                             <tasks>
                                 <fixcrlf srcdir="${project.build.directory}/distro-contents"
@@ -227,76 +236,75 @@
 			<plugin>
 				<artifactId>jdeb</artifactId>
 				<groupId>org.vafer</groupId>
-				<version>0.11</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jdeb</goal>
-						</goals>
-						<configuration>
-							<attach>true</attach>
-							<deb>${project.build.directory}/pi4j-${version}.deb</deb>
-							<installDir>/opt/pi4j</installDir>
-							<dataSet>
-								<data>
-									<src>${project.build.directory}/distro-contents/LICENSE.txt</src>
-									<dst>LICENSE</dst>
-									<type>file</type>
-									<dst>/opt/pi4j/LICENSE</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/NOTICE.txt</src>
-									<type>file</type>
-									<dst>/opt/pi4j/NOTICE</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/README.md</src>
-									<type>file</type>
-									<dst>/opt/pi4j/README</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
-									<type>file</type>
-									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
-									<type>file</type>
-									<dst>/opt/pi4j/lib/pi4j-core.jar</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/lib/pi4j-device.jar</src>
-									<type>file</type>
-									<dst>/opt/pi4j/lib/pi4j-device.jar</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/lib/pi4j-service.jar</src>
-									<type>file</type>
-									<dst>/opt/pi4j/lib/pi4j-service.jar</dst>
-								</data>
-								<data>
-									<src>${project.build.directory}/distro-contents/lib/pi4j-gpio-extension.jar</src>
-									<type>file</type>
-									<dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
-								</data>
-								
-								<data>
-									<src>${project.build.directory}/distro-contents/examples</src>
-									<type>directory</type>
-	                                <mapper>
-	                                    <type>perm</type>
-	                                    <prefix>/opt/pi4j/examples</prefix>
-	                                    <filemode>777</filemode>
-	                                </mapper>									
-								</data>
-							</dataSet>
-						</configuration>
-					</execution>
-				</executions>
+                <configuration>
+                    <attach>true</attach>
+                    <deb>${project.build.directory}/pi4j-${version}.deb</deb>
+                    <installDir>/opt/pi4j</installDir>
+
+                    <signPackage>true</signPackage>
+                    <signMethod>dpkg-sig</signMethod>
+                    <signRole>builder</signRole>
+                    <keyring>/Users/roberts/.gnupg/secring.gpg</keyring>
+                    <key>49EAFFE6</key>
+                    <passphrase>***REMOVED***</passphrase>
+
+                    <dataSet>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/LICENSE.txt</src>
+                            <dst>LICENSE</dst>
+                            <type>file</type>
+                            <dst>/opt/pi4j/LICENSE</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/NOTICE.txt</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/NOTICE</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/README.md</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/README</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/lib/pi4j-core.jar</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/lib/pi4j-core.jar</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/lib/pi4j-core.jar</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/lib/pi4j-device.jar</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/lib/pi4j-device.jar</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/lib/pi4j-service.jar</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/lib/pi4j-service.jar</dst>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/lib/pi4j-gpio-extension.jar</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
+                        </data>
+
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples</src>
+                            <type>directory</type>
+                            <mapper>
+                                <type>perm</type>
+                                <prefix>/opt/pi4j/examples</prefix>
+                                <filemode>777</filemode>
+                            </mapper>
+                        </data>
+                    </dataSet>
+                </configuration>
 			</plugin>
 
-			<!-- OPTIONALLY DEPLOY THE FINAL .DEB TO THE RASBERRY PI -->
+			<!-- OPTIONALLY DEPLOY THE FINAL .DEB TO THE RASPBERRY PI -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>

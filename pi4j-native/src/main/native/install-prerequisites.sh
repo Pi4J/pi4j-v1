@@ -3,7 +3,7 @@
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
 # PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  wiringpi-build.sh  
+# FILENAME      :  install-prerequisites.sh  
 # 
 # This file is part of the Pi4J project. More information about 
 # this project can be found here:  http://www.pi4j.com/
@@ -24,26 +24,9 @@
 # limitations under the License.
 # #L%
 ###
-
 # ----------------------------------
-# clone wiringPi from github
+# install prerequisites
 # ----------------------------------
-git clone git://github.com/WiringPi/WiringPi.git wiringPi
-cd wiringPi
-
-# ----------------------------------
-# uninstall any previous copies
-# ----------------------------------
-cd wiringPi
-sudo make uninstall
-
-# ----------------------------------
-# build latest wiringPi 
-# ----------------------------------
-echo "wiringPi Build script"
-echo "====================="
-echo
-echo "Compiling WiringPi STATIC library"
-make static
-sudo make install
-sudo make install-static
+sudo apt-get install gcc -y
+sudo apt-get install git-core -y
+sudo apt-get install oracle-java7-jdk -y

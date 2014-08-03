@@ -90,25 +90,13 @@
 	<properties>
 
 		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>192.168.1.1</pi.host>
+		<pi.host>192.168.1.100</pi.host>
 		<pi.port>22</pi.port>
 		<pi.user>pi</pi.user>
 		<pi.password>raspberry</pi.password>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
 		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
-
-		<!-- DEFAULT RASPBERRY PI (HARD-FLOAT) PROPERTIES -->
-		<pi.host.hard-float>192.168.1.1</pi.host.hard-float>
-		<pi.port.hard-float>${pi.port}</pi.port.hard-float>
-		<pi.user.hard-float>${pi.user}</pi.user.hard-float>
-		<pi.password.hard-float>${pi.password}</pi.password.hard-float>
-
-		<!-- DEFAULT RASPBERRY PI (SOFT-FLOAT) PROPERTIES -->
-		<pi.host.soft-float>192.168.1.2</pi.host.soft-float>
-		<pi.port.soft-float>${pi.port}</pi.port.soft-float>
-		<pi.user.soft-float>${pi.user}</pi.user.soft-float>
-		<pi.password.soft-float>${pi.password}</pi.password.soft-float>
 
 		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
 		<pi.transfer.dev>false</pi.transfer.dev>
@@ -137,12 +125,10 @@
 			<id>savage</id>
 			<properties>
 				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host.hard-float>pi-hf-wifi</pi.host.hard-float>
-				<pi.host.soft-float>pi-sf-wifi</pi.host.soft-float>
-				<pi.host.dev>pitest</pi.host.dev>
+				<pi.host.dev>10.1.1.229</pi.host.dev>
 
 				<!-- enable development transfers -->
-				<pi.transfer.dev>false</pi.transfer.dev>
+				<pi.transfer.dev>true</pi.transfer.dev>
 			</properties>
 			<activation>
 				<!-- automatically set user profile based on environment setting -->

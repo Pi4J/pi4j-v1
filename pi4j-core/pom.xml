@@ -20,15 +20,6 @@
 			<artifactId>pi4j-native</artifactId>
 			<version>${project.version}</version>
 			<type>so</type>
-			<classifier>hard-float</classifier>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-native</artifactId>
-			<version>${project.version}</version>
-			<type>so</type>
-			<classifier>soft-float</classifier>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -102,19 +93,8 @@
 									<artifactId>pi4j-native</artifactId>
 									<version>${project.version}</version>
 									<type>so</type>
-									<classifier>hard-float</classifier>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/lib/hard-float</outputDirectory>
-									<destFileName>libpi4j.so</destFileName>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.pi4j</groupId>
-									<artifactId>pi4j-native</artifactId>
-									<version>${project.version}</version>
-									<type>so</type>
-									<classifier>soft-float</classifier>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/lib/soft-float</outputDirectory>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
 									<destFileName>libpi4j.so</destFileName>
 								</artifactItem>
 							</artifactItems>

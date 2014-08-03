@@ -86,84 +86,6 @@
 			</build>
 		</profile>
 		
-		<profile>
-			<id>soft-float</id>
-			<activation>
-			  <property>
-			    <name>release-build</name>
-			  </property>
-			</activation>			
-			<properties>
-				<pi.build.soft-float>true</pi.build.soft-float>
-			</properties>
-			<build>
-				<plugins>			
-					<!-- ATTACH COMPILED NATIVE LIBRARY -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-hard-soft-native-artifact</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/soft-float/libpi4j.so</file>
-											<type>so</type>
-											<classifier>soft-float</classifier>									
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>			
-				</plugins>
-			</build>			
-		</profile>
-
-		<profile>
-			<id>hard-float</id>
-			<activation>
-			  <property>
-			    <name>release-build</name>
-			  </property>
-			</activation>						
-			<properties>
-				<pi.build.hard-float>true</pi.build.hard-float>
-			</properties>
-			<build>
-				<plugins>			
-					<!-- ATTACH COMPILED NATIVE LIBRARY -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-hard-float-native-artifact</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/hard-float/libpi4j.so</file>
-											<type>so</type>
-											<classifier>hard-float</classifier>									
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>			
-				</plugins>
-			</build>			
-		</profile>
-				
 	</profiles>
 
 
@@ -191,21 +113,6 @@
 							<tasks>
 								<mkdir dir="target" />
 								<mkdir dir="target/classes" />
-								
-								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
-								                  classpathref="maven.plugin.classpath" />
-				                <if>
-				                  <equals arg1="${pi.build.hard-float}" arg2="true" />
-				                  <then>
-								   <mkdir dir="target/hard-float" />
-				                  </then>
-				                </if>							
-				                <if>
-				                  <equals arg1="${pi.build.soft-float}" arg2="true" />
-				                  <then>
-								   <mkdir dir="target/soft-float" />
-				                  </then>
-				                </if>
 							</tasks>
 						</configuration>
 						<goals>
@@ -230,30 +137,14 @@
 				                <property name="project-build-directory"
 				                          value="${project.build.directory}"/>		
 				                <property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>
-				                <if>
-				                  <equals arg1="${pi.build.hard-float}" arg2="true" />
-				                  <then>
-								    <ant target="build-libpi4j.so" >
-								    	<property name="pi-abi" value="hard-float"/>
-						                <property name="pi-port" value="${pi.port.hard-float}"/>							
-						                <property name="pi-host" value="${pi.host.hard-float}"/>							
-						                <property name="pi-user" value="${pi.user.hard-float}"/>		
-						                <property name="pi-password" value="${pi.password.hard-float}"/>
-								    </ant>
-				                  </then>
-				                </if>							
-				                <if>
-				                  <equals arg1="${pi.build.soft-float}" arg2="true" />
-				                  <then>
-								    <ant target="build-libpi4j.so">
-								    	<property name="pi-abi" value="soft-float"/> 
-						                <property name="pi-port" value="${pi.port.soft-float}"/>							
-						                <property name="pi-host" value="${pi.host.soft-float}"/>							
-						                <property name="pi-user" value="${pi.user.soft-float}"/>		
-						                <property name="pi-password" value="${pi.password.soft-float}"/>
-								    </ant>
-				                  </then>
-				                </if>							
+
+                                <ant target="build-libpi4j.so" >
+                                    <property name="pi-abi" value="hard-float"/>
+                                    <property name="pi-port" value="${pi.port}"/>
+                                    <property name="pi-host" value="${pi.host}"/>
+                                    <property name="pi-user" value="${pi.user}"/>
+                                    <property name="pi-password" value="${pi.password}"/>
+                                </ant>
 							</tasks>
 						</configuration>
 					</execution>
@@ -277,7 +168,31 @@
 				</dependencies>
 			</plugin>
 
-		</plugins>
+            <!-- ATTACH COMPILED NATIVE LIBRARY -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-hard-float-native-artifact</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/libpi4j.so</file>
+                                    <type>so</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
 
 		<pluginManagement>
 			<plugins>
