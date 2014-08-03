@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 #undef com_pi4j_wiringpi_Gpio_NUM_PINS
-#define com_pi4j_wiringpi_Gpio_NUM_PINS 20L
+#define com_pi4j_wiringpi_Gpio_NUM_PINS 30L
 #undef com_pi4j_wiringpi_Gpio_INPUT
 #define com_pi4j_wiringpi_Gpio_INPUT 0L
 #undef com_pi4j_wiringpi_Gpio_OUTPUT

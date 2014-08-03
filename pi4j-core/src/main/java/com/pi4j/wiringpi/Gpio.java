@@ -75,7 +75,7 @@ public class Gpio {
      * The total number of GPIO pins available in the WiringPi library.
      * <i>(Note this is not the maximum pin count on the Pi GPIO header.)</i>
      */
-    public static final int NUM_PINS = 20;
+    public static final int NUM_PINS = 30;
 
     /**
      * GPIO pin constant for INPUT direction for reading pin states

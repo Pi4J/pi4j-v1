@@ -28,7 +28,7 @@
 # ----------------------------------
 # clone wiringPi from github
 # ----------------------------------
-git clone git://github.com/WiringPi/WiringPi.git wiringPi
+git clone git://git.drogon.net/wiringPi
 cd wiringPi
 
 # ----------------------------------

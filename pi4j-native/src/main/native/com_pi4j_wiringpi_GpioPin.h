@@ -32,7 +32,7 @@ extern "C" {
 
 
 // constants
-#define	MAX_GPIO_PINS   21
+#define	MAX_GPIO_PINS   30
 
 
 /**

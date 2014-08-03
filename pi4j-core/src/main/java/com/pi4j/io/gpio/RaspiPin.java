@@ -28,8 +28,9 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.EnumSet;
 import com.pi4j.io.gpio.impl.PinImpl;
+
+import java.util.EnumSet;
 
 /**
  * Raspberry Pi pin definitions.
@@ -56,11 +57,20 @@ public class RaspiPin  {
     public static final Pin GPIO_14 = createDigitalPin(14, "GPIO 14"); 
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15"); 
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16"); 
-    public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17"); 
-    public static final Pin GPIO_18 = createDigitalPin(18, "GPIO 18"); 
-    public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); 
-    public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); 
-    
+    public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17"); // requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_18 = createDigitalPin(18, "GPIO 18"); // requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); // requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); // requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_21 = createDigitalPin(21, "GPIO 21"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_23 = createDigitalPin(23, "GPIO 23"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_24 = createDigitalPin(24, "GPIO 24"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_25 = createDigitalPin(25, "GPIO 25"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_26 = createDigitalPin(26, "GPIO 26"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28"); // requires B+ or newer model (40 pin header)
+    public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires B+ or newer model (40 pin header)
+
     private static Pin createDigitalPin(int address, String name) {
         return new PinImpl(RaspiGpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
