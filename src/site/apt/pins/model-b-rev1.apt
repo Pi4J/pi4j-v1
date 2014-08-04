@@ -1,0 +1,35 @@
+Pin Numbering - Raspberry Pi Model B (Revision 1.0)
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Numbering Scheme
+
+  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+  P14J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
+
+
+* Expansion Header
+
+  The Raspberry Pi Model B board revision 1.0 contains a single 26-pin expansion header labeled as 'P1' providing access to 17 GPIO pins.
+
+[../images/p1header-rev1-photo.png]
+
+* P1 Pinout (26-pin Header)
+
+  The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
+
+[../images/p1header.png]
+
+  {{{../images/p1header-large.png}(click here for hi-resolution image)}}
+
+
+* Additional Resources
+
+   * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
+
+   * {{{http://elinux.org/RPi_Low-level_peripherals#General_Purpose_Input.2FOutput_.28GPIO.29}Click here for more information on the P1 header.}}
+
+   * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}

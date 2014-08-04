@@ -21,22 +21,22 @@ Usage
 
   Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\    
   P14J implements the same pin number scheme as the Wiring Pi project.  
-  More information about the WiringPi pin number scheme can be found here: {{https://projects.drogon.net/raspberry-pi/wiringpi/pins/}}
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
   
-  Pi4J provides a {{{./apidocs/index.html?com/pi4j/io/gpio/Pin.html}Pin}} enumeration that is used to manage the accessible GPIO pins. 
-  
+  Pi4J provides a {{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
 
-[./images/p1header.png]
+  The available GPIO pins differ between Raspberry Pi models and board revisions.
+  Please select your model/revision below to see the GPIO pinout for your board.
 
-  {{{./images/p1header-large.png}(click here for hi-resolution image)}}
-   
-  \ 
-   
-   NOTE: The P5 header is only available on board revisions 2.0 and newer.
+     * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
 
-[./images/p5header.png]
+     * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
 
-  {{{./images/p5header-large.png}(click here for hi-resolution image)}}
+     * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2.0)}}
+
+     * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+
+  {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
 
 
 * Provision Pins

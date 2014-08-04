@@ -1,46 +1,117 @@
-Installation
+Pi4J Installation
 
-* Dependencies
+%{toc|section=0|fromDepth=2|toDepth=3}
 
-** Install JRE/JDK
-  
-  If you have not already installed a Java runtime environment, please see the following article for a complete set of installation instructions for installing the Oracle JDK.\
+=====================
+
+* Prerequisites
+
+** Java Runtime (JRE/JDK)
+
+  If you are using a recent build of Raspbian, then an Oracle Java runtime environment is pre-installed.  Nothing more to do.
+
+  If you are using an older Raspbian build that does not already include a Java runtime environment, please see the following article for a complete set of installation instructions for installing the Oracle JDK.\
   {{http://www.savagehomeautomation.com/pi-jdk}}
 
 ** WiringPi Native Library
 
   Pi4J depends on the WiringPi native library by Gordon Henderson.  Please see the following page for more information on WiringPi. \
-  {{https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/}}
+  {{http://wiringpi.com/}}
   
   No installation is required for Wiring Pi.  Wiring Pi is embedded in the Pi4J native library.   
 
-* Pi4J
+=====================
 
-** Install Pi4J
+* Installation
 
-  Download a copy of the latest Pi4J Debian/Raspian installer package (.deb) file.
-  You can use the following command on the Raspberry Pi's console to download the latest pi4j.jar build: \
-  <<<wget http://pi4j.googlecode.com/files/pi4j-${project.version}.deb>>>
- 
-  NOTE: If you have a previous version of Pi4J installed, please uninstall it first.
+** Easy/Preferred
+
+  (NOTE: This installation method requires that your RaspberryPi is connected to the Internet.)
+
+  The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
+  <<<curl -s get.pi4j.com | sudo bash>>>
+
+    This method will download and launch an installation script that perform the following steps:
+
+    [[1]] adds the Pi4J APT repository to the local APT repositories
+
+    [[2]] downloads and installs the Pi4J GPG public key for signature validation
+
+    [[3]] invokes the 'apt-get update' command on the Pi4J APT repository to update the local package database
+
+    [[4]] invokes the 'apt-get install pi4j' command to perform the download and installation
+
+** Offline/Manual
+
+  If you prefer/need to install Pi4J on a RaspberryPi device without an Internet connection, the following instructions
+  provide the steps necessary to install Pi4J without requiring an Internet connection.
+
+  First, download a copy of the latest Pi4J Debian/Raspian installer package (.deb) file to your local computer.
+  You can download the Pi4J Debian/Raspian installer package (.deb) using your web browser at the following URL: \
+  {{{http://pi4j.googlecode.com/files/pi4j-${project.version}.deb}http://pi4j.googlecode.com/files/pi4j-${project.version}.deb}}
+
+  Next, you will need to transfer the download installer package over to your RaspberryPi.  You can use any method you
+  prefer to transfer the file (USB, SCP, FTP, etc.)
+
+  (NOTE: If you have a previous version of Pi4J installed, you will need to  uninstall it first.)
   
-  Once downloaded, use the following command to perform the installation: \
+  Once the installer package is available on your RaspberryPi, use the following command on the Pi to perform the installation: \
   <<<sudo dpkg -i pi4j-${project.version}.deb>>>
-  
+
+=====================
+
+* Upgrade
+
+** Easy/Preferred
+
+  If you originally installed Pi4J using the <'easy'> method, then Pi4J upgrades will be available anytime you perform a system
+  update using 'sudo apt-get update' and 'sudo update-get upgrade'.
+
+  If you wish to force an upgrade of the Pi4J package only, you can do so by executing the following command: \
+  <<<sudo apt-get install pi4j>>>
+
+** Offline/Manual
+
+  If you originally installed Pi4J using the <'offline'> method, then you will need to manually uninstall the Pi4J package
+  and download, transfer, and install the new version package using the 'offline' uninstall and installation methods
+  described here on this page.
+
+=====================
+
+* Uninstall
+
+** Easy/Preferred
+
+  If you originally installed Pi4J using the <'easy'> method, then you can uninstall Pi4J simply by executing the
+  following command on your RaspberryPi. \
+  <<<sudo apt-get remove pi4j>>>
+
+** Complete/Full Removal
+
+  If you originally installed Pi4J using the <'easy'> method and you want to remove all traces of Pi4J,
+  including the Pi4J repository in the APT repositories list and the Pi4J GPG signature, then simply execute the
+  following command on your RaspberryPi. \
+  <<<curl -s get.pi4j.com/uninstall | sudo bash>>>
+
+** Offline/Manual
+
+  If you originally installed Pi4J using the <'offline'> method, then you will need to manually uninstall the Pi4J
+  package by executing the following command on your Raspberry Pi: \
+  <<<sudo dpkg -r pi4j>>>
+
+=====================
+
+* Installed Location / Example Files
+
   This will install the Pi4J libraries and example source files to: \
   <<</opt/pi4j/lib>>> \
   <<</opt/pi4j/examples>>>
 
   When attempting to compile a Java program using the Pi4J libraries, make sure to include the Pi4J lib folder in the classpath: \
   <<<javac -classpath .:classes:/opt/pi4j/lib/'*' ... >>>
-  
+
   When attempting to start a Java program using the Pi4J libraries, make sure to include the Pi4J lib folder in the classpath: \
   <<<sudo java -classpath .:classes:/opt/pi4j/lib/'*' ... >>>
-  
+
   If you would like to explore the examples, you can compile all the examples with the following commands: \
   <<</opt/pi4j/examples/build>>>
-
-** Uninstall Pi4J
- 
-  To uninstall Pi4J from your Raspberry Pi, use the following command: \
-  <<<sudo dpkg -r pi4j>>>
