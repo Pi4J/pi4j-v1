@@ -1,1 +1,2 @@
 #!/bin/sh
+ln -s /opt/pi4j/bin/pi4j /usr/bin/pi4j

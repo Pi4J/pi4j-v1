@@ -3,29 +3,80 @@
 # THE Pi4J PROJECT - UTILITY SCRIPT
 ######################################
 
+# CHECK FOR MISSING CLI ARGUMENTS
+if [ $# -eq 0 ]
+  then
+    echo
+    echo "No arguments supplied!"
+    echo "Use 'pi4j --help' to display command options."
+    echo
+    exit 1;
+fi
+
+# HANDLE OPTIONAL ARGS
 case $1 in
+   '?') ;&
+   -\?) ;&
+   --\?) ;&
+   -help) ;&
+   --help)
+      shift
+      echo
+      echo "------------------------------"
+      echo "Pi4J Utility Script"
+      echo "------------------------------"
+      echo
+      echo " USAGE: pi4j [OPTION]... (<FILE|CLASS|JAVA-ARGS>)"
+      echo " (if no option is specified, the '--run' option is assumed)"
+      echo
+      echo " OPTIONS:"
+      echo " --------"
+      echo "  ?, --help               :  display this 'help' content"
+      echo "  -v, --version           :  display Pi4J version"
+      echo "  -u, --update            :  check for & install Pi4J updates"
+      echo "  -U, --uninstall         :  uninstall Pi4J"
+      echo "  -c, --compile  <FILE>   :  exec javac with pi4j in classpath"
+      echo "  -r, --run      <CLASS>  :  exec java with pi4j in classpath"
+      echo
+      echo " EXAMPLES:"
+      echo " ---------"
+      echo "  pi4j --version                       (display Pi4J version)"
+      echo "  pi4j --update                        (update Pi4J installation)"
+      echo "  pi4j --uninstall                     (uninstall Pi4J package)"
+      echo
+      echo "  pi4j --compile HelloWorld.java       (compile 'HelloWorld.java' sources)"
+      echo "  pi4j -c HelloWorld.java              (compile 'HelloWorld.java' sources)"
+      echo
+      echo "  pi4j --run HelloWorld                (run compiled 'HelloWorld' program)"
+      echo "  pi4j -r HelloWorld                   (run compiled 'HelloWorld' program)"
+      echo "  pi4j HelloWorld                      (run compiled 'HelloWorld' program)"
+      echo
+      echo
+      ;;
    -v) ;&
    -version) ;&
    --version)
       shift
+      echo
       echo "Pi4J Library Version: %PROJECT_VERSION%"
+      echo
       ;;
    -u) ;&
    -update) ;&
    --update)
       shift
-      apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+      sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install pi4j
       ;;
    -U) ;&
    -uninstall) ;&
    --uninstall)
       shift
-      read -p "Are you sure you want to uninstall Pi4J? " -n 1 -r
+      read -p "Are you sure you want to uninstall Pi4J? <y/n> " -n 1 -r
       echo    # (optional) move to a new line
       if [[ $REPLY =~ ^[Yy]$ ]]
       then
-        sudo apt-get remove pi4j
+        sudo apt-get remove pi4j -y
       fi
       ;;
    -c) ;&

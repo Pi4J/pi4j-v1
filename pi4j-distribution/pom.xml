@@ -246,7 +246,11 @@
                     <signMethod>dpkg-sig</signMethod>
                     <signRole>builder</signRole>
 
-                    <!-- NOTE: THE FOLLOWING PROPERTIES MUST BE DEFINED IF YOU LOCAL/PRIVATE SETTINGS.XML FILE -->
+                    <!-- NOTE:
+                        The "{pi4j.gpg.key}" property must be configured in your maven settings.xml file.
+                        The "{pi4j.gpg.passphrase}" property must be configured in your maven settings.xml file.
+                        (This is intended only for Pi4J public deployment)
+                    -->
                     <key>${pi4j.gpg.key}</key>
                     <passphrase>${pi4j.gpg.passphrase}</passphrase>
 
@@ -298,7 +302,7 @@
                             <dst>/opt/pi4j/bin/pi4j</dst>
                             <mapper>
                                 <type>perm</type>
-                                <filemode>777</filemode>
+                                <filemode>755</filemode>
                             </mapper>
                         </data>
                         <data>
@@ -307,7 +311,16 @@
                             <mapper>
                                 <type>perm</type>
                                 <prefix>/opt/pi4j/examples</prefix>
-                                <filemode>777</filemode>
+                                <filemode>666</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
                             </mapper>
                         </data>
                     </dataSet>
@@ -460,22 +473,25 @@
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO get.pi4j.com -->
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
         <profile>
-            <id>deploy-install-scripts</id>
+            <id>deploy-apt-package</id>
             <build>
                 <plugins>
                     <!-- this plugin will upload the GPG public key file, the Pi4J APT
                          repo list file, the install script and uninstall script to
                          http://get.pi4j.com
 
-                         The "AWS_ACCESS_KEY" environment variable must be configured on the build system.
-                         The "AWS_SECRET_KEY" environment variable must be configured on the build system.
-                         -->
+                         The "{pi4j.aws.access.key}" property must be configured in your maven settings.xml file.
+                         The "{pi4j.aws.secret.key}" property must be configured in your maven settings.xml file.
+                         (This is intended only for Pi4J public deployment)
+                     -->
                     <plugin>
                         <groupId>com.bazaarvoice.maven.plugins</groupId>
                         <artifactId>s3-upload-maven-plugin</artifactId>
                         <configuration>
-                            <bucketName>get.pi4j.com</bucketName>
                             <recursive>false</recursive>
+                            <bucketName>get.pi4j.com</bucketName>
+                            <accessKey>${pi4j.aws.access.key}</accessKey>
+                            <secretKey>${pi4j.aws.secret.key}</secretKey>
                             <!--<metadatas>-->
                                 <!--<metadata>-->
                                     <!--<key>Content-Type</key>-->
@@ -542,8 +558,10 @@
                          and the Pi4J GPG passphrase is known.  The user will be prompted to provide the
                          GPG passphrase. (This is intended only for Pi4J public deployment)
 
-                         The "AWS_ACCESS_KEY_ID" environment variable must be configured on the build system.
-                         The "AWS_SECRET_ACCESS_KEY" environment variable must be configured on the build system.
+                         The "{pi4j.gpg.key}" property must be configured in your maven settings.xml file.
+                         The "{pi4j.aws.access.key}" property must be configured in your maven settings.xml file.
+                         The "{pi4j.aws.secret.key}" property must be configured in your maven settings.xml file.
+                         (This is intended only for Pi4J public deployment)
                          -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -563,7 +581,9 @@
                                         <argument>--arch=armhf</argument>
                                         <argument>--codename=wheezy</argument>
                                         <argument>--component=rpi</argument>
-                                        <argument>--sign=team@pi4j.com</argument>
+                                        <argument>--sign=${pi4j.gpg.key}</argument>
+                                        <argument>--access-key-id=${pi4j.aws.access.key}</argument>
+                                        <argument>--secret-access-key=${pi4j.aws.secret.key}</argument>
                                         <argument>--bucket=repository.pi4j.com</argument>
                                         <argument>${project.build.directory}/pi4j-${project.version}.deb</argument>
                                     </arguments>

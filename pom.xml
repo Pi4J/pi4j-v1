@@ -273,7 +273,13 @@
 									<goal>sign</goal>
 								</goals>
 								<configuration>
-									<keyname>team@pi4j.com</keyname>
+                                    <!-- NOTE:
+                                        The "{pi4j.gpg.key}" property must be configured in your maven settings.xml file.
+                                        The "{pi4j.gpg.passphrase}" property must be configured in your maven settings.xml file.
+                                        (This is intended only for Pi4J public deployment)
+                                    -->
+									<keyname>${pi4j.gpg.key}</keyname>
+                                    <passphrase>${pi4j.gpg.passphrase}</passphrase>
 								</configuration>
 							</execution>
 						</executions>
