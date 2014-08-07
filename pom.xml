@@ -159,6 +159,8 @@
         <build-helper-maven-plugin.version>1.9</build-helper-maven-plugin.version>
         <site-maven-plugin.version>0.9</site-maven-plugin.version>
         <jdeb.version>1.3</jdeb.version>
+        <exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
+        <s3-upload-maven-plugin.version>1.2</s3-upload-maven-plugin.version>
 
         <!-- REPORTS VERSIONS -->
         <maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
@@ -222,7 +224,7 @@
 				<pi.host.dev>10.1.1.229</pi.host.dev>
 
 				<!-- enable development transfers -->
-				<pi.transfer.dev>true</pi.transfer.dev>
+				<pi.transfer.dev>false</pi.transfer.dev>
 			</properties>
 			<activation>
 				<!-- automatically set user profile based on environment setting -->
@@ -271,7 +273,7 @@
 									<goal>sign</goal>
 								</goals>
 								<configuration>
-									<keyname>49EAFFE6</keyname>
+									<keyname>team@pi4j.com</keyname>
 								</configuration>
 							</execution>
 						</executions>
@@ -292,6 +294,37 @@
 				</repository>
 			</repositories>
 		</profile>
+
+        <!-- SPECIAL PROFILE FOR JAVA 8-->
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+
 	</profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
@@ -348,9 +381,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
-                    <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
-                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -495,6 +525,13 @@
                     <version>${maven-assembly-plugin.version}</version>
                 </plugin>
 
+                <!-- EXEC MAVEN PLUGIN -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                </plugin>
+
                 <!-- DEPLOY GITHUB SITE PLUGIN -->
                 <plugin>
                     <groupId>com.github.github</groupId>
@@ -514,6 +551,13 @@
                     <groupId>org.vafer</groupId>
                     <artifactId>jdeb</artifactId>
                     <version>${jdeb.version}</version>
+                </plugin>
+
+                <!-- AWS S3 UPLOAD PLUGIN -->
+                <plugin>
+                    <groupId>com.bazaarvoice.maven.plugins</groupId>
+                    <artifactId>s3-upload-maven-plugin</artifactId>
+                    <version>${s3-upload-maven-plugin.version}</version>
                 </plugin>
 
             </plugins>
@@ -633,7 +677,6 @@
                             <description>JavaDoc API documentation</description>
                             <outputName>javadoc/index</outputName>
                             <sourcepath>pi4j-core/src/main/java</sourcepath>
-                            <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                         <reports>
                             <report>javadoc</report>

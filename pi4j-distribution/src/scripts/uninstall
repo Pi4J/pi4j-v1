@@ -1,0 +1,37 @@
+#!/bin/bash
+######################################
+# THE Pi4J PROJECT - UNINSTALL SCRIPT
+######################################
+#
+#  curl -s get.pi4j.com/uninstall | sudo bash
+#
+
+# uninstall the pi4j project package
+echo ====================================================
+echo UNINSTALLING Pi4J
+echo ====================================================
+apt-get remove pi4j -y
+
+# remove pi4j from apt repository list
+echo ====================================================
+echo REMOVING Pi4J APT REPOSITORY
+echo ====================================================
+rm /etc/apt/sources.list.d/pi4j.list
+
+# remove the Pi4J GPG public key
+echo ====================================================
+echo REMOVING Pi4J GPG PUBLIC KEY
+echo ====================================================
+apt-key del team@pi4j.com
+
+# update the apt package list
+echo ====================================================
+echo UPDATING APT REPOSITORIES
+echo ====================================================
+apt-get update
+
+echo ====================================================
+echo Pi4J UNINSTALL COMPLETE
+echo ====================================================
+
+

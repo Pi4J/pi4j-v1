@@ -2,4 +2,5 @@
 mkdir -p /opt/pi4j
 mkdir -p /opt/pi4j/lib
 mkdir -p /opt/pi4j/examples
+mkdir -p /opt/pi4j/bin
 chmod -f 777 /opt/pi4j/examples 

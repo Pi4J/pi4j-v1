@@ -209,26 +209,28 @@
 				</executions>
 			</plugin>
 
-            <!-- ENSURE ALL LINE ENDINGS ARE <LF> ONLY FOR TEXT BASED FILES -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
                 <executions>
                     <execution>
-                        <id>ant-fix-line-endings</id>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <fixcrlf srcdir="${project.build.directory}/distro-contents"
-                                         eol="unix"
-                                         includes="**/*.java,**/*.txt,**/*.md,**/*.build" />
-                            </tasks>
-                        </configuration>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>replace</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <file>${basedir}/src/scripts/pi4j</file>
+                    <outputFile>${project.build.directory}/distro-contents/bin/pi4j</outputFile>
+                    <replacements>
+                        <replacement>
+                            <token>%PROJECT_VERSION%</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
             </plugin>
 
 			<!-- CREATE DEBIAN (.DEB) PACKAGE -->
@@ -243,9 +245,10 @@
                     <signPackage>true</signPackage>
                     <signMethod>dpkg-sig</signMethod>
                     <signRole>builder</signRole>
-                    <keyring>/Users/roberts/.gnupg/secring.gpg</keyring>
-                    <key>49EAFFE6</key>
-                    <passphrase>***REMOVED***</passphrase>
+
+                    <!-- NOTE: THE FOLLOWING PROPERTIES MUST BE DEFINED IF YOU LOCAL/PRIVATE SETTINGS.XML FILE -->
+                    <key>${pi4j.gpg.key}</key>
+                    <passphrase>${pi4j.gpg.passphrase}</passphrase>
 
                     <dataSet>
                         <data>
@@ -289,7 +292,15 @@
                             <type>file</type>
                             <dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
                         </data>
-
+                        <data>
+                            <src>${project.build.directory}/distro-contents/bin/pi4j</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/bin/pi4j</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>777</filemode>
+                            </mapper>
+                        </data>
                         <data>
                             <src>${project.build.directory}/distro-contents/examples</src>
                             <type>directory</type>
@@ -303,11 +314,42 @@
                 </configuration>
 			</plugin>
 
-			<!-- OPTIONALLY DEPLOY THE FINAL .DEB TO THE RASPBERRY PI -->
 			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 
+                    <!-- ENSURE ALL LINE ENDINGS ARE <LF> ONLY FOR TEXT BASED FILES -->
+                    <execution>
+                        <id>create-target-distro-directories</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}/distro-contents/bin"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- ENSURE ALL LINE ENDINGS ARE <LF> ONLY FOR TEXT BASED FILES -->
+                    <execution>
+                        <id>ant-fix-line-endings</id>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <fixcrlf srcdir="${project.build.directory}/distro-contents"
+                                         eol="unix"
+                                         includes="**/*.java,**/*.txt,**/*.md,**/*.build" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- OPTIONALLY DEPLOY THE FINAL .DEB TO THE RASPBERRY PI -->
 					<!-- copy the compiled JAR file to the Raspberry Pi platform platform -->
 					<execution>
 						<id>transfer-packaged-pi4j-deb</id>
@@ -413,4 +455,124 @@
 
 		</plugins>
 	</build>
+
+    <profiles>
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO get.pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
+        <profile>
+            <id>deploy-install-scripts</id>
+            <build>
+                <plugins>
+                    <!-- this plugin will upload the GPG public key file, the Pi4J APT
+                         repo list file, the install script and uninstall script to
+                         http://get.pi4j.com
+
+                         The "AWS_ACCESS_KEY" environment variable must be configured on the build system.
+                         The "AWS_SECRET_KEY" environment variable must be configured on the build system.
+                         -->
+                    <plugin>
+                        <groupId>com.bazaarvoice.maven.plugins</groupId>
+                        <artifactId>s3-upload-maven-plugin</artifactId>
+                        <configuration>
+                            <bucketName>get.pi4j.com</bucketName>
+                            <recursive>false</recursive>
+                            <!--<metadatas>-->
+                                <!--<metadata>-->
+                                    <!--<key>Content-Type</key>-->
+                                    <!--<value>text/plain</value>-->
+                                <!--</metadata>-->
+                            <!--</metadatas>-->
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-pi4-gpg-public-key</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${basedir}/src/scripts/pi4j.gpg</source>
+                                    <destination>pi4j.gpg</destination>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>deploy-pi4j-apt-repo-list</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${basedir}/src/scripts/pi4j.list</source>
+                                    <destination>pi4j.list</destination>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>deploy-pi4j-install-script</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${basedir}/src/scripts/install</source>
+                                    <destination>install</destination>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>deploy-pi4j-uninstall-script</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${basedir}/src/scripts/uninstall</source>
+                                    <destination>uninstall</destination>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- This plugin will build the APT repo package and upload it to:
+                         http://repository.pi4j.com.
+
+                         Please note that this plugin requires that the "deb-s3" Ruby GEM is
+                         install on the build computer.  More details here:
+                         https://github.com/krobertson/deb-s3
+
+                         Also, note that executing this plugin also requires that GPG is installed
+                         and the Pi4J GPG passphrase is known.  The user will be prompted to provide the
+                         GPG passphrase. (This is intended only for Pi4J public deployment)
+
+                         The "AWS_ACCESS_KEY_ID" environment variable must be configured on the build system.
+                         The "AWS_SECRET_ACCESS_KEY" environment variable must be configured on the build system.
+                         -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-pi4j-apt-repo-package</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>deb-s3</executable>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                    <arguments>
+                                        <argument>upload</argument>
+                                        <argument>--arch=armhf</argument>
+                                        <argument>--codename=wheezy</argument>
+                                        <argument>--component=rpi</argument>
+                                        <argument>--sign=team@pi4j.com</argument>
+                                        <argument>--bucket=repository.pi4j.com</argument>
+                                        <argument>${project.build.directory}/pi4j-${project.version}.deb</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

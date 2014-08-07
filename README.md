@@ -40,9 +40,16 @@ Copyright (C) 2012-2013 Pi4J
 
 ## IN DEVEOPMENT
 
-2013-03-17 :: 1.0-SNAPSHOT
+2014-08-03 :: 1.0-SNAPSHOT
 
-  * Plans for major refactoring to support hardware/platform abstraction and emulation. 
+  *  Added easy install/uninstall scripts (get.pi4j.com)
+  *  Added APT package and repository support (repository.pi4j.com)
+  *  Added support for RaspberryPi Model B+
+  *  Removed support (and complicated builds) for soft-float ABI
+  *  Simplified native library loader to find embedded hard-float native lib
+  *  Updated documentation in preparation for 1.0 release
+  *  Fixed JDK8 build errors.
+  *  Cleaned up build
 
 ## RELEASES
 

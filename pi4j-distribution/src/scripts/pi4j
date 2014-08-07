@@ -1,0 +1,47 @@
+#!/bin/bash
+######################################
+# THE Pi4J PROJECT - UTILITY SCRIPT
+######################################
+
+case $1 in
+   -v) ;&
+   -version) ;&
+   --version)
+      shift
+      echo "Pi4J Library Version: %PROJECT_VERSION%"
+      ;;
+   -u) ;&
+   -update) ;&
+   --update)
+      shift
+      apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+      sudo apt-get install pi4j
+      ;;
+   -U) ;&
+   -uninstall) ;&
+   --uninstall)
+      shift
+      read -p "Are you sure you want to uninstall Pi4J? " -n 1 -r
+      echo    # (optional) move to a new line
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        sudo apt-get remove pi4j
+      fi
+      ;;
+   -c) ;&
+   -compile) ;&
+   --compile)
+      shift
+      set -x #echo on
+      javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $@
+      ;;
+   -r) ;&
+   -run) ;&
+   --run)
+      shift
+      ;&
+   *)
+      set -x #echo on
+      sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
+      ;;
+esac
