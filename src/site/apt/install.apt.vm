@@ -7,6 +7,13 @@
 
 Pi4J Installation
 
+  The following installation instructions are provided to install, upgrade, and uninstall the Pi4J libraries, examples,
+  utility scripts, etc. directly on your Rasbperry Pi.  <<These instructions are not intended to install Pi4J on your
+  development workstation or other computer.>>  For development conducted on a computer other than the Raspberry Pi, please
+  access the Pi4J JAR dependencies via the {{{./download.html#Maven_Repository}Maven repository}} or
+  {{{./download.html#Direct_Download}download}} them directly and reference them in your project.
+
+
 %{toc|section=0|fromDepth=2|toDepth=3}
 
 =====================
@@ -75,7 +82,7 @@ Pi4J Installation
   update using 'sudo apt-get update' and 'sudo update-get upgrade'.
 
   If you wish to force an upgrade of the Pi4J package only, you can do so by executing the following command: \
-  <<<sudo apt-get install pi4j>>>
+  <<<sudo apt-get install pi4j>>> or <<<pi4j --update>>>
 
 ** Offline/Manual
 
@@ -91,7 +98,7 @@ Pi4J Installation
 
   If you originally installed Pi4J using the <'easy'> method, then you can uninstall Pi4J simply by executing the
   following command on your RaspberryPi. \
-  <<<sudo apt-get remove pi4j>>>
+  <<<sudo apt-get remove pi4j>>> or <<<pi4j --uninstall>>>
 
 ** Complete/Full Removal
 
