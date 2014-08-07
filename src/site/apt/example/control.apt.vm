@@ -1,3 +1,10 @@
+            ------
+            Control Example
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
 Simple GPIO Control using Pi4J.
 
   The following example demonstrates the simple control of a GPIO pin on the Raspberry Pi.

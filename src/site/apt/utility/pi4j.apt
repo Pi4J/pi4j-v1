@@ -1,0 +1,116 @@
+            ------
+            Pi4J Utility Script
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pi4J Utility Script
+  
+  When you install the Pi4J library on your Raspberry Pi, the 'pi4j' utility script is installed
+  and linked in your path so that you can invoke it anywhere on your system.  This utility script
+  provides helpful shortcuts to compile and run Java projects with the Pi4J libraries.
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Command Line Options
+
+  You can execute the following command to display a listing of the command line options:\
+  <<<pi4j --help>>>  or  <<<pi4j ?>>>
+
+  The following content will be displayed:
+
++----------------------------------------
+
+  ==============================
+  Pi4J Utility Script
+  ==============================
+
+  USAGE: pi4j [OPTION]... (<FILE>)
+  (if no option is specified, the '--run' option is assumed)
+
+  OPTIONS:
+  ========
+   ?, --help              :  display this 'help' content
+   -v, --version          :  display Pi4J version
+   -u, --update           :  check for & install Pi4J updates
+   -U, --uninstall        :  uninstall Pi4J
+   -c, --compile  <FILE>  :  exec javac with pi4j in classpath
+   -r, --run      <FILE>  :  exec java with pi4j in classpath
+
+  EXAMPLES:
+  =========
+   pi4j --version                       (display Pi4J version)
+   pi4j --update                        (update Pi4J installation)
+   pi4j --uninstall                     (uninstall Pi4J package)
+
+   pi4j --compile HelloWorld.java       (compile 'HelloWorld.java' sources)
+   pi4j -c HelloWorld.java              (compile 'HelloWorld.java' sources)
+
+   pi4j --run HelloWorld                (run compiled 'HelloWorld' program)
+   pi4j -r HelloWorld                   (run compiled 'HelloWorld' program)
+   pi4j HelloWorld                      (run compiled 'HelloWorld' program)
+
++----------------------------------------
+
+=====================
+
+** --compile | -c
+
+  You can use the <<<--compile>>> command line option to compile your Java project.  The Pi4J utility is simply calling
+  the <<<javac>>> compiler with the <<<--classpath>>> arguments containing the pi4j library JARs.  The example command below
+  would be used to compile your <'HelloWorld.java'> project files.\
+
+  <<<pi4j --compile HelloWorld.java>>>
+
+  The is the same effective command as:\
+
+  <<<javac -classpath '.:classes:*:classes:/opt/pi4j/lib/*' -d . HelloWorld.java>>>
+
+=====================
+
+** --run | -r
+
+  You can use the <<<--run>>> command line option to execute your already compiled Java project.  The Pi4J utility is
+  simply calling the <<<java>>> executable with the <<<--classpath>>> arguments containing the pi4j library JARs and prefixing
+  the command with <<<sudo>>> to make sure you are running with the necessary permissions.  The example command below
+  would be used to run your already compiled <'HelloWorld'> project.\
+
+  <<<pi4j --run HelloWorld>>>
+
+  Note that if you do not specify a command option, then the script will assume you are wanting to run a project.
+  The command below illustrates the same function as the previous command with the '--run' option.\
+
+  <<<pi4j HelloWorld>>>
+
+  These are the same effective command as:\
+
+  <<<sudo java -classpath '.:classes:*:classes:/opt/pi4j/lib/*'  HelloWorld>>>
+
+=====================
+
+** --version | -v
+
+  You can use the <<<--version>>> command line option to display the current installed version of the Pi4J library
+  JARs.  The example command below can be used to display the version information:\
+
+  <<<pi4j --version>>>
+
+=====================
+
+** --update | -u
+
+  You can use the <<<--update>>> command line option to check for newer available updates and upgrade the installed
+  version of Pi4J.  Please note that this requires that the RaspberryPi is connected to the Internet and you originally
+  installed Pi4J using the {{{../install.html#Installation}'easy'}} method.
+
+  <<<pi4j --update>>>
+
+=====================
+
+** --uninstall | -U
+
+  You can use the <<<--uninstall>>> command line option to uninstall the Pi4J package from your RaspberryPi. To
+  use this command option you must have originally installed Pi4J using the {{{../install.html#Installation}'easy'}} method.
+
+  <<<pi4j --uninstall>>>

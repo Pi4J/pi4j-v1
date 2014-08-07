@@ -1,3 +1,10 @@
+            ------
+            RS232/Serial Example
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
 Serial Communication Example using Pi4J.
 
   The following example demonstrates how to transmit and receive data using the Raspberry Pi serial port.

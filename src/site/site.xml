@@ -23,10 +23,10 @@
 		<head>
 			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
-			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012 Pi4J. All Rights Reserved."/>
+			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2014 Pi4J. All Rights Reserved."/>
 			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
 			<META NAME="ROBOTS" CONTENT="ALL"/> 
-			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmer's full IO control to a Raspberry Pi"/>
+			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
 			<META NAME="AUTHOR" CONTENT="Robert Savage"/>
 			
 			<!-- GOOGLE ANALYTICS SCRIPT -->
@@ -84,6 +84,9 @@
 			<item name="Serial Communication" href="example/serial.html" />
 			<item name="System/Network Information" href="example/system-info.html" />
 		</menu>
+        <menu name="Utilities">
+            <item name="Pi4J Utility Script" href="utility/pi4j.html" />
+        </menu>
 		<menu name="Project Development">
 			<item name="Project Information" href="project-info.html" />
 			<item name="Project Reports" href="project-reports.html" />
