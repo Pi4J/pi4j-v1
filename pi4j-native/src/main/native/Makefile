@@ -11,7 +11,7 @@ CC	= gcc
 INCLUDE	= -I/usr/lib/jvm/jdk-7-oracle-armhf/include -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux -I/usr/local/include -I/usr/local/include/linux
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
 
-LIBS    = -L/usr/local/lib /usr/local/lib/libwiringPi.a
+LIBS    = -L/usr/local/lib/libwiringPi.a -L/usr/local/lib/libwiringPiDev.a
 
 # Should not alter anything below this line
 ###############################################################################

@@ -47,3 +47,17 @@ echo "Compiling WiringPi STATIC library"
 make static
 sudo make install
 sudo make install-static
+
+# ----------------------------------
+# build latest wiringPi devLib
+# ----------------------------------
+cd ../devLib
+sudo make uninstall
+
+echo "wiringPi devLib Build script"
+echo "============================"
+echo
+echo "Compiling WiringPi devLib STATIC library"
+make static
+sudo make install
+sudo make install-static
