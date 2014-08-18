@@ -418,7 +418,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 		public void run() {
             while (!shuttingDown) {
                 try {
-                	synchronized (MCP23008GpioProvider.class) {
+                	synchronized (MCP23017GpioProvider.class) {
 	                    // only process for interrupts if a pin on port A is configured as an input pin
 	                    if (currentDirectionA > 0) {
 	                        // process interrupts for port A
