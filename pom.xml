@@ -216,25 +216,6 @@
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-		<!-- USER PROFILE : Robert Savage -->
-		<profile>
-			<id>savage</id>
-			<properties>
-				<!-- IP address/Hostname of Raspberry Pi -->
-				<pi.host.dev>10.1.1.229</pi.host.dev>
-
-				<!-- enable development transfers -->
-				<pi.transfer.dev>false</pi.transfer.dev>
-			</properties>
-			<activation>
-				<!-- automatically set user profile based on environment setting -->
-				<property>
-					<name>env.MAVEN_PROFILE</name>
-					<value>savage</value>
-				</property>
-			</activation>
-		</profile>
-
 		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY -->
 		<profile>
 			<id>native</id>
