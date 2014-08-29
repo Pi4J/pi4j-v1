@@ -11,8 +11,6 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
@@ -23,9 +21,9 @@ import com.pi4j.io.i2c.I2CFactory;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP23017GpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP23017GpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -34,9 +32,9 @@ import com.pi4j.io.i2c.I2CFactory;
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may obtain a copy of the License
  * at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -51,14 +49,14 @@ import com.pi4j.io.i2c.I2CFactory;
  * http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
  * http://learn.adafruit.com/mcp230xx-gpio-expander-on-the-raspberry-pi/overview
  * </p>
- * 
+ *
  * <p>
  * The MCP23017 is connected via I2C connection to the Raspberry Pi and provides 16 GPIO pins that
  * can be used for either digital input or digital output pins.
  * </p>
- * 
+ *
  * @author Robert Savage
- * 
+ *
  */
 public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvider {
 
@@ -93,8 +91,8 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private int currentPullupA = 0;
     private int currentPullupB = 0;
 
-    private I2CBus bus;
-    private I2CDevice device;
+    private final I2CBus bus;
+    private final I2CDevice device;
     private GpioStateMonitor monitor = null;
 
     public MCP23017GpioProvider(int busNumber, int address) throws IOException {
@@ -271,45 +269,45 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     public PinState getState(Pin pin) {
         // call super method to perform validation on pin
         PinState result  = super.getState(pin);
-        
-        // determine A or B port based on pin address 
+
+        // determine A or B port based on pin address
         if (pin.getAddress() < GPIO_B_OFFSET) {
             result = getStateA(pin); // get pin state
         } else {
             result = getStateB(pin); // get pin state
         }
-        
+
         // return pin state
         return result;
     }
-    
+
     private PinState getStateA(Pin pin){
-        
+
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
-        
+
         // determine pin state
         PinState state = (currentStatesA & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
 
         // cache state
         getPinCache(pin).setState(state);
-        
+
         return state;
     }
-    
+
     private PinState getStateB(Pin pin){
-        
+
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
-        
+
         // determine pin state
         PinState state = (currentStatesB & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
 
         // cache state
         getPinCache(pin).setState(state);
-        
+
         return state;
-    }  
+    }
 
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
@@ -370,18 +368,18 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     public PinPullResistance getPullResistance(Pin pin) {
         return super.getPullResistance(pin);
     }
-    
-    
+
+
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
-        
+
         // perform shutdown login in base
         super.shutdown();
-        
+
         try {
             // if a monitor is running, then shut it down now
             if (monitor != null) {
@@ -395,17 +393,17 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }   
+    }
 
-    
+
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
-     * 
+     *
      * @author Robert Savage
-     * 
+     *
      */
     private class GpioStateMonitor extends Thread {
-        private I2CDevice device;
+        private final I2CDevice device;
         private boolean shuttingDown = false;
 
         public GpioStateMonitor(I2CDevice device) {
@@ -416,54 +414,57 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
             shuttingDown = true;
         }
 
-        public void run() {
+        @Override
+		public void run() {
             while (!shuttingDown) {
                 try {
-                    // only process for interrupts if a pin on port A is configured as an input pin
-                    if (currentDirectionA > 0) {
-                        // process interrupts for port A
-                        int pinInterruptA = device.read(REGISTER_INTF_A);
+                	synchronized (MCP23017GpioProvider.class) {
+	                    // only process for interrupts if a pin on port A is configured as an input pin
+	                    if (currentDirectionA > 0) {
+	                        // process interrupts for port A
+	                        int pinInterruptA = device.read(REGISTER_INTF_A);
 
-                        // validate that there is at least one interrupt active on port A
-                        if (pinInterruptA > 0) {
-                            // read the current pin states on port A
-                            int pinInterruptState = device.read(REGISTER_GPIO_A);
+	                        // validate that there is at least one interrupt active on port A
+	                        if (pinInterruptA > 0) {
+	                            // read the current pin states on port A
+	                            int pinInterruptState = device.read(REGISTER_GPIO_A);
 
-                            // loop over the available pins on port B
-                            for (Pin pin : MCP23017Pin.ALL_A_PINS) {
-                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
-                                
-                                // is there an interrupt flag on this pin?
-                                if ((pinInterruptA & pinAddressA) > 0) {
-                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
-                                    evaluatePinForChangeA(pin, pinInterruptState);
-                                }
-                            }
-                        }
-                    }
+	                            // loop over the available pins on port B
+	                            for (Pin pin : MCP23017Pin.ALL_A_PINS) {
+	                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
 
-                    // only process for interrupts if a pin on port B is configured as an input pin
-                    if (currentDirectionB > 0) {
-                        // process interrupts for port B
-                        int pinInterruptB = device.read(REGISTER_INTF_B);
+	                                // is there an interrupt flag on this pin?
+	                                if ((pinInterruptA & pinAddressA) > 0) {
+	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
+	                                    evaluatePinForChangeA(pin, pinInterruptState);
+	                                }
+	                            }
+	                        }
+	                    }
 
-                        // validate that there is at least one interrupt active on port B
-                        if (pinInterruptB > 0) {
-                            // read the current pin states on port B
-                            int pinInterruptState = device.read(REGISTER_GPIO_B);
+	                    // only process for interrupts if a pin on port B is configured as an input pin
+	                    if (currentDirectionB > 0) {
+	                        // process interrupts for port B
+	                        int pinInterruptB = device.read(REGISTER_INTF_B);
 
-                            // loop over the available pins on port B
-                            for (Pin pin : MCP23017Pin.ALL_B_PINS) {
-                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
-                                
-                                // is there an interrupt flag on this pin?
-                                if ((pinInterruptB & pinAddressB) > 0) {
-                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
-                                    evaluatePinForChangeB(pin, pinInterruptState);
-                                }
-                            }
-                        }
-                    }
+	                        // validate that there is at least one interrupt active on port B
+	                        if (pinInterruptB > 0) {
+	                            // read the current pin states on port B
+	                            int pinInterruptState = device.read(REGISTER_GPIO_B);
+
+	                            // loop over the available pins on port B
+	                            for (Pin pin : MCP23017Pin.ALL_B_PINS) {
+	                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
+
+	                                // is there an interrupt flag on this pin?
+	                                if ((pinInterruptB & pinAddressB) > 0) {
+	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
+	                                    evaluatePinForChangeB(pin, pinInterruptState);
+	                                }
+	                            }
+	                        }
+	                    }
+                	}
 
                     // ... lets take a short breather ...
                     Thread.currentThread();
