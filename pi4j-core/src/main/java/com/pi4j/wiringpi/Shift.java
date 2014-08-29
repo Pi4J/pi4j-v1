@@ -48,16 +48,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com">http://wiringpi.com</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/">https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/</a>
+ *      href="http://wiringpi.com/reference/shift-library/">http://wiringpi.com/reference/shift-library/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Shift {
 
     public static final int LSBFIRST = 0;
@@ -82,13 +83,12 @@ public class Shift {
      * cPin goes high. (So cPin high, sample data, cPin low, repeat for 8 bits) The 8-bit value is
      * returned by the function.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/">https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/</a>
-     * 
-     * @param dPin
-     * @param cPin
-     * @param order
+     *      href="http://wiringpi.com/reference/shift-library/">http://wiringpi.com/reference/shift-library/</a>
+     * @param dPin data pin
+     * @param cPin clock pin
+     * @param order order is either LSBFIRST or MSBFIRST
      * @return <p>
      *         The 8-bit shifted value is returned by the function.
      *         </p>
@@ -103,14 +103,13 @@ public class Shift {
      * being sent out on the cPin. order is as above. Data is clocked out on the rising or falling
      * edge; ie. dPin is set, then cPin is taken high then low and repeated for the 8 bits.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/">https://projects.drogon.net/raspberry-pi/wiringpi/shift-library/</a>
-     * 
-     * @param dPin
-     * @param cPin
-     * @param order
-     * @param val
+     *      href="http://wiringpi.com/reference/shift-library/">http://wiringpi.com/reference/shift-library/</a>
+     * @param dPin data pin
+     * @param cPin clock pin
+     * @param order order is either LSBFIRST or MSBFIRST
+     * @param val 8-bit data value
      */
     public static native void shiftOut(byte dPin, byte cPin, byte order, byte val);
 }

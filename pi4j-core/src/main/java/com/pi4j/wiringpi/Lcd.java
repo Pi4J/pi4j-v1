@@ -65,16 +65,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
+ *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Lcd {
 
     // private constructor 
@@ -123,22 +124,22 @@ public class Lcd {
      * </p>
      * 
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library</a>
      * 
-     * @param rows
-     * @param cols
-     * @param bits
-     * @param rs
-     * @param strb
-     * @param d0
-     * @param d1
-     * @param d2
-     * @param d3
-     * @param d4
-     * @param d5
-     * @param d6
-     * @param d7
-     * @return return value
+     * @param rows number of rows
+     * @param cols number of columns
+     * @param bits number of bits wide on the interface (4 or 8)
+     * @param rs pin number of the RS pin
+     * @param strb pin number of the strobe (E) pin
+     * @param d0 pin number for driving bit 1
+     * @param d1 pin number for driving bit 2
+     * @param d2 pin number for driving bit 3
+     * @param d3 pin number for driving bit 4 (only used in 8-bit mode)
+     * @param d4 pin number for driving bit 5 (only used in 8-bit mode)
+     * @param d5 pin number for driving bit 6 (only used in 8-bit mode)
+     * @param d6 pin number for driving bit 7 (only used in 8-bit mode)
+     * @param d7 pin number for driving bit 8 (only used in 8-bit mode)
+     * @return The return value is the ‘handle’ to be used for all subsequent calls to the lcd library when dealing with that LCD, or -1 to indicate a fault. (Usually incorrect parameters)
      */
     public static native int lcdInit(int rows, int cols, int bits, int rs, int strb, int d0,
             int d1, int d2, int d3, int d4, int d5, int d6, int d7);
@@ -147,10 +148,10 @@ public class Lcd {
      * <p>
      * Set the cursor to the home position.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
      */
     public static native void lcdHome(int handle);
 
@@ -158,35 +159,86 @@ public class Lcd {
      * <p>
      * Clears the LCD screen.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
      */
     public static native void lcdClear(int handle);
 
     /**
      * <p>
+     * Turns the LCD display ON (1) / OFF (0)
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     */
+    public static native void lcdDisplay(int handle, int state);
+
+    /**
+     * <p>
+     * Turns the LCD cursor ON (1) / OFF (0)
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     */
+    public static native void lcdCursor(int handle, int state);
+
+
+    /**
+     * <p>
+     * Turns the LCD cursor blinking behavior ON (1) / OFF (0)
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     */
+    public static native void lcdCursorBlink(int handle, int state);
+
+
+    /**
+     * <p>
      * Set the position of the cursor for subsequent text entry.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
-     * @param x
-     * @param y
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     * @param x column position staring at 0 (left)
+     * @param y row position starting at 0 (top)
      */
     public static native void lcdPosition(int handle, int x, int y);
 
     /**
      * <p>
+     * This allows you to re-define one of the 8 user-definable chanracters in the display. The data array is 8 bytes
+     * which represent the character from the top-line to the bottom line. Note that the characters are actually 5×8,
+     * so only the lower 5 bits are used. The index is from 0 to 7 and you can subsequently print the character defined
+     * using the lcdPutchar() call.
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     * @param index index value from 0 to 7
+     * @param data 8 bytes which represent the character from the top-line to the bottom line
+     */
+    public static native void lcdCharDef(int handle, int index, byte data[]);
+
+    /**
+     * <p>
      * Write a single character of data to the LCD display.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
-     * @param data
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     * @param data character data to write
      */
     public static native void lcdPutchar(int handle, byte data);
 
@@ -194,11 +246,11 @@ public class Lcd {
      * <p>Write string of data to the LCD display.</p>
      * 
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
-     * @param data
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     * @param data string data to write
      */
     public static native void lcdPuts(int handle, String data);
 
@@ -206,12 +258,12 @@ public class Lcd {
      * <p>Write formatted string of data to the LCD display.</p>
      * 
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/">https://projects.drogon.net/raspberry-pi/wiringpi/lcd-library/</a>
-     * @param handle
-     * @param data
-     * @param args
+     *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
+     * @param handle file handle
+     * @param data format string to write
+     * @param args string arguments to use in formatted string
      */
     public static void lcdPuts(int handle, String data, String... args) {
         lcdPuts(handle, String.format(data, (Object[]) args));

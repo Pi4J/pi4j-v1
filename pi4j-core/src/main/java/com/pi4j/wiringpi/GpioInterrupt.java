@@ -28,9 +28,9 @@ package com.pi4j.wiringpi;
  */
 
 
-import java.util.Vector;
-
 import com.pi4j.util.NativeLibraryLoader;
+
+import java.util.Vector;
 
 /**
  * <p>
@@ -47,7 +47,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
@@ -55,9 +55,10 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class GpioInterrupt {
 
-    private static Vector<GpioInterruptListener> listeners = new Vector<GpioInterruptListener>();
+    private static Vector<GpioInterruptListener> listeners = new Vector<>();
     private Object lock;
 
     // private constructor 
@@ -121,7 +122,7 @@ public class GpioInterrupt {
 
         for (int i = 0; i < dataCopy.size(); i++) {
             GpioInterruptEvent event = new GpioInterruptEvent(listeners, pin, state);
-            ((GpioInterruptListener) dataCopy.elementAt(i)).pinStateChange(event);
+            (dataCopy.elementAt(i)).pinStateChange(event);
         }
 
         // System.out.println("GPIO PIN [" + pin + "] = " + state);
@@ -133,8 +134,8 @@ public class GpioInterrupt {
      * changes.
      * </p>
      * 
-     * @see #com.pi4j.wiringpi.GpioInterruptListener
-     * @see #com.pi4j.wiringpi.GpioInterruptEvent
+     * @see com.pi4j.wiringpi.GpioInterruptListener
+     * @see com.pi4j.wiringpi.GpioInterruptEvent
      * 
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
@@ -150,8 +151,8 @@ public class GpioInterrupt {
      * changes.
      * </p>
      * 
-     * @see #com.pi4j.wiringpi.GpioInterruptListener
-     * @see #com.pi4j.wiringpi.GpioInterruptEvent
+     * @see com.pi4j.wiringpi.GpioInterruptListener
+     * @see com.pi4j.wiringpi.GpioInterruptEvent
      * 
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
@@ -167,8 +168,8 @@ public class GpioInterrupt {
      * Returns true if the listener is already registered for event callbacks.
      * </p>
      * 
-     * @see #com.pi4j.wiringpi.GpioInterruptListener
-     * @see #com.pi4j.wiringpi.GpioInterruptEvent
+     * @see com.pi4j.wiringpi.GpioInterruptListener
+     * @see com.pi4j.wiringpi.GpioInterruptEvent
      * 
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */

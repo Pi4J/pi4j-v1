@@ -41,16 +41,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/wiringpi/">https://projects.drogon.net/raspberry-pi/wiringpi/</a>
+ *      href="http://wiringpi.com/">http://wiringpi.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class GpioUtil {
     // private constructor 
     private GpioUtil() {
@@ -145,7 +146,7 @@ public class GpioUtil {
      * @see #DIRECTION_OUT
      * 
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @param direction
+     * @param direction pin direction
      */
     public static native void export(int pin, int direction) throws RuntimeException;
 

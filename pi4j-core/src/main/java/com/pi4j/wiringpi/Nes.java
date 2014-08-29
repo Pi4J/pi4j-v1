@@ -39,16 +39,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
+ *      href="http://wiringpi.com/dev-lib/">http://wiringpi.com/dev-lib/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Nes {
 
     public static final int NES_RIGHT = 0x01;
@@ -77,10 +78,10 @@ public class Nes {
      * 
      * <p>Create a new NES joystick interface, program the pins, etc.</p>
      * 
-     * @param dPin
-     * @param cPin
-     * @param lPin
-     * @return return value
+     * @param dPin data pin
+     * @param cPin clock pin
+     * @param lPin pin number
+     * @return return joystick handle
      */
     public static native int setupNesJoystick(int dPin, int cPin, int lPin);
 
@@ -89,7 +90,7 @@ public class Nes {
      * 
      * <p>Do a single scan of the NES Joystick.</p>
      * 
-     * @param joystick
+     * @param joystick joystick handle
      * @return return value
      */
     public static native int readNesJoystick(int joystick);

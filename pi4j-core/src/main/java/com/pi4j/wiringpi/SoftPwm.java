@@ -69,13 +69,13 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>pthread</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/">https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/</a>
+ *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
@@ -99,9 +99,9 @@ public class SoftPwm {
      * will be that of the wiringPiSetup function you used. Use 100 for the pwmRange, then the value
      * can be anything from 0 (off) to 100 (fully on) for the given pin.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/">https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/</a>
+     *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
      * 
      * @param pin The GPIO pin to use as a PWM pin.
      *            </p>
@@ -120,9 +120,10 @@ public class SoftPwm {
      * This updates the PWM value on the given pin. The value is checked to be in-range and pins
      * that haven't previously been initialized via softPwmCreate will be silently ignored.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/">https://projects.drogon.net/raspberry-pi/wiringpi/software-pwm-library/</a>
+     *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
+     *
      * @param pin The GPIO pin to use as a PWM pin.
      * @param value The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
      *            on)</i>)

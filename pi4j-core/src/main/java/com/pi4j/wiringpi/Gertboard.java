@@ -64,16 +64,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
+ *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Gertboard {
 
     public static final int SPI_ADC_SPEED = 1000000;
@@ -105,7 +106,7 @@ public class Gertboard {
      * </pre>
      * </p>
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
+     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @param chan  Analog channel to write to (0 or 1).
      * @param value The output value (0-255) supplied to the given channel (0 or 1).
      */
@@ -119,9 +120,9 @@ public class Gertboard {
      * vIn = value * 3.3 / 1023
      * </pre>
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
+     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @param chan Analog channel to read from (0 or 1).
      * @return This returns a value from 0 to 1023 representing the value on the supplied channel (0
      *         or 1).
@@ -132,11 +133,28 @@ public class Gertboard {
      * <p> This must be called to initialize the SPI bus to communicate with the Gertboards ADC and DAC
      * chips. If the return value is < 0 then an error occurred and errno will be set appropriately.
      * </p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/">https://projects.drogon.net/raspberry-pi/gertboard/analog-inout/</a>
+     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @return If the return value is < 0 then an error occurred and errno will be set
      *         appropriately. If the return value is '0' or greater than the call was successful.
      */
     public static native int gertboardSPISetup();
+
+
+
+    /**
+     * <p>
+     * This setup routine allocates 2 pins and overlays the analog to digital input pins with the digital to analog
+     * output pins. So reading channel pinBase + 0 reads the first analog input channel (pin DA0 on the Gertboard),
+     * and writing pinBase + 0 outputs to the first analog output channel. (Pin AD0).
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
+     * @param pinBase pinBase is the base pin that you want the analog ports to appear as
+     * @return If the return value is < 0 then an error occurred and errno will be set
+     *         appropriately. If the return value is '0' or greater than the call was successful.
+     */
+    public static native int gertboardAnalogSetup(int pinBase);
 }

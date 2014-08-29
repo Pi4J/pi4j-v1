@@ -52,16 +52,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
- *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+ *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Serial {
 
     /**
@@ -97,7 +98,7 @@ public class Serial {
      * 
      * @see #DEFAULT_COM_PORT
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * 
      * @param device The device address of the serial port to access. You can use constant
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
@@ -115,7 +116,7 @@ public class Serial {
      * Closes the device identified by the file descriptor given.
      * </p>
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd <p>
      *            The file descriptor of the serial port.
      *            </p>
@@ -126,9 +127,9 @@ public class Serial {
      * <h1>void serialFlush (int fd);</h1>
      * 
      * <p>This discards all data received, or waiting to be send down the given device.</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      */
     public static native void serialFlush(int fd);
@@ -137,9 +138,9 @@ public class Serial {
      * <p>void serialPutchar (int fd, unsigned char c);</p>
      * 
      * <p>Sends the single byte to the serial device identified by the given file descriptor.</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      * @param data The character to transmit to the serial port.
      */
@@ -151,9 +152,9 @@ public class Serial {
      * <p>Sends the nul-terminated string to the serial device identified by the given file descriptor.</p>
      * 
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      * @param data The data string to transmit to the serial port.
      */
@@ -168,9 +169,9 @@ public class Serial {
      * </p>
      * 
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      * @param data The formatted data string to transmit to the serial port.
      * @param args Arguments to the format string.
@@ -184,9 +185,9 @@ public class Serial {
      * 
      * Returns the number of characters available for reading, or -1 for any error condition, in
      * which case errno will be set appropriately.
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      * @return Returns the number of characters available for reading, or -1 for any error
      *         condition, in which case errno will be set appropriately.
@@ -198,9 +199,9 @@ public class Serial {
      * 
      * <p>Returns the next character available on the serial device. This call will block for up to 10
      * seconds if no data is available (when it will return -1)</p>
-     * 
+     *
      * @see <a
-     *      href="https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/">https://projects.drogon.net/raspberry-pi/wiringpi/serial-library/</a>
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      * @return Returns the next character available on the serial device. This call will block for
      *         up to 10 seconds if no data is available (when it will return -1)

@@ -32,51 +32,33 @@ import com.pi4j.util.NativeLibraryLoader;
 
 /**
  * <p>
- * WiringPi includes a software-driven PWM handler capable of outputting a PWM signal on any of the
- * Raspberry Pi's GPIO pins.
+ * WiringPi includes a library which can make it easier to use the Raspberry Pi’s on-board SPI interface.
+ * </p>
+ *
+ * <p>
+ * Before you can use SPI interface, you may need to use the gpio utility to load the SPI drivers into the kernel:
+ *  > gpio load spi
+ *
+ * If you need a buffer size of greater than 4KB, then you can specify the size (in KB) on the command line:
+ *  > gpio load spi 100
+ *
+ * will allocate a 100KB buffer. (You should rarely need this though, the default is more than enough
+ * for most applications).
  * </p>
  * 
  * <p>
- * There are some limitations. To maintain a low CPU usage, the minimum pulse width is 100uS. That
- * combined with the default suggested range of 100 gives a PWM frequency of 100Hz. You can lower
- * the range to get a higher frequency, at the expense of resolution, or increase to get more
- * resolution, but that will lower the frequency. If you change the pulse-width in the drive code,
- * then be aware that at delays of less than 100uS wiringPi does it in a software loop, which means
- * that CPU usage will rise dramatically, and controlling more than one pin will be almost
- * impossible.
- * </p>
- * 
- * <p>
- * Also note that while the routines run themselves at a higher and real-time priority, Linux can
- * still affect the accuracy of the generated signal.
- * </p>
- * 
- * <p>
- * However, within these limitations, control of a light/LED or a motor is very achievable.
- * </p>
- * 
- * <p>
- * <b>You must initialize wiringPi with one of wiringPiSetup() or wiringPiSetupGpio() functions
- * beforehand. wiringPiSetupSys() is not fast enough, so you must run your programs with sudo.</b>
- * </p>
- * 
- * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
- * the following system libraries:
- * <ul>
- * <li>pi4j</li>
- * <li>wiringPi</li>
- * <li>pthread</li>
- * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com</a>)
  * </blockquote>
  * </p>
  * 
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="http://www.pi4j.com/">http://www.pi4j.com</a>
+ * @see <a
+ *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class Spi {
 
     public static int CHANNEL_0 = 0;
@@ -93,12 +75,35 @@ public class Spi {
     }
 
     /**
+     * <p>wiringPiSPISetup:</p>
+     *
+     * <p>
+     * This is the way to initialise a channel (The Pi has 2 channels; 0 and 1). The speed parameter is an integer in
+     * the range 500,000 through 32,000,000 and represents the SPI clock speed in Hz.
+     * </p>
+     *
+     * <p>
+     * The returned value is the Linux file-descriptor for the device, or -1 on error. If an error has happened, you
+     * may use the standard errno global variable to see why.
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
+     * @param channel SPI channel
+     * @param speed SPI speed
+     * @return return -1 on error
+     */
+    public static native int wiringPiSPISetup(int channel, int speed);
+
+    /**
      * <p>wiringPiSPIGetFd:</p>
      * 
      * <p>
      * Return the file-descriptor for the given channel
      * </p>
-     * 
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
      * @param channel SPI channel
      * @return file-descriptor for the given channel
      */
@@ -108,49 +113,41 @@ public class Spi {
      * <p>wiringPiSPIDataRW:</p>
      * 
      * <p>
-     * Write and Read a block of data over the SPI bus. Note the data is being read into the
-     * transmit buffer, so will overwrite it! This is also a full-duplex operation.
+     * This performs a simultaneous write/read transaction over the selected SPI bus. Data that was in your buffer is
+     * overwritten by data returned from the SPI bus.
      * </p>
-     * 
+     *
      * <p>
      * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
      * </p>
-     * 
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
      * @param channel SPI channel</p>
-     * @param data
-     * @param len
+     * @param data string data payload
+     * @param len length of characters in string
      * @return return -1 on error
      */
     public static native int wiringPiSPIDataRW(int channel, String data, int len);
 
     /**
      * <p>wiringPiSPIDataRW:</p>
-     * 
+     *
      * <p>
-     * Write and Read a block of data over the SPI bus. Note the data is being read into the
-     * transmit buffer, so will overwrite it! This is also a full-duplex operation.
+     * This performs a simultaneous write/read transaction over the selected SPI bus. Data that was in your buffer is
+     * overwritten by data returned from the SPI bus.
      * </p>
-     * 
+     *
      * <p>
      * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
      * </p>
-     * 
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
      * @param channel SPI channel</p>
-     * @param data
-     * @param len
+     * @param data byte array data payload
+     * @param len length of bytes in data array argument
      * @return return -1 on error
      */
     public static native int wiringPiSPIDataRW(int channel, byte[] data, int len);
-    
-    /**
-     * <p>wiringPiSPISetup:</p>
-     * 
-     * <p>
-     * Open the SPI device, and set it up, etc.</b>
-     * 
-     * @param channel SPI channel
-     * @param speed SPI speed
-     * @return return -1 on error
-     */
-    public static native int wiringPiSPISetup(int channel, int speed);
 }
