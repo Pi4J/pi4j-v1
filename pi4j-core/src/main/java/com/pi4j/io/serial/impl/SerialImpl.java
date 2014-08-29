@@ -64,6 +64,7 @@ public class SerialImpl implements Serial {
     protected int fileDescriptor = -1;
     protected final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<>();
     protected SerialDataMonitorThread monitor;
+    protected int monitorInterval = Serial.DEFAULT_MONITOR_INTERVAL;
     protected boolean isshutdown = false;
 
     /**
@@ -387,5 +388,24 @@ public class SerialImpl implements Serial {
         // shutdown monitoring thread
         if(monitor != null)
             monitor.shutdown();
+    }
+
+    /**
+     * This method returns the serial data receive monitor delay interval in milliseconds.
+     * @return interval milliseconds
+     */
+    @Override
+    public int getMonitorInterval(){
+        return monitorInterval;
+    }
+
+    /**
+     * This method set the serial data receive monitor delay interval in milliseconds.
+     *
+     * @param interval number of milliseconds
+     */
+    @Override
+    public void setMonitorInterval(int interval){
+        monitorInterval = interval;
     }
 }

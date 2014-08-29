@@ -60,6 +60,7 @@ public interface Serial {
      * @see #open(String, int)
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
+    public static final int DEFAULT_MONITOR_INTERVAL = 100; // milliseconds
 
     /**
      * This method is call to open a serial port for communication.
@@ -223,4 +224,17 @@ public interface Serial {
      * This method can be called to forcefully shutdown all serial data monitoring threads.
      */
     public void shutdown();
+
+    /**
+     * This method returns the serial data receive monitor delay interval in milliseconds.
+     * @return interval milliseconds
+     */
+    public int getMonitorInterval();
+
+    /**
+     * This method set the serial data receive monitor delay interval in milliseconds.
+     *
+     * @param interval number of milliseconds
+     */
+    public void setMonitorInterval(int interval);
 }

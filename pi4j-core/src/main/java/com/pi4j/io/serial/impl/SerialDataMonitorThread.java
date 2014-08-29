@@ -64,7 +64,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class SerialDataMonitorThread extends Thread {
 
-    public static final int DELAY = 100; // milliseconds
     private boolean exiting = false;
     private final Serial serial;
     private final List<SerialDataListener> listeners;
@@ -117,7 +116,7 @@ public class SerialDataMonitorThread extends Thread {
 
             // wait for a small interval before attempting to read serial data again
             try {
-                Thread.sleep(DELAY);
+                Thread.sleep(serial.getMonitorInterval());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
