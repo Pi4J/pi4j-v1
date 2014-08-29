@@ -56,11 +56,15 @@ public class RaspiPin  {
     public static final Pin GPIO_13 = createDigitalPin(13, "GPIO 13"); 
     public static final Pin GPIO_14 = createDigitalPin(14, "GPIO 14"); 
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15"); 
-    public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16"); 
+    public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
+
+    // the following GPIO pins are only available on the Raspbery Pi Model A, B (revision 2.0), B+ and Compute Module
     public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_18 = createDigitalPin(18, "GPIO 18"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); // requires B rev2 or newer model (P5 header)
+
+    // the following GPIO pins are only available on the Raspbery Pi Model B+ and Compute Module
     public static final Pin GPIO_21 = createDigitalPin(21, "GPIO 21"); // requires B+ or newer model (40 pin header)
     public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22"); // requires B+ or newer model (40 pin header)
     public static final Pin GPIO_23 = createDigitalPin(23, "GPIO 23"); // requires B+ or newer model (40 pin header)
@@ -70,6 +74,24 @@ public class RaspiPin  {
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27"); // requires B+ or newer model (40 pin header)
     public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28"); // requires B+ or newer model (40 pin header)
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires B+ or newer model (40 pin header)
+
+    // the following GPIO pins are only available on the Raspbery Pi Compute Module
+    public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30"); // requires Compute Module
+    public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31"); // requires Compute Module
+    public static final Pin GPIO_32 = createDigitalPin(32, "GPIO 32"); // requires Compute Module
+    public static final Pin GPIO_33 = createDigitalPin(33, "GPIO 33"); // requires Compute Module
+    public static final Pin GPIO_34 = createDigitalPin(34, "GPIO 34"); // requires Compute Module
+    public static final Pin GPIO_35 = createDigitalPin(35, "GPIO 35"); // requires Compute Module
+    public static final Pin GPIO_36 = createDigitalPin(36, "GPIO 36"); // requires Compute Module
+    public static final Pin GPIO_37 = createDigitalPin(37, "GPIO 37"); // requires Compute Module
+    public static final Pin GPIO_38 = createDigitalPin(38, "GPIO 38"); // requires Compute Module
+    public static final Pin GPIO_39 = createDigitalPin(39, "GPIO 39"); // requires Compute Module
+    public static final Pin GPIO_40 = createDigitalPin(40, "GPIO 40"); // requires Compute Module
+    public static final Pin GPIO_41 = createDigitalPin(41, "GPIO 41"); // requires Compute Module
+    public static final Pin GPIO_42 = createDigitalPin(42, "GPIO 42"); // requires Compute Module
+    public static final Pin GPIO_43 = createDigitalPin(43, "GPIO 43"); // requires Compute Module
+    public static final Pin GPIO_44 = createDigitalPin(44, "GPIO 44"); // requires Compute Module
+    public static final Pin GPIO_45 = createDigitalPin(45, "GPIO 45"); // requires Compute Module
 
     private static Pin createDigitalPin(int address, String name) {
         return new PinImpl(RaspiGpioProvider.NAME, address, name, 
