@@ -51,7 +51,9 @@ public class SystemInfo {
         UNKNOWN,
         ModelA_Rev0,
         ModelB_Rev1,
-        ModelB_Rev2
+        ModelB_Rev2,
+        ModelB_Plus_Rev1,
+        Compute_Module_Rev1
     }    
     
     private static Map<String, String> cpuInfo;
@@ -80,12 +82,17 @@ public class SystemInfo {
         throw new RuntimeException("Invalid target: " + target);
     }
 
-    public static String getProcessor() throws IOException, InterruptedException {
-        return getCpuInfo("Processor");
+    public static String getProcessor()  throws IOException, InterruptedException {
+        return getCpuInfo("processor");
     }
 
+    public static String getModelName() throws IOException, InterruptedException {
+        return getCpuInfo("model name");
+    }
+
+    @Deprecated
     public static String getBogoMIPS() throws IOException, InterruptedException {
-        return getCpuInfo("BogoMIPS");
+        return "UNKNOWN";
     }
 
     public static String[] getCpuFeatures() throws IOException, InterruptedException {
@@ -280,6 +287,7 @@ public class SystemInfo {
         // http://www.raspberrypi.org/archives/1929
         // http://raspberryalphaomega.org.uk/?p=428
         // http://www.raspberrypi.org/phpBB3/viewtopic.php?p=281039#p281039
+        // http://elinux.org/RPi_HardwareHistory
         switch(getRevision())
         {
         case "0002":  // Model B Revision 1
@@ -297,6 +305,10 @@ public class SystemInfo {
         case "000e":  // Model B Revision 2 512MB (Sony)
         case "000f":  // Model B Revision 2 512MB (Qisda)
             return BoardType.ModelB_Rev2;
+        case "0010":  // Model B Plus 512MB (Sony)
+            return BoardType.ModelB_Plus_Rev1;
+        case "0011":  // Compute Module 512MB (Sony)
+            return BoardType.Compute_Module_Rev1;
         default:
             return BoardType.UNKNOWN;
         }

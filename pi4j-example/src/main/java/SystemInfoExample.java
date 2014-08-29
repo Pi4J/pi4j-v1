@@ -28,11 +28,11 @@
  * #L%
  */
 
-import java.io.IOException;
-import java.text.ParseException;
-
 import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.SystemInfo;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * This example code demonstrates how to access a few of the system information properties and
@@ -54,7 +54,7 @@ public class SystemInfoExample {
         System.out.println("CPU Part          :  " + SystemInfo.getCpuPart());
         System.out.println("CPU Temperature   :  " + SystemInfo.getCpuTemperature());
         System.out.println("CPU Core Voltage  :  " + SystemInfo.getCpuVoltage());
-        System.out.println("MIPS              :  " + SystemInfo.getBogoMIPS());
+        System.out.println("CPU Model Name    :  " + SystemInfo.getModelName());
         System.out.println("Processor         :  " + SystemInfo.getProcessor());
         System.out.println("Hardware Revision :  " + SystemInfo.getRevision());
         System.out.println("Is Hard Float ABI :  " + SystemInfo.isHardFloatAbi());
