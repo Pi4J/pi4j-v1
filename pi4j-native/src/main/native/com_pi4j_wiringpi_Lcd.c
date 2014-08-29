@@ -100,3 +100,52 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdPuts
 	(*env)->GetStringUTFRegion(env, data, 0, len, datachararr);
 	lcdPuts(handle, datachararr);
 }
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdDisplay
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdDisplay
+  (JNIEnv *env, jclass class, jint handle, jint state)
+{
+	lcdDisplay(handle, state);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCursor
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCursor
+  (JNIEnv *env, jclass class, jint handle, jint state)
+{
+	lcdCursor(handle, state);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCursorBlink
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCursorBlink
+  (JNIEnv *env, jclass class, jint handle, jint state)
+{
+	lcdCursorBlink(handle, state);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCharDef
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCharDef
+  (JNIEnv *env, jclass class, jint handle, jint index, jbyteArray data)
+{
+	unsigned char buffer[8];
+	jsize len = (*env)->GetArrayLength(env, data);
+	if(len > 8) len = 8; // truncate to 8 bytes
+    (*env)->GetByteArrayRegion(env, data, 0, len, (jbyte*)buffer);
+	lcdCharDef(handle, index, buffer);
+}
+

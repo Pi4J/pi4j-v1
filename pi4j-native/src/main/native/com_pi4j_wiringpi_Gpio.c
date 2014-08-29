@@ -27,9 +27,14 @@
 
 #include <jni.h>
 #include <wiringPi.h>
+#include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_Gpio.h"
+#include "com_pi4j_wiringpi_GpioInterrupt.h"
 
 /* Source for com_pi4j_wiringpi_Gpio */
+
+// java callback variables
+//JavaVM *callback_jvm;
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
@@ -63,6 +68,17 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupGpio
 (JNIEnv *env, jclass obj)
 {
 	return wiringPiSetupGpio();
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    wiringPiSetupPhys
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupPhys
+  (JNIEnv *env, jclass obj)
+{
+    return wiringPiSetupPhys();
 }
 
 /*
@@ -109,7 +125,6 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmWrite
 	pwmWrite(pin, value);
 }
 
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    digitalRead
@@ -121,6 +136,27 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_digitalRead
 	return digitalRead(pin);
 }
 
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    analogRead
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_analogRead
+  (JNIEnv *env, jclass obj, jint pin)
+{
+    return analogRead(pin);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    analogWrite
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_analogWrite
+  (JNIEnv *env, jclass obj, jint pin, jint value)
+{
+    analogWrite(pin, value);
+}
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
@@ -143,6 +179,18 @@ JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_millis
 (JNIEnv *env, jclass class)
 {
 	return millis();
+}
+
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    micros
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_micros
+  (JNIEnv *env, jclass obj)
+{
+    return micros();
 }
 
 
@@ -180,6 +228,194 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 	return waitForInterrupt(pin, timeOut);
 }
 
+// monitoring thread data structure
+struct callback_data{
+    int pin;
+    jclass class;
+    jmethodID method;
+};
+
+// monitoring thread data structure array
+struct callback_data callbacks[MAX_GPIO_PINS];
+
+void CallbackWrapperFunc(int pin)
+{
+  if(pin < MAX_GPIO_PINS)
+  {
+    // get attached JVM
+    JNIEnv *env;
+    (*callback_jvm)->AttachCurrentThread(callback_jvm, (void **)&env, NULL);
+
+    // ensure that the JVM exists
+    if(callback_jvm != NULL)
+    {
+        // clear any exceptions on the stack
+        (*env)->ExceptionClear(env);
+
+        // invoke the callback method in the callback interface
+        (*env)->CallVoidMethod(env, callbacks[pin].class, callbacks[pin].method, pin);
+
+        // clear any user caused exceptions on the stack
+        if((*env)->ExceptionCheck(env)){
+          (*env)->ExceptionClear(env);
+        }
+    }
+
+    // detach from thread
+    (*callback_jvm)->DetachCurrentThread(callback_jvm);
+  }
+  else
+  {
+    printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc pin number exceeds MAX_GPIO_PINS.\n");
+  }
+}
+
+void cwf_0()  { CallbackWrapperFunc(0);  }
+void cwf_1()  { CallbackWrapperFunc(1);  }
+void cwf_2()  { CallbackWrapperFunc(2);  }
+void cwf_3()  { CallbackWrapperFunc(3);  }
+void cwf_4()  { CallbackWrapperFunc(4);  }
+void cwf_5()  { CallbackWrapperFunc(5);  }
+void cwf_6()  { CallbackWrapperFunc(6);  }
+void cwf_7()  { CallbackWrapperFunc(7);  }
+void cwf_8()  { CallbackWrapperFunc(8);  }
+void cwf_9()  { CallbackWrapperFunc(9);  }
+void cwf_10() { CallbackWrapperFunc(10); }
+void cwf_11() { CallbackWrapperFunc(11); }
+void cwf_12() { CallbackWrapperFunc(12); }
+void cwf_13() { CallbackWrapperFunc(13); }
+void cwf_14() { CallbackWrapperFunc(14); }
+void cwf_15() { CallbackWrapperFunc(15); }
+void cwf_16() { CallbackWrapperFunc(16); }
+void cwf_17() { CallbackWrapperFunc(17); }
+void cwf_18() { CallbackWrapperFunc(18); }
+void cwf_19() { CallbackWrapperFunc(19); }
+void cwf_20() { CallbackWrapperFunc(20); }
+void cwf_21() { CallbackWrapperFunc(21); }
+void cwf_22() { CallbackWrapperFunc(22); }
+void cwf_23() { CallbackWrapperFunc(23); }
+void cwf_24() { CallbackWrapperFunc(24); }
+void cwf_25() { CallbackWrapperFunc(25); }
+void cwf_26() { CallbackWrapperFunc(26); }
+void cwf_27() { CallbackWrapperFunc(27); }
+void cwf_28() { CallbackWrapperFunc(28); }
+void cwf_29() { CallbackWrapperFunc(29); }
+void cwf_30() { CallbackWrapperFunc(30); }
+void cwf_31() { CallbackWrapperFunc(31); }
+void cwf_32() { CallbackWrapperFunc(32); }
+void cwf_33() { CallbackWrapperFunc(33); }
+void cwf_34() { CallbackWrapperFunc(34); }
+void cwf_35() { CallbackWrapperFunc(35); }
+void cwf_36() { CallbackWrapperFunc(36); }
+void cwf_37() { CallbackWrapperFunc(37); }
+void cwf_38() { CallbackWrapperFunc(38); }
+void cwf_39() { CallbackWrapperFunc(39); }
+void cwf_40() { CallbackWrapperFunc(40); }
+void cwf_41() { CallbackWrapperFunc(41); }
+void cwf_42() { CallbackWrapperFunc(42); }
+void cwf_43() { CallbackWrapperFunc(43); }
+void cwf_44() { CallbackWrapperFunc(44); }
+void cwf_45() { CallbackWrapperFunc(45); }
+void cwf_46() { CallbackWrapperFunc(46); }
+void cwf_47() { CallbackWrapperFunc(47); }
+void cwf_48() { CallbackWrapperFunc(48); }
+void cwf_49() { CallbackWrapperFunc(49); }
+void cwf_50() { CallbackWrapperFunc(50); }
+
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    wiringPiISR
+ * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
+  (JNIEnv *env, jclass obj, jint pin, jint mode, jobject callbackInterface)
+{
+    //printf("NATIVE (wiringPiISR) LISTEN FOR INTERRUPTS ON PIN: %d.\n", pin);
+
+    jclass clbk_class = (*env)->GetObjectClass(env, callbackInterface);
+    if(clbk_class == NULL){
+        printf("NATIVE (wiringPiISR) ERROR; JNI could not get 'callback' class.\n");
+        return -999;
+    }
+
+    jmethodID clbk_method = (*env)->GetMethodID(env, clbk_class, "callback", "(I)V");
+    if(clbk_method == NULL){
+        printf("NATIVE (wiringPiISR) ERROR; JNI could not get 'callback' method id.\n");
+        return -998;
+    }
+
+    // setup pin callback data structure
+    callbacks[pin].class = clbk_class;
+    callbacks[pin].method = clbk_method;
+
+    if(pin > MAX_GPIO_PINS)
+    {
+        printf("NATIVE (wiringPiISR) ERROR; unsupported pin number; exceeds MAX_GPIO_PINS.\n");
+        return -997;
+    }
+
+    switch(pin){
+        case 0:  { return wiringPiISR(pin, mode, &cwf_0);  }
+        case 1:  { return wiringPiISR(pin, mode, &cwf_1);  }
+        case 2:  { return wiringPiISR(pin, mode, &cwf_2);  }
+        case 3:  { return wiringPiISR(pin, mode, &cwf_3);  }
+        case 4:  { return wiringPiISR(pin, mode, &cwf_4);  }
+        case 5:  { return wiringPiISR(pin, mode, &cwf_5);  }
+        case 6:  { return wiringPiISR(pin, mode, &cwf_7);  }
+        case 7:  { return wiringPiISR(pin, mode, &cwf_7);  }
+        case 8:  { return wiringPiISR(pin, mode, &cwf_8);  }
+        case 9:  { return wiringPiISR(pin, mode, &cwf_9);  }
+        case 10: { return wiringPiISR(pin, mode, &cwf_10); }
+        case 11: { return wiringPiISR(pin, mode, &cwf_11); }
+        case 12: { return wiringPiISR(pin, mode, &cwf_12); }
+        case 13: { return wiringPiISR(pin, mode, &cwf_13); }
+        case 14: { return wiringPiISR(pin, mode, &cwf_14); }
+        case 15: { return wiringPiISR(pin, mode, &cwf_15); }
+        case 16: { return wiringPiISR(pin, mode, &cwf_16); }
+        case 17: { return wiringPiISR(pin, mode, &cwf_17); }
+        case 18: { return wiringPiISR(pin, mode, &cwf_18); }
+        case 19: { return wiringPiISR(pin, mode, &cwf_19); }
+        case 20: { return wiringPiISR(pin, mode, &cwf_20); }
+        case 21: { return wiringPiISR(pin, mode, &cwf_21); }
+        case 22: { return wiringPiISR(pin, mode, &cwf_22); }
+        case 23: { return wiringPiISR(pin, mode, &cwf_23); }
+        case 24: { return wiringPiISR(pin, mode, &cwf_24); }
+        case 25: { return wiringPiISR(pin, mode, &cwf_25); }
+        case 26: { return wiringPiISR(pin, mode, &cwf_26); }
+        case 27: { return wiringPiISR(pin, mode, &cwf_27); }
+        case 28: { return wiringPiISR(pin, mode, &cwf_28); }
+        case 29: { return wiringPiISR(pin, mode, &cwf_29); }
+        case 30: { return wiringPiISR(pin, mode, &cwf_30); }
+        case 31: { return wiringPiISR(pin, mode, &cwf_31); }
+        case 32: { return wiringPiISR(pin, mode, &cwf_32); }
+        case 33: { return wiringPiISR(pin, mode, &cwf_33); }
+        case 34: { return wiringPiISR(pin, mode, &cwf_34); }
+        case 35: { return wiringPiISR(pin, mode, &cwf_35); }
+        case 36: { return wiringPiISR(pin, mode, &cwf_36); }
+        case 37: { return wiringPiISR(pin, mode, &cwf_37); }
+        case 38: { return wiringPiISR(pin, mode, &cwf_38); }
+        case 39: { return wiringPiISR(pin, mode, &cwf_39); }
+        case 40: { return wiringPiISR(pin, mode, &cwf_40); }
+        case 41: { return wiringPiISR(pin, mode, &cwf_41); }
+        case 42: { return wiringPiISR(pin, mode, &cwf_42); }
+        case 43: { return wiringPiISR(pin, mode, &cwf_43); }
+        case 44: { return wiringPiISR(pin, mode, &cwf_44); }
+        case 45: { return wiringPiISR(pin, mode, &cwf_45); }
+        case 46: { return wiringPiISR(pin, mode, &cwf_46); }
+        case 47: { return wiringPiISR(pin, mode, &cwf_47); }
+        case 48: { return wiringPiISR(pin, mode, &cwf_48); }
+        case 49: { return wiringPiISR(pin, mode, &cwf_49); }
+        case 50: { return wiringPiISR(pin, mode, &cwf_50); }
+    }
+
+    // we should never get here under valid conditions
+    printf("NATIVE (wiringPiISR) ERROR; unsupported pin number.\n");
+    return -996;
+}
+
+
+
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    piBoardRev
@@ -200,4 +436,70 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wpiPinToGpio
 (JNIEnv *env, jclass class, jint wpiPin)
 {
 	return wpiPinToGpio(wpiPin);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    physPinToGpio
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_physPinToGpio
+  (JNIEnv *env, jclass obj, jint physPin)
+{
+    return physPinToGpio(physPin);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    digitalWriteByte
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_digitalWriteByte
+  (JNIEnv *env, jclass obj, jint value)
+{
+    digitalWriteByte(value);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetMode
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetMode
+  (JNIEnv *env, jclass obj, jint mode)
+{
+    pwmSetMode(mode);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetRange
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetRange
+  (JNIEnv *env, jclass obj, jint range)
+{
+    pwmSetRange((unsigned int)range);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetClock
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetClock
+  (JNIEnv *env, jclass obj, jint divisor)
+{
+    pwmSetClock(divisor);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    setPadDrive
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_setPadDrive
+  (JNIEnv *env, jclass obj, jint group, jint value)
+{
+    setPadDrive(group, value);
 }

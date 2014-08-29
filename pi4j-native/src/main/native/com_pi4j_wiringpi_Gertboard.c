@@ -63,3 +63,15 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gertboard_gertboardSPISetup
 {
 	return gertboardSPISetup();
 }
+
+
+/*
+ * Class:     com_pi4j_wiringpi_Gertboard
+ * Method:    gertboardAnalogSetup
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gertboard_gertboardAnalogSetup
+  (JNIEnv *env, jclass class, jint pinBase)
+{
+	return gertboardAnalogSetup(pinBase);
+}

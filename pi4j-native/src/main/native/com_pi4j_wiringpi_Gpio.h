@@ -34,13 +34,15 @@
 extern "C" {
 #endif
 #undef com_pi4j_wiringpi_Gpio_NUM_PINS
-#define com_pi4j_wiringpi_Gpio_NUM_PINS 30L
+#define com_pi4j_wiringpi_Gpio_NUM_PINS 46L
 #undef com_pi4j_wiringpi_Gpio_INPUT
 #define com_pi4j_wiringpi_Gpio_INPUT 0L
 #undef com_pi4j_wiringpi_Gpio_OUTPUT
 #define com_pi4j_wiringpi_Gpio_OUTPUT 1L
 #undef com_pi4j_wiringpi_Gpio_PWM_OUTPUT
 #define com_pi4j_wiringpi_Gpio_PWM_OUTPUT 2L
+#undef com_pi4j_wiringpi_Gpio_GPIO_CLOCK
+#define com_pi4j_wiringpi_Gpio_GPIO_CLOCK 3L
 #undef com_pi4j_wiringpi_Gpio_LOW
 #define com_pi4j_wiringpi_Gpio_LOW 0L
 #undef com_pi4j_wiringpi_Gpio_HIGH
@@ -51,6 +53,18 @@ extern "C" {
 #define com_pi4j_wiringpi_Gpio_PUD_DOWN 1L
 #undef com_pi4j_wiringpi_Gpio_PUD_UP
 #define com_pi4j_wiringpi_Gpio_PUD_UP 2L
+#undef com_pi4j_wiringpi_Gpio_PWM_MODE_BAL
+#define com_pi4j_wiringpi_Gpio_PWM_MODE_BAL 1L
+#undef com_pi4j_wiringpi_Gpio_PWM_MODE_MS
+#define com_pi4j_wiringpi_Gpio_PWM_MODE_MS 0L
+#undef com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP
+#define com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP 0L
+#undef com_pi4j_wiringpi_Gpio_INT_EDGE_FALLING
+#define com_pi4j_wiringpi_Gpio_INT_EDGE_FALLING 1L
+#undef com_pi4j_wiringpi_Gpio_INT_EDGE_RISING
+#define com_pi4j_wiringpi_Gpio_INT_EDGE_RISING 2L
+#undef com_pi4j_wiringpi_Gpio_INT_EDGE_BOTH
+#define com_pi4j_wiringpi_Gpio_INT_EDGE_BOTH 3L
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    wiringPiSetup
@@ -73,6 +87,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupSys
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupGpio
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    wiringPiSetupPhys
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupPhys
   (JNIEnv *, jclass);
 
 /*
@@ -117,6 +139,22 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_digitalRead
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    analogRead
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_analogRead
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    analogWrite
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_analogWrite
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
  * Method:    delay
  * Signature: (J)V
  */
@@ -129,6 +167,14 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_delay
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_millis
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    micros
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_micros
   (JNIEnv *, jclass);
 
 /*
@@ -157,6 +203,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    wiringPiISR
+ * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
+  (JNIEnv *, jclass, jint, jint, jobject);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
  * Method:    piBoardRev
  * Signature: ()I
  */
@@ -170,6 +224,70 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_piBoardRev
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wpiPinToGpio
   (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    physPinToGpio
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_physPinToGpio
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    digitalWriteByte
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_digitalWriteByte
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetMode
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetMode
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetRange
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetRange
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pwmSetClock
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pwmSetClock
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    setPadDrive
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_setPadDrive
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    getAlt
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_getAlt
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    gpioClockSet
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_gpioClockSet
+  (JNIEnv *, jclass, jint, jint);
 
 #ifdef __cplusplus
 }

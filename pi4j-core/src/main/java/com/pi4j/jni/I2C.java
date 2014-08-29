@@ -68,7 +68,7 @@ public class I2C {
      * 
      * @param fd file descriptor
      */
-    public static native void i2cClose(int fd);
+    public static native int i2cClose(int fd);
 
     /**
      * Writes one byte to i2c. It uses ioctl to define device address and then writes one byte.
@@ -134,7 +134,6 @@ public class I2C {
      * 
      * @param fd file descriptor of i2c bus
      * @param deviceAddress device address
-     * @param localAddress address in the device
      * @param size number of bytes to be read
      * @param offset offset in buffer to stored read data
      * @param buffer buffer for data to be written to

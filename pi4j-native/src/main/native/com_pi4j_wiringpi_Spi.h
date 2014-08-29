@@ -35,6 +35,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPISetup
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Spi
  * Method:    wiringPiSPIGetFd
  * Signature: (I)I
  */
@@ -56,14 +64,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
   (JNIEnv *, jclass, jint, jbyteArray, jint);
-
-/*
- * Class:     com_pi4j_wiringpi_Spi
- * Method:    wiringPiSPISetup
- * Signature: (II)I
- */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
-  (JNIEnv *, jclass, jint, jint);
 
 #ifdef __cplusplus
 }

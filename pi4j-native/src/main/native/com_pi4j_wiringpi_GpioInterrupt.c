@@ -48,7 +48,6 @@
 
 
 // java callback variables
-JavaVM *callback_jvm;
 jclass callback_class;
 jmethodID callback_method;
 

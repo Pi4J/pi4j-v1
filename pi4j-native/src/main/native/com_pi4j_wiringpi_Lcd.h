@@ -59,11 +59,43 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdClear
 
 /*
  * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdDisplay
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdDisplay
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCursor
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCursor
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCursorBlink
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCursorBlink
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
  * Method:    lcdPosition
  * Signature: (III)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdPosition
   (JNIEnv *, jclass, jint, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Lcd
+ * Method:    lcdCharDef
+ * Signature: (II[B)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Lcd_lcdCharDef
+  (JNIEnv *, jclass, jint, jint, jbyteArray);
 
 /*
  * Class:     com_pi4j_wiringpi_Lcd

@@ -66,7 +66,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytesDirect
   (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray);
 
 /*
- * Class:     com_pi4j_wiringpi_I2C
+ * Class:     com_pi4j_jni_I2C
  * Method:    i2cWriteByte
  * Signature: (IIIB)I
  */
@@ -97,9 +97,8 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByteDirect
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
   (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray);
 
-
 /*
- * Class:     com_pi4j_wiringpi_I2C
+ * Class:     com_pi4j_jni_I2C
  * Method:    i2cReadByte
  * Signature: (III)I
  */
