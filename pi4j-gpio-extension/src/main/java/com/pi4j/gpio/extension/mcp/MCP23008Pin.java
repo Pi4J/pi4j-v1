@@ -1,10 +1,11 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.util.EnumSet;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.impl.PinImpl;
+
+import java.util.EnumSet;
 
 /*
  * #%L
@@ -53,7 +54,7 @@ public class MCP23008Pin {
     public static final Pin GPIO_00 = createDigitalPin(1, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(2, "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(4, "GPIO 2");
-    public static final Pin GPIO_03 = createDigitalPin(6, "GPIO 3");
+    public static final Pin GPIO_03 = createDigitalPin(8, "GPIO 3");
     public static final Pin GPIO_04 = createDigitalPin(16, "GPIO 4");
     public static final Pin GPIO_05 = createDigitalPin(32, "GPIO 5");
     public static final Pin GPIO_06 = createDigitalPin(64, "GPIO 6");
