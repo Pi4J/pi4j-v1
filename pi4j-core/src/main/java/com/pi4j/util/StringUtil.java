@@ -58,17 +58,13 @@ public class StringUtil {
     }
     
     public static boolean contains(String source, String target)  {
-        
-        if (null != source && null != target) { 
-            return source.contains(target);
-        }
-        return false;
-    }     
+        return (null != source && null != target && source.contains(target));
+    }
 
     public static boolean contains(String source, String[] targets)  {
-        if (null != source && null != targets) { 
-            for (int i=0; i<targets.length; i++) {
-                if (source.indexOf(targets[i]) >= 0) {
+        if (null != source && null != targets) {
+            for(String target : targets) {
+                if (source.contains(target)) {
                     return true;
                 }
             }
@@ -159,20 +155,12 @@ public class StringUtil {
     }
     
     public static String pad(String data, char pad, int length)  {
-        StringBuilder sb = new StringBuilder(data.length() + length);
-        sb.append(create(pad, length));
-        sb.append(data);
-        sb.append(create(pad, length));
-        return sb.toString();
-    }     
+        return create(pad, length) + data + create(pad, length);
+    }
 
     public static String pad(String data, String pad, int length)  {
-        StringBuilder sb = new StringBuilder(data.length() + length);
-        sb.append(create(pad, length));
-        sb.append(data);
-        sb.append(create(pad, length));
-        return sb.toString();
-    }     
+        return create(pad, length) + data + create(pad, length);
+    }
 
     public static String padCenter(String data, int length) {
         return padCenter(data, DEFAULT_PAD_CHAR, length);

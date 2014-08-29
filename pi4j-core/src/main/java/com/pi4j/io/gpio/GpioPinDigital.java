@@ -34,6 +34,7 @@ package com.pi4j.io.gpio;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioPinDigital extends GpioPin {
 
     boolean isHigh();

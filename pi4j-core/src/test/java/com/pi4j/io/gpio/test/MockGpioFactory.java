@@ -44,11 +44,11 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #com.pi4j.io.gpio.Gpio
+ * @see com.pi4j.io.gpio.GpioController
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a

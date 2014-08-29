@@ -27,7 +27,7 @@ package com.pi4j.temperature;
  * #L%
  */
 
-
+@SuppressWarnings("unused")
 public enum TemperatureScale {
     
     CELSIUS("Celsius","°C",TemperatureConversion.ABSOLUTE_ZERO_CELSIUS),

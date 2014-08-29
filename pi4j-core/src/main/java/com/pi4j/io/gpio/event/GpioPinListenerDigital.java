@@ -40,7 +40,7 @@ package com.pi4j.io.gpio.event;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 

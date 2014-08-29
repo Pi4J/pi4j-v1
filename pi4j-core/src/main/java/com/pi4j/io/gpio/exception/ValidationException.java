@@ -29,6 +29,7 @@ package com.pi4j.io.gpio.exception;
 /**
  * @author Christian Wehrli
  */
+@SuppressWarnings("unused")
 public class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = 4526136277211409422L;

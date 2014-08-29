@@ -88,7 +88,7 @@ public class TemperatureConversion
     /**
      * Convert a temperature value from another temperature scale into the Farenheit temperature scale.
      * 
-     * @param to TemperatureScale
+     * @param from TemperatureScale
      * @param temperature value from other scale 
      * @return converted temperature value in degrees Farenheit
      */
@@ -136,7 +136,7 @@ public class TemperatureConversion
     /**
      * Convert a temperature value from another temperature scale into the Celsius temperature scale.
      * 
-     * @param to TemperatureScale
+     * @param from TemperatureScale
      * @param temperature value from other scale 
      * @return converted temperature value in degrees centigrade
      */
@@ -184,7 +184,7 @@ public class TemperatureConversion
     /**
      * Convert a temperature value from another temperature scale into the Kelvin temperature scale.
      * 
-     * @param to TemperatureScale
+     * @param from TemperatureScale
      * @param temperature value from other scale 
      * @return converted temperature value in Kelvin
      */    
@@ -232,7 +232,7 @@ public class TemperatureConversion
     /**
      * Convert a temperature value from another temperature scale into the Rankine temperature scale.
      * 
-     * @param to TemperatureScale
+     * @param from TemperatureScale
      * @param temperature value from other scale 
      * @return converted temperature value in degrees Rankine
      */    
@@ -257,9 +257,9 @@ public class TemperatureConversion
      * Convert temperature from Farenheit to Celsius temperature scale
      * 
      * FORMULA = [°C] = ([°F] − 32) × 5/9
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Farenheit
+     * @return converted temperature value in degrees Celsius
      */    
     public static double convertFarenheitToCelsius(double temperature) {
         return ((temperature - 32) * 5/9);
@@ -269,9 +269,9 @@ public class TemperatureConversion
      * Convert temperature from Farenheit to Kelvin temperature scale
      * 
      * FORMULA = [K] = ([°F] + 459.67) × 5/9
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Farenheit
+     * @return converted temperature value in degrees Kelvin
      */    
     public static double convertFarenheitToKelvin(double temperature) {
         return (((temperature + 459.67) * 5) / 9);
@@ -281,9 +281,9 @@ public class TemperatureConversion
      * Convert temperature from Farenheit to Rankine temperature scale
      * 
      * FORMULA = [°R] = [°F] + 459.67
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Farenheit
+     * @return converted temperature value in degrees Rankine
      */    
     public static double convertFarenheitToRankine(double temperature) {
         return temperature + 459.67;
@@ -293,9 +293,9 @@ public class TemperatureConversion
      * Convert temperature from Celsius to Farenheit temperature scale
      * 
      * FORMULA = [°F] = [°C] × 9/5 + 32
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Celsius
+     * @return converted temperature value in degrees Farenheit
      */    
     public static double convertCelsiusToFarenheit(double temperature) {
         return (((temperature * 9) / 5) + 32);
@@ -305,9 +305,9 @@ public class TemperatureConversion
      * Convert temperature from Celsius to Kelvin temperature scale
      * 
      * FORMULA = [K] = [°C] + 273.15
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Celsius
+     * @return converted temperature value in degrees Kelvin
      */    
     public static double convertCelsiusToKelvin(double temperature) {
         return (temperature - ABSOLUTE_ZERO_CELSIUS);
@@ -317,9 +317,9 @@ public class TemperatureConversion
      * Convert temperature from Celsius to Rankine temperature scale
      * 
      * FORMULA = [°R] = ([°C] + 273.15) × 9/5
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Celsius
+     * @return converted temperature value in degrees Rankine
      */    
     public static double convertCelsiusToRankine(double temperature) {
         return (((temperature-ABSOLUTE_ZERO_CELSIUS) * 9) / 5);
@@ -329,9 +329,9 @@ public class TemperatureConversion
      * Convert temperature from Kelvin to Celsius temperature scale
      * 
      * FORMULA = [°C] = [K] − 273.15
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Kelvin
+     * @return converted temperature value in degrees Celsius
      */
     public static double convertKelvinToCelsius(double temperature) {
         return (temperature + ABSOLUTE_ZERO_CELSIUS);
@@ -341,9 +341,9 @@ public class TemperatureConversion
      * Convert temperature from Kelvin to Farenheit temperature scale
      * 
      * FORMULA = [°F] = [K] × 9/5 − 459.67
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Kelvin
+     * @return converted temperature value in degrees Farenheit
      */
     public static double convertKelvinToFarenheit(double temperature) {
         return (((temperature * 9) / 5) - 459.67); 
@@ -353,9 +353,9 @@ public class TemperatureConversion
      * Convert temperature from Kelvin to Rankine temperature scale
      * 
      * FORMULA = [°R] = [K] × 9/5
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Kelvin
+     * @return converted temperature value in degrees Rankine
      */
     public static double convertKelvinToRankine(double temperature) {
         return ((temperature * 9) / 5); 
@@ -365,9 +365,9 @@ public class TemperatureConversion
      * Convert temperature from Rankine to Farenheit temperature scale
      * 
      * FORMULA = [°F] = [°R] − 459.67
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Rankine
+     * @return converted temperature value in degrees Farenheit
      */
     public static double convertRankineToFarenheit(double temperature) {
         return (temperature-(459.67));
@@ -377,9 +377,9 @@ public class TemperatureConversion
      * Convert temperature from Rankine to Celsius temperature scale
      * 
      * FORMULA = [°C] = ([°R] − 491.67) × 5/9
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Rankine
+     * @return converted temperature value in degrees Celsius
      */
     public static double convertRankineToCelsius(double temperature) {
         return (((temperature-491.67)* 5) / 9);
@@ -389,9 +389,9 @@ public class TemperatureConversion
      * Convert temperature from Rankine to Kelvin temperature scale
      * 
      * FORMULA = [K] = [°R] × 5/9
-     * 
-     * @param temperature
-     * @return
+     *
+     * @param temperature value in degrees Rankine
+     * @return converted temperature value in degrees Kelvin
      */
     public static double convertRankineToKelvin(double temperature) {
         return ((temperature * 5) / 9);

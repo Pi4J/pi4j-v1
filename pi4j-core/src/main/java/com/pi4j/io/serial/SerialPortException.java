@@ -39,16 +39,17 @@ package com.pi4j.io.serial;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #com.pi4j.io.serial.Serial
+ * @see com.pi4j.io.serial.Serial
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Jakub Derda (<a
  *         href="http://www.ardeo.pl">http://www.ardeo.pl</a>)
  */
+@SuppressWarnings("unused")
 public class SerialPortException extends RuntimeException {
 	
 	/**
@@ -59,6 +60,7 @@ public class SerialPortException extends RuntimeException {
 	/**
 	 * Default no argument constructor.
 	 */
+
 	public SerialPortException() {
 		super();
 	}
@@ -68,7 +70,7 @@ public class SerialPortException extends RuntimeException {
 	 * 
 	 * @param message Description of error that occured.
 	 */
-	public SerialPortException(String message) {
+    public SerialPortException(String message) {
 		super(message);
 	}
 	
@@ -78,8 +80,7 @@ public class SerialPortException extends RuntimeException {
 	 * 
 	 * @param cause Cause of SerialException.
 	 */
-	public SerialPortException(Throwable cause) {
+    public SerialPortException(Throwable cause) {
 		super(cause);
 	}
-
 }

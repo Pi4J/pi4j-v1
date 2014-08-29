@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.event.PinListener;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioProvider {
 
     String getName();

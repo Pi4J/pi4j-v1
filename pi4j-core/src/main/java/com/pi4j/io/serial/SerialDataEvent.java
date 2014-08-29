@@ -41,13 +41,13 @@ import java.util.EventObject;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #Serial
- * @see #SerialDataListener
- * @see #SerialFactory
+ * @see com.pi4j.io.serial.Serial
+ * @see com.pi4j.io.serial.SerialDataListener
+ * @see com.pi4j.io.serial.SerialFactory
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a

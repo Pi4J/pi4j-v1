@@ -31,10 +31,7 @@ import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -51,19 +48,18 @@ public class GpioPinImpl implements GpioPin,
 {
  
     @SuppressWarnings("unused")
-    private final GpioController gpio;
     private String name = null;
     private Object tag = null;
     private final GpioProvider provider;
     private final Pin pin;
     private PinListener monitor;
     private final GpioPinShutdownImpl shutdownOptions;
-    private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
-    private final List<GpioPinListener> listeners = new ArrayList<GpioPinListener>();
-    private final List<GpioTrigger> triggers = new ArrayList<GpioTrigger>();
-    
+    private final Map<String, String> properties = new ConcurrentHashMap<>();
+    private final List<GpioPinListener> listeners = new ArrayList<>();
+    private final List<GpioTrigger> triggers = new ArrayList<>();
+
+    @SuppressWarnings("unused")
     public GpioPinImpl(GpioController gpio, GpioProvider provider, Pin pin) {
-        this.gpio = gpio;
         this.provider = provider;
         this.pin = pin;
         shutdownOptions = new GpioPinShutdownImpl();
@@ -383,15 +379,13 @@ public class GpioPinImpl implements GpioPin,
 
     /**
      * 
-     * @param listener
+     * @param listener gpio pin listener interface
      */
     public synchronized void addListener(GpioPinListener... listener) {
         if (listener == null || listener.length == 0) {
             throw new IllegalArgumentException("Missing listener argument.");
         }
-        for (GpioPinListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
         updateInterruptListener();
     }
 
@@ -403,7 +397,6 @@ public class GpioPinImpl implements GpioPin,
 
     /**
      * 
-     * @param listener
      */
     public synchronized Collection<GpioPinListener> getListeners() {
         return listeners;
@@ -449,7 +442,6 @@ public class GpioPinImpl implements GpioPin,
 
     /**
      * 
-     * @param trigger
      */
     public synchronized Collection<GpioTrigger> getTriggers() {
         return triggers;
@@ -459,10 +451,7 @@ public class GpioPinImpl implements GpioPin,
         if (trigger == null || trigger.length == 0) {
             throw new IllegalArgumentException("Missing trigger argument.");
         }
-        for (GpioTrigger trgr : trigger) {
-            triggers.add(trgr);
-        }
-        
+        Collections.addAll(triggers, trigger);
         updateInterruptListener();
     }
 
@@ -474,7 +463,7 @@ public class GpioPinImpl implements GpioPin,
 
     /**
      * 
-     * @param trigger
+     * @param trigger GPIO trigger interface
      */
     public synchronized void removeTrigger(GpioTrigger... trigger) {
         if (trigger == null || trigger.length == 0) {

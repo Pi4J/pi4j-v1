@@ -41,7 +41,7 @@ import java.util.concurrent.*;
 
 public class GpioScheduledExecutorImpl {
 
-    private static final ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>>();
+    private static final ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<>();
     private static ScheduledExecutorService scheduledExecutorService;
 
     private synchronized static void init(GpioPinDigitalOutput pin) {
@@ -62,7 +62,7 @@ public class GpioScheduledExecutorImpl {
             }
             
             // if no remaining future tasks are remaining, then remove this pin from the tasks queue
-            if (tasks.isEmpty()) {
+            if (tasks != null && tasks.isEmpty()) {
                 pinTaskQueue.remove(pin);
             }
         }

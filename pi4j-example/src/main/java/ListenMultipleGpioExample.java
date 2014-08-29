@@ -62,20 +62,58 @@ public class ListenMultipleGpioExample {
         
         // provision gpio input pins with its internal pull down resistor enabled
         GpioPinDigitalInput[] pins = {
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN),
-            gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_DOWN)
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_08, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_09, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_10, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_11, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_12, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_13, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_14, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_15, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_16, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_17, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_18, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_19, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_20, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_21, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_22, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_23, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_24, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_25, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_26, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_28, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_30, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_31, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_32, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_33, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_34, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_35, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_36, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_37, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_38, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_39, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_40, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_41, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_42, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_43, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_44, PinPullResistance.PULL_DOWN),
+//                gpio.provisionDigitalInputPin(RaspiPin.GPIO_45, PinPullResistance.PULL_DOWN)
         };
 
         // create and register gpio pin listener
         gpio.addListener(listener, pins);
         
-        System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
+        System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
         for (;;) {

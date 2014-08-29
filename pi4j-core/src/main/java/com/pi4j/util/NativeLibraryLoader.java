@@ -40,8 +40,6 @@ public class NativeLibraryLoader {
 
     private static List<String> loadedLibraries = null;
     private static Logger logger = Logger.getLogger("com.pi4j.util.NativeLibraryLoader");
-    private static FileHandler fileHandler;
-    private static ConsoleHandler consoleHandler;
     private static boolean initialized  = false;
 
     // private constructor 
@@ -54,8 +52,11 @@ public class NativeLibraryLoader {
     }
 
     public static synchronized void load(String libraryName, String fileName) {
+        ConsoleHandler consoleHandler;
+        FileHandler fileHandler;
+
         // check for debug property; if found enabled all logging levels
-        if (initialized == false) {
+        if (!initialized) {
             initialized = true;
             String debug = System.getProperty("pi4j.debug");
             if (debug != null) {
@@ -71,7 +72,9 @@ public class NativeLibraryLoader {
                     logger.addHandler(fileHandler);
                     logger.addHandler(consoleHandler);
                 } 
-                catch (IOException e) {} 
+                catch (IOException e) {
+                    // do nothing
+                }
             }
         }
         
@@ -157,7 +160,7 @@ public class NativeLibraryLoader {
     private static void loadLibraryFromResource(URL resourceUrl, String libraryName, String fileName) throws UnsatisfiedLinkError, Exception {
         // create a 1Kb read buffer
         byte[] buffer = new byte[1024];
-        int byteCount = 0;
+        int byteCount;
         
         // debug
         logger.fine("Attempting to load library [" + libraryName + "] using the System.load(file) method using embedded resource file: [" + resourceUrl.toString() + "]");            
@@ -186,11 +189,13 @@ public class NativeLibraryLoader {
             logger.warning("The temporary file already exists [" + tempFile.getAbsolutePath() + "]; attempting to delete it now.");            
             
             // delete file immediately 
-            tempFile.delete();
+            if(!tempFile.delete()){
+                logger.warning("The temporary file was not deleted [" + tempFile.getAbsolutePath() + "]");
+            }
         }
         
         // create output stream object
-        OutputStream outputStream = null;
+        OutputStream outputStream;
         
         try {
             // create the new file
@@ -236,18 +241,14 @@ public class NativeLibraryLoader {
                 // warning
                 logger.warning("The temporary file [" + tempFile.getAbsolutePath() + "] cannot be flagged for removal on program termination; a security exception was detected. " + dse.getMessage());            
             }
-        } catch(UnsatisfiedLinkError ule) {
-            // if unable to load the library and the temporary file
-            // exists; then delete the temporary file immediately
-            if(tempFile.exists())
-                tempFile.delete();
-            
-            throw(ule);
-        } catch(Exception ex) {
+        } catch(UnsatisfiedLinkError|Exception ex) {
             // if unable to load the library and the temporary file
             // exists; then delete the temporary file immediately
             if (tempFile.exists()) {
-                tempFile.delete();
+                // delete file immediately
+                if(!tempFile.delete()){
+                    logger.warning("The temporary file was not deleted [" + tempFile.getAbsolutePath() + "]");
+                }
             }
             
             throw(ex);

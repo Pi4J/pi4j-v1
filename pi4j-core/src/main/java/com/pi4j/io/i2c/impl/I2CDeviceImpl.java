@@ -27,10 +27,10 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
+
+import java.io.IOException;
 
 /**
  * Implementation of i2c device. This class only holds reference to i2c bus (so it can use its handle) and
@@ -61,7 +61,7 @@ public class I2CDeviceImpl implements I2CDevice {
     /**
      * This method writes one byte to i2c device. 
      * 
-     * @param b byte to be written
+     * @param data byte to be written
      * 
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
@@ -95,7 +95,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * This method writes one byte to i2c device. 
      * 
      * @param address local address in the i2c device
-     * @param b byte to be written
+     * @param data byte to be written
      * 
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
@@ -129,7 +129,7 @@ public class I2CDeviceImpl implements I2CDevice {
     /**
      * This method reads one byte from the i2c device. Result is between -128 and 127.
      * 
-     * @return
+     * @return byte value read
      * 
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
@@ -171,7 +171,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * This method reads one byte from the i2c device. Result is between -128 and 127.
      * 
      * @param address local address in the i2c device
-     * @return
+     * @return byte value read
      * 
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */

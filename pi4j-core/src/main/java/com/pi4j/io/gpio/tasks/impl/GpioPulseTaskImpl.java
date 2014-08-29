@@ -33,6 +33,7 @@ import com.pi4j.io.gpio.PinState;
 
 import java.util.concurrent.Callable;
 
+@SuppressWarnings("unused")
 public class GpioPulseTaskImpl implements Runnable {
 
     private final GpioPinDigitalOutput pin;

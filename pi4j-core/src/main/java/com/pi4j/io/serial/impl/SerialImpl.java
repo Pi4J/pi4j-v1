@@ -28,11 +28,12 @@ package com.pi4j.io.serial.impl;
  */
 
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataListener;
 import com.pi4j.io.serial.SerialPortException;
+
+import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <p> This implementation class implements the 'Serial' interface using the WiringPi Serial library.</p>
@@ -45,14 +46,14 @@ import com.pi4j.io.serial.SerialPortException;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #com.pi4j.io.serial.Serial
- * @see #com.pi4j.io.serial.SerialDataEvent
- * @see #com.pi4j.io.serial.SerialDataListener
- * @see #com.pi4j.io.serial.SerialFactory
+ * @see com.pi4j.io.serial.Serial
+ * @see com.pi4j.io.serial.SerialDataEvent
+ * @see com.pi4j.io.serial.SerialDataListener
+ * @see com.pi4j.io.serial.SerialFactory
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
@@ -61,7 +62,7 @@ import com.pi4j.io.serial.SerialPortException;
 public class SerialImpl implements Serial {
 
     protected int fileDescriptor = -1;
-    protected final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<SerialDataListener>();
+    protected final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<>();
     protected SerialDataMonitorThread monitor;
     protected boolean isshutdown = false;
 
@@ -74,7 +75,6 @@ public class SerialImpl implements Serial {
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
      *            GPIO header.
      * @param baudRate The baud rate to use with the serial port.
-     * @return The return value is the file descriptor.
      * @throws SerialPortException Exception thrown on any error.
      */
     public void open(String device, int baudRate) throws SerialPortException {
@@ -316,20 +316,18 @@ public class SerialImpl implements Serial {
      * <p> Java consumer code can call this method to register itself as a listener for serial data
      * events. </p>
      * 
-     * @see #com.pi4j.io.serial.SerialDataListener
-     * @see #com.pi4j.io.serial.SerialDataEvent
+     * @see com.pi4j.io.serial.SerialDataListener
+     * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener  A class instance that implements the SerialListener interface.
      */
     public synchronized void addListener(SerialDataListener... listener) {
         // add the new listener to the list of listeners
-        for (SerialDataListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
 
         // if there is not a current listening monitor thread running,
         // then lets start it now
-        if (monitor == null || monitor.isAlive() == false) {
+        if (monitor == null || !monitor.isAlive()) {
             monitor = new SerialDataMonitorThread(this, listeners);
             monitor.start();
         }
@@ -341,8 +339,8 @@ public class SerialImpl implements Serial {
      * <p> Java consumer code can call this method to unregister itself as a listener for serial data
      * events. </p>
      * 
-     * @see #com.pi4j.io.serial.SerialDataListener
-     * @see #com.pi4j.io.serial.SerialDataEvent
+     * @see com.pi4j.io.serial.SerialDataListener
+     * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener A class instance that implements the SerialListener interface.
      */

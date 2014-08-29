@@ -105,7 +105,7 @@ public interface I2CDevice {
      * This method reads one byte from the i2c device. Result is between -128 and 127.
      * 
      * @param address local address in the i2c device
-     * @return
+     * @return byte value read
      * 
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */

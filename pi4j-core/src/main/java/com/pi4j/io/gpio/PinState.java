@@ -35,6 +35,7 @@ import java.util.EnumSet;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public enum PinState {
 
     LOW(0, "LOW"), 
@@ -83,11 +84,7 @@ public enum PinState {
     }
     
     public static PinState getState(boolean state) {
-        if (state == true) {
-            return PinState.HIGH;
-        } else {
-            return PinState.LOW;
-        }
+        return (state ? PinState.HIGH : PinState.LOW);
     }
 
     public static PinState[] allStates() {

@@ -28,15 +28,15 @@ package com.pi4j.io.gpio.trigger;
  */
 
 
-import java.util.List;
-import java.util.Vector;
-
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.List;
+import java.util.Vector;
+
 public abstract class GpioTriggerBase implements GpioTrigger {
 
-    private List<PinState> states = new Vector<PinState>();
+    private List<PinState> states = new Vector<>();
 
     public GpioTriggerBase() {
         addPinState(PinState.allStates());

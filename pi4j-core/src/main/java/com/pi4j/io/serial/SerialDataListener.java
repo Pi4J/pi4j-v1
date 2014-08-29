@@ -39,13 +39,13 @@ package com.pi4j.io.serial;
  * <li>wiringPi</li>
  * </ul>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #SerialFactory
- * @see #Serial
- * @see #SerialDataEvent
+ * @see com.pi4j.io.serial.SerialFactory
+ * @see com.pi4j.io.serial.Serial
+ * @see com.pi4j.io.serial.SerialDataEvent
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
@@ -55,9 +55,9 @@ public interface SerialDataListener extends java.util.EventListener {
 
     /**
      * This is the event callback method that will be invoked when new serial data is received.
-     * 
-     * @see #SerialDataEvent
-     * @param event
+     *
+     * @see com.pi4j.io.serial.SerialDataEvent
+     * @param event serial data event
      */
     void dataReceived(SerialDataEvent event);
 }

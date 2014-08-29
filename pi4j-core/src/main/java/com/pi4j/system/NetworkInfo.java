@@ -28,11 +28,11 @@ package com.pi4j.system;
  */
 
 
+import com.pi4j.util.ExecUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pi4j.util.ExecUtil;
 
 public class NetworkInfo  {
 
@@ -63,13 +63,13 @@ public class NetworkInfo  {
 
     public static String[] getNameservers() throws IOException, InterruptedException {
         String[] nameservers = ExecUtil.execute("cat /etc/resolv.conf");
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (String nameserver : nameservers) {
             if (nameserver.startsWith("nameserver")) {
                 result.add(nameserver.substring(11).trim());
             }
         }
-        return result.toArray(new String[0]);
+        return result.toArray(new String[result.size()]);
     }
     
 //    public static Map<String,NetworkInterface> getNetworkInterfaces() throws IOException, InterruptedException {

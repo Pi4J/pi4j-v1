@@ -30,21 +30,16 @@ package com.pi4j.concurrent;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
+@SuppressWarnings("unused")
 public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService {
 
     private ScheduledExecutorService service;
     
     /**
      * Default constructor
-     * @param service
+     * @param service executor service
      */
     public ScheduledExecutorServiceWrapper(ScheduledExecutorService service) {
         this.service = service;

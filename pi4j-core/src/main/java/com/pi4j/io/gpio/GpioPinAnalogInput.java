@@ -1,10 +1,10 @@
 package com.pi4j.io.gpio;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+
+import java.util.Collection;
+import java.util.List;
 
 /*
  * #%L
@@ -39,6 +39,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioPinAnalogInput extends GpioPinAnalog, GpioPinInput {
 
     Collection<GpioPinListener> getListeners();

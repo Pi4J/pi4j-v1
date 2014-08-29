@@ -28,12 +28,13 @@ package com.pi4j.io.gpio.trigger;
  */
 
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.List;
+import java.util.concurrent.Callable;
+
+@SuppressWarnings("unused")
 public class GpioCallbackTrigger extends GpioTriggerBase {
 
     private final Callable<Void> callback;

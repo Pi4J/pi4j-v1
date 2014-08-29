@@ -39,6 +39,7 @@ import java.util.List;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioPinInput extends GpioPin {
 
     Collection<GpioTrigger> getTriggers();

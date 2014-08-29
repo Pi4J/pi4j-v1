@@ -23,7 +23,7 @@ these prerequisites automatically using apt-get.
 - gcc 4.6.3 or newer                             (sudo apt-get install gcc)
 - git-core                                       (sudo apt-get install git-core)
 - A working JDK7 (Oracle JDK)                    (sudo apt-get install oracle-java7-jdk)
-- wiringPi source and platform compiled binary   (https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/)
+- wiringPi source and platform compiled binary   (http://wiringpi.com/download-and-install/)
 
 
 Use the following command to deploy a snapshot build to the OSS Maven staging repository.

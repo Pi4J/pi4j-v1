@@ -28,9 +28,9 @@ package com.pi4j.io.gpio.event;
  */
 
 
-import java.util.EventObject;
-
 import com.pi4j.io.gpio.GpioPin;
+
+import java.util.EventObject;
 
 /**
  * GPIO pin event.
@@ -38,6 +38,7 @@ import com.pi4j.io.gpio.GpioPin;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class GpioPinEvent extends EventObject {
 
     private static final long serialVersionUID = -1036445757629271L;

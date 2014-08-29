@@ -36,6 +36,7 @@ import java.util.concurrent.Future;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput {
 
     void high();

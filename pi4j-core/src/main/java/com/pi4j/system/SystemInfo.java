@@ -59,7 +59,7 @@ public class SystemInfo {
     private static String getCpuInfo(String target) throws IOException, InterruptedException {
         // if the CPU data has not been previously acquired, then acquire it now
         if (cpuInfo == null) {
-            cpuInfo = new HashMap<String, String>();
+            cpuInfo = new HashMap<>();
             String result[] = ExecUtil.execute("cat /proc/cpuinfo");
             if(result != null){
                 for(String line : result) {
@@ -150,7 +150,7 @@ public class SystemInfo {
 
     public static String getOsFirmwareDate() throws IOException, InterruptedException, ParseException {
         String result[] = ExecUtil.execute("/opt/vc/bin/vcgencmd version");
-        if(result != null){
+        if(result != null && result.length > 0){
             for(String line : result) {
                 return line; // return 1st line
             }
@@ -192,14 +192,11 @@ public class SystemInfo {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             private final String[] gnueabihf = new String[] { "gnueabihf", "armhf" };
             public Boolean run() {                    
-                if ( StringUtil.contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
+                return ( StringUtil.contains(System.getProperty("sun.boot.library.path"), gnueabihf) ||
                      StringUtil.contains(System.getProperty("java.library.path"), gnueabihf) ||
                      StringUtil.contains(System.getProperty("java.home"), gnueabihf) || 
                      getBashVersionInfo().contains("gnueabihf") ||
-                     hasReadElfTag("Tag_ABI_HardFP_use")) {
-                        return true; //
-                }
-                return false;
+                     hasReadElfTag("Tag_ABI_HardFP_use"));
             } } );
     }
     
@@ -312,7 +309,7 @@ public class SystemInfo {
         // Support for this was added around firmware version 3357xx per info
         // at http://www.raspberrypi.org/phpBB3/viewtopic.php?p=169909#p169909
         String result[] = ExecUtil.execute("/opt/vc/bin/vcgencmd measure_temp");
-        if(result != null){
+        if(result != null && result.length > 0){
             for(String line : result) {
                 String parts[] = line.split("[=']", 3);                
                 return Float.parseFloat(parts[1]);
@@ -323,7 +320,7 @@ public class SystemInfo {
 
     private static float getVoltage(String id) throws IOException, InterruptedException, NumberFormatException {
         String result[] = ExecUtil.execute("/opt/vc/bin/vcgencmd measure_volts " + id);
-        if(result != null){
+        if(result != null && result.length > 0){
             for(String line : result) {
                 String parts[] = line.split("[=V]", 3);                
                 return Float.parseFloat(parts[1]);
@@ -351,7 +348,7 @@ public class SystemInfo {
 
     private static boolean getCodecEnabled(String codec) throws IOException, InterruptedException {
         String result[] = ExecUtil.execute("/opt/vc/bin/vcgencmd codec_enabled " + codec);
-        if(result != null){
+        if(result != null && result.length > 0){
             for(String line : result) {
                 String parts[] = line.split("=", 2);                
                 return parts[1].trim().equalsIgnoreCase("enabled");
@@ -375,7 +372,7 @@ public class SystemInfo {
 
     private static long getClockFrequency(String target) throws IOException, InterruptedException {
         String result[] = ExecUtil.execute("/opt/vc/bin/vcgencmd measure_clock " + target.trim());
-        if(result != null){
+        if(result != null && result.length > 0){
             for(String line : result) {
                 String parts[] = line.split("=", 2);                
                 return Long.parseLong(parts[1].trim());
@@ -448,8 +445,7 @@ public class SystemInfo {
                 }
             }
         }
-        catch (IOException ioe) { ioe.printStackTrace(); }
-        catch (InterruptedException ie) { ie.printStackTrace(); }
+        catch (IOException|InterruptedException ioe) { ioe.printStackTrace(); }
         return versionInfo;
     }
 
@@ -459,9 +455,7 @@ public class SystemInfo {
      */    
     private static boolean hasReadElfTag(String tag) {
         String tagValue = getReadElfTag(tag);
-        if(tagValue != null && !tagValue.isEmpty())
-            return true;
-        return false;
+        return (tagValue != null && !tagValue.isEmpty());
     }
     
     /*
@@ -484,8 +478,7 @@ public class SystemInfo {
                 }
             }            
         }
-        catch (IOException ioe) { ioe.printStackTrace(); }
-        catch (InterruptedException ie) { ie.printStackTrace(); }
+        catch (IOException|InterruptedException ioe) { ioe.printStackTrace(); }
         return tagValue;
     }
 }

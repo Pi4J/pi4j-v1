@@ -27,9 +27,10 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-import java.util.Collection;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+
+import java.util.Collection;
 
 /**
  * Gpio controller interface. This interface describes all operations over GPIO.
@@ -37,6 +38,7 @@ import com.pi4j.io.gpio.trigger.GpioTrigger;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public interface GpioController {
 
     void export(PinMode mode, GpioPin... pin);

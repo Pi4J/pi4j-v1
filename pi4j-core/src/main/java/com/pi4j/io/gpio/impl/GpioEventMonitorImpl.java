@@ -40,6 +40,7 @@ import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
+@SuppressWarnings("unused")
 public class GpioEventMonitorImpl implements PinListener {
     private final GpioPinInput pin;
 

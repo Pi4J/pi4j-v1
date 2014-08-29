@@ -38,6 +38,7 @@ import java.util.EnumSet;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class RaspiPin  {
     
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 

@@ -37,6 +37,7 @@ import com.pi4j.wiringpi.GpioInterruptListener;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider, GpioInterruptListener {
     
     public static final String NAME = "RaspberryPi GPIO Provider";

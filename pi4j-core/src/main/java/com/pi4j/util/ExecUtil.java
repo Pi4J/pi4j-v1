@@ -41,7 +41,7 @@ public class ExecUtil
     }
     
     public static String[] execute(String command, String split) throws IOException, InterruptedException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         Process p = Runtime.getRuntime().exec(command);
         p.waitFor();
                 
@@ -73,7 +73,7 @@ public class ExecUtil
         p.getInputStream().close();
 
         if (result.size() > 0) {
-            return (String[])result.toArray(new String[0]);
+            return result.toArray(new String[result.size()]);
         } else {
             return new String[0];
         }

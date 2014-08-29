@@ -35,6 +35,7 @@ import java.io.IOException;
  * @author Daniel Sendula
  *
  */
+@SuppressWarnings("unused")
 public interface I2CBus {
 
     public static final int BUS_0 = 0;

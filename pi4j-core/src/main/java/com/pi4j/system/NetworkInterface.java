@@ -26,8 +26,7 @@ package com.pi4j.system;
  * limitations under the License.
  * #L%
  */
-
-
+@SuppressWarnings("unused")
 public class NetworkInterface {
 
     private final String linkEncap;

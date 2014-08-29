@@ -37,6 +37,7 @@ import com.pi4j.io.gpio.Pin;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class GpioPinNotProvisionedException extends RuntimeException {
 
     private static final long serialVersionUID = 1171484082578232353L;

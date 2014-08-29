@@ -28,8 +28,9 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.EnumSet;
 import com.pi4j.io.gpio.impl.PinImpl;
+
+import java.util.EnumSet;
 
 /**
  * Raspberry Pi pin definitions.
@@ -37,6 +38,7 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class PiFacePin  {
     
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 

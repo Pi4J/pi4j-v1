@@ -32,7 +32,7 @@ import java.util.List;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
 
-
+@SuppressWarnings("unused")
 public interface GpioTrigger {
 
     void addPinState(PinState... state);

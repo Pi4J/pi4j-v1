@@ -38,7 +38,7 @@ import java.util.concurrent.ThreadFactory;
 public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     
     public static int MAX_THREADS_IN_POOL = 25;
-    private static List<ExecutorService> singleThreadExecutorServices  = new ArrayList<ExecutorService>();
+    private static List<ExecutorService> singleThreadExecutorServices  = new ArrayList<>();
     private static ScheduledExecutorService scheduledExecutorService = null;
     private static ScheduledExecutorServiceWrapper executorServiceWrapper = null;
     

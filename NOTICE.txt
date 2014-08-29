@@ -22,7 +22,7 @@
    This software compiles against libraries from the WiringPi project.
    The Wiring Pi project is provided by Gordon Henderson and is available
    from    
-     https://projects.drogon.net/raspberry-pi/wiringpi/
+     http://wiringpi.com/
 
    The WiringPi project is licensed under the LPGP license 
      http://www.gnu.org/licenses/lgpl.html

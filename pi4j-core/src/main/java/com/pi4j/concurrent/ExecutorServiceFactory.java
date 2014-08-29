@@ -31,6 +31,7 @@ package com.pi4j.concurrent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
+@SuppressWarnings("unused")
 public interface ExecutorServiceFactory
 {
     public ScheduledExecutorService getScheduledExecutorService();

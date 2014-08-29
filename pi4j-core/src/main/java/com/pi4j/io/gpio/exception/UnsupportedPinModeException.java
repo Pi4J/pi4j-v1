@@ -37,6 +37,7 @@ import com.pi4j.io.gpio.PinMode;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class UnsupportedPinModeException extends RuntimeException {
 
     private static final long serialVersionUID = 6435118278151751895L;

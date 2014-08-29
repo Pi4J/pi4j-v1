@@ -44,16 +44,18 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  * </ul>
  * 
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="https://projects.drogon.net/">https://projects.drogon.net/</a>)
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  * 
- * @see #com.pi4j.io.gpio.Gpio
- * 
+ * @see com.pi4j.io.gpio.GpioController
+ * @see com.pi4j.io.gpio.GpioProvider
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class GpioFactory {
 
     // we only allow a single controller to exists
@@ -134,7 +136,7 @@ public class GpioFactory {
     /**
      * Sets default {@link ExecutorServiceFactory}.
      * 
-     * @param executor service factory instance
+     * @param executorServiceFactory service factory instance
      */
     public static void setExecutorServiceFactory(ExecutorServiceFactory executorServiceFactory) {
         // set the default factory instance

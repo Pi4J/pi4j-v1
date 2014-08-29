@@ -27,11 +27,11 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
+
+import java.io.IOException;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
@@ -57,7 +57,7 @@ public class I2CBusImpl implements I2CBus {
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
     public static I2CBus getBus(int busNumber) throws IOException {
-        I2CBus bus = null;
+        I2CBus bus;
         if (busNumber == 0) {
             bus = bus0;
             if (bus == null) {

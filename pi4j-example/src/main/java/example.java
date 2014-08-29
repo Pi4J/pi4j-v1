@@ -48,7 +48,7 @@ public class example {
         // https://github.com/thomasmacpherson/piface/blob/master/python/piface/pfio.py
         //
         // see this blog post for additional details on SPI and WiringPi
-        // https://projects.drogon.net/understanding-spi-on-the-raspberry-pi/
+        // http://wiringpi.com/reference/spi-library/
         //
         // see the link below for the data sheet on the MCP23S17 chip:
         // http://ww1.microchip.com/downloads/en/devicedoc/21952b.pdf

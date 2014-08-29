@@ -27,11 +27,12 @@ package com.pi4j.io.gpio.trigger;
  * #L%
  */
 
-import java.util.List;
-
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.List;
+
+@SuppressWarnings("unused")
 public abstract class OutputTargetedGpioTrigger extends GpioTriggerBase {
 
 	protected final GpioPinDigitalOutput targetPin;

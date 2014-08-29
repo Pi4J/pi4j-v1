@@ -27,12 +27,13 @@ package com.pi4j.io.gpio.trigger;
  * #L%
  */
 
-import java.util.List;
-
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.List;
+
+@SuppressWarnings("unused")
 public class GpioToggleStateTrigger extends OutputTargetedGpioTrigger {
 
 	public GpioToggleStateTrigger(GpioPinDigitalOutput targetPin) {

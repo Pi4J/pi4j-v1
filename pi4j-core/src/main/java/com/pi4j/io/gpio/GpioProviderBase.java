@@ -47,17 +47,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public abstract class GpioProviderBase implements GpioProvider {
 
     public abstract String getName();
 
-    protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<Pin, List<PinListener>>();
-    protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<Pin, GpioProviderPinCache>();
+    protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<>();
+    protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<>();
     protected boolean isshutdown = false;
     
     @Override
     public boolean hasPin(Pin pin) {
-        return (pin.getProvider() == getName());
+        return (pin.getProvider().equals(getName()));
     }
     
     protected GpioProviderPinCache getPinCache(Pin pin) {
@@ -69,7 +70,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public void export(Pin pin, PinMode mode) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -86,7 +87,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public boolean isExported(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -96,7 +97,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public void unexport(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -120,7 +121,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public PinMode getMode(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 
@@ -131,7 +132,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -145,7 +146,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public PinPullResistance getPullResistance(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -155,7 +156,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public void setState(Pin pin, PinState state) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 
@@ -175,7 +176,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public PinState getState(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -192,7 +193,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public void setValue(Pin pin, double value) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
         
@@ -212,7 +213,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public double getValue(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 
@@ -228,7 +229,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public void setPwm(Pin pin, int value) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);        
         }
         
@@ -245,7 +246,7 @@ public abstract class GpioProviderBase implements GpioProvider {
     
     @Override
     public int getPwm(Pin pin) {
-        if (hasPin(pin) == false) {
+        if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 

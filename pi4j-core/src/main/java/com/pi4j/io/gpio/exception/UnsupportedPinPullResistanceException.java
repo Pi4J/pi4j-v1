@@ -37,6 +37,7 @@ import com.pi4j.io.gpio.PinPullResistance;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@SuppressWarnings("unused")
 public class UnsupportedPinPullResistanceException extends RuntimeException {
 
     private static final long serialVersionUID = 6065621786188662862L;
