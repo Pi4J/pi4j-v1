@@ -36,6 +36,8 @@
  */
 int getEdgePin(int pin)
 {
+    int model, rev, mem, maker, overVolted ;
+
 	// validate lower bounds
 	if(pin < 0)
 		return -1;
@@ -46,7 +48,13 @@ int getEdgePin(int pin)
 
 	// return the edge pin index
 	// (will return -1 for invalid pin)
-	return wpiPinToGpio(pin);
+    piBoardId (&model, &rev, &mem, &maker, &overVolted) ;
+    if (model == PI_MODEL_CM){
+        return pin;
+    }
+    else{
+        return wpiPinToGpio(pin);
+    }
 }
 
 

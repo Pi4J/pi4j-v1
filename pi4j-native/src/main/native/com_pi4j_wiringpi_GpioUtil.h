@@ -101,6 +101,14 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
   (JNIEnv *, jclass, jint);
 
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    isPinSupported
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
+  (JNIEnv *, jclass, jint);
+
 #ifdef __cplusplus
 }
 #endif

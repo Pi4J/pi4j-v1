@@ -40,16 +40,14 @@ public class WiringPiGpioInterruptExample2 {
             return;
         }
 
-
-
-//        Gpio.pinMode (0, Gpio.INPUT) ;
-//        Gpio.pinMode (1, Gpio.INPUT) ;
-//        Gpio.pinMode (2, Gpio.INPUT) ;
-//        Gpio.pinMode (3, Gpio.INPUT) ;
-//        Gpio.pinMode (4, Gpio.INPUT) ;
-//        Gpio.pinMode (5, Gpio.INPUT) ;
-//        Gpio.pinMode (6, Gpio.INPUT) ;
-//        Gpio.pinMode (7, Gpio.INPUT) ;
+        Gpio.pinMode (0, Gpio.INPUT) ;
+        Gpio.pinMode (1, Gpio.INPUT) ;
+        Gpio.pinMode (2, Gpio.INPUT) ;
+        Gpio.pinMode (3, Gpio.INPUT) ;
+        Gpio.pinMode (4, Gpio.INPUT) ;
+        Gpio.pinMode (5, Gpio.INPUT) ;
+        Gpio.pinMode (6, Gpio.INPUT) ;
+        Gpio.pinMode (7, Gpio.INPUT) ;
 
         Gpio.pullUpDnControl(0, Gpio.PUD_DOWN);
         Gpio.pullUpDnControl(1, Gpio.PUD_DOWN);

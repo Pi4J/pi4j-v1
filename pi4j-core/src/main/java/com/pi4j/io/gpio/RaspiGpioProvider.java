@@ -55,7 +55,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
 
     @Override
     public boolean hasPin(Pin pin) {
-        return (com.pi4j.wiringpi.Gpio.wpiPinToGpio(pin.getAddress()) >= 0);
+        return (com.pi4j.wiringpi.GpioUtil.isPinSupported(pin.getAddress()) > 0);
     }
 
     @Override

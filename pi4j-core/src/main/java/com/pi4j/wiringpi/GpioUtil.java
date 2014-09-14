@@ -250,4 +250,14 @@ public class GpioUtil {
      *         </ul>
      */
     public static native int getDirection(int pin) throws RuntimeException;
+
+    /**
+     * <p>
+     * This method will return a value of '1' if the pin is supported
+     * </p>
+     *
+     * @param pin pin number
+     * @return '1' is the pin is supported, else '0'
+     */
+    public static native int isPinSupported(int pin) throws RuntimeException;
 }

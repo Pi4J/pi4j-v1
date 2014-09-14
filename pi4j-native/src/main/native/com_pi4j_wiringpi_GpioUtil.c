@@ -541,3 +541,16 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection
 		return -1;
 	}
 }
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    isPinSupported
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
+(JNIEnv *env, jclass class, jint pin)
+{
+	// validate the pin number
+	return isPinValid(pin);
+}
+
