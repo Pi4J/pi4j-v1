@@ -31,6 +31,8 @@ package com.pi4j.system;
 import com.pi4j.util.ExecUtil;
 import com.pi4j.util.StringUtil;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -62,9 +64,9 @@ public class SystemInfo {
         // if the CPU data has not been previously acquired, then acquire it now
         if (cpuInfo == null) {
             cpuInfo = new HashMap<>();
-            String result[] = ExecUtil.execute("cat /proc/cpuinfo");
-            if(result != null){
-                for(String line : result) {
+
+            try(BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
+                for(String line; (line = br.readLine()) != null; ) {
                     String parts[] = line.split(":", 2);
                     if (parts.length >= 2 && !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty()) {
                         String cpuKey = parts[0].trim().toLowerCase();
