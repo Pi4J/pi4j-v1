@@ -78,12 +78,13 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
     void write(int address, byte[] buffer, int offset, int size) throws IOException;
-    
+
     /**
-     * This method reads one byte from the i2c device. Result is between -128 and 127.
-     * 
-     * @return read byte
-     * 
+     * This method reads one byte from the i2c device.
+     * Result is between 0 and 255 if read operation was successful, else a negative number for an error.
+     *
+     * @return byte value read: positive number (or zero) to 255 if read was successful. Negative number if reading failed.
+     *
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read() throws IOException;
@@ -100,13 +101,14 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(byte[] buffer, int offset, int size) throws IOException;
-    
+
     /**
-     * This method reads one byte from the i2c device. Result is between -128 and 127.
-     * 
+     * This method reads one byte from the i2c device.
+     * Result is between 0 and 255 if read operation was successful, else a negative number for an error.
+     *
      * @param address local address in the i2c device
-     * @return byte value read
-     * 
+     * @return byte value read: positive number (or zero) to 255 if read was successful. Negative number if reading failed.
+     *
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(int address) throws IOException;

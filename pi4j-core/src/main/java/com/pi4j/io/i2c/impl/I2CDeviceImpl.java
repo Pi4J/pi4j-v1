@@ -127,9 +127,10 @@ public class I2CDeviceImpl implements I2CDevice {
     }
 
     /**
-     * This method reads one byte from the i2c device. Result is between -128 and 127.
-     * 
-     * @return byte value read
+     * This method reads one byte from the i2c device.
+     * Result is between 0 and 255 if read operation was successful, else a negative number for an error.
+     *
+     * @return byte value read: positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      * 
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
@@ -168,10 +169,11 @@ public class I2CDeviceImpl implements I2CDevice {
     }
 
     /**
-     * This method reads one byte from the i2c device. Result is between -128 and 127.
-     * 
+     * This method reads one byte from the i2c device.
+     * Result is between 0 and 255 if read operation was successful, else a negative number for an error.
+     *
      * @param address local address in the i2c device
-     * @return byte value read
+     * @return byte value read: positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      * 
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
