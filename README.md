@@ -17,7 +17,7 @@ Snapshot builds are available from
    *  [Google Code] http://code.google.com/p/pi4j/downloads
 
  
-Copyright (C) 2012-2013 Pi4J
+Copyright (C) 2012-2014 Pi4J
 
 ## LICENSE
  
@@ -40,7 +40,7 @@ Copyright (C) 2012-2013 Pi4J
 
 ## IN DEVEOPMENT
 
-2014-08-29 :: 1.0-SNAPSHOT
+2014-09-14 :: 1.0-SNAPSHOT
 
   *  Added easy install/uninstall scripts (get.pi4j.com)
   *  Added APT package and repository support (repository.pi4j.com)

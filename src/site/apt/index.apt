@@ -7,33 +7,32 @@
 
 Welcome to Pi4J!
 
-  This project is intended to provide a bridge between the native libraries and Java for full access to the Raspberry Pi.
+  This project is intended to provide a friendly object-oriented I/O API and implementation libraries for Java Programmers to access the full I/O capabilities of the Raspberry Pi platform.
+  This project abstracts the low-level native integration and interrupt monitoring to enable Java programmers to focus on
+  implementing their application business logic.
 
 * Project Status
   
-  Please note that this project is continually under development but has been stable for over a year.  Please use a
-  non-SNAPSHOT build if you are looking for a stable release.  The functionality is reasonable stable but improvements
+  Please note that this project is continually under development but has been stable for well over a year.  Please use a
+  non-SNAPSHOT build if you are looking for a stable release.  The functionality is reasonably stable but improvements
   and bug fixes are continually committed into the 'develop' branch in the Pi4J GitHub repository.
   
   You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
-  or ulgy.  <(Well maybe keep the ugly feedback to a minimum.)>
+  or ugly.  <(Well maybe keep the ugly feedback to a minimum.)>
   
   Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.     
 
 * Supported Hardware
 
-  * Raspberry Pi - Model A
+  * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
 
-  * Raspberry Pi - Model B (Revision 1)
+  * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1)}}
 
-  * Raspberry Pi - Model B (Revision 2)
+  * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2)}}
 
-  * Raspberry Pi - Model B+
+  * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
 
-
-* Unsupported Hardware
-
-  * Raspberry Pi - Compute Module  (not yet supported, but coming soon!)
+  * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
 
 
 * Features
@@ -70,6 +69,9 @@ Welcome to Pi4J!
   
 * Getting Started
 
+  The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
+  <<<curl -s get.pi4j.com | sudo bash>>>
+
   To get started using the Pi4J library, please see the following pages:
 
   * {{{./install.html}Installation}}
@@ -91,4 +93,4 @@ Welcome to Pi4J!
   * {{{./example/serial.html}Serial Communication}}
   
   * {{{./example/system-info.html}System/Network Information}}  
-   
+

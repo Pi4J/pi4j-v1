@@ -9,6 +9,7 @@ Usage
 
 %{toc|section=0|fromDepth=2|toDepth=3}
 
+=====================
 
 * Import Pi4J Packages
 
@@ -16,6 +17,7 @@ Usage
   
 %{snippet|id=usage-import-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
 
+=====================
 
 * Create Controller Instance
 
@@ -23,28 +25,45 @@ Usage
 
 %{snippet|id=usage-create-controller-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
  
+=====================
 
 * Pin Numbering
 
-  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\    
-  P14J implements the same pin number scheme as the Wiring Pi project.  
-  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+  * <<For Models A, B, and B+>>
+
+    \
+    Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+    P14J implements the same pin number scheme as the Wiring Pi project.
+    More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
   
-  Pi4J provides a {{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
+    Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
 
-  The available GPIO pins differ between Raspberry Pi models and board revisions.
-  Please select your model/revision below to see the GPIO pinout for your board.
+  * <<For the Compute Module>>
 
-     * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+    \
+    Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
+    Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> enumeration that is used to manage the accessible GPIO pins for the Compute Module.
 
-     * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
+  * <<Pin Numbering Diagrams>>
 
-     * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2.0)}}
+    \
+    The available GPIO pins differ between Raspberry Pi models and board revisions.
+    Please select your model/revision below to see the GPIO pinout for your board.
 
-     * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+       * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
 
-  {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
+       * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
 
+       * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2.0)}}
+
+       * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+
+       * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
+
+    \
+    {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
+
+=====================
 
 * Provision Pins
 
@@ -60,6 +79,9 @@ Usage
 
 %{snippet|id=usage-provision-output-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
+  <<NOTE:>> For the Compute Module, you would use the <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> class instead of <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> when providing a pin address to the provisioning method.
+
+=====================
 
 * Control Pin State
 
@@ -70,6 +92,7 @@ Usage
 
   A complete example project demonstrating the control of GPIO pins is provided {{{./example/control.html}here}}.
 
+=====================
 
 * Read Pin State
 
@@ -78,6 +101,7 @@ Usage
 
 %{snippet|id=usage-read-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
+=====================
 
 * Listen for Pin Changes
 
@@ -94,6 +118,7 @@ Usage
 
   A complete example project demonstrating the listening for GPIO pin state changes is provided {{{./example/listener.html}here}}.
 
+=====================
 
 * Pin Shutdown
 
@@ -106,7 +131,8 @@ Usage
 
   A complete example project demonstrating the GPIO pin shutdown configuration is provided {{{./example/shutdown.html}here}}.
 
-  
+=====================
+
 * Pin Triggers
 
   P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\     
@@ -117,6 +143,7 @@ Usage
   A complete example project demonstrating the GPIO pin triggers is provided {{{./example/trigger.html}here}}.\
   (This example includes all available provided triggers.)
   
+=====================
 
 * Serial Communication
 
@@ -124,6 +151,7 @@ Usage
   The following example project demonstrates implementing serial communication:\
   {{{./example/serial.html}Serial Communication Example}}.
   
+=====================
 
 * System Information
 

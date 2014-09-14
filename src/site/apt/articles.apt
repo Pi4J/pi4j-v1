@@ -1,0 +1,58 @@
+            ------
+            Presentations / Articles
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Presentations / Articles
+
+  The following articles, presentations and projects provide additional information on and examples using the Pi4J Project:
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+=====================
+
+* Java Magazine Article (2014)
+
+  <<//java nation/ PI4J PROJECT>>\
+  <<May/June 2014>>\
+  \
+  The Pi4J Project was featured in the following Java Magazine article in the May/June 2014 edition.
+
+  * {{{http://www.oraclejavamagazine-digital.com/javamagazine_twitter/20140506#pg18}Magazine Article}} (@JavaMagazine)
+
+
+=====================
+
+* JavaOne Presentation (2013)
+
+  <<Let's Get Physical: I/O Programming with Java on the Raspberry Pi with Pi4J>>\
+  <<September 25, 2013>> (by Robert Savage)\
+  \
+  The following talk was presented at JavaOne (San Francisco) 2013.
+
+  * {{{http://www.savagehomeautomation.com/projects/thank-you-javaone.html}Blog Article}} (@savageautomate)
+
+  * {{{http://www.slideshare.net/savageautomate/con7968-lets-get-physical-io-programming-using-pi4-j}Presentation Slides}} (@SlideShare)
+
+  * {{{https://github.com/savagehomeautomation/pi4j-javaone-demos}Sample Code}} (@github)
+
+  * {{{http://www.parleys.com/play/5255777ae4b0a43ac12124ee/chapter1/about}Live Recording}} (@Parleys)
+
+
+=====================
+
+*  Sunrise/Sunset Timer for Christmas Lights Project
+
+  <<Raspberry Pi - Sunrise / Sunset Timer for Christmas Lights>>\
+  <<December 05, 2021>> (by Robert Savage)\
+  \
+  The following article demonstrates using Pi4J to create a sunrise/sunset timer for controlling Christmas lights.
+
+  * {{{http://www.savagehomeautomation.com/projects/raspberry-pi-sunrise-sunset-timer-for-christmas-lights.html}Blog Article}} (@savageautomate)
+
+  * {{{https://github.com/savagehomeautomation/raspi-sspc}Sample Code}} (@github)
+
+
+=====================
