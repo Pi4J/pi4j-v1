@@ -124,4 +124,20 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(int address, byte[] buffer, int offset, int size) throws IOException;
+
+    /**
+     * This method writes and reads bytes to/from the i2c device in a single method call
+     *
+     * @param writeBuffer buffer of data to be written to the i2c device in one go
+     * @param writeOffset offset in write buffer
+     * @param writeSize number of bytes to be written from buffer
+     * @param readBuffer buffer of data to be read from the i2c device in one go
+     * @param readOffset offset in read buffer
+     * @param readSize number of bytes to be read
+     *
+     * @return number of bytes read
+     *
+     * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
+     */
+    int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException;
 }

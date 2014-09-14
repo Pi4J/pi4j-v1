@@ -209,7 +209,30 @@ public class I2CDeviceImpl implements I2CDevice {
         }
         return ret;
     }
-    
+
+    /**
+     * This method writes and reads bytes to/from the i2c device in a single method call
+     *
+     * @param writeBuffer buffer of data to be written to the i2c device in one go
+     * @param writeOffset offset in write buffer
+     * @param writeSize number of bytes to be written from buffer
+     * @param readBuffer buffer of data to be read from the i2c device in one go
+     * @param readOffset offset in read buffer
+     * @param readSize number of bytes to be read
+     *
+     * @return number of bytes read
+     *
+     * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
+     */
+    @Override
+    public int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException {
+        int ret = I2C.i2cWriteAndReadBytes(bus.fd, deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
+        if (ret < 0) {
+            throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+        }
+        return ret;
+    }
+
     /**
      * This helper method creates a string describing bus file name and device address (in hex).
      * 
