@@ -54,7 +54,7 @@ public class NetworkInfo  {
     }
 
     public static String getIPAddress() throws IOException, InterruptedException {
-        return ExecUtil.execute("hostname --ip-address")[0];
+        return ExecUtil.execute("hostname -i")[0];
     }
 
     public static String[] getFQDNs() throws IOException, InterruptedException {
