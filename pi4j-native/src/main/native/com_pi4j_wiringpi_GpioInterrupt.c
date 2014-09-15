@@ -279,6 +279,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChang
 		{
 			pthread_cancel(threads[index]);
 
+            // reset running flag
+            monitor_data_array[index].running = 0;
+
 			// return '1' when a thread was actively killed
 			return 1;
 		}
