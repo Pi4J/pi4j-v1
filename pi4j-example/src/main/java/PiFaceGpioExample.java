@@ -28,8 +28,6 @@
  */
 
 
-import java.io.IOException;
-
 import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
 import com.pi4j.gpio.extension.piface.PiFacePin;
 import com.pi4j.io.gpio.GpioController;
@@ -39,6 +37,8 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.wiringpi.Spi;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -115,7 +115,7 @@ public class PiFaceGpioExample {
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        gpio.shutdown();                 
+        gpio.shutdown();
     }
 }
 
