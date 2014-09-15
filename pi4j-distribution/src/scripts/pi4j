@@ -90,9 +90,17 @@ case $1 in
    -run) ;&
    --run)
       shift
-      ;&
-   *)
       set -x #echo on
       sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
+      ;;
+   *)
+      if [[ $1 == *.java ]]
+      then
+        set -x #echo on
+        javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $@
+      else
+        set -x #echo on
+        sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
+      fi
       ;;
 esac

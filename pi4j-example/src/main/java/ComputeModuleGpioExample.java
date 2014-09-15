@@ -73,7 +73,7 @@ public class ComputeModuleGpioExample {
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_13, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_14, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_15, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(RCMPin.GPIO_16, PinPullResistance.PULL_DOWN),
+                // gpio.provisionDigitalInputPin(RCMPin.GPIO_16, PinPullResistance.PULL_DOWN), (error exporting GPIO 16?)
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_17, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_18, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_19, PinPullResistance.PULL_DOWN),

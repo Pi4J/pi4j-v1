@@ -1,13 +1,6 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.io.IOException;
-
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
@@ -15,6 +8,8 @@ import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
 
 /*
  * #%L
@@ -102,6 +97,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
         // create I2C device instance
         device = bus.getDevice(address);
+
+        // read initial GPIO pin states
+        currentStatesA = device.read(REGISTER_GPIO_A);
+        currentStatesB = device.read(REGISTER_GPIO_B);
 
         // set all default pins directions
         device.write(REGISTER_IODIR_A, (byte) currentDirectionA);
@@ -435,10 +434,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 	                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
-	                                if ((pinInterruptA & pinAddressA) > 0) {
+	                                //if ((pinInterruptA & pinAddressA) > 0) {
 	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
 	                                    evaluatePinForChangeA(pin, pinInterruptState);
-	                                }
+	                                //}
 	                            }
 	                        }
 	                    }
@@ -458,10 +457,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 	                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
-	                                if ((pinInterruptB & pinAddressB) > 0) {
+	                                //if ((pinInterruptB & pinAddressB) > 0) {
 	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
 	                                    evaluatePinForChangeB(pin, pinInterruptState);
-	                                }
+	                                //}
 	                            }
 	                        }
 	                    }

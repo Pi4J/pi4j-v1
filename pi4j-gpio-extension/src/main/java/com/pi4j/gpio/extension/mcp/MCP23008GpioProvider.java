@@ -1,22 +1,15 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.io.IOException;
-
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
 
 /*
  * #%L
@@ -89,6 +82,9 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
 
         // create I2C device instance
         device = bus.getDevice(address);
+
+        // read initial GPIO pin states
+        currentStates = device.read(REGISTER_GPIO);
 
         // set all default pins directions
         device.write(REGISTER_IODIR, (byte) currentDirection);
@@ -311,10 +307,10 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
                             // loop over the available pins 
                             for (Pin pin : MCP23008Pin.ALL) {
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterrupt & pin.getAddress()) > 0) {
+                                //if ((pinInterrupt & pin.getAddress()) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChange(pin, pinInterruptState);
-                                }
+                                //}
                             }
                         }
                     }

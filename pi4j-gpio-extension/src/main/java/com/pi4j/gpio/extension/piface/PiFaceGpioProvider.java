@@ -1,20 +1,13 @@
 package com.pi4j.gpio.extension.piface;
 
-import java.io.IOException;
-
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.wiringpi.Spi;
+
+import java.io.IOException;
 
 /*
  * #%L
@@ -137,7 +130,11 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         // bit 0 Unimplemented: Read as ‘0’.
         //
         write(REGISTER_IOCON, (byte) 0x00001000);  // enable hardware address
-        
+
+        // read initial GPIO pin states
+        currentStatesA = read(REGISTER_GPIO_A);
+        currentStatesB = read(REGISTER_GPIO_B);
+
         // set all default pins directions
         // (1 = Pin is configured as an input.)
         // (0 = Pin is configured as an output.)
@@ -504,10 +501,10 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
                                 int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
                                 
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptA & pinAddressA) > 0) {
+                                //if ((pinInterruptA & pinAddressA) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeA(pin, pinInterruptState);
-                                }
+                                //}
                             }
                         }
                     }
@@ -527,10 +524,10 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
                                 int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
 
                                 // is there an interrupt flag on this pin?
-                                if ((pinInterruptB & pinAddressB) > 0) {
+                                //if ((pinInterruptB & pinAddressB) > 0) {
                                     //System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
                                     evaluatePinForChangeB(pin, pinInterruptState);
-                                }
+                                //}
                             }
                         }
                     }
