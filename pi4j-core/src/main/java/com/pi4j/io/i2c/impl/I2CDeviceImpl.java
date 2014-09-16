@@ -31,6 +31,8 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of i2c device. This class only holds reference to i2c bus (so it can use its handle) and
@@ -46,6 +48,8 @@ public class I2CDeviceImpl implements I2CDevice {
     
     /** I2c device address */
     private int deviceAddress;
+
+    private final static Lock lock = new ReentrantLock( true );
     
     /**
      * Constructor.
@@ -67,9 +71,14 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(byte data) throws IOException {
-        int ret = I2C.i2cWriteByteDirect(bus.fd, deviceAddress, data);
-        if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cWriteByteDirect(bus.fd, deviceAddress, data);
+            if (ret < 0) {
+                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -84,10 +93,14 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(byte[] buffer, int offset, int size) throws IOException {
-        
-        int ret = I2C.i2cWriteBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
-        if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cWriteBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
+            if (ret < 0) {
+                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -101,9 +114,14 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(int address, byte data) throws IOException {
-        int ret = I2C.i2cWriteByte(bus.fd, deviceAddress, address, data);
-        if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cWriteByte(bus.fd, deviceAddress, address, data);
+            if (ret < 0) {
+                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -119,10 +137,14 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(int address, byte[] buffer, int offset, int size) throws IOException {
-        
-        int ret = I2C.i2cWriteBytes(bus.fd, deviceAddress, address, size, offset, buffer);
-        if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cWriteBytes(bus.fd, deviceAddress, address, size, offset, buffer);
+            if (ret < 0) {
+                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -136,11 +158,16 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read() throws IOException {
-        int ret = I2C.i2cReadByteDirect(bus.fd, deviceAddress);
-        if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cReadByteDirect(bus.fd, deviceAddress);
+            if (ret < 0) {
+                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+            }
+            return ret;
+        } finally {
+            lock.unlock();
         }
-        return ret;
     }
 
     /**
@@ -160,12 +187,17 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(byte[] buffer, int offset, int size) throws IOException {
-        // It doesn't work for some reason. 
-        int ret = I2C.i2cReadBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
-        if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            // It doesn't work for some reason.
+            int ret = I2C.i2cReadBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
+            if (ret < 0) {
+                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+            }
+            return ret;
+        } finally {
+            lock.unlock();
         }
-        return ret;
     }
 
     /**
@@ -179,11 +211,16 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(int address) throws IOException {
-        int ret = I2C.i2cReadByte(bus.fd, deviceAddress, address);
-        if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cReadByte(bus.fd, deviceAddress, address);
+            if (ret < 0) {
+                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+            }
+            return ret;
+        } finally {
+            lock.unlock();
         }
-        return ret;
     }
 
     /**
@@ -204,12 +241,17 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(int address, byte[] buffer, int offset, int size) throws IOException {
-        // It doesn't work for some reason. 
-        int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
-        if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            // It doesn't work for some reason.
+            int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
+            if (ret < 0) {
+                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+            }
+            return ret;
+        } finally {
+            lock.unlock();
         }
-        return ret;
     }
 
     /**
@@ -228,11 +270,16 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException {
-        int ret = I2C.i2cWriteAndReadBytes(bus.fd, deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
-        if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+        lock.lock();
+        try {
+            int ret = I2C.i2cWriteAndReadBytes(bus.fd, deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
+            if (ret < 0) {
+                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+            }
+            return ret;
+        } finally {
+            lock.unlock();
         }
-        return ret;
     }
 
     /**
@@ -257,3 +304,4 @@ public class I2CDeviceImpl implements I2CDevice {
     }
     
 }
+
