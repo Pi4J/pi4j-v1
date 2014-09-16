@@ -141,6 +141,7 @@
         <mockito.version>1.9.5</mockito.version>
 
         <!-- PLUGIN VERSIONS -->
+        <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
         <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
@@ -375,6 +376,14 @@
                         <verbose>true</verbose>
                     </configuration>
                 </plugin>
+
+                <!-- MAVEN JAR PLUGIN -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+
 
                 <!-- INCLUDE SOURCE JAR -->
                 <plugin>
@@ -666,6 +675,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <id>non-aggregate</id>

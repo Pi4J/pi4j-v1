@@ -239,7 +239,7 @@
 				<groupId>org.vafer</groupId>
                 <configuration>
                     <attach>true</attach>
-                    <deb>${project.build.directory}/pi4j-${version}.deb</deb>
+                    <deb>${project.build.directory}/pi4j-${project.version}.deb</deb>
                     <installDir>/opt/pi4j</installDir>
 
                     <signPackage>${pi4j.gpg.sign}</signPackage>
@@ -384,7 +384,7 @@
 												
 										<!-- copy the DEB file to the Raspberry Pi -->
 										<scp
-											file="${project.build.directory}/pi4j-${version}.deb" 
+											file="${project.build.directory}/pi4j-${project.version}.deb"
 											remoteTofile="${pi.user.dev}:${pi.password.dev}@${pi.host.dev}:${pi.dirCopyTo.dev}/pi4j.deb"
 											port="${pi.port.dev}" trust="true" verbose="true" failonerror="true">
 										</scp>

@@ -162,6 +162,7 @@
 
 			<!-- INCLUDE OSGi MANIFEST IN JAR -->
 			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -172,6 +173,7 @@
 
 			<!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASPBERRY PI -->
 			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 
