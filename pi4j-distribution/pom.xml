@@ -101,6 +101,12 @@
 		</dependency>
 	</dependencies>
 
+
+    <properties>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+    </properties>
+
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
         <extensions>
@@ -228,6 +234,10 @@
                         <replacement>
                             <token>%PROJECT_VERSION%</token>
                             <value>${project.version}</value>
+                        </replacement>
+                        <replacement>
+                            <token>%PROJECT_TIMESTAMP%</token>
+                            <value>${timestamp}</value>
                         </replacement>
                     </replacements>
                 </configuration>
