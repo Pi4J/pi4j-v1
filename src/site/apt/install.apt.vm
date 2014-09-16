@@ -62,7 +62,7 @@ Pi4J Installation
 
   First, download a copy of the latest Pi4J Debian/Raspian installer package (.deb) file to your local computer.
   You can download the Pi4J Debian/Raspian installer package (.deb) using your web browser at the following URL: \
-  {{{http://pi4j.googlecode.com/files/pi4j-${project.version}.deb}http://pi4j.googlecode.com/files/pi4j-${project.version}.deb}}
+  {{{http://get.pi4j.com/download/pi4j-${project.version}.deb}http://get.pi4j.com/download/pi4j-${project.version}.deb}}
 
   Next, you will need to transfer the download installer package over to your RaspberryPi.  You can use any method you
   prefer to transfer the file (USB, SCP, FTP, etc.)

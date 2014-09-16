@@ -45,12 +45,9 @@ Use the following Maven command to regenerate the .H header source file.
 DOWNLOADS
 --------------------
 
-Use the following Maven command to deploy the downloadable artifacts the Google Code project downloads page.
-(Note, you must have "Google Code" project credentials defined in your private Maven settings.xml file.
- Please see this README for detail on the Maven plugin performing this task: 
- http://code.google.com/p/maven-gcu-plugin/wiki/Usage)
+Use the following Maven command to deploy the downloadable artifacts to the Pi4J downloads page.
 
-> mvn clean install gcu:upload --projects pi4j-core,pi4j-distribution
+> mvn deploy -Drelease-build --projects pi4j-distribution
 
 
 --------------------
@@ -61,12 +58,11 @@ Use the following Maven command to locally generate project site documentation:
 
 > mvn -N clean site
 
-
 Use the following Maven command to generate and deploy the project site documentation to the Github pages.
 (Note, you must have a "github" site credentials defined in your private Maven settings.xml file.
  Please see this README for detail on the Maven plugin performing this task: https://github.com/github/maven-plugins/blob/master/README.md)
 
-> mvn -N clean site ghSite:site
+> mvn -N clean site -Pdeploy-site
 
 
 ---------------------------
@@ -75,18 +71,8 @@ PUBLIC SNAPSHOT DEPLOYMENT
 
 Use the following series of instructions to publish a public deployment of a snapshot build:
 
-> mvn clean deploy -P native
-> mvn gcu:upload --projects pi4j-distribution
-> mvn -N clean site ghSite:site
-
-
----------------------------
-PRIVATE RELEASE BUILD
----------------------------
-
-Use the following command to build a private release build:
-
-> mvn clean install -Drelease-build -Dgpg.passphrase=your-passphrase
+> mvn clean deploy -Drelease-build
+> mvn -N clean site -Pdeploy-site
 
 
 ---------------------------
@@ -98,8 +84,7 @@ Use the following series of instructions to publish a public deployment of a rel
 - remove "-SNAPSHOT" from all project pom.xml files
 
 > mvn clean deploy -Drelease-build -Dgpg.passphrase=your-passphrase
-> mvn gcu:upload   -Drelease-build --projects pi4j-distribution
-> mvn -N clean site ghSite:site
+> mvn -N clean site -Pdeploy-site
 
 - create source tag for release
 - send release notification via @Pi4J on Twitter

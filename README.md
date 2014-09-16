@@ -10,12 +10,12 @@ Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />
 Release builds are available from 
    *  [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
-   *  [Google Code] http://code.google.com/p/pi4j/downloads
+   *  [Downloads] http://pi4j.com/download.html
 
 Snapshot builds are available from 
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
-   *  [Google Code] http://code.google.com/p/pi4j/downloads
-
+   *  [Downloads] http://pi4j.com/download.html
+   
  
 Copyright (C) 2012-2014 Pi4J
 

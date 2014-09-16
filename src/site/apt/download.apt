@@ -13,12 +13,23 @@ Download
 
 * Direct Download
 
-  You can download the compiled Pi4J library JARs directly here:\
-  {{http://code.google.com/p/pi4j/downloads}}
+  You can download the compiled Pi4J library JARs directly here:
+
+  <<LATEST SNAPSHOT BUILDS>>
+
+     * {{{http://get.pi4j.com/download/pi4j-1.0-SNAPSHOT.deb}pi4j-1.0-SNAPSHOT.deb}} <<<Debian Installer Package>>>
+
+     * {{{http://get.pi4j.com/download/pi4j-1.0-SNAPSHOT.deb}pi4j-1.0-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
+
+  <<RELEASE BUILDS>>
+
+    * {{{http://get.pi4j.com/download/pi4j-0.0.5.deb}pi4j-0.0.5.deb}} <<<Debian Installer Package>>>
+
+    * {{{http://get.pi4j.com/download/pi4j-0.0.5.deb}pi4j-0.0.5.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
-  Pi4J release builds will be deployed to Maven Central when each final version build is released.\
+  Pi4J release builds will be deployed to Maven Central when each final version build is released.
   
   Snapshots will be hosted in the following Sonatype OSS repository.\
   {{https://oss.sonatype.org/index.html#nexus-search;quick~pi4j}}

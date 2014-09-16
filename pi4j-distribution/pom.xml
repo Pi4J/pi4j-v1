@@ -242,7 +242,7 @@
                     <deb>${project.build.directory}/pi4j-${version}.deb</deb>
                     <installDir>/opt/pi4j</installDir>
 
-                    <signPackage>true</signPackage>
+                    <signPackage>${pi4j.gpg.sign}</signPackage>
                     <signMethod>dpkg-sig</signMethod>
                     <signRole>builder</signRole>
 
@@ -433,47 +433,75 @@
 					</execution>
         		</executions>				
 			</plugin>
-        			
-			<!-- DEPLOY .DEP PACKAGE TO GOOGLE CODE -->
-			<!-- http://code.google.com/p/maven-gcu-plugin/wiki/Usage -->
-            <plugin>
-                <groupId>com.googlecode.maven-gcu-plugin</groupId>
-                <artifactId>maven-gcu-plugin</artifactId>
-                <configuration>
-                    <serverId>googlecode</serverId>
-                    <failsOnError>true</failsOnError>
-                    <projectName>pi4j</projectName>
-                    <uploads>
-                         <upload>
-                            <file>${project.build.directory}/pi4j-${project.version}.deb</file>
-                            <summary>${project.version} Debian installer package of the Pi4J Library for the Raspberry Pi</summary>
-                            <labels>
-                                <label>Featured</label>
-                                <label>Type-Package</label>
-                                <label>${googlecode.upload.label}</label>
-                            </labels>
-                         </upload>
-                         <upload>
-                            <file>${project.build.directory}/pi4j-${project.version}.zip</file>
-                            <summary>${project.version} archive package of the Pi4J Library for the Raspberry Pi</summary>
-                            <labels>
-                                <label>Featured</label>
-                                <label>Type-Archive</label>
-                                <label>${googlecode.upload.label}</label>
-                            </labels>
-                         </upload>
-                    </uploads>
-                </configuration>
-            </plugin>					
-
 		</plugins>
 	</build>
 
     <profiles>
+
+        <!-- SPECIAL PROFILE FOR PUBLISHING DOWNLOAD ARTIFACTS -->
+        <profile>
+            <id>deploy-downloads</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- this plugin will upload the ZIP and DEB packages to the public
+                         Pi4J downloads URL for the website.
+                         http://get.pi4j.com
+                         The "{pi4j.aws.access.key}" property must be configured in your maven settings.xml file.
+                         The "{pi4j.aws.secret.key}" property must be configured in your maven settings.xml file.
+                         (This is intended only for Pi4J public deployment)
+                     -->
+                    <plugin>
+                        <groupId>com.bazaarvoice.maven.plugins</groupId>
+                        <artifactId>s3-upload-maven-plugin</artifactId>
+                        <configuration>
+                            <recursive>false</recursive>
+                            <bucketName>get.pi4j.com</bucketName>
+                            <accessKey>${pi4j.aws.access.key}</accessKey>
+                            <secretKey>${pi4j.aws.secret.key}</secretKey>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-pi4-zip-package</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.build.directory}/pi4j-${project.version}.zip</source>
+                                    <destination>download/pi4j-${project.version}.zip</destination>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>deploy-pi4-deb-package</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.build.directory}/pi4j-${project.version}.deb</source>
+                                    <destination>download/pi4j-${project.version}.deb</destination>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO get.pi4j.com -->
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <!-- this plugin will upload the GPG public key file, the Pi4J APT
@@ -492,17 +520,11 @@
                             <bucketName>get.pi4j.com</bucketName>
                             <accessKey>${pi4j.aws.access.key}</accessKey>
                             <secretKey>${pi4j.aws.secret.key}</secretKey>
-                            <!--<metadatas>-->
-                                <!--<metadata>-->
-                                    <!--<key>Content-Type</key>-->
-                                    <!--<value>text/plain</value>-->
-                                <!--</metadata>-->
-                            <!--</metadatas>-->
                         </configuration>
                         <executions>
                             <execution>
                                 <id>deploy-pi4-gpg-public-key</id>
-                                <phase>install</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>s3-upload</goal>
                                 </goals>
@@ -513,7 +535,7 @@
                             </execution>
                             <execution>
                                 <id>deploy-pi4j-apt-repo-list</id>
-                                <phase>install</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>s3-upload</goal>
                                 </goals>
@@ -524,7 +546,7 @@
                             </execution>
                             <execution>
                                 <id>deploy-pi4j-install-script</id>
-                                <phase>install</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>s3-upload</goal>
                                 </goals>
@@ -535,7 +557,7 @@
                             </execution>
                             <execution>
                                 <id>deploy-pi4j-uninstall-script</id>
-                                <phase>install</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>s3-upload</goal>
                                 </goals>
@@ -569,7 +591,7 @@
                         <executions>
                             <execution>
                                 <id>deploy-pi4j-apt-repo-package</id>
-                                <phase>install</phase>
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
