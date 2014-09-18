@@ -58,7 +58,12 @@ case $1 in
    --version)
       shift
       echo
-      echo "Pi4J Library Version: %PROJECT_VERSION% (%PROJECT_TIMESTAMP%)"
+      echo "--------------------------------------------"
+      echo "            THE Pi4J PROJECT"
+      echo "--------------------------------------------"
+      echo "   VERSION   : %PROJECT_VERSION%"
+      echo "   TIMESTAMP : %PROJECT_TIMESTAMP%"
+      echo "--------------------------------------------"
       echo
       ;;
    -u) ;&

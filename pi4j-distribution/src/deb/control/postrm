@@ -1,2 +1,17 @@
-#!/bin/sh
-rm -f -r /opt/pi4j
+#!/bin/bash
+
+set -e
+
+case "$1" in
+   remove)
+      rm /usr/bin/pi4j
+      rm -f -r /opt/pi4j
+   ;;
+   purge|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+      echo $1
+    ;;
+   *)
+      echo "postinst called with unknown argument \`\$1'" >&2
+      exit 0
+   ;;
+esac
