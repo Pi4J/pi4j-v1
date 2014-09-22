@@ -55,7 +55,6 @@ import java.util.Vector;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public class GpioInterrupt {
 
     private static Vector<GpioInterruptListener> listeners = new Vector<>();
@@ -68,7 +67,7 @@ public class GpioInterrupt {
     
     static {
         // Load the platform library
-        NativeLibraryLoader.load("pi4j", "libpi4j.so");
+        NativeLibraryLoader.load("libpi4j.so");
     }
 
     /**
