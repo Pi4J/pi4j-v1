@@ -9,6 +9,9 @@ maven-eclipse.xml
 .externalToolBuilders
 /target
 /.settings
+.metadata/
+RemoteSystemsTempFiles/
+
 /pi4j-core/.settings
 /pi4j-core/.classpath
 /pi4j-example/.settings
