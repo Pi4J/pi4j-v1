@@ -19,13 +19,13 @@ Download
 
      * {{{http://get.pi4j.com/download/pi4j-1.0-SNAPSHOT.deb}pi4j-1.0-SNAPSHOT.deb}} <<<Debian Installer Package>>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.0-SNAPSHOT.deb}pi4j-1.0-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.0-SNAPSHOT.zip}pi4j-1.0-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
   <<RELEASE BUILDS>>
 
     * {{{http://get.pi4j.com/download/pi4j-0.0.5.deb}pi4j-0.0.5.deb}} <<<Debian Installer Package>>>
 
-    * {{{http://get.pi4j.com/download/pi4j-0.0.5.deb}pi4j-0.0.5.zip}} <<<Compressed ZIP Archive>>>
+    * {{{http://get.pi4j.com/download/pi4j-0.0.5.zip}pi4j-0.0.5.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
