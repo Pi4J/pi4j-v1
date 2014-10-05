@@ -147,9 +147,9 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         try {
             // set state value for pin bit 
             currentStates.set(pin.getAddress(), state.isHigh());
-            
+
             // update state value
-            device.write(currentStates.toByteArray()[0]);
+            device.write(currentStates.isEmpty() ? 0 : currentStates.toByteArray()[0]);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -162,14 +162,14 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
 
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
-        
+
         // perform shutdown login in base
         super.shutdown();
-        
+
         try {
             // if a monitor is running, then shut it down now
             if (monitor != null) {
@@ -183,7 +183,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }   
+    }
 
     
     /**
