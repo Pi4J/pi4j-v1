@@ -30,8 +30,8 @@ import com.pi4j.wiringpi.Spi;
 public class example {
 
     // SPI operations
-    public static byte INIT_CMD = (byte) 0xD0;
-    public static byte SPI_CHANNEL = 0x0;
+    public static short INIT_CMD = (short) 0xD0;
+    public static short SPI_CHANNEL = 0x0;
     
     public static void main(String args[]) throws InterruptedException {
         
@@ -73,15 +73,15 @@ public class example {
     public static void read(){
         
         // send test ASCII message
-        byte packet[] = new byte[2];
-        packet[0] = INIT_CMD;  // address byte
-        //packet[0] = (byte)(INIT_CMD | (SPI_CHANNEL<<5));
+        short packet[] = new short[2];
+        packet[0] = INIT_CMD;  // address short
+        //packet[0] = (short)(INIT_CMD | (SPI_CHANNEL<<5));
         packet[1] = 0x00;  // dummy
            
         System.out.println("-----------------------------------------------");
-        System.out.println("[TX] " + bytesToHex(packet));
-        Spi.wiringPiSPIDataRW(SPI_CHANNEL, packet, 2);        
-        System.out.println("[RX] " + bytesToHex(packet));
+        System.out.println("[TX] " + shortsToHex(packet));
+        Spi.wiringPiSPIDataRW(SPI_CHANNEL, packet);        
+        System.out.println("[RX] " + shortsToHex(packet));
         System.out.println("-----------------------------------------------");
         
         //System.out.println(( (packet[0]<<7) | (packet[1]>>1) ) & 0x3FF);
@@ -90,22 +90,22 @@ public class example {
     }
     
     
-    public static String bytesToBinary(byte[] bytes) {
+    public static String shortsToBinary(short[] shorts) {
         StringBuilder sb = new StringBuilder();
         int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j];
+        for ( int j = 0; j < shorts.length; j++ ) {
+            v = shorts[j];
             sb.append(Integer.toBinaryString(v));
         }
         return sb.toString();
     }    
 
-    public static String bytesToHex(byte[] bytes) {
+    public static String shortsToHex(short[] shorts) {
         final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        char[] hexChars = new char[bytes.length * 2];
+        char[] hexChars = new char[shorts.length * 2];
         int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j] & 0xFF;
+        for ( int j = 0; j < shorts.length; j++ ) {
+            v = shorts[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }

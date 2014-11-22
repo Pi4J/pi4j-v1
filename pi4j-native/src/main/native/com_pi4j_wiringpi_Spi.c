@@ -54,7 +54,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang
 	(*env)->GetStringUTFRegion(env, data, 0, len, buffer);
 	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
 	jstring returnString = (*env)->NewStringUTF(env, buffer);
-    data = returnString;
+	data = returnString;
 
 	return result;
 }
@@ -62,29 +62,41 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang
 /*
  * Class:     com_pi4j_wiringpi_Spi
  * Method:    wiringPiSPIDataRW
- * Signature: (I[BI)I
+ * Signature: (I[S)[S
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
-(JNIEnv *env, jclass class, jint channel, jbyteArray data, jint length)
+JNIEXPORT jshortArray JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3S
+(JNIEnv *env, jclass class, jint channel, jshortArray data)
 {
-    int i;
-    unsigned char buffer[2048];
-
 	// copy the bytes from the data array argument into a native character buffer
-    jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
-    for (i = 0; i < length; i++) {
-    	buffer[i] = body[i];
-    }
-
-	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
-
-	// copy the resulting buffer bytes back into the data array argument
+	jshort *body = (*env)->GetShortArrayElements(env, data, 0);
+	jint length = (*env)->GetArrayLength(env, data); 
+ 
+	unsigned char buffer[2048];
+	int i;
 	for (i = 0; i < length; i++) {
-		body[i] = buffer[i];
+	    // cast to unsigned char here since we have short, which is 16-bit and signed, so we need 8-bit unsigned
+	    buffer[i] = (unsigned char)body[i];
 	}
-	(*env)->ReleaseByteArrayElements(env, data, body, 0);
+	(*env)->ReleaseShortArrayElements(env, data, body, 0);
 
-	return result;
+	jint resultCode = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);	
+	if (resultCode < 0) 
+	{
+	    return NULL; // indicate some error happened
+	} 
+	else 
+	{
+	    jshort result[length];
+	    // copy the resulting buffer bytes into new array we will return from here
+	    for (i = 0; i < length; i++) 
+	    {
+		result[i] = buffer[i];
+	    }
+	
+	    jshortArray javaResult = (*env)->NewShortArray(env, length);
+	    (*env)->SetShortArrayRegion(env, javaResult, 0, length, result);
+	    return javaResult;
+	}
 }
 
 

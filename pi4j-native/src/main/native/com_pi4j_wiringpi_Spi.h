@@ -60,10 +60,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang
 /*
  * Class:     com_pi4j_wiringpi_Spi
  * Method:    wiringPiSPIDataRW
- * Signature: (I[BI)I
+ * Signature: (I[S)[S
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
-  (JNIEnv *, jclass, jint, jbyteArray, jint);
+JNIEXPORT jshortArray JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3S
+  (JNIEnv *, jclass, jint, jshortArray);
 
 #ifdef __cplusplus
 }
