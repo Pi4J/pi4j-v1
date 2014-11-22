@@ -1,13 +1,18 @@
 package com.pi4j.gpio.extension.piface;
 
-import com.pi4j.io.gpio.*;
+import java.io.IOException;
+
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.wiringpi.Spi;
-
-import java.io.IOException;
 
 /*
  * #%L
@@ -54,25 +59,25 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
 
     public static final String NAME = "com.pi4j.gpio.extension.piface.PiFaceGpioProvider";
     public static final String DESCRIPTION = "Pi-Face GPIO Provider";
-    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
+    public static final short DEFAULT_ADDRESS = 0b01000000; // 0x40
 
-    private static final byte REGISTER_IODIR_A = 0x00;
-    private static final byte REGISTER_IODIR_B = 0x01;
-    private static final byte REGISTER_GPINTEN_A = 0x04;
-    private static final byte REGISTER_GPINTEN_B = 0x05;
-    private static final byte REGISTER_DEFVAL_A = 0x06;
-    private static final byte REGISTER_DEFVAL_B = 0x07;
-    private static final byte REGISTER_INTCON_A = 0x08;
-    private static final byte REGISTER_INTCON_B = 0x09;
-    private static final byte REGISTER_IOCON = 0x0A;
-    private static final byte REGISTER_GPPU_A = 0x0C;
-    private static final byte REGISTER_GPPU_B = 0x0D;
-    private static final byte REGISTER_INTF_A = 0x0E;
-    private static final byte REGISTER_INTF_B = 0x0F;
-    private static final byte REGISTER_INTCAP_A = 0x10;
-    private static final byte REGISTER_INTCAP_B = 0x11;
-    private static final byte REGISTER_GPIO_A = 0x12;
-    private static final byte REGISTER_GPIO_B = 0x13;
+    private static final short REGISTER_IODIR_A = 0x00;
+    private static final short REGISTER_IODIR_B = 0x01;
+    private static final short REGISTER_GPINTEN_A = 0x04;
+    private static final short REGISTER_GPINTEN_B = 0x05;
+    private static final short REGISTER_DEFVAL_A = 0x06;
+    private static final short REGISTER_DEFVAL_B = 0x07;
+    private static final short REGISTER_INTCON_A = 0x08;
+    private static final short REGISTER_INTCON_B = 0x09;
+    private static final short REGISTER_IOCON = 0x0A;
+    private static final short REGISTER_GPPU_A = 0x0C;
+    private static final short REGISTER_GPPU_B = 0x0D;
+    private static final short REGISTER_INTF_A = 0x0E;
+    private static final short REGISTER_INTF_B = 0x0F;
+    private static final short REGISTER_INTCAP_A = 0x10;
+    private static final short REGISTER_INTCAP_B = 0x11;
+    private static final short REGISTER_GPIO_A = 0x12;
+    private static final short REGISTER_GPIO_B = 0x13;
 
     private static final int GPIO_A_OFFSET = 0;
     private static final int GPIO_B_OFFSET = 1000;
@@ -83,19 +88,19 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     private int currentDirectionB = 0b11111111;
     private int currentPullupA = 0b00000000;
     private int currentPullupB = 0b11111111;
-    private byte address = DEFAULT_ADDRESS;
+    private short address = DEFAULT_ADDRESS;
 
     private GpioStateMonitor monitor = null;
     
     public static final int SPI_SPEED = 1000000;    
-    public static final byte WRITE_FLAG = 0b00000000;    // 0x00
-    public static final byte READ_FLAG  = 0b00000001;    // 0x01
+    public static final short WRITE_FLAG = 0b00000000;    // 0x00
+    public static final short READ_FLAG  = 0b00000001;    // 0x01
     
-    public PiFaceGpioProvider(byte spiAddress, int spiChannel) throws IOException {
+    public PiFaceGpioProvider(short spiAddress, int spiChannel) throws IOException {
         this(spiAddress, spiChannel, SPI_SPEED);
     }
     
-    public PiFaceGpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
+    public PiFaceGpioProvider(short spiAddress, int spiChannel, int spiSpeed) throws IOException {
 
         // setup SPI for communication
         int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
@@ -129,7 +134,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         //     0 = Active-low.
         // bit 0 Unimplemented: Read as ‘0’.
         //
-        write(REGISTER_IOCON, (byte) 0x00001000);  // enable hardware address
+        write(REGISTER_IOCON, (short) 0x00001000);  // enable hardware address
 
         // read initial GPIO pin states
         currentStatesA = read(REGISTER_GPIO_A);
@@ -138,36 +143,36 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         // set all default pins directions
         // (1 = Pin is configured as an input.)
         // (0 = Pin is configured as an output.)
-        write(REGISTER_IODIR_A, (byte) currentDirectionA);
-        write(REGISTER_IODIR_B, (byte) currentDirectionB);
+        write(REGISTER_IODIR_A, (short) currentDirectionA);
+        write(REGISTER_IODIR_B, (short) currentDirectionB);
 
         // set all default pin states
-        write(REGISTER_GPIO_A, (byte) currentStatesA);
-        write(REGISTER_GPIO_B, (byte) currentStatesB);
+        write(REGISTER_GPIO_A, (short) currentStatesA);
+        write(REGISTER_GPIO_B, (short) currentStatesB);
 
         // set all default pin pull up resistors
         // (1 = Pull-up enabled.)
         // (0 = Pull-up disabled.)
-        write(REGISTER_GPPU_A, (byte) currentPullupA);
-        write(REGISTER_GPPU_B, (byte) currentPullupB);
+        write(REGISTER_GPPU_A, (short) currentPullupA);
+        write(REGISTER_GPPU_B, (short) currentPullupB);
 
         // set all default pin interrupts
         // (if pin direction is input (1), then enable interrupt for pin)
         // (1 = Enable GPIO input pin for interrupt-on-change event.)
         // (0 = Disable GPIO input pin for interrupt-on-change event.)
-        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
-        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
+        write(REGISTER_GPINTEN_A, (short) currentDirectionA);
+        write(REGISTER_GPINTEN_B, (short) currentDirectionB);
 
         // set all default pin interrupt default values
         // (comparison value registers are not used in this implementation)
-        write(REGISTER_DEFVAL_A, (byte) 0x00);
-        write(REGISTER_DEFVAL_B, (byte) 0x00);
+        write(REGISTER_DEFVAL_A, (short) 0x00);
+        write(REGISTER_DEFVAL_B, (short) 0x00);
 
         // set all default pin interrupt comparison behaviors
         // (1 = Controls how the associated pin value is compared for interrupt-on-change.)
         // (0 = Pin value is compared against the previous pin value.)
-        write(REGISTER_INTCON_A, (byte) 0x00);
-        write(REGISTER_INTCON_B, (byte) 0x00);
+        write(REGISTER_INTCON_A, (short) 0x00);
+        write(REGISTER_INTCON_B, (short) 0x00);
 
         // reset/clear interrupt flags
         if(currentDirectionA > 0)
@@ -176,31 +181,31 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
             read(REGISTER_INTCAP_B);
     }
 
-    protected void write(byte register, byte data) {
+    protected void write(short register, short data) {
 
         // create packet in data buffer
-        byte packet[] = new byte[3];
-        packet[0] = (byte)(address|WRITE_FLAG);   // address byte
-        packet[1] = register;                     // register byte
-        packet[2] = data;                         // data byte
+        short packet[] = new short[3];
+        packet[0] = (short)(address|WRITE_FLAG);   // address short
+        packet[1] = register;                     // register short
+        packet[2] = data;                         // data short
            
         // send data packet
-        Spi.wiringPiSPIDataRW(0, packet, 3);        
+        Spi.wiringPiSPIDataRW(0, packet);        
     }
 
-    protected byte read(byte register){
+    protected short read(short register){
         
         // create packet in data buffer
-        byte packet[] = new byte[3];
-        packet[0] = (byte)(address|READ_FLAG);   // address byte
-        packet[1] = register;                    // register byte
-        packet[2] = 0b00000000;                  // data byte
+        short packet[] = new short[3];
+        packet[0] = (short)(address|READ_FLAG);   // address short
+        packet[1] = register;                    // register short
+        packet[2] = 0b00000000;                  // data short
         
-        int result = Spi.wiringPiSPIDataRW(0, packet, 3); 
-        if(result >= 0)
-            return packet[2];
+        short[] result = Spi.wiringPiSPIDataRW(0, packet); 
+        if(result != null)
+            return result[2];
         else
-            throw new RuntimeException("Invalid SPI read operation: " + result);
+            throw new RuntimeException("Invalid SPI read operation.");
     }    
     
     @Override
@@ -266,10 +271,10 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // next update direction value
-        write(REGISTER_IODIR_A, (byte) currentDirectionA);
+        write(REGISTER_IODIR_A, (short) currentDirectionA);
 
         // enable interrupts; interrupt on any change from previous state
-        write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
+        write(REGISTER_GPINTEN_A, (short) currentDirectionA);
     }
 
     private void setModeB(Pin pin, PinMode mode) throws IOException {
@@ -284,10 +289,10 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // next update direction (mode) value
-        write(REGISTER_IODIR_B, (byte) currentDirectionB);
+        write(REGISTER_IODIR_B, (short) currentDirectionB);
 
         // enable interrupts; interrupt on any change from previous state
-        write(REGISTER_GPINTEN_B, (byte) currentDirectionB);
+        write(REGISTER_GPINTEN_B, (short) currentDirectionB);
     }
 
     @Override
@@ -323,7 +328,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // update state value
-        write(REGISTER_GPIO_A, (byte) currentStatesA);
+        write(REGISTER_GPIO_A, (short) currentStatesA);
     }
 
     private void setStateB(Pin pin, PinState state) throws IOException {
@@ -338,7 +343,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // update state value
-        write(REGISTER_GPIO_B, (byte) currentStatesB);
+        write(REGISTER_GPIO_B, (short) currentStatesB);
     }
 
     @Override
@@ -422,7 +427,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // next update pull up resistor value
-        write(REGISTER_GPPU_A, (byte) currentPullupA);
+        write(REGISTER_GPPU_A, (short) currentPullupA);
     }
 
     private void setPullResistanceB(Pin pin, PinPullResistance resistance) throws IOException {
@@ -437,7 +442,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         }
 
         // next update pull up resistor value
-        write(REGISTER_GPPU_B, (byte) currentPullupB);
+        write(REGISTER_GPPU_B, (short) currentPullupB);
     }
 
     @Override
@@ -489,12 +494,12 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
                     // only process for interrupts if a pin on port A is configured as an input pin
                     if (currentDirectionA > 0) {
                         // process interrupts for port A
-                        byte pinInterruptA = provider.read(REGISTER_INTF_A);
+                        short pinInterruptA = provider.read(REGISTER_INTF_A);
 
                         // validate that there is at least one interrupt active on port A
                         if (pinInterruptA > 0) {
                             // read the current pin states on port A
-                            byte pinInterruptState = provider.read(REGISTER_GPIO_A);
+                            short pinInterruptState = provider.read(REGISTER_GPIO_A);
 
                             // loop over the available pins on port B
                             for (Pin pin : PiFacePin.OUTPUTS) {

@@ -49,7 +49,6 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public class Nes {
 
     public static final int NES_RIGHT = 0x01;
@@ -70,7 +69,7 @@ public class Nes {
     
     static {
         // Load the platform library
-        NativeLibraryLoader.load("pi4j", "libpi4j.so");
+        NativeLibraryLoader.load("libpi4j.so");
     }
 
     /**

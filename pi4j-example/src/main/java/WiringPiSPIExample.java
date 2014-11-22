@@ -30,8 +30,8 @@ import com.pi4j.wiringpi.Spi;
 public class WiringPiSPIExample {
 
     // SPI operations
-    public static byte WRITE_CMD = 0x40;
-    public static byte READ_CMD  = 0x41;
+    public static short WRITE_CMD = 0x40;
+    public static short READ_CMD  = 0x41;
     
     @SuppressWarnings("unused")
     public static void main(String args[]) throws InterruptedException {
@@ -57,16 +57,16 @@ public class WiringPiSPIExample {
         System.out.println("<--Pi4J--> SPI test program using MCP23S17 I/O Expander Chip");
                 
         // configuration
-        byte IODIRA = 0x00; // I/O direction A
-        byte IODIRB = 0x01; // I/O direction B
-        byte IOCON  = 0x0A; // I/O config
-        byte GPIOA  = 0x12; // port A
-        byte GPIOB  = 0x13; // port B
-        byte GPPUA  = 0x0C; // port A pullups
-        byte GPPUB  = 0x0D; // port B pullups
-        byte OUTPUT_PORT = GPIOA;
-        byte INPUT_PORT  = GPIOB;
-        byte INPUT_PULLUPS = GPPUB;        
+        short IODIRA = 0x00; // I/O direction A
+        short IODIRB = 0x01; // I/O direction B
+        short IOCON  = 0x0A; // I/O config
+        short GPIOA  = 0x12; // port A
+        short GPIOB  = 0x13; // port B
+        short GPPUA  = 0x0C; // port A pullups
+        short GPPUB  = 0x0D; // port B pullups
+        short OUTPUT_PORT = GPIOA;
+        short INPUT_PORT  = GPIOB;
+        short INPUT_PULLUPS = GPPUB;        
 
         // setup SPI for communication
         int fd = Spi.wiringPiSPISetup(0, 10000000);;
@@ -92,7 +92,7 @@ public class WiringPiSPIExample {
             // the current LED to turn off.
             if(pins >= 255)
                 pins=1;
-            write(GPIOA,  (byte)pins);  
+            write(GPIOA,  (short)pins);  
             pins = pins << 1;
             Thread.sleep(1000);
             
@@ -101,42 +101,42 @@ public class WiringPiSPIExample {
         }
     }
     
-    public static void write(byte register, int data){
+    public static void write(short register, int data){
         
         // send test ASCII message
-        byte packet[] = new byte[3];
-        packet[0] = WRITE_CMD;  // address byte
-        packet[1] = register;  // register byte
-        packet[2] = (byte)data;  // data byte
+        short packet[] = new short[3];
+        packet[0] = WRITE_CMD;  // address short
+        packet[1] = register;  // register short
+        packet[2] = (short)data;  // data short
            
         System.out.println("-----------------------------------------------");
-        System.out.println("[TX] " + bytesToHex(packet));
-        Spi.wiringPiSPIDataRW(0, packet, 3);        
-        System.out.println("[RX] " + bytesToHex(packet));
+        System.out.println("[TX] " + shortsToHex(packet));
+        Spi.wiringPiSPIDataRW(0, packet);        
+        System.out.println("[RX] " + shortsToHex(packet));
         System.out.println("-----------------------------------------------");
     }
 
-    public static void read(byte register){
+    public static void read(short register){
         
         // send test ASCII message
-        byte packet[] = new byte[3];
-        packet[0] = READ_CMD;    // address byte
-        packet[1] = register;    // register byte
-        packet[2] = 0b00000000;  // data byte
+        short packet[] = new short[3];
+        packet[0] = READ_CMD;    // address short
+        packet[1] = register;    // register short
+        packet[2] = 0b00000000;  // data short
            
         System.out.println("-----------------------------------------------");
-        System.out.println("[TX] " + bytesToHex(packet));
-        Spi.wiringPiSPIDataRW(0, packet, 3);        
-        System.out.println("[RX] " + bytesToHex(packet));
+        System.out.println("[TX] " + shortsToHex(packet));
+        Spi.wiringPiSPIDataRW(0, packet);        
+        System.out.println("[RX] " + shortsToHex(packet));
         System.out.println("-----------------------------------------------");
     }
     
-    public static String bytesToHex(byte[] bytes) {
+    public static String shortsToHex(short[] shorts) {
         final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        char[] hexChars = new char[bytes.length * 2];
+        char[] hexChars = new char[shorts.length * 2];
         int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j] & 0xFF;
+        for ( int j = 0; j < shorts.length; j++ ) {
+            v = shorts[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }

@@ -75,7 +75,6 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public class Lcd {
 
     // private constructor 
@@ -85,7 +84,7 @@ public class Lcd {
     
     static {
         // Load the platform library
-        NativeLibraryLoader.load("pi4j", "libpi4j.so");
+        NativeLibraryLoader.load("libpi4j.so");
     }
 
     /**

@@ -33,9 +33,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-JavaVM *callback_jvm;
-
 /*
  * Class:     com_pi4j_wiringpi_GpioInterrupt
  * Method:    enablePinStateChangeCallback

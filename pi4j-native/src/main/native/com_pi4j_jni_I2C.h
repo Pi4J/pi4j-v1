@@ -114,12 +114,12 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
   (JNIEnv *, jclass, jint, jint, jint, jint, jint, jbyteArray);
 
 /*
-
-Class: com_pi4j_jni_I2C
-Method: i2cReadBytes
-Signature: (IIII[BII[B)I */
+ * Class:     com_pi4j_jni_I2C
+ * Method:    i2cWriteAndReadBytes
+ * Signature: (IIII[BII[B)I
+ */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteAndReadBytes
-  (JNIEnv *, jobject, jint, jint, jint, jint, jbyteArray, jint, jint, jbyteArray);
+  (JNIEnv *, jclass, jint, jint, jint, jint, jbyteArray, jint, jint, jbyteArray);
 
 #ifdef __cplusplus
 }
