@@ -51,7 +51,8 @@ public class SystemInfo {
     
     public enum BoardType {
         UNKNOWN,
-        ModelA_Rev0,
+        ModelA_Rev1,
+        ModelA_Plus_Rev1,
         ModelB_Rev1,
         ModelB_Rev2,
         ModelB_Plus_Rev1,
@@ -302,7 +303,7 @@ public class SystemInfo {
         case "0007":  // Model A 256MB (Egoman)
         case "0008":  // Model A 256MB (Sony)
         case "0009":  // Model A 256MB (Qisda)
-            return BoardType.ModelA_Rev0;
+            return BoardType.ModelA_Rev1;
         case "000d":  // Model B Revision 2 512MB (Egoman)
         case "000e":  // Model B Revision 2 512MB (Sony)
         case "000f":  // Model B Revision 2 512MB (Qisda)
@@ -311,6 +312,8 @@ public class SystemInfo {
             return BoardType.ModelB_Plus_Rev1;
         case "0011":  // Compute Module 512MB (Sony)
             return BoardType.Compute_Module_Rev1;
+        case "0012":  // Model A Plus 512MB (Sony)
+            return BoardType.ModelA_Plus_Rev1;
         default:
             return BoardType.UNKNOWN;
         }
