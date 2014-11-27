@@ -94,15 +94,8 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     public MCP23S17GpioProvider(byte spiAddress, int spiChannel) throws IOException {
         this(spiAddress, spiChannel, SPI_SPEED);
     }
-    
+
     public MCP23S17GpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
-
-        // setup SPI for communication
-        int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
-        if (fd <= -1) {
-            throw new IOException("SPI port setup failed.");
-        }
-
 
         // IOCON – I/O EXPANDER CONFIGURATION REGISTER
         //
@@ -130,7 +123,22 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         //     0 = Active-low.
         // bit 0 Unimplemented: Read as ‘0’.
         //
-        write(REGISTER_IOCON, (byte) 0x00000000);
+        this(spiAddress ,spiChannel ,spiSpeed, (byte) 0x00001000);
+    }
+
+    public MCP23S17GpioProvider(byte spiAddress, int spiChannel, int spiSpeed, byte iocon) throws IOException {
+
+        // setup SPI for communication
+        int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
+        if (fd <= -1) {
+            throw new IOException("SPI port setup failed.");
+        }
+
+        // set SPI chip address
+        this.address = spiAddress;
+
+        // write IO configuration
+        write(REGISTER_IOCON, iocon);
 
         // read initial GPIO pin states
         currentStatesA = read(REGISTER_GPIO_A);
