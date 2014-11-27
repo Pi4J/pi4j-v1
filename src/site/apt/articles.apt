@@ -13,6 +13,49 @@ Presentations / Articles
 
 =====================
 
+* Devoxx 2014 Conference Session (2014 - Antwerp, Belgium)
+
+  <<Let's Get Physical: I/O Programming with Java on the Raspberry Pi with Pi4J>>\
+  <<November 25, 2014>> (by Robert Savage)\
+  \
+  The Pi4J Project was featured in this talk presented at Devoxx 2014 in Antwerp, Belgium.\
+  This talk focuses on how we can create simple home automation devices using simple GPIO programming on the Raspberry Pi with Pi4J.
+
+  * {{{http://www.savagehomeautomation.com/devoxx}Blog Article}} (@savageautomate)
+
+  * {{{http://www.savagehomeautomation.com/storage/devoxx/pi4j-savage-devoxx.pdf}Presentation Slides}} (PDF)
+
+  * {{{http://www.slideshare.net/savageautomate/pi4j-savagedevoxx}Presentation Slides}} (@SlideShare)
+
+  * {{{http://www.savagehomeautomation.com/devoxx}Sample Code}} (@github)
+
+  * COMING SOON - Live Recording (@Parleys)
+
+
+=====================
+
+* Devoxx 2014 University Session (2014 - Antwerp, Belgium)
+
+  <<Raspberry Pi with Java 8>>\
+  <<November 11, 2014>> (by James Weaver, Stephen Chin & Robert Savage)\
+  \
+  The Pi4J Project was featured in this talk presented at Devoxx 2014 in Antwerp, Belgium.\
+  The Pi4J portion of the talk focuses on getting started with GPIO programming using Java 8 & Pi4J.
+
+  * {{{http://www.savagehomeautomation.com/devoxx}Blog Article}} (@savageautomate)
+
+  * {{{http://www.savagehomeautomation.com/storage/devoxx/rpi-java-8-savage-devoxx.pdf}Presentation Slides}} (PDF)
+
+  * {{{http://www.slideshare.net/savageautomate/raspberry-pi-with-java-8-pi4j-devoxx-2014}Presentation Slides}} (@SlideShare)
+
+  * {{{http://www.savagehomeautomation.com/devoxx}Sample Code}} (@github)
+
+  * COMING SOON - Live Recording (@Parleys)
+
+
+
+=====================
+
 * Java Magazine Article (2014)
 
   <<//java nation/ PI4J PROJECT>>\
@@ -25,7 +68,7 @@ Presentations / Articles
 
 =====================
 
-* JavaOne Presentation (2013)
+* JavaOne Presentation (2013 - San Francisco, USA)
 
   <<Let's Get Physical: I/O Programming with Java on the Raspberry Pi with Pi4J>>\
   <<September 25, 2013>> (by Robert Savage)\

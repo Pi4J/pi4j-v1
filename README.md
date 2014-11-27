@@ -40,8 +40,10 @@ Copyright (C) 2012-2014 Pi4J
 
 ## IN DEVEOPMENT
 
-2014-09-14 :: 1.0-SNAPSHOT
+2014-11-26 :: 1.0-SNAPSHOT
 
+  *  Added support for RaspberryPi Model A+
+  *  Added support for debounce logic on digital input pin events
   *  Added easy install/uninstall scripts (get.pi4j.com)
   *  Added APT package and repository support (repository.pi4j.com)
   *  Added support for RaspberryPi Model B+

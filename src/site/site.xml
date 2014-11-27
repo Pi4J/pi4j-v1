@@ -69,6 +69,7 @@
 		</menu>
         <menu name="Pin Numbering">
             <item name="Raspberry Pi - Model A" href="pins/model-a-rev2.html" />
+            <item name="Raspberry Pi - Model A+" href="pins/model-a-plus.html" />
             <item name="Raspberry Pi - Model B (Rev 1)" href="pins/model-b-rev1.html" />
             <item name="Raspberry Pi - Model B (Rev 2)" href="pins/model-b-rev2.html" />
             <item name="Raspberry Pi - Model B+" href="pins/model-b-plus.html" />
@@ -88,6 +89,7 @@
             <item name="Pi4J Utility Script" href="utility/pi4j.html" />
         </menu>
         <menu name="Presentations/Articles">
+            <item name="Devoxx Presentations (2014)" href="articles.html#Devoxx_2014_Conference_Session_2014_-_Antwerp_Belgium" />
             <item name="Java Magazine Article (2014)" href="articles.html#Java_Magazine_Article_2014" />
             <item name="JavaOne Presentation (2013)" href="articles.html#JavaOne_Presentation_2013" />
             <item name="Sunrise/Sunset Timer Project" href="articles.html#SunriseSunset_Timer_for_Christmas_Lights_Project" />

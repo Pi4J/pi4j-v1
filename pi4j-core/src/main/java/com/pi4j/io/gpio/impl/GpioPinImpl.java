@@ -57,6 +57,8 @@ public class GpioPinImpl implements GpioPin,
     private final Map<String, String> properties = new ConcurrentHashMap<>();
     private final List<GpioPinListener> listeners = new ArrayList<>();
     private final List<GpioTrigger> triggers = new ArrayList<>();
+    private final Map<PinState, Integer> debounce = new HashMap<>();
+    protected final int NO_DEBOUCE = 0;
 
     @SuppressWarnings("unused")
     public GpioPinImpl(GpioController gpio, GpioProvider provider, Pin pin) {
@@ -337,6 +339,31 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public boolean isState(PinState state) {
         return (getState() == state);
+    }
+
+    @Override
+    public boolean hasDebounce(PinState state) {
+        return (getDebounce(state) > NO_DEBOUCE);
+    }
+
+    @Override
+    public int getDebounce(PinState state) {
+        if(debounce.containsKey(state)){
+            return debounce.get(state).intValue();
+        }
+        return NO_DEBOUCE;
+    }
+
+    @Override
+    public void setDebounce(int debounce, PinState ... state) {
+        for(PinState ps : state) {
+            this.debounce.put(ps, new Integer(debounce));
+        }
+    }
+
+    @Override
+    public void setDebounce(int debounce) {
+        setDebounce(debounce, PinState.HIGH, PinState.LOW);
     }
 
     @Override
