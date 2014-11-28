@@ -31,3 +31,4 @@ Thumbs.db
 *.ear
 *.zip
 *.deb
+/nbactions.xml
