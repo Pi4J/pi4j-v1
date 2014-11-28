@@ -92,7 +92,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
  * Method:    wiringPiSPIDataRW
  * Signature: (I[SI)I
  */
-JNIEXPORT jshortArray JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3S
+JNIEXPORT jshortArray JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 (JNIEnv *env, jclass class, jint channel, jshortArray data, jint length)
 {
     int i;
