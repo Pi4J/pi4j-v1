@@ -4,7 +4,7 @@ set -e
 
 case "$1" in
    remove)
-      rm /usr/bin/pi4j
+      rm -f /usr/bin/pi4j
       rm -f -r /opt/pi4j
    ;;
    purge|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
