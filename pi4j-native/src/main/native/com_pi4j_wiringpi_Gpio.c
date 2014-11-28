@@ -33,9 +33,6 @@
 
 /* Source for com_pi4j_wiringpi_Gpio */
 
-// java callback variables
-//JavaVM *callback_jvm;
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    wiringPiSetup
