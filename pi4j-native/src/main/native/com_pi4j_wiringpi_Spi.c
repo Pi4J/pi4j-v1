@@ -70,10 +70,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
     int i;
     unsigned char buffer[2048];
 
-	// copy the bytes from the data array argument into a native character buffer
+	// copy the bytes from the data array argument into a native unsigned character buffer
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
     for (i = 0; i < length; i++) {
-    	buffer[i] = body[i];
+    	buffer[i] = (unsigned char) body[i];
     }
 
 	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
@@ -87,6 +87,34 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	return result;
 }
 
+/*
+ * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPIDataRW
+ * Signature: (I[SI)I
+ */
+JNIEXPORT jshortArray JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3S
+(JNIEnv *env, jclass class, jint channel, jshortArray data, jint length)
+{
+    int i;
+    unsigned char buffer[2048];
+
+	// copy the bytes (short values) from the data array argument into a native unsigned character buffer
+	jshort *body = (*env)->GetShortArrayElements(env, data, 0);
+	for (i = 0; i < length; i++) {
+	    // cast to unsigned char here since we have short, which is 16-bit and signed, so we need 8-bit unsigned
+	    buffer[i] = (unsigned char)body[i];
+	}
+
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+
+	// copy the resulting buffer bytes back into the data array argument
+	for (i = 0; i < length; i++) {
+		body[i] = buffer[i];
+	}
+	(*env)->ReleaseShortArrayElements(env, data, body, 0);
+
+	return result;
+}
 
 /*
  * Class:     com_pi4j_wiringpi_Spi

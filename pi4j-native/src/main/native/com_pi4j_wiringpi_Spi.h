@@ -65,6 +65,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
   (JNIEnv *, jclass, jint, jbyteArray, jint);
 
+/*
+ * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPIDataRW
+ * Signature: (I[BS)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
+  (JNIEnv *, jclass, jint, jshortArray, jint);
+
 #ifdef __cplusplus
 }
 #endif
