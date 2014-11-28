@@ -52,7 +52,7 @@ public class I2C {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("pi4j", "libpi4j.so");
+        NativeLibraryLoader.load("libpi4j.so");
     }
 
     /**

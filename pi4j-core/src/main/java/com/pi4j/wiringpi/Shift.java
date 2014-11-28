@@ -58,7 +58,6 @@ import com.pi4j.util.NativeLibraryLoader;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public class Shift {
 
     public static final int LSBFIRST = 0;
@@ -71,7 +70,7 @@ public class Shift {
     
     static {
         // Load the platform library
-        NativeLibraryLoader.load("pi4j", "libpi4j.so");
+        NativeLibraryLoader.load("libpi4j.so");
     }
 
     /**
