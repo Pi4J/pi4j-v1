@@ -25,18 +25,25 @@
  * #L%
  */
 
-import com.pi4j.wiringpi.Spi;
+import com.pi4j.io.spi.SpiChannel;
+import com.pi4j.io.spi.SpiDevice;
+import com.pi4j.io.spi.SpiFactory;
 
-public class example {
+import java.io.IOException;
+
+public class SpiExample {
+
+    // SPI device
+    public static SpiDevice spi = null;
 
     // SPI operations
     public static byte INIT_CMD = (byte) 0xD0;
-    public static byte SPI_CHANNEL = 0x0;
+
     
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, IOException {
         
         // 
-        // This SPI example is using the WiringPi native library to communicate with 
+        // This SPI example is using the Pi4J SPI interface to communicate with
         // the SPI hardware interface connected to a MCP23S17 I/O Expander.
         //
         // Please note the following command are required to enable the SPI driver on
@@ -54,39 +61,30 @@ public class example {
         // http://ww1.microchip.com/downloads/en/devicedoc/21952b.pdf
         
         System.out.println("<--Pi4J--> SPI test program using MCP3002 AtoD Chip");
-                
-        // setup SPI for communication
-        int fd = Spi.wiringPiSPISetup(SPI_CHANNEL, 1000000);;
-        if (fd <= -1) {
-            System.out.println(" ==>> SPI SETUP FAILED");
-            return;
-        }
-        
+
+        // create SPI object instance for SPI for communication
+        spi = SpiFactory.getInstance(SpiChannel.CS0, SpiDevice.DEFAULT_SPI_SPEED); // default speed 1 MHz
+
         // infinite loop
         while(true) {
-            
             read();
             Thread.sleep(1000);
         }
     }
 
-    public static void read(){
+    public static void read() throws IOException {
         
         // send test ASCII message
         byte packet[] = new byte[2];
         packet[0] = INIT_CMD;  // address byte
-        //packet[0] = (byte)(INIT_CMD | (SPI_CHANNEL<<5));
         packet[1] = 0x00;  // dummy
            
         System.out.println("-----------------------------------------------");
         System.out.println("[TX] " + bytesToHex(packet));
-        Spi.wiringPiSPIDataRW(SPI_CHANNEL, packet, 2);        
-        System.out.println("[RX] " + bytesToHex(packet));
+        byte[] result = spi.write(packet);
+        System.out.println("[RX] " + bytesToHex(result));
         System.out.println("-----------------------------------------------");
-        
-        //System.out.println(( (packet[0]<<7) | (packet[1]>>1) ) & 0x3FF);
-        System.out.println( ((packet[0]<<8)|packet[1]) & 0x3FF );
-        
+        System.out.println( ((result[0]<<8)|result[1]) & 0x3FF );
     }
     
     
