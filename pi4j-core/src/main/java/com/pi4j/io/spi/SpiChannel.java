@@ -39,4 +39,18 @@ public enum SpiChannel {
     public short getChannel() {
         return channel;
     }
+
+    public static SpiChannel getByNumber(short channelNumber){
+        return getByNumber((int)channelNumber);
+    }
+
+    public static SpiChannel getByNumber(int channelNumber){
+        for(SpiChannel channel : SpiChannel.values()){
+            if(channel.getChannel() == channelNumber){
+                return channel;
+            }
+        }
+        return null;
+    }
+
 }
