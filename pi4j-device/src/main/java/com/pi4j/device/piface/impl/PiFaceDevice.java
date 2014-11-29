@@ -27,10 +27,11 @@ package com.pi4j.device.piface.impl;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.pi4j.device.piface.PiFace;
 import com.pi4j.device.piface.PiFaceBase;
+import com.pi4j.io.spi.SpiChannel;
+
+import java.io.IOException;
 
 public class PiFaceDevice extends PiFaceBase {
 
@@ -38,10 +39,20 @@ public class PiFaceDevice extends PiFaceBase {
     public PiFaceDevice(byte spiAddress, int spiChannel) throws IOException {
         super(spiAddress, spiChannel);
     }
-    
+
+    // default constructor
+    public PiFaceDevice(byte spiAddress, SpiChannel spiChannel) throws IOException {
+        super(spiAddress, spiChannel);
+    }
+
+    // alternate constructor that assumes default address
+    public PiFaceDevice(SpiChannel spiChannel) throws IOException {
+        super(PiFace.DEFAULT_ADDRESS, spiChannel);
+    }
+
     // alternate constructor that assumes default address
     public PiFaceDevice(int spiChannel) throws IOException {
         super(PiFace.DEFAULT_ADDRESS, spiChannel);
     }
-    
+
 }

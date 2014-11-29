@@ -28,8 +28,6 @@ package com.pi4j.device.piface;
  */
 
 
-import java.io.IOException;
-
 import com.pi4j.component.light.LED;
 import com.pi4j.component.light.impl.GpioLEDComponent;
 import com.pi4j.component.relay.Relay;
@@ -39,13 +37,10 @@ import com.pi4j.component.switches.impl.GpioSwitchComponent;
 import com.pi4j.device.DeviceBase;
 import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
 import com.pi4j.gpio.extension.piface.PiFacePin;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.spi.SpiChannel;
+
+import java.io.IOException;
 
 public abstract class PiFaceBase extends DeviceBase implements PiFace {
     
@@ -56,9 +51,14 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     private Relay relays[];
     private Switch switches[];
     private LED leds[];
-    
+
     // default constructor
     public PiFaceBase(byte spiAddress, int spiChannel) throws IOException {
+        this(spiAddress, SpiChannel.getByNumber(spiChannel));
+    }
+
+    // default constructor
+    public PiFaceBase(byte spiAddress, SpiChannel spiChannel) throws IOException {
     
         // create Pi-Face GPIO provider
         gpioProvider = new PiFaceGpioProvider(spiAddress, spiChannel);

@@ -5,7 +5,9 @@ import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
-import com.pi4j.wiringpi.Spi;
+import com.pi4j.io.spi.SpiChannel;
+import com.pi4j.io.spi.SpiDevice;
+import com.pi4j.io.spi.SpiFactory;
 
 import java.io.IOException;
 
@@ -90,18 +92,26 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     public static final int SPI_SPEED = 1000000;    
     public static final byte WRITE_FLAG = 0b00000000;    // 0x00
     public static final byte READ_FLAG  = 0b00000001;    // 0x01
-    
+
+
+    protected SpiDevice device = null;
+
+    public PiFaceGpioProvider(byte spiAddress, SpiChannel spiChannel) throws IOException {
+        this(spiAddress, spiChannel, SPI_SPEED);
+    }
+
     public PiFaceGpioProvider(byte spiAddress, int spiChannel) throws IOException {
         this(spiAddress, spiChannel, SPI_SPEED);
     }
-    
-    public PiFaceGpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
 
-        // setup SPI for communication
-        int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
-        if (fd <= -1) {
-            throw new IOException("SPI port setup failed.");
-        }
+    public PiFaceGpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
+        this(spiAddress, SpiChannel.getByNumber(spiChannel), spiSpeed);
+    }
+
+    public PiFaceGpioProvider(byte spiAddress, SpiChannel spiChannel, int spiSpeed) throws IOException {
+
+        // create SPI object instance
+        device = SpiFactory.getInstance(spiChannel, spiSpeed);
 
         // IOCON – I/O EXPANDER CONFIGURATION REGISTER
         //
@@ -176,7 +186,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
             read(REGISTER_INTCAP_B);
     }
 
-    protected void write(byte register, byte data) {
+    protected void write(byte register, byte data) throws IOException {
 
         // create packet in data buffer
         byte packet[] = new byte[3];
@@ -185,23 +195,20 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         packet[2] = data;                         // data byte
            
         // send data packet
-        Spi.wiringPiSPIDataRW(0, packet, 3);        
+        device.write(packet);
     }
 
-    protected byte read(byte register){
+    protected byte read(byte register) throws IOException {
         
         // create packet in data buffer
         byte packet[] = new byte[3];
         packet[0] = (byte)(address|READ_FLAG);   // address byte
         packet[1] = register;                    // register byte
         packet[2] = 0b00000000;                  // data byte
-        
-        int result = Spi.wiringPiSPIDataRW(0, packet, 3); 
-        if(result >= 0)
-            return packet[2];
-        else
-            throw new RuntimeException("Invalid SPI read operation: " + result);
-    }    
+
+        byte result[] = device.write(packet);
+        return result[2];
+    }
     
     @Override
     public String getName() {
@@ -449,7 +456,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     @Override
     public void shutdown() {
         
-        // prevent reentrant invocation
+        // prevent re-entrant invocation
         if(isShutdown())
             return;
         
