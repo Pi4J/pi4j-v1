@@ -50,6 +50,7 @@
 // java callback variables
 jclass callback_class;
 jmethodID callback_method;
+JavaVM *callback_jvm;
 
 // monitoring thread data structure
 struct monitor_data{
