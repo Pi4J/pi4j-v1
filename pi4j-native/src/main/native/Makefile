@@ -20,9 +20,11 @@ SRC	=   com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
+        com_pi4j_wiringpi_I2C.c       \
         com_pi4j_wiringpi_Lcd.c       \
         com_pi4j_wiringpi_Shift.c     \
         com_pi4j_wiringpi_SoftPwm.c   \
+        com_pi4j_wiringpi_SoftTone.c  \
         com_pi4j_wiringpi_Spi.c       \
         com_pi4j_wiringpi_Gertboard.c \
         com_pi4j_wiringpi_Nes.c       \
@@ -34,9 +36,11 @@ OBJ	=   com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
+        com_pi4j_wiringpi_I2C.o       \
         com_pi4j_wiringpi_Lcd.o       \
         com_pi4j_wiringpi_Shift.o     \
         com_pi4j_wiringpi_SoftPwm.o   \
+        com_pi4j_wiringpi_SoftTone.o  \
         com_pi4j_wiringpi_Spi.o       \
         com_pi4j_wiringpi_Gertboard.o \
         com_pi4j_wiringpi_Nes.o       \
@@ -89,6 +93,7 @@ com_pi4j_wiringpi_Serial.o: com_pi4j_wiringpi_Serial.h
 com_pi4j_wiringpi_Lcd.o: com_pi4j_wiringpi_Lcd.h
 com_pi4j_wiringpi_Shift.o: com_pi4j_wiringpi_Shift.h
 com_pi4j_wiringpi_SoftPwm.o: com_pi4j_wiringpi_SoftPwm.h
+com_pi4j_wiringpi_SoftTone.o: com_pi4j_wiringpi_SoftTone.h
 com_pi4j_wiringpi_Spi.o: com_pi4j_wiringpi_Spi.h
 com_pi4j_wiringpi_Gertboard.o: com_pi4j_wiringpi_Gertboard.h
 com_pi4j_wiringpi_Nes.o: com_pi4j_wiringpi_Nes.h
