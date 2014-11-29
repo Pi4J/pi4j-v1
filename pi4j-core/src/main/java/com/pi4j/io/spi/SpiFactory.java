@@ -18,6 +18,17 @@ public class SpiFactory {
     }
 
     /**
+     * Create new SpiDevice instance with a default SPI speed of 1 MHz.
+     *
+     * @return Return a new SpiDevice impl instance.
+     *
+     * @throws java.io.IOException
+     */
+    public static SpiDevice getInstance(SpiChannel channel) throws IOException {
+        return new SpiDeviceImpl(channel);
+    }
+
+    /**
      * Create new SpiDevice instance
      *
      * @return Return a new SpiDevice impl instance.
@@ -27,4 +38,5 @@ public class SpiFactory {
     public static SpiDevice getInstance(SpiChannel channel, int speed) throws IOException {
         return new SpiDeviceImpl(channel, speed);
     }
+
 }

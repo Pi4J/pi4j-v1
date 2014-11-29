@@ -32,8 +32,10 @@ import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.wiringpi.Spi;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public class SpiDeviceImpl implements SpiDevice {
 
@@ -60,63 +62,118 @@ public class SpiDeviceImpl implements SpiDevice {
         }
     }
 
-    @Override
-    public void write(String data, String encoding) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    /**
+     * Creates the SPI Device at the given SPI and input channel
+     * (A default speed of 1 MHz will be used)
+     *
+     * @param channel
+     *            spi channel to use
+     */
+    public SpiDeviceImpl(SpiChannel channel) throws IOException {
+        this(channel, DEFAULT_SPI_SPEED);
     }
 
     @Override
-    public void write(ByteBuffer data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public String write(String data, String charset) throws IOException {
+        byte[] buffer = data.getBytes(charset);
+        return new String(write(buffer), charset);
     }
 
     @Override
-    public void write(byte... data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public String write(String data, Charset charset) throws IOException {
+        byte[] buffer = data.getBytes(charset);
+        return new String(write(buffer), charset);
     }
 
     @Override
-    public void write(byte[] data, int start, int length) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public ByteBuffer write(ByteBuffer data) throws IOException {
+        return ByteBuffer.wrap(write(data.array()));
     }
 
     @Override
-    public void write(short... data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public byte[] write(InputStream input) throws IOException {
+
+        // ensure bytes are available
+        if(input.available() <= 0){
+            throw new IOException("No available bytes in input stream to write to SPI channel: " + channel.getChannel());
+        }
+        else if(input.available() > MAX_SUPPORTED_BYTES){
+            throw new IOException("Number of bytes in stream exceed the maximum bytes allowed to write SPI channel in a single call");
+        }
+
+        // create a temporary buffer to store read bytes from stream
+        byte[] buffer = new byte[MAX_SUPPORTED_BYTES];
+
+        // read maximum number of supported bytes
+        int length = input.read(buffer, 0 , MAX_SUPPORTED_BYTES);
+
+        // close input stream
+        input.close();
+
+        // write bytes to SPI channel
+        return write(buffer, 0, length);
     }
 
     @Override
-    public void write(short[] data, int start, int length) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public int write(InputStream input, OutputStream output) throws IOException {
+        // write stream data to SPI device
+        byte[] buffer = write(input);
+
+        //write resulting byte array to output stream
+        output.write(buffer);
+
+        // return data length
+        return buffer.length;
     }
 
     @Override
-    public String readWrite(String data, String encoding) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public byte[] write(byte... data) throws IOException {
+        return write(data, 0, data.length);
     }
 
     @Override
-    public ByteBuffer readWrite(ByteBuffer data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public short[] write(short... data) throws IOException {
+        return write(data, 0, data.length);
     }
 
     @Override
-    public ByteBuffer readWrite(byte[] data, int start, int length) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public byte[] write(byte[] data, int start, int length) throws IOException {
+
+        // validate max length allowed
+        if(length > MAX_SUPPORTED_BYTES){
+            throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
+        }
+
+        // we make a copy of the data argument because we don't want to modify the original source data
+        byte[] buffer = Arrays.copyOfRange(data, start, (data.length + start - 1));
+
+        // write the bytes from the temporary buffer to the SPI channel
+        if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
+            throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
+        }
+
+        // return the updated byte buffer as the SPI read results
+        return buffer;
     }
 
     @Override
-    public byte[] readWrite(byte... data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
+    public short[] write(short[] data, int start, int length) throws IOException {
+
+        // validate max length allowed
+        if(length > MAX_SUPPORTED_BYTES){
+            throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
+        }
+
+        // we make a copy of the data argument because we don't want to modify the original source data
+        short[] buffer = Arrays.copyOfRange(data, start, (data.length + start - 1));
+
+        // write the bytes from the temporary buffer to the SPI channel
+        if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
+            throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
+        }
+
+        // return the updated byte buffer as the SPI read results
+        return buffer;
     }
 
-    @Override
-    public ByteBuffer readWrite(short[] data, int start, int length) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
-    }
-
-    @Override
-    public short[] readWrite(short... data) {
-        throw new  UnsupportedOperationException("Not yet implemented!");
-    }
 }

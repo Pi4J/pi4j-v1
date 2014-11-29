@@ -28,92 +28,68 @@ package com.pi4j.io.spi;
  */
 
 
+import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 public interface SpiDevice {
 
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            bytes (encoded in string) to write to the SPI device
-     * @param encoding
-     *            character encoding for bytes in string
-     */
-    public void write(String data, String encoding);
-
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            bytes to write to the SPI device
-     * @return output of the operation from wiringPI
-     */
-    public void write(ByteBuffer data);
-
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            bytes to write to the SPI device
-     * @return output of the operation from wiringPI
-     */
-    public void write(byte ... data);
-
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            byte buffer from which to write bytes to the SPI device
-     * @param start
-     *            start index position in the data buffer to start writing from
-     * @param length
-     *            length of bytes to write from the data buffer
-     * @return output of the operation from wiringPI
-     */
-    public void write(byte[] data, int start, int length);
-
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            bytes to write to the SPI device (Note: short value should not exceed 255.)
-     * @return output of the operation from wiringPI
-     */
-    public void write(short ... data);
-
-    /**
-     * Attempts to write data to this SPI device
-     *
-     * @param data
-     *            byte buffer from which to write bytes to the SPI device
-     * @param start
-     *            start index position in the data buffer to start writing from
-     * @param length
-     *            length of bytes to write from the data buffer
-     * @return output of the operation from wiringPI
-     */
-    public void write(short[] data, int start, int length);
+    public static final int DEFAULT_SPI_SPEED = 1000000; // 1MHz (range is 500kHz - 32MHz)
+    public static final int MAX_SUPPORTED_BYTES = 2048;
 
     /**
      * Attempts to read/write data through this SPI device
      *
      * @param data
      *            bytes (encoded in string) to write to the SPI device
-     * @param encoding
+     * @param charset
      *            character encoding for bytes in string
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public String readWrite(String data, String encoding);
+    public String write(String data, Charset charset) throws IOException;
+
+    /**
+     * Attempts to read/write data through this SPI device
+     *
+     * @param data
+     *            bytes (encoded in string) to write to the SPI device
+     * @param charset
+     *            character encoding for bytes in string
+     * @return resulting bytes read from the SPI device after the write operation
+     */
+    public String write(String data, String charset) throws IOException;
 
     /**
      * Attempts to read/write data through this SPI device
      *
      * @param data
      *            bytes to write to the SPI device
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public ByteBuffer readWrite(ByteBuffer data);
+    public ByteBuffer write(ByteBuffer data) throws IOException;
+
+    /**
+     * Attempts to read/write data through this SPI device
+     *
+     * @param input
+     *            input stream to read from to get
+     *            bytes to write to the SPI device
+     * @return resulting bytes read from the SPI device after the write operation
+     */
+    public byte[] write(InputStream input) throws IOException;
+
+    /**
+     * Attempts to read/write data through this SPI device
+     *
+     * @param input
+     *            input stream to read from to get
+     *            bytes to write to the SPI device
+     * @param output
+     *            output stream to write bytes
+     *            read from the SPI device
+     * @return number of resulting bytes read from the SPI device and written to the output stream
+     */
+    public int write(InputStream input, OutputStream output) throws IOException;
 
     /**
      * Attempts to read/write data through this SPI device
@@ -124,18 +100,18 @@ public interface SpiDevice {
      *            start index position in the data buffer to start writing from
      * @param length
      *            length of bytes to write from the data buffer
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public ByteBuffer readWrite(byte[] data, int start, int length);
+    public byte[] write(byte[] data, int start, int length) throws IOException;
 
     /**
      * Attempts to read/write data through this SPI device
      *
      * @param data
      *            bytes to write to the SPI device
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public byte[] readWrite(byte ... data);
+    public byte[] write(byte ... data) throws IOException;
 
     /**
      * Attempts to read/write data through this SPI device
@@ -146,17 +122,17 @@ public interface SpiDevice {
      *            start index position in the data buffer to start writing from
      * @param length
      *            length of bytes to write from the data buffer
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public ByteBuffer readWrite(short[] data, int start, int length);
+    public short[] write(short[] data, int start, int length) throws IOException;
 
     /**
      * Attempts to read/write data through this SPI device
      *
      * @param data
      *            bytes to write to the SPI device (Note: short value should not exceed 255.)
-     * @return output of the operation from wiringPI
+     * @return resulting bytes read from the SPI device after the write operation
      */
-    public short[] readWrite(short ... data);
+    public short[] write(short ... data) throws IOException;
 
 }
