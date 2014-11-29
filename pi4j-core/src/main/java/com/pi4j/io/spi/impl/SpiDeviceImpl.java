@@ -108,9 +108,6 @@ public class SpiDeviceImpl implements SpiDevice {
         // read maximum number of supported bytes
         int length = input.read(buffer, 0 , MAX_SUPPORTED_BYTES);
 
-        // close input stream
-        input.close();
-
         // write bytes to SPI channel
         return write(buffer, 0, length);
     }
