@@ -32,10 +32,11 @@ import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.wiringpi.Spi;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 public class SpiDeviceImpl implements SpiDevice {
 
@@ -139,13 +140,17 @@ public class SpiDeviceImpl implements SpiDevice {
     @Override
     public byte[] write(byte[] data, int start, int length) throws IOException {
 
+        // ensure the length does not exceed the data array
+        length = Math.min(data.length - start, length);
+
         // validate max length allowed
         if(length > MAX_SUPPORTED_BYTES){
             throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
         }
 
         // we make a copy of the data argument because we don't want to modify the original source data
-        byte[] buffer = Arrays.copyOfRange(data, start, (data.length + start - 1));
+        byte[] buffer = new byte[length];
+        System.arraycopy(data, start, buffer, 0, length);
 
         // write the bytes from the temporary buffer to the SPI channel
         if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
@@ -159,13 +164,17 @@ public class SpiDeviceImpl implements SpiDevice {
     @Override
     public short[] write(short[] data, int start, int length) throws IOException {
 
+        // ensure the length does not exceed the data array
+        length = Math.min(data.length - start, length);
+
         // validate max length allowed
         if(length > MAX_SUPPORTED_BYTES){
             throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
         }
 
         // we make a copy of the data argument because we don't want to modify the original source data
-        short[] buffer = Arrays.copyOfRange(data, start, (data.length + start - 1));
+        short[] buffer = new short[length];
+        System.arraycopy(data, start, buffer, 0, length);
 
         // write the bytes from the temporary buffer to the SPI channel
         if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
