@@ -27,22 +27,18 @@ package com.pi4j.gpio.extension.mcp;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-
-import mockit.Mocked;
-import mockit.NonStrictExpectations;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class MCP3008GpioProviderTestCase {
 
@@ -54,7 +50,7 @@ public class MCP3008GpioProviderTestCase {
 	private SpiFactory spiFactory;
 
 	private SpiChannel spiChannel = SpiChannel.CS0;
-	private Pin inputPin = MCP3008Pin.CH0.pin;
+	private Pin inputPin = MCP3008Pin.CH0;
 
 	@Before
 	public void setup() throws IOException {
