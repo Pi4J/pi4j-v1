@@ -28,19 +28,14 @@
  */
 
 
-import java.io.IOException;
-
 import com.pi4j.gpio.extension.mcp.MCP23S17GpioProvider;
 import com.pi4j.gpio.extension.mcp.MCP23S17Pin;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.wiringpi.Spi;
+import com.pi4j.io.spi.SpiChannel;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -71,7 +66,7 @@ public class MCP23S17GpioExample {
         final GpioController gpio = GpioFactory.getInstance();
         
         // create custom MCP23017 GPIO provider
-        final MCP23S17GpioProvider gpioProvider = new MCP23S17GpioProvider(MCP23S17GpioProvider.DEFAULT_ADDRESS, Spi.CHANNEL_0);
+        final MCP23S17GpioProvider gpioProvider = new MCP23S17GpioProvider(MCP23S17GpioProvider.DEFAULT_ADDRESS, SpiChannel.CS0);
         
         // provision gpio input pins from MCP23S17
         GpioPinDigitalInput myInputs[] = {

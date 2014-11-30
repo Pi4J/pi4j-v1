@@ -36,7 +36,7 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.wiringpi.Spi;
+import com.pi4j.io.spi.SpiChannel;
 
 import java.io.IOException;
 
@@ -69,7 +69,7 @@ public class PiFaceGpioExample {
         final GpioController gpio = GpioFactory.getInstance();
         
         // create custom PiFace GPIO provider
-        final PiFaceGpioProvider gpioProvider = new PiFaceGpioProvider(PiFaceGpioProvider.DEFAULT_ADDRESS,Spi.CHANNEL_0);
+        final PiFaceGpioProvider gpioProvider = new PiFaceGpioProvider(PiFaceGpioProvider.DEFAULT_ADDRESS, SpiChannel.CS0);
         
         // provision gpio input pins from PiFaceGpioProvider
         GpioPinDigitalInput myInputs[] = {
