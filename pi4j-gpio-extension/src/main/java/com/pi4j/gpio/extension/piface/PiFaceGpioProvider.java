@@ -94,7 +94,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     public static final byte READ_FLAG  = 0b00000001;    // 0x01
 
 
-    protected SpiDevice device = null;
+    protected final SpiDevice spi;
 
     public PiFaceGpioProvider(byte spiAddress, SpiChannel spiChannel) throws IOException {
         this(spiAddress, spiChannel, SPI_SPEED);
@@ -111,7 +111,7 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     public PiFaceGpioProvider(byte spiAddress, SpiChannel spiChannel, int spiSpeed) throws IOException {
 
         // create SPI object instance
-        device = SpiFactory.getInstance(spiChannel, spiSpeed);
+        spi = SpiFactory.getInstance(spiChannel, spiSpeed);
 
         // IOCON – I/O EXPANDER CONFIGURATION REGISTER
         //
@@ -186,28 +186,28 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
             read(REGISTER_INTCAP_B);
     }
 
-    protected void write(byte register, byte data) throws IOException {
-
+    protected synchronized void write(byte register, byte data) throws IOException {
         // create packet in data buffer
         byte packet[] = new byte[3];
-        packet[0] = (byte)(address|WRITE_FLAG);   // address byte
+        packet[0] = (byte) (address | WRITE_FLAG);   // address byte
         packet[1] = register;                     // register byte
         packet[2] = data;                         // data byte
-           
+
         // send data packet
-        device.write(packet);
+        spi.write(packet);
     }
 
-    protected byte read(byte register) throws IOException {
-        
+    protected synchronized int read(byte register) throws IOException {
         // create packet in data buffer
         byte packet[] = new byte[3];
-        packet[0] = (byte)(address|READ_FLAG);   // address byte
+        packet[0] = (byte) (address | READ_FLAG);   // address byte
         packet[1] = register;                    // register byte
         packet[2] = 0b00000000;                  // data byte
 
-        byte result[] = device.write(packet);
-        return result[2];
+        byte result[] = spi.write(packet);
+
+        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+        return result[2] & 0xFF;
     }
     
     @Override
@@ -496,12 +496,12 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
                     // only process for interrupts if a pin on port A is configured as an input pin
                     if (currentDirectionA > 0) {
                         // process interrupts for port A
-                        byte pinInterruptA = provider.read(REGISTER_INTF_A);
+                        int pinInterruptA = provider.read(REGISTER_INTF_A);
 
                         // validate that there is at least one interrupt active on port A
                         if (pinInterruptA > 0) {
                             // read the current pin states on port A
-                            byte pinInterruptState = provider.read(REGISTER_GPIO_A);
+                            int pinInterruptState = provider.read(REGISTER_GPIO_A);
 
                             // loop over the available pins on port B
                             for (Pin pin : PiFacePin.OUTPUTS) {
@@ -519,12 +519,12 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
                     // only process for interrupts if a pin on port B is configured as an input pin
                     if (currentDirectionB > 0) {
                         // process interrupts for port B
-                        int pinInterruptB = (int)provider.read(REGISTER_INTF_B);
+                        int pinInterruptB = provider.read(REGISTER_INTF_B);
 
                         // validate that there is at least one interrupt active on port B
                         if (pinInterruptB > 0) {
                             // read the current pin states on port B
-                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_B);
+                            int pinInterruptState = provider.read(REGISTER_GPIO_B);
 
                             // loop over the available pins on port B
                             for (Pin pin : PiFacePin.INPUTS) {

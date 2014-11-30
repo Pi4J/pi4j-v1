@@ -154,8 +154,8 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
         // read initial GPIO pin states
         // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
-        currentStatesA = read(REGISTER_GPIO_A) & 0xFF;
-        currentStatesB = read(REGISTER_GPIO_B) & 0xFF;
+        currentStatesA = read(REGISTER_GPIO_A);
+        currentStatesB = read(REGISTER_GPIO_B);
 
         // set all default pins directions
         // (1 = Pin is configured as an input.)
@@ -198,32 +198,28 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
             read(REGISTER_INTCAP_B);
     }
 
-    protected void write(byte register, byte data) throws IOException {
-        synchronized(spi) {
+    protected synchronized void write(byte register, byte data) throws IOException {
+        // create packet in data buffer
+        byte packet[] = new byte[3];
+        packet[0] = (byte)(address|WRITE_FLAG);   // address byte
+        packet[1] = register;                     // register byte
+        packet[2] = data;                         // data byte
 
-            // create packet in data buffer
-            byte packet[] = new byte[3];
-            packet[0] = (byte)(address|WRITE_FLAG);   // address byte
-            packet[1] = register;                     // register byte
-            packet[2] = data;                         // data byte
-
-            // send data packet
-            spi.write(packet);
-        }
+        // send data packet
+        spi.write(packet);
     }
 
-    protected byte read(byte register) throws IOException {
-        synchronized(spi) {
+    protected synchronized int read(byte register) throws IOException {
+        // create packet in data buffer
+        byte packet[] = new byte[3];
+        packet[0] = (byte) (address | READ_FLAG);   // address byte
+        packet[1] = register;                    // register byte
+        packet[2] = 0b00000000;                  // data byte
 
-            // create packet in data buffer
-            byte packet[] = new byte[3];
-            packet[0] = (byte) (address | READ_FLAG);   // address byte
-            packet[1] = register;                    // register byte
-            packet[2] = 0b00000000;                  // data byte
+        byte[] result = spi.write(packet);
 
-            byte[] result = spi.write(packet);
-            return result[2];
-        }
+        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+        return result[2] & 0xFF;
     }
     
     @Override
@@ -512,14 +508,12 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port A is configured as an input pin
                     if (currentDirectionA > 0) {
                         // process interrupts for port A
-                        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
-                        int pinInterruptA = (int)provider.read(REGISTER_INTF_A) & 0xFF;
+                        int pinInterruptA = provider.read(REGISTER_INTF_A);
 
                         // validate that there is at least one interrupt active on port A
                         if (pinInterruptA > 0) {
                             // read the current pin states on port A
-                            // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
-                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_A) & 0xFF;
+                            int pinInterruptState = provider.read(REGISTER_GPIO_A);
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_A_PINS) {
@@ -537,15 +531,13 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port B is configured as an input pin
                     if (currentDirectionB > 0) {
                         // process interrupts for port B
-                        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
-                        int pinInterruptB = (int)provider.read(REGISTER_INTF_B) & 0xFF;
+                        int pinInterruptB = provider.read(REGISTER_INTF_B);
 
                         // validate that there is at least one interrupt active on port B
                         if (pinInterruptB > 0) {
 
                             // read the current pin states on port B
-                            // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
-                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_B) & 0xFF;
+                            int pinInterruptState = provider.read(REGISTER_GPIO_B);
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_B_PINS) {
