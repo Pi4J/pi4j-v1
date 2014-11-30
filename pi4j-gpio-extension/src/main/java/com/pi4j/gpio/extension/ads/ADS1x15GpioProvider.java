@@ -28,18 +28,14 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
-import java.io.IOException;
-
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -176,9 +172,9 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     
     // defines the PGA used when reading the analog input value
     protected ProgrammableGainAmplifierValue[] pga = { ProgrammableGainAmplifierValue.PGA_6_144V,
-                                                     ProgrammableGainAmplifierValue.PGA_6_144V,
-                                                     ProgrammableGainAmplifierValue.PGA_6_144V,
-                                                     ProgrammableGainAmplifierValue.PGA_6_144V};
+                                                       ProgrammableGainAmplifierValue.PGA_6_144V,
+                                                       ProgrammableGainAmplifierValue.PGA_6_144V,
+                                                       ProgrammableGainAmplifierValue.PGA_6_144V};
 
     // the threshold used to determine if a significant value warrants an event to be raised
     protected double[] threshold = { 500, 500, 500, 500 };
@@ -295,7 +291,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
                      ADS1x15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
         // Set PGA/voltage range
-        config |= ADS1x15_REG_CONFIG_PGA_4_096V;            // +/- 6.144V range (limited to VDD +0.3V max!)
+        config |= pga[pin.getAddress()].getConfigValue();  // +/- 6.144V range (limited to VDD +0.3V max!)
 
         // Set single-ended input channel
         switch (pin.getAddress())

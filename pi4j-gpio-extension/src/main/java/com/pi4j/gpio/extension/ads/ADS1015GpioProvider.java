@@ -28,9 +28,9 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
-import java.io.IOException;
-
 import com.pi4j.io.gpio.GpioProvider;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -69,8 +69,8 @@ public class ADS1015GpioProvider extends ADS1x15GpioProvider implements GpioProv
     // =======================================================================
     // ADS1015 VALUE RANGES
     // =======================================================================
-    public static final int ADS1015_RANGE_MAX_VALUE =  32752; //0x7FF0 (12 bits)
-    public static final int ADS1015_RANGE_MIN_VALUE = -32753; //0x8000 (12 bits)
+    public static final int ADS1015_RANGE_MAX_VALUE =  2047; //0x7FF (12 bits)
+    public static final int ADS1015_RANGE_MIN_VALUE = -2048; //0x800 (12 bits)
     
     // =======================================================================
     // CONVERSION DELAY (in mS)
