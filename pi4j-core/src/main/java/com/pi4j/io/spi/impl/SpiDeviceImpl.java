@@ -141,7 +141,7 @@ public class SpiDeviceImpl implements SpiDevice {
         length = Math.min(data.length - start, length);
 
         // validate max length allowed
-        if(length > MAX_SUPPORTED_BYTES){
+        if (length > MAX_SUPPORTED_BYTES) {
             throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
         }
 
@@ -149,11 +149,12 @@ public class SpiDeviceImpl implements SpiDevice {
         byte[] buffer = new byte[length];
         System.arraycopy(data, start, buffer, 0, length);
 
-        // write the bytes from the temporary buffer to the SPI channel
-        if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
-            throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
-        }
-
+        synchronized (channel) {
+                // write the bytes from the temporary buffer to the SPI channel
+                if (Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0) {
+                    throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
+                }
+            }
         // return the updated byte buffer as the SPI read results
         return buffer;
     }
@@ -165,7 +166,7 @@ public class SpiDeviceImpl implements SpiDevice {
         length = Math.min(data.length - start, length);
 
         // validate max length allowed
-        if(length > MAX_SUPPORTED_BYTES){
+        if (length > MAX_SUPPORTED_BYTES) {
             throw new IOException("Number of bytes in data to write exceed the maximum bytes allowed to write SPI channel in a single call");
         }
 
@@ -173,13 +174,15 @@ public class SpiDeviceImpl implements SpiDevice {
         short[] buffer = new short[length];
         System.arraycopy(data, start, buffer, 0, length);
 
-        // write the bytes from the temporary buffer to the SPI channel
-        if(Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0){
-            throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
-        }
+        synchronized (channel) {
+            // write the bytes from the temporary buffer to the SPI channel
+            if (Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0) {
+                throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
+            }
 
-        // return the updated byte buffer as the SPI read results
-        return buffer;
+            // return the updated byte buffer as the SPI read results
+            return buffer;
+        }
     }
 
 }

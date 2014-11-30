@@ -5,7 +5,9 @@ import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
-import com.pi4j.wiringpi.Spi;
+import com.pi4j.io.spi.SpiChannel;
+import com.pi4j.io.spi.SpiDevice;
+import com.pi4j.io.spi.SpiFactory;
 
 import java.io.IOException;
 
@@ -86,6 +88,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     private byte address = DEFAULT_ADDRESS;
 
     private GpioStateMonitor monitor = null;
+    private final SpiDevice spi;
     
     public static final int SPI_SPEED = 1000000;    
     public static final byte WRITE_FLAG = 0b00000000;    // 0x00
@@ -95,7 +98,15 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         this(spiAddress, spiChannel, SPI_SPEED);
     }
 
+    public MCP23S17GpioProvider(byte spiAddress, SpiChannel spiChannel) throws IOException {
+        this(spiAddress, spiChannel, SPI_SPEED);
+    }
+
     public MCP23S17GpioProvider(byte spiAddress, int spiChannel, int spiSpeed) throws IOException {
+        this(spiAddress, SpiChannel.getByNumber(spiChannel), spiSpeed);
+    }
+
+    public MCP23S17GpioProvider(byte spiAddress, SpiChannel spiChannel, int spiSpeed) throws IOException {
 
         // IOCON – I/O EXPANDER CONFIGURATION REGISTER
         //
@@ -127,12 +138,13 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     public MCP23S17GpioProvider(byte spiAddress, int spiChannel, int spiSpeed, byte iocon) throws IOException {
+        this(spiAddress, SpiChannel.getByNumber(spiChannel), spiSpeed, iocon);
+    }
 
-        // setup SPI for communication
-        int fd = Spi.wiringPiSPISetup(spiChannel, spiSpeed);
-        if (fd <= -1) {
-            throw new IOException("SPI port setup failed.");
-        }
+    public MCP23S17GpioProvider(byte spiAddress, SpiChannel spiChannel, int spiSpeed, byte iocon) throws IOException {
+
+        // create SPi object instance SPI for communication
+        spi = SpiFactory.getInstance(spiChannel, spiSpeed);
 
         // set SPI chip address
         this.address = spiAddress;
@@ -141,8 +153,9 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         write(REGISTER_IOCON, iocon);
 
         // read initial GPIO pin states
-        currentStatesA = read(REGISTER_GPIO_A);
-        currentStatesB = read(REGISTER_GPIO_B);
+        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+        currentStatesA = read(REGISTER_GPIO_A) & 0xFF;
+        currentStatesB = read(REGISTER_GPIO_B) & 0xFF;
 
         // set all default pins directions
         // (1 = Pin is configured as an input.)
@@ -185,32 +198,33 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
             read(REGISTER_INTCAP_B);
     }
 
-    protected void write(byte register, byte data) {
+    protected void write(byte register, byte data) throws IOException {
+        synchronized(spi) {
 
-        // create packet in data buffer
-        byte packet[] = new byte[3];
-        packet[0] = (byte)(address|WRITE_FLAG);   // address byte
-        packet[1] = register;                     // register byte
-        packet[2] = data;                         // data byte
-           
-        // send data packet
-        Spi.wiringPiSPIDataRW(0, packet, 3);        
+            // create packet in data buffer
+            byte packet[] = new byte[3];
+            packet[0] = (byte)(address|WRITE_FLAG);   // address byte
+            packet[1] = register;                     // register byte
+            packet[2] = data;                         // data byte
+
+            // send data packet
+            spi.write(packet);
+        }
     }
 
-    protected byte read(byte register){
-        
-        // create packet in data buffer
-        byte packet[] = new byte[3];
-        packet[0] = (byte)(address|READ_FLAG);   // address byte
-        packet[1] = register;                    // register byte
-        packet[2] = 0b00000000;                  // data byte
-        
-        int result = Spi.wiringPiSPIDataRW(0, packet, 3); 
-        if(result >= 0)
-            return packet[2];
-        else
-            throw new RuntimeException("Invalid SPI read operation: " + result);
-    }    
+    protected byte read(byte register) throws IOException {
+        synchronized(spi) {
+
+            // create packet in data buffer
+            byte packet[] = new byte[3];
+            packet[0] = (byte) (address | READ_FLAG);   // address byte
+            packet[1] = register;                    // register byte
+            packet[2] = 0b00000000;                  // data byte
+
+            byte[] result = spi.write(packet);
+            return result[2];
+        }
+    }
     
     @Override
     public String getName() {
@@ -498,12 +512,14 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port A is configured as an input pin
                     if (currentDirectionA > 0) {
                         // process interrupts for port A
-                        byte pinInterruptA = provider.read(REGISTER_INTF_A);
+                        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+                        int pinInterruptA = (int)provider.read(REGISTER_INTF_A) & 0xFF;
 
                         // validate that there is at least one interrupt active on port A
                         if (pinInterruptA > 0) {
                             // read the current pin states on port A
-                            byte pinInterruptState = provider.read(REGISTER_GPIO_A);
+                            // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_A) & 0xFF;
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_A_PINS) {
@@ -521,12 +537,15 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
                     // only process for interrupts if a pin on port B is configured as an input pin
                     if (currentDirectionB > 0) {
                         // process interrupts for port B
-                        int pinInterruptB = (int)provider.read(REGISTER_INTF_B);
+                        // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+                        int pinInterruptB = (int)provider.read(REGISTER_INTF_B) & 0xFF;
 
                         // validate that there is at least one interrupt active on port B
                         if (pinInterruptB > 0) {
+
                             // read the current pin states on port B
-                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_B);
+                            // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
+                            int pinInterruptState = (int)provider.read(REGISTER_GPIO_B) & 0xFF;
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_B_PINS) {
