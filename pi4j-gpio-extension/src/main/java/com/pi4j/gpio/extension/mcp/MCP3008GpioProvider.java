@@ -27,17 +27,14 @@ package com.pi4j.gpio.extension.mcp;
  * #L%
  */
 
-import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.GpioProviderBase;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
+
+import java.io.IOException;
 
 /**
  * 
@@ -54,7 +51,6 @@ import com.pi4j.io.spi.SpiFactory;
  * @author pojd
  */
 public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvider {
-	private static final Log LOG = LogFactory.getLog(MCP3008GpioProvider.class);
 
 	public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3008GpioProvider";
 	public static final String DESCRIPTION = "MCP3008 GPIO Provider";
@@ -87,9 +83,6 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
 	private short toCommand(short channel) {
 		short command = (short) ((channel + 8) << 4);
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("command: " + toBinary(command) + ". channel: " + channel);
-		}
 		return command;
 	}
 
@@ -105,26 +98,11 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 		try {
 			result = spiDevice.write(data);
 		} catch (IOException e) {
-			LOG.error("Unable to read from SPI device, returning -1 value. ", e);
 			return -1;
-		}
-
-		if (LOG.isDebugEnabled()) {
-			for (short s : data) {
-				LOG.debug("Input for SPI: " + s + ". Binary: " + toBinary(s));
-			}
-			for (short s : result) {
-				LOG.debug("Output from SPI: " + s + ". Binary: " + toBinary(s));
-			}
 		}
 
 		// now take 8 and 9 bit from second byte (& with 0b11 and shift) and the whole last byte to form the value
 		int analogValue = ((result[1] & 3) << 8) + result[2];
-
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Result: " + analogValue + ". In binary: " + toBinary(analogValue));
-		}
-
 		return analogValue;
 	}
 }

@@ -1,10 +1,10 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.util.EnumSet;
-
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.impl.PinImpl;
+
+import java.util.EnumSet;
 
 /*
  * #%L
@@ -45,20 +45,27 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * 
  * @author pojd
  */
-public enum MCP3008Pin {
+public class MCP3008Pin {
 
-	CH0(0, "GPIO CH0"),
-	CH1(1, "GPIO CH1"),
-	CH2(2, "GPIO CH2"),
-	CH3(3, "GPIO CH3"),
-	CH4(4, "GPIO CH4"),
-	CH5(5, "GPIO CH5"),
-	CH6(6, "GPIO CH6"),
-	CH7(7, "GPIO CH7");
+    public static final Pin CH0 = createAnalogInputPin(0, "ANALOG INPUT 0");
+    public static final Pin CH1 = createAnalogInputPin(1, "ANALOG INPUT 1");
+    public static final Pin CH2 = createAnalogInputPin(2, "ANALOG INPUT 2");
+    public static final Pin CH3 = createAnalogInputPin(3, "ANALOG INPUT 3");
+    public static final Pin CH4 = createAnalogInputPin(3, "ANALOG INPUT 4");
+    public static final Pin CH5 = createAnalogInputPin(3, "ANALOG INPUT 5");
+    public static final Pin CH6 = createAnalogInputPin(3, "ANALOG INPUT 6");
+    public static final Pin CH7 = createAnalogInputPin(3, "ANALOG INPUT 7");
 
-	public final Pin pin;
+    public static Pin[] ALL = { MCP3008Pin.CH0,
+                                MCP3008Pin.CH1,
+                                MCP3008Pin.CH2,
+                                MCP3008Pin.CH3,
+                                MCP3008Pin.CH4,
+                                MCP3008Pin.CH5,
+                                MCP3008Pin.CH6,
+                                MCP3008Pin.CH7 };
 
-	private MCP3008Pin(int channel, String name) {
-		this.pin = new PinImpl(MCP3008GpioProvider.NAME, channel, name, EnumSet.of(PinMode.ANALOG_INPUT));
-	}
+    private static Pin createAnalogInputPin(int channel, String name) {
+        return new PinImpl(MCP3008GpioProvider.NAME, channel, name, EnumSet.of(PinMode.ANALOG_INPUT));
+    }
 }
