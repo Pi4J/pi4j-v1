@@ -18,6 +18,18 @@
 			<artifactId>pi4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jmockit</groupId>
+			<artifactId>jmockit</artifactId>
+			<version>1.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- BUILD INSTRUCTIONS -->
@@ -88,17 +100,19 @@
 								<if>
 									<equals arg1="${pi.transfer.dev}" arg2="true" />
 									<then>
-									
+
 										<!-- ensure the target directory exists on the Raspberry Pi -->
-										<sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
-											password="${pi.password.dev}" trust="true" failonerror="false"
-											verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
-												
+										<sshexec host="${pi.host.dev}" port="${pi.port.dev}"
+											username="${pi.user.dev}" password="${pi.password.dev}"
+											trust="true" failonerror="false" verbose="true"
+											command="mkdir --parents ${pi.dirCopyTo.dev}" />
+
 										<!-- copy the JAR file to the Raspberry Pi -->
 										<scp
 											file="${project.build.directory}/${project.build.finalName}.jar"
 											todir="${pi.user.dev}:${pi.password.dev}@${pi.host.dev}:${pi.dirCopyTo.dev}"
-											port="${pi.port.dev}" trust="true" verbose="true" failonerror="true">
+											port="${pi.port.dev}" trust="true" verbose="true"
+											failonerror="true">
 										</scp>
 									</then>
 								</if>
@@ -106,23 +120,23 @@
 						</configuration>
 					</execution>
 				</executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>${ant-jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>${jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>ant-contrib</groupId>
-                        <artifactId>ant-contrib</artifactId>
-                        <version>${ant-contrib.version}</version>
-                    </dependency>
-                </dependencies>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>${ant-jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>${jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>${ant-contrib.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
