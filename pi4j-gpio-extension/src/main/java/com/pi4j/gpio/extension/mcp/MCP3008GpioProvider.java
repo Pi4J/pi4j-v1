@@ -54,6 +54,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
 	public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3008GpioProvider";
 	public static final String DESCRIPTION = "MCP3008 GPIO Provider";
+	public static final int INVALID_VALUE = -1;
 
 	private final SpiDevice spiDevice;
 
@@ -78,7 +79,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 	public double getValue(Pin pin) {
 		// do not return, only let parent handle whether this pin is OK
 		super.getValue(pin);
-		return readAnalog(toCommand((short) pin.getAddress()));
+		return isInitiated() ? readAnalog(toCommand((short) pin.getAddress())) : INVALID_VALUE;
 	}
 
 	private short toCommand(short channel) {
@@ -86,8 +87,8 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 		return command;
 	}
 
-	private String toBinary(int number) {
-		return String.format("%8s", Integer.toBinaryString(number)).replace(' ', '0');
+	private boolean isInitiated() {
+		return spiDevice != null;
 	}
 
 	private int readAnalog(short channelCommand) {
@@ -98,7 +99,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 		try {
 			result = spiDevice.write(data);
 		} catch (IOException e) {
-			return -1;
+			return INVALID_VALUE;
 		}
 
 		// now take 8 and 9 bit from second byte (& with 0b11 and shift) and the whole last byte to form the value
