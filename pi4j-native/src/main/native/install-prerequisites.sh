@@ -27,6 +27,8 @@
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
-sudo apt-get install gcc -y
-sudo apt-get install git-core -y
-sudo apt-get install oracle-java7-jdk -y
+if [ ! -z "`type apt-get 2>/dev/null;`" ]; then 
+  sudo apt-get install gcc -y
+  sudo apt-get install git-core -y
+  sudo apt-get install oracle-java7-jdk -y
+fi
