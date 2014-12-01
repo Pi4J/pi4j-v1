@@ -67,6 +67,22 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutchar
 
 /*
  * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialPutByte
+ * Signature: (IB)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutByte
+  (JNIEnv *, jclass, jint, jbyte);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialPutBytes
+ * Signature: (I[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutBytes
+  (JNIEnv *, jclass, jint, jbyteArray, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
  * Method:    serialPuts
  * Signature: (ILjava/lang/String;)V
  */
@@ -88,6 +104,31 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialGetchar
   (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetByte
+ * Signature: (I)B
+ */
+JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetBytes
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetBytes
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetAvailableBytes
+ * Signature: (I)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetAvailableBytes
+  (JNIEnv *, jclass, jint);
+
 
 #ifdef __cplusplus
 }
