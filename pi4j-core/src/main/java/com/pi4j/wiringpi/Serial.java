@@ -106,7 +106,7 @@ public class Serial {
      * @return The return value is the file descriptor or -1 for any error, in which case errno will
      *         be set as appropriate.
      */
-    public static native int serialOpen(String device, int baud);
+    public synchronized static native int serialOpen(String device, int baud);
 
     /**
      * <p>void serialClose (int fd);</p>
@@ -120,7 +120,7 @@ public class Serial {
      *            The file descriptor of the serial port.
      *            </p>
      */
-    public static native void serialClose(int fd);
+    public synchronized static native void serialClose(int fd);
 
     /**
      * <h1>void serialFlush (int fd);</h1>
@@ -131,19 +131,63 @@ public class Serial {
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      */
-    public static native void serialFlush(int fd);
+    public synchronized static native void serialFlush(int fd);
 
     /**
-     * <p>void serialPutchar (int fd, unsigned char c);</p>
+     * <p>void serialPutByte (int fd, unsigned char c);</p>
      * 
      * <p>Sends the single byte to the serial device identified by the given file descriptor.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
-     * @param data The character to transmit to the serial port.
+     * @param data The byte to transmit to the serial port.
      */
-    public static native void serialPutchar(int fd, char data);
+    public synchronized static native void serialPutByte(int fd, byte data);
+
+    /**
+     * <p>void serialPutchar (int fd, char c);</p>
+     *
+     * <p>Sends a single character () to the serial device identified by the given file descriptor.</p>
+     *
+     * @deprecated Use the serialPutByte() method instead.
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte to transmit to the serial port.
+     */
+    @Deprecated
+    public synchronized static void serialPutchar(int fd, char data){
+        serialPutByte(fd, (byte)data);
+    }
+
+    /**
+     * <p>void serialPutBytes (int fd, byte[] data);</p>
+     *
+     * <p>Sends any array of bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte array to transmit to the serial port.
+     * @param length The number of bytes from the byte array to transmit to the serial port.
+     */
+    public synchronized static native void serialPutBytes(int fd, byte[] data, int length);
+
+    /**
+     * <p>void serialPutBytes (int fd, byte[] data);</p>
+     *
+     * <p>Sends any array of bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte array to transmit to the serial port.
+     */
+    public synchronized static void serialPutBytes(int fd, byte ... data){
+        serialPutBytes(fd, data, data.length);
+    }
 
     /**
      * <p>void serialPuts (int fd, char *s);</p>
@@ -157,7 +201,7 @@ public class Serial {
      * @param fd The file descriptor of the serial port.
      * @param data The data string to transmit to the serial port.
      */
-    public static native void serialPuts(int fd, String data);
+    public synchronized static native void serialPuts(int fd, String data);
 
     /**
      * <p>void serialPuts (int fd, String data, String...arguments);</p>
@@ -175,7 +219,7 @@ public class Serial {
      * @param data The formatted data string to transmit to the serial port.
      * @param args Arguments to the format string.
      */
-    public static void serialPuts(int fd, String data, String... args) {
+    public synchronized static void serialPuts(int fd, String data, String... args) {
         serialPuts(fd, String.format(data, (Object[]) args));
     }
 
@@ -191,19 +235,62 @@ public class Serial {
      * @return Returns the number of characters available for reading, or -1 for any error
      *         condition, in which case errno will be set appropriately.
      */
-    public static native int serialDataAvail(int fd);
+    public synchronized static native int serialDataAvail(int fd);
 
     /**
-     * <p>int serialGetchar (int fd);</p>
+     * <p>byte serialGetByte (int fd);</p>
      * 
-     * <p>Returns the next character available on the serial device. This call will block for up to 10
+     * <p>Returns the next byte available on the serial device. This call will block for up to 10
      * seconds if no data is available (when it will return -1)</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
-     * @return Returns the next character available on the serial device. This call will block for
+     * @return Returns the next byte available on the serial device. This call will block for
+     *         up to 10 seconds if no data is available (when it will return NULL)
+     */
+    public synchronized static native byte serialGetByte(int fd);
+
+    /**
+     * <p>int serialGetBytes (int fd, int length);</p>
+     *
+     * <p>Returns the length of bytes available on the serial device.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param length The number of bytes to get from the serial port.  This number must not be higher than the number of available bytes.
+     * @return Returns the length of byte available on the serial device.
+     */
+    public synchronized static native byte[] serialGetBytes(int fd, int length);
+
+    /**
+     * <p>int serialGetAvailableBytes (int fd);</p>
+     *
+     * <p>Returns on array of bytes currently available on the serial device.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the current bytes available on the serial device.
+     */
+    public synchronized static native byte[] serialGetAvailableBytes(int fd);
+
+    /**
+     * <p>int serialGetchar (int fd);</p>
+     *
+     * <p>Returns the next byte available on the serial device. This call will block for up to 10
+     * seconds if no data is available (when it will return -1)</p>
+     *
+     * @deprecated Use the serialGetByte() method instead.
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the next byte available on the serial device. This call will block for
      *         up to 10 seconds if no data is available (when it will return -1)
      */
-    public static native int serialGetchar(int fd);
+    @Deprecated
+    public synchronized static native int serialGetchar(int fd);
+
 }
