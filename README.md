@@ -52,6 +52,12 @@ Copyright (C) 2012-2015 Pi4J
 2015-02-26 :: 1.0-SNAPSHOT
 
   *  Added support for RaspberryPi v2 Model B
+  *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
+  *  Added new Serial JNI implementation to support more advanced serial configuration/operations  
+  *  Overhauled wiringPi serial JNI methods to better support raw data operations
+  *  Added a Java-friendly SPI interface
+  *  Added support for short arrays in WiringPi SPI interface
+  *  Fixed a number of MCP23S17 and PiFace defects
   *  Added support for RaspberryPi Model A+
   *  Added support for RaspberryPi Model B+
   *  Added support for RaspberryPi Compute Module
