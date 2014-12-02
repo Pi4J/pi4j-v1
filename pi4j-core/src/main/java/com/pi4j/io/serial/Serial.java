@@ -98,8 +98,8 @@ public interface Serial {
     public boolean isClosed();
     
     /**
-     * This method is called to immediately flush the serial data transmit buffer and force any
-     * pending data to be sent to the serial port immediately.
+     * This method is called to immediately discard data data in both
+     * the transmit and receive buffer of the serial port/device.
      */
     public void flush() throws IllegalStateException;
 
