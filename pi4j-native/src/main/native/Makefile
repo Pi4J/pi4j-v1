@@ -16,7 +16,8 @@ LIBS    =  -L/usr/local/lib /usr/local/lib/libwiringPi.a /usr/local/lib/libwirin
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=   com_pi4j_jni_I2C.c            \
+SRC	=   com_pi4j_jni_Exception.c      \
+        com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
@@ -32,7 +33,8 @@ SRC	=   com_pi4j_jni_I2C.c            \
         com_pi4j_wiringpi_GpioUtil.c  \
         com_pi4j_wiringpi_GpioInterrupt.c
 
-OBJ	=   com_pi4j_jni_I2C.o            \
+OBJ	=   com_pi4j_jni_Exception.o      \
+        com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
@@ -83,6 +85,7 @@ uninstall:
 
 
 # DO NOT DELETE
+com_pi4j_jni_Exception.o: com_pi4j_jni_Exception.h
 com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h  
