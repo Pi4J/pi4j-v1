@@ -47,7 +47,7 @@ unsigned char buf[257];
  * Signature: (Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cOpen
-  (JNIEnv *env, jobject obj, jstring device)
+  (JNIEnv *env, jclass obj, jstring device)
 {
 	char fileName[256];
 	int len = (*env)->GetStringLength(env, device);
@@ -62,7 +62,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cOpen
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cClose
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	return close(fd);
 }
@@ -73,7 +73,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cClose
  * Signature: (IIB)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByteDirect
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jbyte b)  
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jbyte b)
 {
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
 
@@ -97,7 +97,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByteDirect
  * Signature: (IIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytesDirect
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
 {
     int i;
 
@@ -127,7 +127,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytesDirect
  * Signature: (IIIB)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByte
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint localAddress, jbyte b)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jbyte b)
   
 {
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
@@ -153,7 +153,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByte
  * Signature: (IIIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytes
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
   
 {
     int i;
@@ -186,7 +186,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytes
  * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByteDirect
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress)
 {
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
@@ -209,7 +209,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByteDirect
  * Signature: (IIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
 {
     int i;
     
@@ -238,7 +238,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
  * Signature: (III)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint localAddress)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress)
 {
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
@@ -273,7 +273,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
  * Signature: (IIIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
-  (JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
 {
     int i;
     
@@ -314,7 +314,7 @@ Method:    i2cWriteAndReadBytes
 Signature: (IIII[BII[B)I
 */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteAndReadBytes
-(JNIEnv *env, jobject obj, jint fd, jint deviceAddress, jint writeSize, jint writeOffset, jbyteArray writeBytes, jint readSize, jint readOffset, jbyteArray readBytes)
+(JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint writeSize, jint writeOffset, jbyteArray writeBytes, jint readSize, jint readOffset, jbyteArray readBytes)
 {
     int i;
 

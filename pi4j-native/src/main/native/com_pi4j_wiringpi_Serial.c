@@ -36,7 +36,7 @@
  * Signature: (Ljava/lang/String;I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialOpen
-  (JNIEnv *env, jobject obj, jstring device, jint baud)
+  (JNIEnv *env, jclass obj, jstring device, jint baud)
 {
 	char devchararr[256];
 	int len = (*env)->GetStringLength(env, device);
@@ -52,7 +52,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialOpen
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialClose
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
     serialFlush(fd);
 	serialClose(fd);
@@ -64,7 +64,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialClose
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialFlush
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	serialFlush(fd);
 }
@@ -75,7 +75,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialFlush
  * Signature: (IC)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutchar
-  (JNIEnv *env, jobject obj, jint fd, jchar data)
+  (JNIEnv *env, jclass obj, jint fd, jchar data)
 {
 	serialPutchar(fd, data);
 }
@@ -97,7 +97,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutByte
  * Signature: (I[BI)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutBytes
-(JNIEnv *env, jobject obj, jint fd, jbyteArray data, jint length)
+(JNIEnv *env, jclass obj, jint fd, jbyteArray data, jint length)
 {
     int i;
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
@@ -113,7 +113,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutBytes
  * Signature: (ILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
-  (JNIEnv *env, jobject obj, jint fd, jstring data)
+  (JNIEnv *env, jclass obj, jint fd, jstring data)
 {
 	char datachararr[2048];
 	int len = (*env)->GetStringUTFLength(env, data);
@@ -127,7 +127,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	return serialDataAvail(fd);
 }
@@ -138,7 +138,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialGetchar
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	return serialGetchar(fd);
 }
@@ -149,7 +149,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialGetchar
  * Signature: (I)B
  */
 JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
     int result = serialGetchar(fd);
     if(result >= 0){
@@ -166,7 +166,7 @@ JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
  * Signature: (II)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetBytes
-  (JNIEnv *env, jobject obj, jint fd, jint length)
+  (JNIEnv *env, jclass obj, jint fd, jint length)
 {
     int num_available;
     num_available = serialDataAvail(fd);
@@ -193,7 +193,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetBytes
  * Signature: (I)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetAvailableBytes
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
     int length;
     length = serialDataAvail(fd);

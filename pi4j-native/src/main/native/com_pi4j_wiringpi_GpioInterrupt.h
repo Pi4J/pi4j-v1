@@ -33,7 +33,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /*
  * Class:     com_pi4j_wiringpi_GpioInterrupt
  * Method:    enablePinStateChangeCallback
