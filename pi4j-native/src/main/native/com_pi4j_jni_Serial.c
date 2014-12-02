@@ -25,6 +25,7 @@
  * #L%
  */
 #include <jni.h>
+#include "com_pi4j_jni_Exception.h"
 #include "com_pi4j_jni_Serial.h"
 
 /* Source for com_pi4j_jni_Serial */
@@ -99,14 +100,31 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
 	(*env)->GetStringUTFRegion(env, port, 0, len, device);
 
     // open serial port
-    if ((fd = open (device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)) == -1)
+    if ((fd = open (device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Unable to open the serial port/device. (Error #%d)", err_number);
+        throwIOException(env, err_message);
         return -1 ;
+    }
 
     // allow READ/WRITE operation on serial port
-    fcntl (fd, F_SETFL, O_RDWR) ;
+    if(fcntl (fd, F_SETFL, O_RDWR) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Unable to configure serial file descriptor for R/W access. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+        return -2 ;
+    }
 
     // load serial options/configuration
-    tcgetattr (fd, &options) ;
+    if(tcgetattr (fd, &options) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to GET terminal attributes for the serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+
     cfmakeraw   (&options) ;
 
 
@@ -136,13 +154,25 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
         case 115200:	myBaud = B115200 ; break ;
         case 230400:	myBaud = B230400 ; break ;
 
-        default:
-            return -2 ;  // INVALID/UNSUPPORTED BAUD RATE
+        default:{
+            throwIOException( env, "Invalid/unsupported BAUD rate");
+            return -3 ;  // INVALID/UNSUPPORTED BAUD RATE
+        }
     }
 
     // set baud rate
-    cfsetispeed (&options, myBaud) ;
-    cfsetospeed (&options, myBaud) ;
+    if(cfsetispeed (&options, myBaud) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to set (input) serial port baud rate. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+    if(cfsetospeed (&options, myBaud)){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to set (output) serial port baud rate. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
 
 
     // -----------------------
@@ -175,8 +205,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
             options.c_cflag |= CS8 ; // 8 data bits
             break;
 
-        default:
-            return -3 ;  // INVALID/UNSUPPORTED DATA BITS CONFIG
+        default:{
+            throwIOException( env, "Invalid/unsupported DATA BITS configuration property");
+            return -4 ;  // INVALID/UNSUPPORTED DATA BITS CONFIG
+        }
     }
 
     // set parity configuration
@@ -202,23 +234,31 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
             options.c_cflag |= PARENB | CMSPAR | PARODD;
             break;
 
-        default:
-            return -4 ;  // INVALID/UNSUPPORTED PARITY CONFIG
+        default:{
+            throwIOException( env, "Invalid/unsupported PARITY configuration property");
+            return -5 ;  // INVALID/UNSUPPORTED PARITY CONFIG
+        }
     }
 
     // set stop bits
-    if(stopBits == STOP_BITS_1)
+    if(stopBits == STOP_BITS_1){
         options.c_cflag &= ~CSTOPB; // 1 stop bit
-    else if(stopBits == STOP_BITS_2)
+    }
+    else if(stopBits == STOP_BITS_2){
         options.c_cflag |= CSTOPB;  // 2 stop bits
-    else
-        return -5; // INVALID/UNSUPPORTED STOP BITS CONFIG
+    }
+    else{
+        throwIOException( env, "Invalid/unsupported STOP BITS configuration property");
+        return -6; // INVALID/UNSUPPORTED STOP BITS CONFIG
+    }
 
     // set hardware flow control configuration
-    if(flowControl == FLOW_CONTROL_HARDWARE)
+    if(flowControl == FLOW_CONTROL_HARDWARE){
         options.c_cflag |= CRTSCTS; // enable hardware flow control
-    else
+    }
+    else{
         options.c_cflag &= ~CRTSCTS; // disable hardware flow control
+    }
 
 
     // ------------------------
@@ -226,10 +266,12 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     // ------------------------
 
     // configure echo back of received bytes to sender
-    if(echo <= 0)
+    if(echo <= 0){
         options.c_lflag &= ~ECHO; // disable ECHO
-    else
+    }
+    else{
         options.c_lflag |= ECHO;  // enable ECHO
+    }
 
     // do not echo erase character as error-correcting backspace (this is not a terminal)
     options.c_lflag &= ~ECHOE;
@@ -257,11 +299,12 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     // ------------------------
 
     // configure software flow contorl
-    if(flowControl == FLOW_CONTROL_SOFTWARE)
+    if(flowControl == FLOW_CONTROL_SOFTWARE){
         options.c_iflag |= (IXON | IXOFF | IXANY);  // enable software flow control
-     else
+    }
+    else{
         options.c_iflag &= ~(IXON | IXOFF | IXANY); // disable software flow control
-
+    }
 
     // --------------------------------
     // CONTROL CHARACTER CONFIGURATION
@@ -271,7 +314,12 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
 
 
     // apply serial port configuration options now
-    tcsetattr (fd, TCSANOW | TCSAFLUSH, &options) ;
+    if(tcsetattr (fd, TCSANOW | TCSAFLUSH, &options) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to SET terminal attributes for the serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
 
 
     // get the state of the "MODEM" bits
@@ -358,7 +406,12 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
   (JNIEnv *env, jobject obj, jint fd)
 {
     // close serial port
-    close(fd);
+    if(close(fd) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to close serial file descriptor. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
 }
 
 /*
@@ -376,7 +429,12 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
   (JNIEnv *env, jobject obj, jint fd)
 {
 	// flush the transmit and receive buffers for the serial port
-	tcflush (fd, TCIOFLUSH);
+	if(tcflush (fd, TCIOFLUSH) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to flush serial input (RX) and output (TX) buffers. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+	}
 }
 
 /*
@@ -387,9 +445,32 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushTx
   (JNIEnv *env, jobject obj, jint fd)
 {
-	// flush the transmit and receive buffers for the serial port
-	tcflush (fd, TCOFLUSH);
+	// flush the transmit buffer for the serial port
+	if(tcflush (fd, TCOFLUSH) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to flush serial output (TX) buffer. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+	}
 }
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    flushRx
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushRx
+  (JNIEnv *env, jobject obj, jint fd)
+{
+	// flush the receive buffes for the serial port
+	if(tcflush (fd, TCIFLUSH) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to flush serial input (RX) buffer. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+	}
+}
+
 
 /*
  *********************************************************************************
@@ -400,37 +481,18 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushTx
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    sendBreak
- * Signature: (I)I
+ * Signature: (I)V
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_sendBreak
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
   (JNIEnv *env, jobject obj, jint fd, jint duration)
 {
 	// transmit break
-	return tcsendbreak(fd, duration);
-}
-
-/*
- *********************************************************************************
- *	Write data in byte array to the serial port transmit buffer
- *********************************************************************************
- */
-
-/*
- * Class:     com_pi4j_jni_Serial
- * Method:    write
- * Signature: (I[BI)V
- */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_write
-(JNIEnv *env, jobject obj, jint fd, jbyteArray data, jint length)
-{
-    int i;
-    unsigned char c;
-    jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
-    for (i = 0; i < length; i++) {
-        c = (unsigned char) body[i];
-        write (fd, &c, 1) ;
-    }
-	(*env)->ReleaseByteArrayElements(env, data, body, 0);
+	if(tcsendbreak(fd, duration) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to transmit BREAK signal to serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+	}
 }
 
 /*
@@ -448,6 +510,96 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_available
   (JNIEnv *env, jobject obj, jint fd)
 {
     return getAvailableByteCount(fd);
+}
+
+/*
+ *********************************************************************************
+ *	Enable/Disable Echo (receive data back to sender)
+ *********************************************************************************
+ */
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    echo
+ * Signature: (IB)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
+(JNIEnv *env, jobject obj, jint fd, jbyte enabled)
+{
+    struct termios options ;
+
+    // get and modify current options:
+    if(tcgetattr (fd, &options) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to GET terminal attributes for the serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+
+    if(enabled <=0 ){
+        // disable ECHO
+        options.c_lflag &= ~ECHO;
+    }
+    else{
+        // enable ECHO
+        options.c_lflag |= ECHO;
+    }
+
+    // set updated options
+    if(tcsetattr (fd, TCSANOW, &options) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to SET terminal attributes for the serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+}
+
+/*
+ *********************************************************************************
+ *	Write data in byte array to the serial port transmit buffer
+ *********************************************************************************
+ */
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    write
+ * Signature: (I[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_write
+(JNIEnv *env, jobject obj, jint fd, jbyteArray data, jint length)
+{
+    jbyte *ptr = (*env)->GetByteArrayElements(env, data, 0);
+    if(write (fd, ptr, length) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to write data to serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+	(*env)->ReleaseByteArrayElements(env, data, ptr, 0);
+}
+
+
+/*
+ *********************************************************************************
+ *	Write data in byte buffer to the serial port transmit buffer
+ *********************************************************************************
+ */
+
+/*
+* Class:     com_pi4j_jni_Serial
+* Method:    write
+* Signature: (IOL)V
+*/
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_writeBuffer
+(JNIEnv *env, jobject obj, jint fd, jobject buffer, jlong length)
+{
+    jbyte *ptr = (*env)->GetDirectBufferAddress(env, buffer);
+    if(write (fd, ptr, length) == -1){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to write data to serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
 }
 
 
@@ -491,6 +643,10 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read
         // read a single byte from the RX buffer
         uint8_t x ;
         if (read (fd, &x, 1) != 1){
+            int err_number = errno;
+            char err_message[100];
+            sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
+            throwIOException(env, err_message);
             return NULL; // ERROR READING RX BUFFER
         }
 
@@ -540,6 +696,10 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
         // read a single byte from the RX buffer
         uint8_t x ;
         if (read (fd, &x, 1) != 1){
+            int err_number = errno;
+            char err_message[100];
+            sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
+            throwIOException(env, err_message);
             return NULL;   // ERROR READING RX BUFFER
         }
 
@@ -553,29 +713,51 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
     return javaResult;
 }
 
+/*
+ *********************************************************************************
+ *	Reads all available bytes from serial port receive buffer into provided
+ *  direct buffer.  Returns the number of bytes written to the direct buffer.
+ *********************************************************************************
+ */
 
 /*
  * Class:     com_pi4j_jni_Serial
- * Method:    echo
- * Signature: (IB)V
+ * Method:    readToBuffer
+ * Signature: (IOI)I
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
-(JNIEnv *env, jobject obj, jint fd, jbyte enabled)
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_readToBuffer
+  (JNIEnv *env, jobject obj, jint fd, jobject buffer, jint length)
 {
-    struct termios options ;
+    // determine result data array length from the number of bytes available on the receive buffer
+    int availableBytes;
+    availableBytes = getAvailableByteCount(fd);
 
-    // get and modify current options:
-    tcgetattr (fd, &options) ;
-
-    if(enabled <=0 ){
-        // disable ECHO
-        options.c_lflag &= ~ECHO;
-    }
-    else{
-        // enable ECHO
-        options.c_lflag |= ECHO;
+    // check for error return; if error, then return NULL
+    if (availableBytes < 0){
+        return NULL;
     }
 
-    // set updated options
-    tcsetattr (fd, TCSANOW, &options) ;
+    // reduce length if it exceeds the number available
+    if(length > availableBytes){
+        length = availableBytes;
+    }
+
+    jbyte *result = (*env)->GetDirectBufferAddress(env, buffer);
+
+    // copy the data bytes from the serial receive buffer into the payload result
+    int i;
+    for (i = 0; i < length; i++) {
+
+        // read a single byte from the RX buffer
+        uint8_t x ;
+        if (read (fd, &x, 1) != 1){
+            return NULL;   // ERROR READING RX BUFFER
+        }
+
+        // assign the single byte; cast to unsigned char
+        result[i] = (unsigned char)(((int)x) & 0xFF);
+    }
+
+    // return number of bytes written into buffer
+    return length;
 }
