@@ -33,6 +33,86 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    open
+ * Signature: (Ljava/lang/String;IIIIIZZZ)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
+  (JNIEnv *, jclass, jstring, jint, jint, jint, jint, jint, jboolean, jboolean, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    close
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    flush
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__I
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    flush
+ * Signature: (IZZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__IZZ
+  (JNIEnv *, jclass, jint, jboolean, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    sendBreak
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    echo
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
+  (JNIEnv *, jclass, jint, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    available
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_available
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    read
+ * Signature: (I)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read__I
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    read
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read__II
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    write
+ * Signature: (I[BJ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_write
+  (JNIEnv *, jclass, jint, jbyteArray, jlong);
+
 #ifdef __cplusplus
 }
 #endif

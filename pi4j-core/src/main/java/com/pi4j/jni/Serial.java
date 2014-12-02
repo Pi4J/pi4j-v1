@@ -376,25 +376,18 @@ public class Serial {
 
     /**
      * <p>
-     *     Discards all data in the serial transmit buffers.
+     *     Discards all data in either or both the serial receive and transmit buffers.
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @param fd
      *          The file descriptor of the serial port/device.
+     * @param rxBuffer
+     *          Flush the serial port receive buffer (input)
+     * @param txBuffer
+     *          Flush the serial port transmit buffer (output)
      */
-    public synchronized static native void flushTx(int fd) throws IOException;
-
-    /**
-     * <p>
-     *     Discards all data in the serial receive buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
-     * </p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     */
-    public synchronized static native void flushRx(int fd) throws IOException;
+    public synchronized static native void flush(int fd, boolean rxBuffer, boolean txBuffer) throws IOException;
 
     /**
      * <p>
@@ -439,6 +432,21 @@ public class Serial {
      */
     public synchronized static native int available(int fd);
 
+
+    // ----------------------------------------
+    // READ OPERATIONS
+    // ----------------------------------------
+
+    /**
+     * <p>Reads all available bytes from the serial port/device.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     *
+     * @return Returns a byte array with the data read from the serial port.
+     */
+    public synchronized static native byte[] read(int fd) throws IOException;
+
     /**
      * <p>Reads a length of bytes from the port/serial device.</p>
      *
@@ -452,22 +460,17 @@ public class Serial {
      */
     public synchronized static native byte[] read(int fd, int length) throws IOException;
 
-
     /**
-     * <p>Reads a length of bytes from the port/serial device.</p>
+     * <p>Reads all available bytes from the serial device into a provided ByteBuffer.</p>
      *
      * @param fd
      *          The file descriptor of the serial port/device.
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     *
-     * @return Returns a character set with the data read from the serial port.
+     * @param buffer
+     *          The ByteBuffer object to write to.
      */
-    public synchronized static CharSequence read(int fd, int length, Charset charset) throws IOException{
-        return charset.decode(ByteBuffer.wrap(read(fd, length)));
+    public synchronized static void read(int fd, ByteBuffer buffer) throws IOException{
+        byte[] data = read(fd);
+        buffer.put(data);
     }
 
     /**
@@ -487,6 +490,18 @@ public class Serial {
     }
 
     /**
+     * <p>Reads all available bytes from the serial device into a provided OutputStream.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param stream
+     *          The OutputStream object to write to.
+     */
+    public synchronized static void read(int fd, OutputStream stream) throws IOException{
+        stream.write(read(fd));
+    }
+
+    /**
      * <p>Reads a length bytes from the serial port/device into a provided OutputStream.</p>
      *
      * @param fd
@@ -500,6 +515,81 @@ public class Serial {
      */
     public synchronized static void read(int fd, int length, OutputStream stream) throws IOException{
         stream.write(read(fd, length));
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param collection
+     *          The collection of CharSequence objects to append to.
+     *
+     */
+    public synchronized static void read(int fd, Collection<ByteBuffer> collection) throws IOException{
+        collection.add(ByteBuffer.wrap(read(fd)));
+    }
+
+    /**
+     * <p>Reads a length of bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param collection
+     *          The collection of CharSequence objects to append to.
+     *
+     */
+    public synchronized static void read(int fd, int length, Collection<ByteBuffer> collection) throws IOException{
+        collection.add(ByteBuffer.wrap(read(fd)));
+    }
+
+    /**
+     * <p>Reads all available bytes from the port/serial device.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     *
+     * @return Returns a character set with the data read from the serial port.
+     */
+    public synchronized static CharBuffer read(int fd, Charset charset) throws IOException{
+        return charset.decode(ByteBuffer.wrap(read(fd)));
+    }
+
+    /**
+     * <p>Reads a length of bytes from the port/serial device.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     *
+     * @return Returns a character set with the data read from the serial port.
+     */
+    public synchronized static CharBuffer read(int fd, int length, Charset charset) throws IOException{
+        return charset.decode(ByteBuffer.wrap(read(fd, length)));
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial port/device into a provided Writer.</p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     * @param writer
+     *          The Writer object to write to.
+     *
+     */
+    public synchronized static void read(int fd, Charset charset, Writer writer) throws IOException{
+        writer.write(read(fd, charset).toString());
     }
 
     /**
@@ -517,119 +607,18 @@ public class Serial {
      *
      */
     public synchronized static void read(int fd, int length, Charset charset, Writer writer) throws IOException{
-        writer.write((read(fd, length, charset).toString()));
+        writer.write(read(fd, length, charset).toString());
     }
 
-    /**
-     * <p>Reads all available bytes from the serial port/device.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     *
-     * @return Returns a byte array with the data read from the serial port.
-     */
-    public synchronized static native byte[] readAll(int fd) throws IOException;
+
+    // ----------------------------------------
+    // WRITE OPERATIONS
+    // ----------------------------------------
 
     /**
-     * <p>Reads all available bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
+     * <p>Sends an array of bytes to the serial port/device identified by the given file descriptor.</p>
      *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param collection
-     *          The collection of CharSequence objects to append to.
      *
-     */
-    public synchronized static void readAll(int fd, Collection<ByteBuffer> collection) throws IOException{
-        collection.add(ByteBuffer.wrap(readAll(fd)));
-    }
-
-    /**
-     * <p>Reads all available bytes from the serial device into a provided ByteBuffer.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param buffer
-     *          The ByteBuffer object to write to.
-     */
-    public synchronized static void readAll(int fd, ByteBuffer buffer) throws IOException{
-        byte[] data = readAll(fd);
-        buffer.put(data);
-    }
-
-    /**
-     * <p>Reads all available bytes from the serial device into a provided OutputStream.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param stream
-     *          The OutputStream object to write to.
-     */
-    public synchronized static void readAll(int fd, OutputStream stream) throws IOException{
-        stream.write(readAll(fd));
-    }
-
-    /**
-     * <p>Reads all available bytes from the port/serial device.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     *
-     * @return Returns a character set with the data read from the serial port.
-     */
-    public synchronized static CharSequence readAll(int fd, Charset charset) throws IOException{
-        return charset.decode(ByteBuffer.wrap(readAll(fd)));
-    }
-
-    /**
-     * <p>Reads all available bytes from the serial port/device into a provided Writer.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     * @param writer
-     *          The Writer object to write to.
-     *
-     */
-    public synchronized static void readAll(int fd, Charset charset, Writer writer) throws IOException{
-        writer.write(readAll(fd, charset).toString());
-    }
-
-    /**
-     * <p>Reads all available bytes from the serial port/device into a provided StringBuilder.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     * @param builder
-     *          The StringBuilder object to append to.
-     *
-     */
-    public synchronized static void readAll(int fd, Charset charset, StringBuilder builder) throws IOException{
-        builder.append(readAll(fd, charset));
-    }
-
-    /**
-     * <p>Reads all available bytes from the serial port/device into a provided collection of CharSequence objects.</p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     * @param collection
-     *          The collection of CharSequence objects to append to.
-     *
-     */
-    public synchronized static void readAll(int fd, Charset charset, Collection<CharSequence> collection) throws IOException{
-        collection.add(readAll(fd, charset));
-    }
-
-    /**
-     * This method is called to submit a byte buffer of data to the serial port transmit buffer.
-
      * @param fd
      *            The file descriptor of the serial port/device.
      * @param data
@@ -640,7 +629,58 @@ public class Serial {
     private synchronized static native void write(int fd, byte[] data, long length) throws IOException;
 
     /**
-     * This method is called to read the content of byte buffer and write the data to the serial port transmit buffer.
+     * <p>Sends an array of bytes to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param fd
+     *            The file descriptor of the serial port/device.
+     * @param data
+     *            A ByteBuffer of data to be transmitted.
+     * @param offset
+     *            The starting index (inclusive) in the array to send from.
+     * @param length
+     *            The number of bytes from the byte array to transmit to the serial port.
+     */
+    public synchronized static void write(int fd, byte[] data, int offset, int length) throws IOException {
+
+        // we make a copy of the data argument because we don't want to modify the original source data
+        byte[] buffer = new byte[length];
+        System.arraycopy(data, offset, buffer, 0, length);
+
+        // write the buffer contents to the serial port via JNI native method
+        write(fd, buffer, length);
+    }
+
+    /**
+     * <p>Sends one of more bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @param fd
+     *            The file descriptor of the serial port/device.
+     * @param data
+     *            One or more bytes (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void write(int fd, byte ... data) throws IOException {
+
+        // write the data contents to the serial port via JNI native method
+        write(fd, data, data.length);
+    }
+
+    /**
+     * <p>Sends one of more bytes arrays to the serial device identified by the given file descriptor.</p>
+     *
+     * @param fd
+     *            The file descriptor of the serial port/device.
+     * @param data
+     *            One or more byte arrays of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void write(int fd, byte[] ... data) throws IOException {
+        for(byte[] single : data) {
+            // write the data contents to the serial port via JNI native method
+            write(fd, single, single.length);
+        }
+    }
+
+    /**
+     * Read the content of byte buffer and write the data to the serial port transmit buffer.
      * (The buffer is read from the current position up to the 'limit' value, not the 'capacity'.  You may need to
      * rewind() or flip() the byte buffer if you have just written to it.)
      *
@@ -664,55 +704,12 @@ public class Serial {
     }
 
     /**
-     * <p>Sends an array of bytes to the serial device identified by the given file descriptor.</p>
-     *
-     * @param fd The file descriptor of the serial port/device.
-     * @param data The byte array to transmit to the serial port.
-     * @param offset The starting index (inclusive) in the array to send from.
-     * @param length The number of bytes from the byte array to transmit to the serial port.
-     */
-    public synchronized static void write(int fd, byte[] data, int offset, int length) throws IOException {
-
-        // we make a copy of the data argument because we don't want to modify the original source data
-        byte[] buffer = new byte[length];
-        System.arraycopy(data, offset, buffer, 0, length);
-
-        // write the buffer contents to the serial port via JNI native method
-        write(fd, buffer, length);
-    }
-
-    /**
-     * <p>Sends one of more bytes to the serial device identified by the given file descriptor.</p>
-     *
-     * @param fd The file descriptor of the serial port/device.
-     * @param data The byte array to transmit to the serial port.
-     */
-    public synchronized static void write(int fd, byte ... data) throws IOException {
-
-        // write the data contents to the serial port via JNI native method
-        write(fd, data, data.length);
-    }
-
-    /**
-     * <p>Sends one of more bytes arrays to the serial device identified by the given file descriptor.</p>
-     *
-     * @param fd The file descriptor of the serial port/device.
-     * @param data The byte array to transmit to the serial port.
-     */
-    public synchronized static void write(int fd, byte[] ... data) throws IOException {
-        for(byte[] single : data) {
-            // write the data contents to the serial port via JNI native method
-            write(fd, single, single.length);
-        }
-    }
-
-    /**
-     * This method is called to submit an input stream of data to the serial port transmit buffer.
+     * Read content from an input stream of data and write it to the serial port transmit buffer.
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
+     *          The file descriptor of the serial port/device.
      * @param input
-     *          input stream to read from to get bytes to write to be transmitted
+     *          An InputStream of data to be transmitted
      */
     public synchronized static void write(int fd, InputStream input) throws IOException {
 
@@ -734,13 +731,18 @@ public class Serial {
     }
 
     /**
-     * <p>Sends an array of chars to the serial device identified by the given file descriptor.</p>
+     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
      *
-     * @param fd The file descriptor of the serial port/device.
-     * @param charset character encoding for bytes in character buffer
-     * @param data The char array to transmit to the serial port.
-     * @param offset The starting index (inclusive) in the array to send from.
-     * @param length The number of bytes from the byte array to transmit to the serial port.
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           An array of chars to be decoded into bytes and transmitted.
+     * @param offset
+     *           The starting index (inclusive) in the array to send from.
+     * @param length
+     *           The number of characters from the char array to transmit to the serial port.
      */
     public synchronized static void write(int fd, Charset charset, char[] data, int offset, int length) throws IOException {
 
@@ -749,11 +751,14 @@ public class Serial {
     }
 
     /**
-     * <p>Sends an array of bytes to the serial device identified by the given file descriptor.</p>
+     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
      *
-     * @param fd The file descriptor of the serial port/device.
-     * @param charset character encoding for bytes in character buffer
-     * @param data The byte array to transmit to the serial port.
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more characters (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void write(int fd, Charset charset, char ... data) throws IOException {
 
@@ -762,14 +767,28 @@ public class Serial {
     }
 
     /**
-     * This method is called to submit a string of data to the serial port transmit buffer.
+     * <p>Sends an array of ASCII characters to the serial port/device identified by the given file descriptor.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
+     *           The file descriptor of the serial port/device.
      * @param data
-     *            A string of data to be transmitted.
+     *           One or more ASCII characters (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void write(int fd, char ... data) throws IOException {
+
+        // write the buffer contents to the serial port via JNI native method
+        write(fd, StandardCharsets.US_ASCII, CharBuffer.wrap(data));
+    }
+
+    /**
+     * <p>Sends one or more CharBuffers to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param fd
+     *           The file descriptor of the serial port/device.
      * @param charset
-     *            character encoding for bytes in string
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void write(int fd, Charset charset, CharBuffer ... data) throws IllegalStateException, IOException {
         for(CharBuffer single : data) {
@@ -778,26 +797,26 @@ public class Serial {
     }
 
     /**
-     * This method is called to submit an ASCII character buffer of data to the serial port transmit buffer.
+     * <p>Sends one or more ASCII CharBuffers to the serial port/device identified by the given file descriptor.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
+     *           The file descriptor of the serial port/device.
      * @param data
-     *            A string of data to be transmitted.
+     *           One or more ASCII CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void write(int fd, CharBuffer ... data) throws IllegalStateException, IOException {
         write(fd, StandardCharsets.US_ASCII, data);
     }
 
     /**
-     * This method is called to submit a string of data to the serial port transmit buffer.
+     * <p>Sends one or more string objects to the serial port/device identified by the given file descriptor.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
-     * @param data
-     *            A string of data to be transmitted.
+     *           The file descriptor of the serial port/device.
      * @param charset
-     *            character encoding for bytes in string
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void write(int fd, Charset charset, CharSequence ... data) throws IllegalStateException, IOException {
         for(CharSequence single : data) {
@@ -806,26 +825,56 @@ public class Serial {
     }
 
     /**
-     * This method is called to submit an ASCII string of data to the serial port transmit buffer.
+     * <p>Sends one or more ASCII string objects to the serial port/device identified by the given file descriptor.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
+     *           The file descriptor of the serial port/device.
      * @param data
-     *            A string of data to be transmitted.
+     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void write(int fd, CharSequence ... data) throws IllegalStateException, IOException {
         write(fd, StandardCharsets.US_ASCII, data);
     }
 
+
     /**
-     * This method is called to submit a string of data terminated with a <CR><LF> to the serial port transmit buffer.
+     * <p>Sends a collection of string objects to the serial port/device identified by the given file descriptor.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
-     * @param data
-     *            A string of data to be transmitted.
+     *           The file descriptor of the serial port/device.
      * @param charset
-     *            character encoding for bytes in string
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void write(int fd, Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, IOException {
+        for(CharSequence single : data) {
+            write(fd, charset.encode(CharBuffer.wrap(single)));
+        }
+    }
+
+    /**
+     * <p>Sends a collection of ASCII string objects to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void write(int fd, Collection<? extends CharSequence> data) throws IllegalStateException, IOException {
+        write(fd, StandardCharsets.US_ASCII, data);
+    }
+
+
+    /**
+     * <p>Sends one or more string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void writeln(int fd, Charset charset, CharSequence ... data) throws IllegalStateException, IOException {
         for(CharSequence single : data) {
@@ -834,14 +883,43 @@ public class Serial {
     }
 
     /**
-     * This method is called to submit an ASCII string of data terminated with <CR><LF> to the serial port transmit buffer.
+     * <p>Sends one or more ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
      *
      * @param fd
-     *            The file descriptor of the serial port/device.
+     *           The file descriptor of the serial port/device.
      * @param data
-     *            A string of data to be transmitted.
+     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
      */
     public synchronized static void writeln(int fd, CharSequence ... data) throws IllegalStateException, IOException {
         writeln(fd, StandardCharsets.US_ASCII, data);
     }
+
+    /**
+     * <p>Sends a collection of string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void writeln(int fd, Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, IOException {
+        for(CharSequence single : data) {
+            write(fd, charset.encode(CharBuffer.wrap(single + "\r\n")));
+        }
+    }
+
+    /**
+     * <p>Sends a collection of ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param fd
+     *           The file descriptor of the serial port/device.
+     * @param data
+     *           A collection of ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public synchronized static void writeln(int fd, Collection<? extends CharSequence> data) throws IllegalStateException, IOException {
+        writeln(fd, StandardCharsets.US_ASCII, data);
+    }
+
 }

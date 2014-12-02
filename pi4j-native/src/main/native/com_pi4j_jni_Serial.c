@@ -84,11 +84,11 @@ int getAvailableByteCount(int fd){
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    open
- * Signature: (Ljava/lang/String;I)I
+ * Signature: (Ljava/lang/String;IIIIIZZZ)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
-  (JNIEnv *env, jobject obj, jstring port, jint baud, jint dataBits, jint parity, jint stopBits,
-   jint flowControl, jbyte echo, jbyte flushRx, jbyte flushTx)
+  (JNIEnv *env, jclass obj, jstring port, jint baud, jint dataBits, jint parity, jint stopBits,
+   jint flowControl, jboolean echo, jboolean flushRx, jboolean flushTx)
 {
     struct termios options ;
     speed_t myBaud ;
@@ -266,7 +266,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     // ------------------------
 
     // configure echo back of received bytes to sender
-    if(echo <= 0){
+    if(echo == JNI_FALSE){
         options.c_lflag &= ~ECHO; // disable ECHO
     }
     else{
@@ -333,10 +333,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     ioctl (fd, TIOCMSET, &status);
 
     // flush serial recieve buffer
-    if(flushRx > 0) tcflush (fd, TCIFLUSH);
+    if(flushRx == JNI_TRUE) tcflush (fd, TCIFLUSH);
 
     // flush serial recieve buffer
-    if(flushTx > 0) tcflush (fd, TCOFLUSH);
+    if(flushTx == JNI_TRUE) tcflush (fd, TCOFLUSH);
 
     // ok, lets take a short breath ...
     usleep (10000) ;	// 10mS
@@ -403,7 +403,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
     // close serial port
     if(close(fd) == -1){
@@ -425,8 +425,8 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
  * Method:    flush
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
-  (JNIEnv *env, jobject obj, jint fd)
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__I
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	// flush the transmit and receive buffers for the serial port
 	if(tcflush (fd, TCIOFLUSH) == -1){
@@ -439,35 +439,32 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
 
 /*
  * Class:     com_pi4j_jni_Serial
- * Method:    flushTx
- * Signature: (I)V
+ * Method:    flush
+ * Signature: (IZZ)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushTx
-  (JNIEnv *env, jobject obj, jint fd)
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__IZZ
+  (JNIEnv *env, jclass obj, jint fd, jboolean rxBuffer, jboolean txBuffer)
 {
-	// flush the transmit buffer for the serial port
-	if(tcflush (fd, TCOFLUSH) == -1){
-        int err_number = errno;
-        char err_message[100];
-        sprintf(err_message, "Failed to flush serial output (TX) buffer. (Error #%d)", err_number);
-        throwIOException(env, err_message);
-	}
-}
+    // RX BUFFER
+    if(rxBuffer == JNI_TRUE){
+        // flush the receive buffes for the serial port
+        if(tcflush (fd, TCIFLUSH) == -1){
+            int err_number = errno;
+            char err_message[100];
+            sprintf(err_message, "Failed to flush serial input (RX) buffer. (Error #%d)", err_number);
+            throwIOException(env, err_message);
+        }
+    }
 
-/*
- * Class:     com_pi4j_jni_Serial
- * Method:    flushRx
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushRx
-  (JNIEnv *env, jobject obj, jint fd)
-{
-	// flush the receive buffes for the serial port
-	if(tcflush (fd, TCIFLUSH) == -1){
-        int err_number = errno;
-        char err_message[100];
-        sprintf(err_message, "Failed to flush serial input (RX) buffer. (Error #%d)", err_number);
-        throwIOException(env, err_message);
+    // TX BUFFER
+    if(txBuffer == JNI_TRUE){
+        // flush the transmit buffer for the serial port
+        if(tcflush (fd, TCOFLUSH) == -1){
+            int err_number = errno;
+            char err_message[100];
+            sprintf(err_message, "Failed to flush serial output (TX) buffer. (Error #%d)", err_number);
+            throwIOException(env, err_message);
+        }
 	}
 }
 
@@ -484,7 +481,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flushRx
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
-  (JNIEnv *env, jobject obj, jint fd, jint duration)
+  (JNIEnv *env, jclass obj, jint fd, jint duration)
 {
 	// transmit break
 	if(tcsendbreak(fd, duration) == -1){
@@ -507,7 +504,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_available
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
     return getAvailableByteCount(fd);
 }
@@ -521,10 +518,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_available
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    echo
- * Signature: (IB)V
+ * Signature: (IZ)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
-(JNIEnv *env, jobject obj, jint fd, jbyte enabled)
+(JNIEnv *env, jclass obj, jint fd, jboolean enabled)
 {
     struct termios options ;
 
@@ -536,7 +533,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
         throwIOException(env, err_message);
     }
 
-    if(enabled <=0 ){
+    if(enabled == JNI_FALSE){
         // disable ECHO
         options.c_lflag &= ~ECHO;
     }
@@ -563,10 +560,10 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_echo
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    write
- * Signature: (I[BI)V
+ * Signature: (I[BJ)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_write
-(JNIEnv *env, jobject obj, jint fd, jbyteArray data, jint length)
+(JNIEnv *env, jclass obj, jint fd, jbyteArray data, jlong length)
 {
     jbyte *ptr = (*env)->GetByteArrayElements(env, data, 0);
     if(write (fd, ptr, length) == -1){
@@ -591,7 +588,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_write
 * Signature: (IOL)V
 */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_writeBuffer
-(JNIEnv *env, jobject obj, jint fd, jobject buffer, jlong length)
+(JNIEnv *env, jclass obj, jint fd, jobject buffer, jlong length)
 {
     jbyte *ptr = (*env)->GetDirectBufferAddress(env, buffer);
     if(write (fd, ptr, length) == -1){
@@ -616,8 +613,8 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_writeBuffer
  * Method:    read
  * Signature: (II)[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read
-  (JNIEnv *env, jobject obj, jint fd, jint length)
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read__II
+  (JNIEnv *env, jclass obj, jint fd, jint length)
 {
     // determine result data array length from the number of bytes available on the receive buffer
     int availableBytes;
@@ -625,7 +622,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read
 
     // check for error return; if error, then return NULL
     if (availableBytes < 0){
-        return NULL;
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Error attempting to read data from serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+        return (*env)->NewByteArray(env, 0);  // ERROR READING RX BUFFER
     }
 
     // reduce length if it exceeds the number available
@@ -647,7 +648,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read
             char err_message[100];
             sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
             throwIOException(env, err_message);
-            return NULL; // ERROR READING RX BUFFER
+            return (*env)->NewByteArray(env, 0); // ERROR READING RX BUFFER
         }
 
         // assign the single byte; cast to unsigned char
@@ -671,11 +672,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read
 
 /*
  * Class:     com_pi4j_jni_Serial
- * Method:    readAll
+ * Method:    read
  * Signature: (I)[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
-  (JNIEnv *env, jobject obj, jint fd)
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_read__I
+  (JNIEnv *env, jclass obj, jint fd)
 {
     // determine result data array length from the number of bytes available on the receive buffer
     int length;
@@ -683,7 +684,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
 
     // check for error return; if error, then return NULL
     if (length < 0){
-        return NULL;
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Error attempting to read data from serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+        return (*env)->NewByteArray(env, 0);  // ERROR READING RX BUFFER
     }
 
     // create a new payload result byte array
@@ -700,7 +705,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
             char err_message[100];
             sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
             throwIOException(env, err_message);
-            return NULL;   // ERROR READING RX BUFFER
+            return (*env)->NewByteArray(env, 0);   // ERROR READING RX BUFFER
         }
 
         // assign the single byte; cast to unsigned char
@@ -726,7 +731,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_pi4j_jni_Serial_readAll
  * Signature: (IOI)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_readToBuffer
-  (JNIEnv *env, jobject obj, jint fd, jobject buffer, jint length)
+  (JNIEnv *env, jclass obj, jint fd, jobject buffer, jint length)
 {
     // determine result data array length from the number of bytes available on the receive buffer
     int availableBytes;
@@ -734,7 +739,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_readToBuffer
 
     // check for error return; if error, then return NULL
     if (availableBytes < 0){
-        return NULL;
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Error attempting to read data from serial port. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+        return -1;   // ERROR READING RX BUFFER
     }
 
     // reduce length if it exceeds the number available
@@ -751,7 +760,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_readToBuffer
         // read a single byte from the RX buffer
         uint8_t x ;
         if (read (fd, &x, 1) != 1){
-            return NULL;   // ERROR READING RX BUFFER
+            int err_number = errno;
+            char err_message[100];
+            sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
+            throwIOException(env, err_message);
+            return -1;   // ERROR READING RX BUFFER
         }
 
         // assign the single byte; cast to unsigned char
