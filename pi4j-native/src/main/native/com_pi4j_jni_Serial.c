@@ -43,7 +43,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/epoll.h>
-
+#include <linux/serial.h>
 
 // determine result data array length from the number of bytes available on the receive buffer
 int getAvailableByteCount(int fd){
@@ -90,6 +90,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
   (JNIEnv *env, jclass obj, jstring port, jint baud, jint dataBits, jint parity, jint stopBits,
    jint flowControl, jboolean echo, jboolean flushRx, jboolean flushTx)
 {
+    struct serial_struct serinfo;
     struct termios options ;
     speed_t myBaud ;
     int     status, fd ;
@@ -155,25 +156,56 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
         case 230400:	myBaud = B230400 ; break ;
 
         default:{
-            throwIOException( env, "Invalid/unsupported BAUD rate");
-            return -3 ;  // INVALID/UNSUPPORTED BAUD RATE
+
+            struct serial_struct serinfo;
+
+            // custom baud rate
+            myBaud = 0;
+
+            /* Custom divisor for non-standard BAUD */
+            serinfo.reserved_char[0] = 0;
+            if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0)
+                return -1;
+            serinfo.flags &= ~ASYNC_SPD_MASK;
+            serinfo.flags |= ASYNC_SPD_CUST;
+            serinfo.custom_divisor = (serinfo.baud_base + (baud / 2)) / baud;
+            if (serinfo.custom_divisor < 1)
+                serinfo.custom_divisor = 1;
+            if (ioctl(fd, TIOCSSERIAL, &serinfo) < 0){
+                int err_number = errno;
+                char err_message[100];
+                sprintf(err_message, "Invalid/unsupported BAUD rate.[TIOCSSERIAL] (Error #%d)", err_number);
+                throwIOException(env, err_message);
+                return -3 ;  // INVALID/UNSUPPORTED BAUD RATE
+            }
+            if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0){
+                int err_number = errno;
+                char err_message[100];
+                sprintf(err_message, "Invalid/unsupported BAUD rate. [TIOCGSERIAL] (Error #%d)", err_number);
+                throwIOException(env, err_message);
+                return -3 ;  // INVALID/UNSUPPORTED BAUD RATE
+            }
+            if (serinfo.custom_divisor * baud != serinfo.baud_base) {
+                warnx("actual baudrate is %d / %d = %f",
+                      serinfo.baud_base, serinfo.custom_divisor,
+                      (float)serinfo.baud_base / serinfo.custom_divisor);
+            }
         }
     }
 
-    // set baud rate
-    if(cfsetispeed (&options, myBaud) == -1){
+    // set baud rate; custom baud rates are designated with a 'myBaud == 0' and the B38400 baud config should be set
+    if(cfsetispeed (&options, myBaud ?: B38400) == -1){
         int err_number = errno;
         char err_message[100];
         sprintf(err_message, "Failed to set (input) serial port baud rate. (Error #%d)", err_number);
         throwIOException(env, err_message);
     }
-    if(cfsetospeed (&options, myBaud)){
+    if(cfsetospeed (&options, myBaud ?: B38400)){
         int err_number = errno;
         char err_message[100];
         sprintf(err_message, "Failed to set (output) serial port baud rate. (Error #%d)", err_number);
         throwIOException(env, err_message);
     }
-
 
     // -----------------------
     // HARDWARE CONFIGURATION
