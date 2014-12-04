@@ -65,6 +65,7 @@ public class Serial {
     public static int BAUD_RATE_4800   = 4800;
     public static int BAUD_RATE_9600   = 9600;
     public static int BAUD_RATE_19200  = 19200;
+    public static int BAUD_RATE_38400  = 38400;
     public static int BAUD_RATE_57600  = 57600;
     public static int BAUD_RATE_115200 = 115200;
     public static int BAUD_RATE_230400 = 230400;

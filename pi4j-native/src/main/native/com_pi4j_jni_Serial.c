@@ -157,6 +157,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
 
         default:{
 
+            // CUSTOM BAUD RATE IMPL FROM:
+            // http://jim.sh/ftx/files/linux-custom-baudrate.c
+
             struct serial_struct serinfo;
 
             // custom baud rate
