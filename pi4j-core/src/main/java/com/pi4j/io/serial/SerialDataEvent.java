@@ -28,6 +28,10 @@ package com.pi4j.io.serial;
  */
 
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.EventObject;
 
 /**
@@ -56,7 +60,7 @@ import java.util.EventObject;
 public class SerialDataEvent extends EventObject {
 
     private static final long serialVersionUID = 1L;
-    private final String data;
+    private final ByteBuffer data;
 
     /**
      * Default event constructor.
@@ -64,17 +68,31 @@ public class SerialDataEvent extends EventObject {
      * @param obj The com.pi4j.io.serial.Serial class instance that initiates this event.
      * @param data The data received.
      */
-    public SerialDataEvent(Object obj, String data) {
+    public SerialDataEvent(Object obj, ByteBuffer data) {
         super(obj);
-        this.data = data;
+        this.data = (ByteBuffer)data.flip();
     }
 
-    /**
-     * Get the data string received.
-     * 
-     * @return The data string received.
-     */
-    public String getData() {
-        return data;
+    public int length() {
+        return data.capacity();
     }
+
+    public ByteBuffer getByteBuffer() { return data; }
+
+    public byte[] getBytes() {
+        return data.array();
+    }
+
+    public String getString(Charset charset){
+        return getCharBuffer(charset).toString();
+    }
+
+    public String getAsciiString(){
+        return getCharBuffer(StandardCharsets.US_ASCII).toString();
+    }
+
+    public CharBuffer getCharBuffer(Charset charset){
+        return charset.decode(data);
+    }
+
 }

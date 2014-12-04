@@ -29,13 +29,9 @@
  */
 
 
-import java.util.Date;
+import com.pi4j.io.serial.*;
 
-import com.pi4j.io.serial.Serial;
-import com.pi4j.io.serial.SerialDataEvent;
-import com.pi4j.io.serial.SerialDataListener;
-import com.pi4j.io.serial.SerialFactory;
-import com.pi4j.io.serial.SerialPortException;
+import java.util.Date;
 
 /**
  * This example code demonstrates how to perform serial communications using the Raspberry Pi.
@@ -67,13 +63,13 @@ public class SerialExample {
             @Override
             public void dataReceived(SerialDataEvent event) {
                 // print out the data received to the console
-                System.out.print(event.getData());
+                System.out.print(event.getAsciiString());
             }            
         });
                 
         try {
             // open the default serial port provided on the GPIO header
-            serial.open(Serial.DEFAULT_COM_PORT, 38400);
+            serial.open(Serial.DEFAULT_COM_PORT, Baud._38400, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
             
             // continuous loop to keep the program running until the user terminates the program
             for (;;) {

@@ -32,6 +32,7 @@ import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
 import com.pi4j.io.serial.SerialDataListener;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -91,22 +92,20 @@ public class SerialDataMonitorThread extends Thread {
      * This method is called when this monitoring thread starts
      */
     public void run() {
-        StringBuilder buffer = new StringBuilder();
 
         while (!exiting) {
             if (serial.isOpen()) {
-                if (serial.availableBytes() > 0) {
-                    // reset buffer data
-                    buffer.setLength(0);
+                int available = serial.available();
+                if (available > 0) {
 
-                    // reset data from serial port
-                    while (serial.availableBytes() > 0)
-                        buffer.append(serial.read());
+                    // read data from serial port into byte buffer
+                    ByteBuffer buffer = ByteBuffer.allocate(available);
+                    serial.read(available, buffer);
 
                     // when done reading, emit the event if there are any listeners
                     if (!listeners.isEmpty()) {
                         // iterate over the listeners and send the data events
-                        SerialDataEvent event = new SerialDataEvent(serial, buffer.toString());
+                        SerialDataEvent event = new SerialDataEvent(serial, buffer);
                         for (SerialDataListener sdl : listeners) {
                             sdl.dataReceived(event);
                         }

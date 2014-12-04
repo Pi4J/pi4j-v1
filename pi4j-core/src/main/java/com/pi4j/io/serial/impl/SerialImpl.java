@@ -28,10 +28,16 @@ package com.pi4j.io.serial.impl;
  */
 
 
-import com.pi4j.io.serial.Serial;
-import com.pi4j.io.serial.SerialDataListener;
-import com.pi4j.io.serial.SerialPortException;
+import com.pi4j.io.serial.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -68,21 +74,231 @@ public class SerialImpl implements Serial {
     protected boolean isshutdown = false;
 
     /**
-     * This method is call to open a serial port for communication. Throws SerialException on error.
-     * 
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
      * @see #DEFAULT_COM_PORT
-     * 
-     * @param device The device address of the serial port to access. You can use constant
-     *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *            GPIO header.
-     * @param baudRate The baud rate to use with the serial port.
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port. (Custom baud rate are not supported)
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     * @param echo
+     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
+     * @param flushRx
+     *          Optionally flush the receive buffer when opening the serial port. ('false' by default)
+     * @param flushTx
+     *          Optionally flush the transmit buffer when opening the serial port. ('false' by default)
+     *
      * @throws SerialPortException Exception thrown on any error.
      */
-    public void open(String device, int baudRate) throws SerialPortException {
-        fileDescriptor = com.pi4j.wiringpi.Serial.serialOpen(device, baudRate);
-        if (fileDescriptor == -1) {
-        	throw new SerialPortException("Cannot open serial port");
+    public void open(String device, int baud, int dataBits, int parity, int stopBits,
+                     int flowControl, boolean echo, boolean flushRx, boolean flushTx) throws SerialPortException{
+        try {
+            fileDescriptor = com.pi4j.jni.Serial.open(device, baud, dataBits, parity, stopBits, flowControl, echo, flushRx, flushTx);
+        } catch (IOException e) {
+            throw new SerialPortException("Cannot open serial port: " + e.getMessage());
         }
+        if (fileDescriptor == -1) {
+            throw new SerialPortException("Cannot open serial port");
+        }
+    }
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     *
+     * @throws SerialPortException Exception thrown on any error.
+     */
+    public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
+            throws SerialPortException{
+        // open the serial port with NO ECHO and NO (forced) BUFFER FLUSH
+        open(device, baud, dataBits, parity, stopBits, flowControl, false, false, false);
+    }
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     *
+     * This method will use the following default serial configuration parameters:
+     *  - DATA BITS    = 8
+     *  - PARITY       = NONE
+     *  - STOP BITS    = 1
+     *  - FLOW CONTROL = NONE
+     *
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     *
+     * @throws SerialPortException Exception thrown on any error.
+     */
+    public void open(String device, int baud) throws SerialPortException{
+        // open the serial port with config settings of "8N1" and no flow control
+        open(device,
+             baud,
+             com.pi4j.jni.Serial.DATA_BITS_8,
+             com.pi4j.jni.Serial.PARITY_NONE,
+             com.pi4j.jni.Serial.STOP_BITS_1,
+             com.pi4j.jni.Serial.FLOW_CONTROL_NONE);
+    }
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     * @param echo
+     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
+     * @param flushRx
+     *          Optionally flush the receive buffer when opening the serial port. ('false' by default)
+     * @param flushTx
+     *          Optionally flush the transmit buffer when opening the serial port. ('false' by default)
+     *
+     * @throws SerialPortException Exception thrown on any error.
+     */
+    public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
+                FlowControl flowControl, boolean echo, boolean flushRx, boolean flushTx) throws SerialPortException{
+
+        // open the serial port with NO ECHO and NO (forced) BUFFER FLUSH
+        open(device, baud.getValue(), dataBits.getValue(), parity.getIndex(),
+                stopBits.getValue(), flowControl.getIndex(), echo, flushRx, flushTx);
+    }
+
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     *
+     * @throws SerialPortException Exception thrown on any error.
+     */
+    public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
+                     FlowControl flowControl) throws SerialPortException{
+        // open the serial port with NO ECHO and NO (forced) BUFFER FLUSH
+        open(device, baud.getValue(), dataBits.getValue(), parity.getIndex(),
+                stopBits.getValue(), flowControl.getIndex(), false, false, false);
+    }
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param serialConfig
+     *          A serial configuration object that contains the device, baud rate, data bits, parity,
+     *          stop bits, and flow control settings.
+     *
+     * @throws SerialPortException Exception thrown on any error.
+     */
+    public void open(SerialConfig serialConfig) throws SerialPortException{
+        // open the serial port with config settings
+        open(serialConfig.device(),
+             serialConfig.baud().getValue(),
+             serialConfig.dataBits().getValue(),
+             serialConfig.parity().getIndex(),
+             serialConfig.stopBits().getValue(),
+             serialConfig.flowControl().getIndex());
     }
 
     /**
@@ -116,200 +332,772 @@ public class SerialImpl implements Serial {
     	    throw new IllegalStateException("Serial connection is not open; cannot 'close()'.");
     	
     	// close serial port now    
-    	com.pi4j.wiringpi.Serial.serialClose(fileDescriptor);
+        try {
+            com.pi4j.jni.Serial.close(fileDescriptor);
+        } catch (IOException e) {
+            throw new SerialPortException("Cannot close serial port: " + e.getMessage());
+        }
+        fileDescriptor = -1;
 	}
 
-    /**
-     * This method is called to immediately flush the serial data transmit buffer and force any
-     * pending data to be sent to the serial port immediately.
-     */
-    public void flush() throws IllegalStateException {
-
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'flush()'.");
-        
-        // flush data to serial port immediately
-        com.pi4j.wiringpi.Serial.serialFlush(fileDescriptor);
-    }
 
     /**
-     * <p> This method will read the next character available from the serial port receive buffer.</p>
      * <p>
-     * <b>NOTE: If a serial data listener has been implemented and registered with this class, then
-     * this method should not be called directly. A background thread will be running to collect
-     * received data from the serial port receive buffer and the received data will be available on
-     * via the event.</b>
+     *     Discards all data in both the serial receive and transmit buffers.
+     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
-     * 
-     * @return next available character in the serial data buffer
      */
-    public char read() throws IllegalStateException {
-        
+    public void flush() throws IllegalStateException, SerialPortException{
         // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'flush()'.");
 
-        // attempt read byte from serial port 
-        return (char) com.pi4j.wiringpi.Serial.serialGetchar(fileDescriptor);
-    }
-
-    /**
-     * This method is called to submit a single character of data to the serial port transmit
-     * buffer.
-     * 
-     * @param data  A single character to be transmitted.
-     */
-    public void write(char data) throws IllegalStateException {
-        
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(char)'.");
-        
-        // write character to serial port
-        com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, data);
-    }
-
-    /**
-     * This method is called to submit a character array of data to the serial port transmit buffer.
-     * 
-     * @param data A character array of data to be transmitted.
-     */
-    public void write(char data[]) throws IllegalStateException {
-        
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(char[])'.");
-
-        // write character array to serial port
-        write(new String(data));
-    }
-
-    /**
-     * This method is called to submit a single byte of data to the serial port transmit buffer.
-     * 
-     * @param data  A single byte to be transmitted.
-     */
-    public void write(byte data) throws IllegalStateException {
-
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(byte)'.");
-
-        // write byte to serial port        
-        com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, (char) data);
-    }
-
-    /**
-     * This method is called to submit a byte array of data to the serial port transmit buffer.
-     * 
-     * @param data  A byte array of data to be transmitted.
-     */
-    public void write(byte data[]) throws IllegalStateException {
-        
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(byte[])'.");
-
-        // write byte array to serial port
-        for(byte b : data){
-            // write byte to serial port        
-            com.pi4j.wiringpi.Serial.serialPutchar(fileDescriptor, (char)b);
+        // flush data to serial port immediately
+        try {
+            com.pi4j.jni.Serial.flush(fileDescriptor);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
         }
     }
 
     /**
-     * This method is called to submit a string of data to the serial port transmit buffer.
-     * 
-     * @param data A string of data to be transmitted.
+     * <p>
+     *     Discards all data in either or both the serial receive and transmit buffers.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @param rxBuffer
+     *          Flush the serial port receive buffer (input)
+     * @param txBuffer
+     *          Flush the serial port transmit buffer (output)
      */
-    public void write(String data) throws IllegalStateException {
-        
+    public void flush(boolean rxBuffer, boolean txBuffer) throws IllegalStateException, SerialPortException{
         // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(String)'.");
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'flush()'.");
 
-        // break data into packets of 1024 bytes
-        int position = 0;
-        while (position < data.length()) {
-            int length = 1024;
-            if (position + 1024 > data.length()) {
-                com.pi4j.wiringpi.Serial.serialPuts(fileDescriptor, data.substring(position));
-            } else {
-                com.pi4j.wiringpi.Serial.serialPuts(fileDescriptor,
-                                                    data.substring(position, (position + length)));
-            }
-            position += length;
+        // flush data to serial port immediately
+        try {
+            com.pi4j.jni.Serial.flush(fileDescriptor, rxBuffer, txBuffer);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
         }
     }
-    
+
     /**
-     * This method is called to submit a string of data with trailing CR + LF characters to the
-     * serial port transmit buffer.
-     * 
-     * @param data A string of data to be transmitted.
+     * <p>
+     *     Send a BREAK signal to connected device.
+     * </p>
+     *
+     * @param duration
+     *          The length of time (milliseconds) to send the BREAK signal
      */
-    public void writeln(String data) throws IllegalStateException {
-        
+    public void sendBreak(int duration) throws IllegalStateException, SerialPortException{
         // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'writeln(String)'.");
-        
-        // write string with CR+LF to serial port 
-        write(data + "\r\n");
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'sendBreak()'.");
+
+        // send BREAK signal to serial port immediately
+        try {
+            com.pi4j.jni.Serial.sendBreak(fileDescriptor, duration);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
     }
 
     /**
-     * This method is called to submit a string of formatted data to the serial port transmit
-     * buffer.
-     * 
-     * @param data A string of formatted data to be transmitted.
-     * @param args  A series of arguments that can be included for the format string variable
-     *            replacements.
+     * <p>
+     *     Send a BREAK signal to connected device for at least 0.25 seconds, and not more than 0.5 seconds
+     * </p>
+     *
      */
-    public void write(String data, String... args) throws IllegalStateException {
-        
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'write(String data, String...args)'.");
-        
-        // write formatted string to serial port 
-        write(String.format(data, (Object[]) args));
+    public void sendBreak() throws IllegalStateException, SerialPortException{
+        sendBreak(0);
     }
 
     /**
-     * This method is called to submit a string of formatted data with trailing CR + LF characters
-     * to the serial port transmit buffer.
-     * 
-     * @param data  A string of formatted data to be transmitted.
-     * @param args  A series of arguments that can be included for the format string variable
-     *            replacements.
+     * <p>Enable or disable ECHO of input bytes back to sender.</p>
      */
-    public void writeln(String data, String... args) throws IllegalStateException {
-        
+    public void echo(boolean enabled) throws SerialPortException{
         // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'writeln(String data, String...args)'.");
-        
-        // write formatted string with CR+LF to serial port         
-        write(data + "\r\n", args);
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'sendBreak()'.");
+
+        // update ECHO state on serial port immediately
+        try {
+            com.pi4j.jni.Serial.echo(fileDescriptor, enabled);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
     }
-    
+
+    /**
+     * Gets the number of bytes available for reading, or -1 for any error condition.
+     *
+     * @return Returns the number of bytes available for reading, or -1 for any error
+     */
+    public int available() throws IllegalStateException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'available()'.");
+
+        // get the number of available bytes in the serial port's receive buffer
+        return com.pi4j.jni.Serial.available(fileDescriptor);
+    }
+
     /**
      * This method is called to determine if and how many bytes are available on the serial received
      * data buffer.
-     * 
-     * @return  The number of available bytes pending in the serial received buffer is returned.
+     * @deprecated Use 'available()' instead.
+     *
+     * @return The number of available bytes pending in the serial received buffer is returned.
      */
-    public int availableBytes() throws IllegalStateException {
-        
-        // validate state
-        if (isClosed()) 
-            throw new IllegalStateException("Serial connection is not open; cannot 'availableBytes()'.");
-        
-        // return the number of bytes available in the serial buffer                 
-        return com.pi4j.wiringpi.Serial.serialDataAvail(fileDescriptor);
+    @Deprecated
+    public int availableBytes() throws IllegalStateException{
+        return available();
     }
+
+
+    // ----------------------------------------
+    // READ OPERATIONS
+    // ----------------------------------------
+
+    /**
+     * <p>Reads all available bytes from the serial port/device.</p>
+     *
+     * @return Returns a byte array with the data read from the serial port.
+     */
+    public byte[] read() throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            return com.pi4j.jni.Serial.read(fileDescriptor);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length of bytes from the port/serial device.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     *
+     * @return Returns a byte array with the data read from the serial port.
+     */
+    public byte[] read(int length) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            return com.pi4j.jni.Serial.read(fileDescriptor, length);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial device into a provided ByteBuffer.</p>
+     *
+     * @param buffer
+     *          The ByteBuffer object to write to.
+     */
+    public void read(ByteBuffer buffer) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, buffer);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length bytes from the serial port/device into a provided ByteBuffer.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param buffer
+     *          The ByteBuffer object to write to.
+     *
+     */
+    public void read(int length, ByteBuffer buffer) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, length, buffer);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial device into a provided OutputStream.</p>
+     *
+     * @param stream
+     *          The OutputStream object to write to.
+     */
+    public void read(OutputStream stream) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, stream);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length bytes from the serial port/device into a provided OutputStream.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param stream
+     *          The OutputStream object to write to.
+     *
+     */
+    public void read(int length, OutputStream stream) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, length, stream);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
+     *
+     * @param collection
+     *          The collection of CharSequence objects to append to.
+     *
+     */
+    public void read(Collection<ByteBuffer> collection) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, collection);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length of bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param collection
+     *          The collection of CharSequence objects to append to.
+     *
+     */
+    public void read(int length, Collection<ByteBuffer> collection) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, length, collection);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads all available bytes from the port/serial device and returns a CharBuffer from the decoded bytes.</p>
+     *
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     *
+     * @return Returns a character set with the data read from the serial port.
+     */
+    public CharBuffer read(Charset charset) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            return com.pi4j.jni.Serial.read(fileDescriptor, charset);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length of bytes from the port/serial device and returns a CharBuffer from the decoded bytes.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     *
+     * @return Returns a character set with the data read from the serial port.
+     */
+    public CharBuffer read(int length, Charset charset) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            return com.pi4j.jni.Serial.read(fileDescriptor, length, charset);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads all available bytes from the serial port/device into a provided Writer.</p>
+     *
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     * @param writer
+     *          The Writer object to write to.
+     *
+     */
+    public void read(Charset charset, Writer writer) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, charset, writer);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Reads a length bytes from the serial port/device into a provided Writer.</p>
+     *
+     * @param length
+     *          The number of bytes to get from the serial port/device.
+     *          This number must not be higher than the number of available bytes.
+     * @param charset
+     *          The character set to use for encoding/decoding bytes to/from text characters
+     * @param writer
+     *          The Writer object to write to.
+     *
+     */
+    public void read(int length, Charset charset, Writer writer)  throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'read()'.");
+
+        try {
+            // read serial data from receive buffer
+            com.pi4j.jni.Serial.read(fileDescriptor, charset, writer);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+
+
+    // ----------------------------------------
+    // WRITE OPERATIONS
+    // ----------------------------------------
+
+    /**
+     * <p>Sends an array of bytes to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *            A ByteBuffer of data to be transmitted.
+     * @param offset
+     *            The starting index (inclusive) in the array to send from.
+     * @param length
+     *            The number of bytes from the byte array to transmit to the serial port.
+     */
+    public void write(byte[] data, int offset, int length) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data, offset, length);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one of more bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *            One or more bytes (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(byte ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one of more bytes arrays to the serial device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *            One or more byte arrays of data to be transmitted. (variable-length-argument)
+     */
+    public void write(byte[] ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * Read the content of byte buffer and write the data to the serial port transmit buffer.
+     * (The buffer is read from the current position up to the 'limit' value, not the 'capacity'.  You may need to
+     * rewind() or flip() the byte buffer if you have just written to it.)
+     *
+     * @param data
+     *            A ByteBuffer of data to be transmitted.
+     */
+    public void write(ByteBuffer ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * Read content from an input stream of data and write it to the serial port transmit buffer.
+     *
+     * @param input
+     *          An InputStream of data to be transmitted
+     */
+    public void write(InputStream input) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, input);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           An array of chars to be decoded into bytes and transmitted.
+     * @param offset
+     *           The starting index (inclusive) in the array to send from.
+     * @param length
+     *           The number of characters from the char array to transmit to the serial port.
+     */
+    public void write(Charset charset, char[] data, int offset, int length) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data, offset, length);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more characters (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(Charset charset, char ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends an array of ASCII characters to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *           One or more ASCII characters (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(char ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more CharBuffers to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(Charset charset, CharBuffer ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more ASCII CharBuffers to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *           One or more ASCII CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(CharBuffer ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more string objects to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(Charset charset, CharSequence ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more ASCII string objects to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(CharSequence ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends a collection of string objects to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends a collection of ASCII string objects to the serial port/device identified by the given file descriptor.</p>
+     *
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void write(Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'write()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void writeln(Charset charset, CharSequence ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends one or more ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param data
+     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void writeln(CharSequence ... data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends a collection of string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param charset
+     *           The character set to use for encoding/decoding bytes to/from text characters
+     * @param data
+     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void writeln(Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+    /**
+     * <p>Sends a collection of ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
+     *
+     * @param data
+     *           A collection of ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
+     */
+    public void writeln(Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException{
+        // validate state
+        if (isClosed())
+            throw new IllegalStateException("Serial connection is not open; cannot 'writeln()'.");
+
+        try {
+            // write serial data to transmit buffer
+            com.pi4j.jni.Serial.write(fileDescriptor, data);
+        } catch (IOException e) {
+            throw new SerialPortException(e);
+        }
+    }
+
+
+
+    // ----------------------------------------
+    // EVENT OPERATIONS
+    // ----------------------------------------
 
     /**
      * <p>Add Serial Event Listener</p>
