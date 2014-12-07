@@ -5,7 +5,7 @@ package com.pi4j.io.i2c.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CBusImpl.java  
+ * FILENAME      :  I2CBusImplBananaPi.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,11 +27,9 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.jni.I2C;
-
 import java.io.IOException;
+
+import com.pi4j.io.i2c.I2CBus;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
@@ -41,14 +39,20 @@ import java.io.IOException;
  * @author Daniel Sendula
  *
  */
-public class I2CBusImpl implements I2CBus {
+public class I2CBusImplBananaPi extends I2CBusImpl {
 
     /** Singleton instance of bus 0 */
     private static I2CBus bus0 = null;
 
     /** Singleton instance of bus 1 */
     private static I2CBus bus1 = null;
-    
+
+    /** Singleton instance of bus 1 */
+    private static I2CBus bus2 = null;
+
+    /** Singleton instance of bus 1 */
+    private static I2CBus bus3 = null;
+
     /** 
      * Factory method that returns bus implementation.
      * 
@@ -61,14 +65,26 @@ public class I2CBusImpl implements I2CBus {
         if (busNumber == 0) {
             bus = bus0;
             if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-0");
+                bus = new I2CBusImplBananaPi("/dev/i2c-0");
                 bus0 = bus;
             }
         } else if (busNumber == 1) {
             bus = bus1;
             if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-1");
+                bus = new I2CBusImplBananaPi("/dev/i2c-1");
                 bus1 = bus;
+            }
+        } else if (busNumber == 2) {
+            bus = bus2;
+            if (bus == null) {
+                bus = new I2CBusImplBananaPi("/dev/i2c-2");
+                bus2 = bus;
+            }
+        } else if (busNumber == 3) {
+            bus = bus3;
+            if (bus == null) {
+                bus = new I2CBusImplBananaPi("/dev/i2c-3");
+                bus3 = bus;
             }
         } else {
             throw new IOException("Unknown bus number " + busNumber);
@@ -76,12 +92,6 @@ public class I2CBusImpl implements I2CBus {
         return bus;
     }
 
-    /** File handle for this i2c bus */
-    protected int fd;
-    
-    /** File name of this i2c bus */
-    protected String filename;
-    
     /**
      * Constructor of i2c bus implementation.
      * 
@@ -89,47 +99,8 @@ public class I2CBusImpl implements I2CBus {
      * 
      * @throws IOException thrown in case that file cannot be opened
      */
-    public I2CBusImpl(String filename) throws IOException {
-        this.filename = filename;
-        fd = I2C.i2cOpen(filename);
-        if (fd < 0) {
-            throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
-        }
+    public I2CBusImplBananaPi(String filename) throws IOException {
+    	super(filename);
     }
 
-    /**
-     * Returns i2c device implementation ({@link I2CDeviceImpl}).
-     * 
-     * @param address address of i2c device
-     * 
-     * @return implementation of i2c device with given address
-     * 
-     * @throws IOException never in this implementation
-     */
-    @Override
-    public I2CDevice getDevice(int address) throws IOException {
-        return new I2CDeviceImpl(this, address);
-    }
-
-    /**
-     * Closes this i2c bus
-     * 
-     * @throws IOException never in this implementation
-     */
-    @Override
-    public void close() throws IOException {
-        I2C.i2cClose(fd);
-    }
-
-	@Override
-	public String getFileName()
-	{
-		return filename;
-	}
-
-	@Override
-	public int getFileDescriptor()
-	{
-		return fd;
-	}
-}
+ }

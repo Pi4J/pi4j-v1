@@ -35,7 +35,7 @@ import java.io.IOException;
  * @author Daniel Sendula
  *
  */
-@SuppressWarnings("unused")
+
 public interface I2CBus {
 
     public static final int BUS_0 = 0;
@@ -49,6 +49,10 @@ public interface I2CBus {
      * @throws IOException thrown in case this bus cannot return i2c device.
      */
     I2CDevice getDevice(int address) throws IOException;
+    
+    String getFileName();
+    
+    int getFileDescriptor();
     
     /**
      * Closes this bus. This usually means closing underlying file.
