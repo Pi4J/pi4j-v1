@@ -169,7 +169,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         private StringBuilder buffer = new StringBuilder();
         
         public void dataReceived(SerialDataEvent event) {
-           String data = event.getData();
+           String data = event.getAsciiString();
            
            // append received data into buffer
            if (data != null && !data.isEmpty()) {
