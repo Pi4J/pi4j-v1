@@ -27,6 +27,7 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
+import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
 
@@ -44,7 +45,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class I2CDeviceImpl implements I2CDevice {
 
     /** Reference to i2c bus */
-    private I2CBusImpl bus;
+    private I2CBus bus;
     
     /** I2c device address */
     private int deviceAddress;
@@ -57,7 +58,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * @param bus i2c bus
      * @param address i2c device address
      */
-    public I2CDeviceImpl(I2CBusImpl bus, int address) {
+    public I2CDeviceImpl(I2CBus bus, int address) {
         this.bus = bus;
         this.deviceAddress = address;
     }
@@ -73,7 +74,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(byte data) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cWriteByteDirect(bus.fd, deviceAddress, data);
+            int ret = I2C.i2cWriteByteDirect(bus.getFileDescriptor(), deviceAddress, data);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
             }
@@ -95,7 +96,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(byte[] buffer, int offset, int size) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cWriteBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
+            int ret = I2C.i2cWriteBytesDirect(bus.getFileDescriptor(), deviceAddress, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
             }
@@ -116,7 +117,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(int address, byte data) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cWriteByte(bus.fd, deviceAddress, address, data);
+            int ret = I2C.i2cWriteByte(bus.getFileDescriptor(), deviceAddress, address, data);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
             }
@@ -139,7 +140,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(int address, byte[] buffer, int offset, int size) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cWriteBytes(bus.fd, deviceAddress, address, size, offset, buffer);
+            int ret = I2C.i2cWriteBytes(bus.getFileDescriptor(), deviceAddress, address, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
             }
@@ -160,7 +161,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read() throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cReadByteDirect(bus.fd, deviceAddress);
+            int ret = I2C.i2cReadByteDirect(bus.getFileDescriptor(), deviceAddress);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
@@ -190,7 +191,7 @@ public class I2CDeviceImpl implements I2CDevice {
         lock.lock();
         try {
             // It doesn't work for some reason.
-            int ret = I2C.i2cReadBytesDirect(bus.fd, deviceAddress, size, offset, buffer);
+            int ret = I2C.i2cReadBytesDirect(bus.getFileDescriptor(), deviceAddress, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
@@ -213,7 +214,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(int address) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cReadByte(bus.fd, deviceAddress, address);
+            int ret = I2C.i2cReadByte(bus.getFileDescriptor(), deviceAddress, address);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
             }
@@ -244,7 +245,7 @@ public class I2CDeviceImpl implements I2CDevice {
         lock.lock();
         try {
             // It doesn't work for some reason.
-            int ret = I2C.i2cReadBytes(bus.fd, deviceAddress, address, size, offset, buffer);
+            int ret = I2C.i2cReadBytes(bus.getFileDescriptor(), deviceAddress, address, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
             }
@@ -272,7 +273,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException {
         lock.lock();
         try {
-            int ret = I2C.i2cWriteAndReadBytes(bus.fd, deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
+            int ret = I2C.i2cWriteAndReadBytes(bus.getFileDescriptor(), deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
@@ -288,7 +289,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription() {
-        return bus.filename + " at address 0x" + Integer.toHexString(deviceAddress);
+        return bus.getFileName() + " at address 0x" + Integer.toHexString(deviceAddress);
     }
     
     /**
@@ -299,7 +300,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription(int address) {
-        return bus.filename + " at address 0x" + Integer.toHexString(deviceAddress) 
+        return bus.getFileName() + " at address 0x" + Integer.toHexString(deviceAddress) 
                 + " to address 0x" + Integer.toHexString(address);
     }
     

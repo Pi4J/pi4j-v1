@@ -5,13 +5,13 @@ package com.pi4j.io.i2c;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactory.java  
+ * FILENAME      :  I2CFactoryProviderBanana.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2014 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,42 +29,13 @@ package com.pi4j.io.i2c;
 
 import java.io.IOException;
 
-/**
- * I2C factory - it returns instances of {@link I2CBus} interface.
- *
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www
- *         .savagehomeautomation.com</a>)
- */
-public class I2CFactory
+import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
+
+public class I2CFactoryProviderBanana implements I2CFactoryProvider
 {
 
-	volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberry();
-
-	// private constructor
-	private I2CFactory()
+	public I2CBus getBus(int busNumber) throws IOException
 	{
-		// forbid object construction
-	}
-
-	/**
-	 * Create new I2CBus instance
-	 * 
-	 * @return Return a new I2CBus impl instance.
-	 * 
-	 * @throws IOException
-	 */
-	public static I2CBus getInstance(int busNumber) throws IOException
-	{
-		return provider.getBus(busNumber);
-	}
-
-	/**
-	 * allow changing the provider for the factory
-	 * @param factoryProvider
-	 */
-	public static void setFactory(I2CFactoryProvider factoryProvider)
-	{
-		provider = factoryProvider;
+		return I2CBusImplBananaPi.getBus(busNumber);
 	}
 }
