@@ -11,7 +11,7 @@ package com.pi4j.io.i2c;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2014 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,15 @@ package com.pi4j.io.i2c;
  * #L%
  */
 
-import java.io.IOException;
+import com.pi4j.io.i2c.impl.I2CBusImpl;
 
-import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
+import java.io.IOException;
 
 public class I2CFactoryProviderRaspberry implements I2CFactoryProvider
 {
 
 	public I2CBus getBus(int busNumber) throws IOException
 	{
-		return I2CBusImplBananaPi.getBus(busNumber);
+		return I2CBusImpl.getBus(busNumber);
 	}
 }

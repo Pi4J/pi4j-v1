@@ -11,7 +11,7 @@ package com.pi4j.io.i2c.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2014 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.pi4j.io.i2c.I2CBus;
+
+import java.io.IOException;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
