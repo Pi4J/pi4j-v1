@@ -32,6 +32,8 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
@@ -49,6 +51,9 @@ public class I2CBusImpl implements I2CBus {
     /** Singleton instance of bus 1 */
     private static I2CBus bus1 = null;
     
+    /** to lock the creation/destruction of the bus singletons */
+    private final static Lock lock = new ReentrantLock( true );
+
     /** 
      * Factory method that returns bus implementation.
      * 
@@ -58,6 +63,7 @@ public class I2CBusImpl implements I2CBus {
      */
     public static I2CBus getBus(int busNumber) throws IOException {
         I2CBus bus;
+        lock.lock();
         if (busNumber == 0) {
             bus = bus0;
             if (bus == null) {
@@ -73,6 +79,7 @@ public class I2CBusImpl implements I2CBus {
         } else {
             throw new IOException("Unknown bus number " + busNumber);
         }
+        lock.unlock();
         return bus;
     }
 
@@ -118,7 +125,17 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public void close() throws IOException {
+        lock.lock();
         I2C.i2cClose(fd);
+        /* after closing the fd, we must "forget" the singleton bus instance, otherwise further request to this bus will
+         * always fail
+         */
+        if (this == bus0) {
+            bus0 = null;
+        } else if (this == bus1) {
+            bus1 = null;
+        }
+        lock.unlock();
     }
 
 	@Override
