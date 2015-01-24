@@ -28,6 +28,7 @@ package com.pi4j.io.i2c.impl;
  */
 
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.jni.I2C;
 
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
