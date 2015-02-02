@@ -560,4 +560,75 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 	}
 	
+	@Test
+	public void testUpdateCacheFromDevice() throws IOException {
+		
+		potiA.setCurrentValue(50);
+		int currentValue1 = potiA.getCurrentValue();
+		assertEquals("Precondition for test fails: 'getCurrentValue()' should "
+				+ "return 50!", 50, currentValue1);
+		
+		reset(controller);
+		
+		when(controller.getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				eq(false))).thenReturn(40);
+		when(controller.getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				eq(true))).thenReturn(70);
+		
+		int currentValue2 = potiA.updateCacheFromDevice();
+		
+		verify(controller).getValue(
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, false);
+		verify(controller).getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				anyBoolean());
+		
+		assertEquals("Did not get updated value by method 'updateCacheFromDevice()'",
+				40, currentValue2);
+		
+		int currentValue3 = potiA.getCurrentValue();
+		assertEquals("'getCurrentValue()' did not return updated value after "
+				+ "calling 'updateCacheFromDevice()'", currentValue2, currentValue3);
+		
+	}
+	
+	@Test
+	public void testGetNonVolatileValue() throws IOException {
+		
+		try {
+			
+			potiB.getNonVolatileValue();
+			fail("Expected 'getNonVolatileValue()' to throw RuntimeException "
+					+ "because potiB is not capable of non-volatile wipers!");
+			
+		} catch (RuntimeException e) {
+			// expected since potiB is not capable of non-volatile wipers
+		}
+		
+		verify(controller, times(0)).getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				anyBoolean());
+		
+		when(controller.getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				eq(false))).thenReturn(40);
+		when(controller.getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				eq(true))).thenReturn(70);
+		
+		int nonVolatileValue = potiA.getNonVolatileValue();
+
+		verify(controller).getValue(
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, true);
+		verify(controller).getValue(
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				anyBoolean());
+		
+		assertEquals("Did not get non-volatile-value on calling 'getNonVolatileValue()'",
+				70, nonVolatileValue);
+		
+	}
+	
 }
