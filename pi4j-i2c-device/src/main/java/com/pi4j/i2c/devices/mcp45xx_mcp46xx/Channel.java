@@ -45,6 +45,9 @@ public enum Channel {
 	 */
 	B(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.B);
 	
+	/**
+	 * The controller's channel 
+	 */
 	private com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel mcpChannel;
 	
 	private Channel(final com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel mcpChannel) {

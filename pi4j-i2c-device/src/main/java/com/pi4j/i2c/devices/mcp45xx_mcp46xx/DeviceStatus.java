@@ -40,6 +40,9 @@ public class DeviceStatus {
 	private boolean eepromWriteProtected;
 	private boolean wiperLockActive;
 	
+	/**
+	 * Visibility 'package' should hide the constructor for users.
+	 */
 	DeviceStatus(
 			final boolean eepromWriteActive,
 			final boolean eepromWriteProtected,
