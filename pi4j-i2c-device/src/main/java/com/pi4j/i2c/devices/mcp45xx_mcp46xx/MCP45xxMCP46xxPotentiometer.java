@@ -2,8 +2,6 @@ package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
 import java.io.IOException;
 
-import javax.management.RuntimeErrorException;
-
 import com.pi4j.device.DeviceBase;
 import com.pi4j.device.potentiometer.DigitalPotentiometer;
 import com.pi4j.i2c.devices.MCP4561;
@@ -227,7 +225,10 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		
 		if (isCapableOfNonVolatileWiper()) {
 			
-			currentValue = controller.getValue(channel.getMcpChannel(), true);
+			// the device's volatile-wiper will be set to the value stored
+			// in the non-volatile memory. so for those devices the wiper's
+			// current value has to be retrieved
+			currentValue = controller.getValue(channel.getMcpChannel(), false);
 			
 		} else {
 			
@@ -311,10 +312,45 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		this.nonVolatileMode = nonVolatileMode;
 		
 	}
+
+	/**
+	 * Updates the cache to the wiper's value.
+	 * 
+	 * @return The wiper's current value
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public int updateCacheFromDevice() throws IOException {
+		
+		currentValue = controller.getValue(channel.getMcpChannel(), false);
+		return currentValue;
+		
+	}
 	
 	/**
+	 * The visibility of this method is protected because not all
+	 * devices support non-volatile wipers. Any derived class may
+	 * publish this method.
+	 * 
+	 * @return The non-volatile-wiper's value.
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	protected int getNonVolatileValue() throws IOException {
+		
+		if (!isCapableOfNonVolatileWiper()) {
+			throw new RuntimeException("This device is not capable of non-volatile wipers!");
+		}
+		
+		return controller.getValue(channel.getMcpChannel(), true);
+		
+	}
+	
+	/**
+	 * The wiper's value read from cache. The cache is updated on any
+	 * modifying action or the method 'updateCacheFromDevice'.
+	 * 
 	 * @return The wipers current value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 * @see #updateCacheFromDevice()
 	 */
 	@Override
 	public int getCurrentValue() throws IOException {
