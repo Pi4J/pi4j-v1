@@ -52,7 +52,7 @@ public class MCP45xxMCP46xxController {
 	private static final byte MEMADDR_STATUS = 0x05;
 	
 	// Commands
-	private static final byte CMD_WRITE = 0x00;
+	private static final byte CMD_WRITE = (0x00 << 2);
 	private static final byte CMD_INC = (0x01 << 2);
 	private static final byte CMD_DEC = (0x02 << 2);
 	private static final byte CMD_READ = (0x03 << 2);
@@ -305,8 +305,19 @@ public class MCP45xxMCP46xxController {
 					+ "knowing just one wiper Channel.A is mandetory for "
 					+ "parameter 'channel'");
 		}
+		if (value < 0) {
+			throw new RuntimeException("only positive values are allowed! Got value '"
+					+ value + "' for writing to channel '"
+					+ channel.name() + "'");
+		}
 		
-		//i2cDevice.write(SOFTWARE_RESET);
+		// choose proper memory address (see TABLE 4-1)
+		byte memAddr = nonVolatile ?
+				channel.getNonVolatileMemoryAddress()
+				: channel.getVolatileMemoryAddress();
+		
+		// write the value to the device
+		write(memAddr, value);
 		
 	}
 	
@@ -336,6 +347,30 @@ public class MCP45xxMCP46xxController {
 		
 		// interpret two bytes as one integer
 		return (first << 8) | second;
+		
+	}
+	
+	/**
+	 * Writes 9 bits of the given value to the device.
+	 * 
+	 * @param memAddr The memory-address to write to
+	 * @param value The value to be written
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	private void write(final byte memAddr, final int value) throws IOException {
+		
+		// bit 8 of value
+		byte firstBit = (byte) ((value >> 8) & 0x000001);
+		
+		// ask device for setting a value - see FIGURE 7-2
+		byte cmd = (byte) ((memAddr << 4) | CMD_WRITE | firstBit);
+		
+		// 7 bits of value
+		byte data = (byte) (value & 0x00FF);
+		
+		// write sequence of cmd and data to the device
+		byte[] sequence = new byte[] { cmd, data };
+		i2cDevice.write(sequence, 0, sequence.length);
 		
 	}
 	
@@ -374,8 +409,8 @@ public class MCP45xxMCP46xxController {
 		byte[] sequence = new byte[actualSteps];
 		Arrays.fill(sequence, cmd);
 		
-		// write sequence to device
-		i2cDevice.write(sequence, 0, actualSteps);
+		// write sequence to the device
+		i2cDevice.write(sequence, 0, sequence.length);
 		
 	}
 
