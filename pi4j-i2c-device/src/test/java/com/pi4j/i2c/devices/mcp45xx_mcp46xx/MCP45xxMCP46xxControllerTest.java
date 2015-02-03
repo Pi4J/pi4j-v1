@@ -1,8 +1,14 @@
 package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
@@ -146,7 +152,16 @@ public class MCP45xxMCP46xxControllerTest {
 	}
 	
 	@Test
-	public void testGetCurrentValue() throws IOException {
+	public void testGetValue() throws IOException {
+		
+		try {
+
+			controller.getValue(null, true);
+			fail("Got no RuntimeException on calling 'getValue(null, ...)'!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
 		
 		// test wiper 0 - volatile
 
@@ -213,6 +228,116 @@ public class MCP45xxMCP46xxControllerTest {
 		verify(i2cDevice).write((byte) 0b0111100);
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		
+	}
+	
+	@Test
+	public void testIncrease() throws IOException {
+		
+		try {
+
+			controller.getValue(null, true);
+			fail("Got no RuntimeException on calling 'getValue(null, ...)'!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// zero-step increase
+		
+		controller.increase(Channel.A, 0);
+		
+		// 'write' called zero times
+		verify(i2cDevice, times(0)).write(any(byte[].class), anyInt(), anyInt());
+		
+		// one-step increase
+		
+		reset(i2cDevice);
+		
+		controller.increase(Channel.A, 1);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0000100 }, 0, 1);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+
+		// three-step increase
+		
+		reset(i2cDevice);
+		
+		controller.increase(Channel.B, 3);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0010100,
+				(byte) 0b0010100, (byte) 0b0010100 }, 0, 3);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+		// negative-steps increase
+		
+		reset(i2cDevice);
+		
+		controller.increase(Channel.A, -1);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0001000 }, 0, 1);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+	}
+
+	@Test
+	public void testDecrease() throws IOException {
+		
+		try {
+
+			controller.getValue(null, true);
+			fail("Got no RuntimeException on calling 'getValue(null, ...)'!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// zero-step decrease
+		
+		controller.increase(Channel.A, 0);
+		
+		// 'write' called zero times
+		verify(i2cDevice, times(0)).write(any(byte[].class), anyInt(), anyInt());
+
+		// one-step decrease
+		
+		reset(i2cDevice);
+		
+		controller.decrease(Channel.A, 1);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0001000 }, 0, 1);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+
+		// three-step decrease
+		
+		reset(i2cDevice);
+		
+		controller.decrease(Channel.B, 3);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0011000,
+				(byte) 0b0011000, (byte) 0b0011000 }, 0, 3);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+		// negative-steps decrease
+		
+		reset(i2cDevice);
+		
+		controller.decrease(Channel.A, -1);
+		
+		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0000100 }, 0, 1);
+		// 'write' called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
 		
 	}
 	

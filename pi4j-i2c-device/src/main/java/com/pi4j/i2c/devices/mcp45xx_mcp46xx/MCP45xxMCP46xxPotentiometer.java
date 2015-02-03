@@ -454,8 +454,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		// for a small number of steps use 'decrease'-method
 		else {
 			
-			controller.decrease(channel.getMcpChannel(),
-					actualSteps, false);
+			controller.decrease(channel.getMcpChannel(), actualSteps);
 			
 			currentValue = newValue;
 			
@@ -517,8 +516,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		// for a small number of step simply repeat 'increase'-commands
 		else {
 			
-			controller.increase(channel.getMcpChannel(),
-					actualSteps, false);
+			controller.increase(channel.getMcpChannel(), actualSteps);
 			
 			currentValue = newValue;
 			
