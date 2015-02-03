@@ -212,7 +212,7 @@ public class MCP45xxMCP46xxControllerTest {
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 
-		// test wiper 1 - volatile
+		// test wiper 1 - non-volatile
 
 		reset(i2cDevice);
 		
@@ -232,12 +232,76 @@ public class MCP45xxMCP46xxControllerTest {
 	}
 	
 	@Test
+	public void testSetValue() throws IOException {
+		
+		try {
+
+			controller.setValue(null, 1, true);
+			fail("Got no RuntimeException on calling 'setValue(null, ...)'!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+
+			controller.setValue(Channel.A, -1, true);
+			fail("Got no RuntimeException on calling 'setValue(...)' using a negative value!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// test wiper 0 - volatile
+		
+		controller.setValue(Channel.A, 0, false);
+		
+		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0000000, (byte) 0b00000000 }, 0, 2);
+		// 'write' is called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+		// test wiper 1 - volatile
+
+		reset(i2cDevice);
+		
+		controller.setValue(Channel.B, 1, false);
+		
+		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0010000, (byte) 0b00000001 }, 0, 2);
+		// 'write' is called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+
+		// test wiper 0 - non-volatile
+
+		reset(i2cDevice);
+		
+		controller.setValue(Channel.A, 255, true);
+		
+		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0100000, (byte) 0b11111111 }, 0, 2);
+		// 'write' is called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+
+		// test wiper 1 - non-volatile
+
+		reset(i2cDevice);
+		
+		controller.setValue(Channel.B, 256, true);
+		
+		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
+		verify(i2cDevice).write(new byte[] { (byte) 0b0110001, (byte) 0b00000000 }, 0, 2);
+		// 'write' is called on time
+		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+	}
+	
+	@Test
 	public void testIncrease() throws IOException {
 		
 		try {
 
-			controller.getValue(null, true);
-			fail("Got no RuntimeException on calling 'getValue(null, ...)'!");
+			controller.increase(null, 1);
+			fail("Got no RuntimeException on calling 'increase(null, ...)'!");
 			
 		} catch (RuntimeException e) {
 			// expected
@@ -291,8 +355,8 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		try {
 
-			controller.getValue(null, true);
-			fail("Got no RuntimeException on calling 'getValue(null, ...)'!");
+			controller.decrease(null, 1);
+			fail("Got no RuntimeException on calling 'decrease(null, ...)'!");
 			
 		} catch (RuntimeException e) {
 			// expected
