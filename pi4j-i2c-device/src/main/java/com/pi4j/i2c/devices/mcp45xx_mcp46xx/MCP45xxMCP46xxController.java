@@ -1,6 +1,7 @@
 package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -109,6 +110,9 @@ public class MCP45xxMCP46xxController {
 		
 	}
 	
+	/**
+	 * The wiper - used for devices knowing more than one wiper.
+	 */
 	static enum Channel {
 		
 		A(MEMADDR_WIPER0, MEMADDR_WIPER0_NV, TCON_RH0HW, TCON_RH0A, TCON_RH0B, TCON_RH0W),
@@ -210,25 +214,50 @@ public class MCP45xxMCP46xxController {
 		
 	}
 	
-	public void setValue(final Channel channel, final int value, final boolean nonVolatile) throws IOException {
+	/**
+	 * Increments the volatile wiper for the given number steps.
+	 * 
+	 * @param channel Which wiper
+	 * @param steps The number of steps
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void increase(final Channel channel, final int steps)
+			throws IOException {
 		
-		//i2cDevice.write(SOFTWARE_RESET);
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
+		
+		// decrease only works on volatile-wiper
+		byte memAddr = channel.getVolatileMemoryAddress();
+		
+		increaseOrDecrease(memAddr, true, steps);
 		
 	}
 	
-	public void increase(final Channel channel, final int amount,
-			final boolean nonVolatile) {
-		
-		byte memAddr = nonVolatile ? channel.getNonVolatileMemoryAddress() : channel.getVolatileMemoryAddress();
-		
-		
-	}
-	
-	public void decrease(final Channel channel, final int amount,
-			final boolean nonVolatile) {
+	/**
+	 * Decrements the volatile wiper for the given number steps.
+	 * 
+	 * @param channel Which wiper
+	 * @param steps The number of steps
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void decrease(final Channel channel, final int steps)
+			throws IOException {
 
-		byte memAddr = nonVolatile ? channel.getNonVolatileMemoryAddress() : channel.getVolatileMemoryAddress();
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
 		
+		// decrease only works on volatile-wiper
+		byte memAddr = channel.getVolatileMemoryAddress();
+		
+		increaseOrDecrease(memAddr, false, steps);
+
 	}
 	
 	/**
@@ -242,14 +271,42 @@ public class MCP45xxMCP46xxController {
 	public int getValue(final Channel channel, final boolean nonVolatile)
 			throws IOException {
 		
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
+		
 		// choose proper memory address (see TABLE 4-1)
 		byte memAddr = nonVolatile ?
-				channel.getNonVolatileMemoryAddress() : channel.getVolatileMemoryAddress();
+				channel.getNonVolatileMemoryAddress()
+				: channel.getVolatileMemoryAddress();
 		
 		// read current value
 		int currentValue = read(memAddr);
 		
 		return currentValue;
+		
+	}
+	
+	/**
+	 * Sets the wiper's value in the device.
+	 * 
+	 * @param channel Which wiper
+	 * @param value The wiper's value
+	 * @param nonVolatile volatile or non-volatile value
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setValue(final Channel channel, final int value,
+			final boolean nonVolatile) throws IOException {
+		
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
+		
+		//i2cDevice.write(SOFTWARE_RESET);
 		
 	}
 	
@@ -279,6 +336,46 @@ public class MCP45xxMCP46xxController {
 		
 		// interpret two bytes as one integer
 		return (first << 8) | second;
+		
+	}
+	
+	/**
+	 * Writes n (steps) bytes to the device holding the wiper's address
+	 * and the increment or decrement command.
+	 * 
+	 * @param memAddr The wiper's address
+	 * @param increase Whether to increment the wiper
+	 * @param steps The number of steps the wiper has to be incremented/decremented
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	private void increaseOrDecrease(final byte memAddr,
+			final boolean increase, final int steps) throws IOException {
+		
+		// 0 steps means 'do nothing'
+		if (steps == 0) {
+			return;
+		}
+		
+		// negative steps means to decrease on 'increase' or the increase on 'decrease'
+		final int actualSteps;
+		final boolean actualIncrease;
+		if (steps < 0) {
+			actualIncrease = !increase;
+			actualSteps = Math.abs(steps);
+		} else {
+			actualIncrease = increase;
+			actualSteps = steps;
+		}
+		
+		// ask device for increasing or decrease - see FIGURE 7-7
+		byte cmd = (byte) ((memAddr << 4) | (actualIncrease ? CMD_INC : CMD_DEC));
+		
+		// build sequence of commands (one for each step)
+		byte[] sequence = new byte[actualSteps];
+		Arrays.fill(sequence, cmd);
+		
+		// write sequence to device
+		i2cDevice.write(sequence, 0, actualSteps);
 		
 	}
 
