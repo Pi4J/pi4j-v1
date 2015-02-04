@@ -5,7 +5,7 @@ package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  DeviceStatus.java  
+ * FILENAME      :  TerminalConfiguration.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,44 +34,54 @@ package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
  * @see PotentiometerImpl
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class DeviceStatus {
+public class TerminalConfiguration {
+
+	private Channel channel;
+	private boolean channelEnabled;
+	private boolean pinAEnabled;
+	private boolean pinWEnabled;
+	private boolean pinBEnabled;
 	
-	private boolean eepromWriteActive;
-	private boolean eepromWriteProtected;
-	private boolean wiperLockActive;
+	public TerminalConfiguration(Channel channel,
+			boolean channelEnabled, boolean pinAEnabled,
+			boolean pinWEnabled, boolean pinBEnabled) {
+		this.channel = channel;
+		this.channelEnabled = channelEnabled;
+		this.pinAEnabled = pinAEnabled;
+		this.pinWEnabled = pinWEnabled;
+		this.pinBEnabled = pinBEnabled;
+	}
+
+	public Channel getChannel() {
+		return channel;
+	}
 	
 	/**
-	 * Visibility 'package' should hide the constructor for users.
+	 * @return Whether the entire channel is enabled or disabled
 	 */
-	DeviceStatus(
-			final boolean eepromWriteActive,
-			final boolean eepromWriteProtected,
-			final boolean wiperLockActive) {
-		super();
-		this.eepromWriteActive = eepromWriteActive;
-		this.eepromWriteProtected = eepromWriteProtected;
-		this.wiperLockActive = wiperLockActive;
+	public boolean isChannelEnabled() {
+		return channelEnabled;
 	}
 
 	/**
-	 * @return Whether the device is writing to EEPROM at the moment
+	 * @return If channel is enabled, whether pin A is enabled
 	 */
-	public boolean isEepromWriteActive() {
-		return eepromWriteActive;
+	public boolean isPinAEnabled() {
+		return pinAEnabled;
 	}
 
 	/**
-	 * @return Whether EEPROM is write-protected
+	 * @return If channel is enabled, whether pin W is enabled
 	 */
-	public boolean isEepromWriteProtected() {
-		return eepromWriteProtected;
+	public boolean isPinWEnabled() {
+		return pinWEnabled;
 	}
 
 	/**
-	 * @return Whether the wiper's lock is active
+	 * @return If channel is enabled, whether pin B is enabled
 	 */
-	public boolean isWiperLockActive() {
-		return wiperLockActive;
+	public boolean isPinBEnabled() {
+		return pinBEnabled;
 	}
 	
 }

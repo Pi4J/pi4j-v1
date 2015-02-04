@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxPotentiometer.NonVolatileMode;
+import com.pi4j.i2c.devices.mcp45xx_mcp46xx.PotentiometerImpl.NonVolatileMode;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -45,11 +45,11 @@ import com.pi4j.io.i2c.I2CDevice;
 /**
  * Test for abstract Pi4J-device for MCP45XX and MCP46XX ICs.
  * 
- * @see MCP45xxMCP46xxPotentiometer
+ * @see PotentiometerImpl
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MCP45xxMCP46xxPotentiometerStaticTest {
+public class PotentiometerImplStaticTest {
 	
 	@Mock
 	private I2CDevice i2cDevice;
@@ -58,23 +58,23 @@ public class MCP45xxMCP46xxPotentiometerStaticTest {
 	private I2CBus i2cBus;
 	
 	@Mock
-	private MCP45xxMCP46xxController controller;
+	private DeviceController controller;
 	
 	@Mock
-	private MCP45xxMCP46xxControllerFactory controllerFactory;
+	private DeviceControllerFactory controllerFactory;
 
 	/**
 	 * publishes some internals for testing purposes
 	 */
 	static class TestableMCP45xxMCP46xxPotentiometer
-			extends MCP45xxMCP46xxPotentiometer {
+			extends PotentiometerImpl {
 
 		private boolean capableOfNonVolatileWiper = false;
 		
 		TestableMCP45xxMCP46xxPotentiometer(I2CBus i2cBus, boolean pinA0,
 				boolean pinA1, boolean pinA2, Channel channel,
 				NonVolatileMode nonVolatileMode,
-				MCP45xxMCP46xxControllerFactory controllerFactory)
+				DeviceControllerFactory controllerFactory)
 				throws IOException {
 			super(i2cBus, pinA0, pinA1, pinA2, channel,
 					nonVolatileMode, 0, controllerFactory);
@@ -172,19 +172,19 @@ public class MCP45xxMCP46xxPotentiometerStaticTest {
 	@Test
 	public void testBuildI2CAddress() throws IOException {
 		
-		int address1 = MCP45xxMCP46xxPotentiometer.buildI2CAddress(false, false, false);
+		int address1 = PotentiometerImpl.buildI2CAddress(false, false, false);
 		assertEquals("'buildI2CAddress(false, false, false)' "
 				+ "does not return '0b01010000'", 0b01010000, address1);
 
-		int address2 = MCP45xxMCP46xxPotentiometer.buildI2CAddress(true, false, false);
+		int address2 = PotentiometerImpl.buildI2CAddress(true, false, false);
 		assertEquals("'buildI2CAddress(true, false, false)' "
 				+ "does not return '0b01010010'", 0b01010010, address2);
 		
-		int address3 = MCP45xxMCP46xxPotentiometer.buildI2CAddress(true, true, false);
+		int address3 = PotentiometerImpl.buildI2CAddress(true, true, false);
 		assertEquals("'buildI2CAddress(true, true, false)' "
 				+ "does not return '0b01010110'", 0b01010110, address3);
 
-		int address4 = MCP45xxMCP46xxPotentiometer.buildI2CAddress(true, true, true);
+		int address4 = PotentiometerImpl.buildI2CAddress(true, true, true);
 		assertEquals("'buildI2CAddress(true, true, true)' "
 				+ "does not return '0b01011110'", 0b01011110, address4);
 		
@@ -205,15 +205,15 @@ public class MCP45xxMCP46xxPotentiometerStaticTest {
 		
 		// called with expected parameters
 		verify(controller).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A
-				, true);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A
+				, false);
 		// only called with expected parameters
 		verify(controller, times(1)).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class)
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class)
 				, anyBoolean());
 		// never called since non-volatile-wiper is true
 		verify(controller, times(0)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class)
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class)
 				, anyInt(), anyBoolean());
 		
 		reset(controller);
@@ -223,15 +223,15 @@ public class MCP45xxMCP46xxPotentiometerStaticTest {
 		
 		// called with expected parameters
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A
 				, 120, false);
 		// only called with expected parameters
 		verify(controller, times(1)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class)
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class)
 				, anyInt(), anyBoolean());
 		// never called since non-volatile-wiper is true
 		verify(controller, times(0)).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A
 				, true);
 
 	}

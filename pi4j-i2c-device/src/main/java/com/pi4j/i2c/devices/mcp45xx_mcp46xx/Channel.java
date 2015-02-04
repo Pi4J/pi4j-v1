@@ -30,7 +30,7 @@ package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 /**
  * A channel an instance of MCP45XX_MCP46XX_Potentiometer can be configured for.
  * 
- * @see MCP45xxMCP46xxPotentiometer
+ * @see PotentiometerImpl
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 public enum Channel {
@@ -38,25 +38,25 @@ public enum Channel {
 	/**
 	 * Pins P0A, P0W, P0B
 	 */
-	A(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A),
+	A(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A),
 	
 	/**
 	 * Pins P1A, P1W, P1B
 	 */
-	B(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.B);
+	B(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.B);
 	
 	/**
 	 * The controller's channel 
 	 */
-	private com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel mcpChannel;
+	private com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel mcpChannel;
 	
-	private Channel(final com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel mcpChannel) {
+	private Channel(final com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel mcpChannel) {
 		
 		this.mcpChannel = mcpChannel;
 		
 	}
 	
-	public com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel getMcpChannel() {
+	public com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel getMcpChannel() {
 		return mcpChannel;
 	}
 	

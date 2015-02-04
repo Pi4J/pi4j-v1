@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxPotentiometer.NonVolatileMode;
+import com.pi4j.i2c.devices.mcp45xx_mcp46xx.PotentiometerImpl.NonVolatileMode;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -45,11 +45,11 @@ import com.pi4j.io.i2c.I2CDevice;
 /**
  * Test for abstract Pi4J-device for MCP45XX and MCP46XX ICs.
  * 
- * @see MCP45xxMCP46xxPotentiometer
+ * @see PotentiometerImpl
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MCP45xxMCP46xxPotentiometerTest {
+public class PotentiometerImplTest {
 	
 	private static int INITIAL_VALUE_A = 0;
 	private static int INITIAL_VALUE_B = 100;
@@ -61,17 +61,17 @@ public class MCP45xxMCP46xxPotentiometerTest {
 	private I2CBus i2cBus;
 	
 	@Mock
-	private MCP45xxMCP46xxController controller;
+	private DeviceController controller;
 	
 	@Mock
-	private MCP45xxMCP46xxControllerFactory controllerFactory;
+	private DeviceControllerFactory controllerFactory;
 	
 	private TestableMCP45xxMCP46xxPotentiometer potiA;
 
 	private TestableMCP45xxMCP46xxPotentiometer potiB;
 
 	class TestableMCP45xxMCP46xxPotentiometer
-			extends MCP45xxMCP46xxPotentiometer {
+			extends PotentiometerImpl {
 
 		private boolean capableOfNonVolatileWiper;
 		
@@ -127,12 +127,12 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// prepare controller-status mock
 		
-		MCP45xxMCP46xxController.DeviceStatus deviceStatusMock
-				= mock(MCP45xxMCP46xxController.DeviceStatus.class);
+		DeviceController.DeviceStatus deviceStatusMock
+				= mock(DeviceController.DeviceStatus.class);
 		when(deviceStatusMock.isEepromWriteActive()).thenReturn(WRITE_ACTIVE);
 		when(deviceStatusMock.isEepromWriteProtected()).thenReturn(WRITE_PROTECTED);
-		when(deviceStatusMock.isWiper0Locked()).thenReturn(WIPER0_LOCKED);
-		when(deviceStatusMock.isWiper1Locked()).thenReturn(WIPER1_LOCKED);
+		when(deviceStatusMock.isChannelALocked()).thenReturn(WIPER0_LOCKED);
+		when(deviceStatusMock.isChannelBLocked()).thenReturn(WIPER1_LOCKED);
 		when(controller.getDeviceStatus())
 				.thenReturn(deviceStatusMock);
 		
@@ -273,11 +273,11 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'setValue' used to set value '50' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				50, false);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -293,11 +293,11 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'setValue' used to set '60' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				60, true);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -314,15 +314,15 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'setValue' used to set '70' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				70, true);
 		// controller 'setValue' used to set '70' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				70, false);
 		// controller 'setValue' used two times
 		verify(controller, times(2)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -338,11 +338,11 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'setValue' used to set '0' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				0, false);
 		// controller 'setValue' used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -358,11 +358,11 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue5 = potiA.getCurrentValue();
@@ -412,10 +412,10 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'increase' used with '1' step on channel 'A' for volatile-wiper
 		verify(controller).increase(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, 1);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 1);
 		// controller 'increase' used one time
 		verify(controller).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -428,10 +428,10 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		
 		// controller 'increase' used with '2' steps on channel 'A' for volatile-wiper
 		verify(controller).increase(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, 2);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 2);
 		// controller 'increase' used on time
 		verify(controller).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -445,15 +445,15 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		// controller 'setValue' used to set '253' on channel 'A' for volatile-wiper
 		// instead of increase because for more than 5 steps using 'setValue' is "cheaper"
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				253, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 
 		reset(controller);
@@ -463,15 +463,15 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		// instead of increase because this hits the upper boundary
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -483,10 +483,10 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		potiA.increase();
 		
 		verify(controller, times(0)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -535,9 +535,9 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		potiA.decrease();
 		
 		verify(controller).decrease(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, 1);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 1);
 		verify(controller).decrease(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -549,9 +549,9 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		potiA.decrease(2);
 		
 		verify(controller).decrease(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, 2);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 2);
 		verify(controller).decrease(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -563,13 +563,13 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		potiA.decrease(20);
 		
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A,
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
 				0, false);
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -581,10 +581,10 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		potiA.decrease();
 		
 		verify(controller, times(0)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyInt());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -604,18 +604,18 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		reset(controller);
 		
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				eq(true))).thenReturn(70);
 		
 		int currentValue2 = potiA.updateCacheFromDevice();
 		
 		verify(controller).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, false);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, false);
 		verify(controller).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get updated value by method 'updateCacheFromDevice()'",
@@ -641,22 +641,22 @@ public class MCP45xxMCP46xxPotentiometerTest {
 		}
 		
 		verify(controller, times(0)).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyBoolean());
 		
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				eq(true))).thenReturn(70);
 		
 		int nonVolatileValue = potiA.getNonVolatileValue();
 
 		verify(controller).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.A, true);
+				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, true);
 		verify(controller).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel.class),
+				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get non-volatile-value on calling 'getNonVolatileValue()'",

@@ -43,7 +43,7 @@ import com.pi4j.io.i2c.I2CDevice;
  * @see MCP4651
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public abstract class MCP45xxMCP46xxPotentiometer
+public abstract class PotentiometerImpl
 		extends DeviceBase implements DigitalPotentiometer {
 	
 	/**
@@ -72,7 +72,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	 * An action which may be run for the volatile-wiper,
 	 * the non-volatile-wiper or both.
 	 * 
-	 * @see MCP45xxMCP46xxPotentiometer#doWiperAction(WiperAction)
+	 * @see PotentiometerImpl#doWiperAction(WiperAction)
 	 */
 	private static interface WiperAction {
 		
@@ -99,7 +99,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	/**
 	 * The controller-instance
 	 */
-	private MCP45xxMCP46xxController controller;
+	private DeviceController controller;
 	
 	/**
 	 * The channel this instance is configured for
@@ -128,7 +128,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	 * @param initialValueForVolatileWiper The value for devices which are not capable of non-volatile wipers
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	protected MCP45xxMCP46xxPotentiometer(
+	protected PotentiometerImpl(
 			final I2CBus i2cBus,
 			final boolean pinA0,
 			final boolean pinA1,
@@ -140,7 +140,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		
 		this(i2cBus, pinA0, pinA1, pinA2, channel,
 				nonVolatileMode, initialValueForVolatileWipers,
-				DefaultMCP45xxMCP46xxControllerFactory.getInstance());
+				DefaultDeviceControllerFactory.getInstance());
 		
 	}
 	
@@ -156,9 +156,9 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	 * @param initialValueForVolatileWiper The value for devices which are not capable of non-volatile wipers
 	 * @param controllerFactory builds new controllers
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
-	 * @see DefaultMCP45xxMCP46xxControllerFactory
+	 * @see DefaultDeviceControllerFactory
 	 */
-	protected MCP45xxMCP46xxPotentiometer(
+	protected PotentiometerImpl(
 			final I2CBus i2cBus,
 			final boolean pinA0,
 			final boolean pinA1,
@@ -166,7 +166,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 			final Channel channel,
 			final NonVolatileMode nonVolatileMode,
 			final int initialValueForVolatileWipers,
-			final MCP45xxMCP46xxControllerFactory controllerFactory)
+			final DeviceControllerFactory controllerFactory)
 			throws IOException {
 
 		// input validation
@@ -234,7 +234,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 			
 			controller.setValue(channel.getMcpChannel(),
 					initialValueForVolatileWipers,
-					MCP45xxMCP46xxController.VOLATILE_WIPER);
+					DeviceController.VOLATILE_WIPER);
 			
 			currentValue = initialValueForVolatileWipers;
 			
@@ -530,12 +530,12 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	 */
 	public DeviceStatus getDeviceStatus() throws IOException {
 		
-		com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.DeviceStatus deviceStatus
+		DeviceController.DeviceStatus deviceStatus
 				= controller.getDeviceStatus();
 		
 		boolean wiperLockActive
 				= channel == Channel.A ?
-						deviceStatus.isWiper0Locked() : deviceStatus.isWiper1Locked();
+						deviceStatus.isChannelALocked() : deviceStatus.isChannelBLocked();
 		
 		return new DeviceStatus(
 				deviceStatus.isEepromWriteActive(),
@@ -545,12 +545,46 @@ public abstract class MCP45xxMCP46xxPotentiometer
 	}
 	
 	/**
+	 * @return The current terminal-configuration
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public TerminalConfiguration getTerminalConfiguration() throws IOException {
+		
+		DeviceController.TerminalConfiguration tcon
+				= controller.getTerminalConfiguration(channel.getMcpChannel());
+		
+		return new TerminalConfiguration(channel,
+				tcon.isChannelEnabled(), tcon.isPinAEnabled(),
+				tcon.isPinWEnabled(), tcon.isPinBEnabled());
+		
+	}
+	
+	/**
+	 * @param terminalConfiguration The new terminal-configuration
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setTerminalConfiguration(
+			final TerminalConfiguration terminalConfiguration) throws IOException {
+		
+		DeviceController.TerminalConfiguration tcon
+				= new DeviceController.TerminalConfiguration(
+				channel.getMcpChannel(),
+				terminalConfiguration.isChannelEnabled(),
+				terminalConfiguration.isPinAEnabled(),
+				terminalConfiguration.isPinWEnabled(),
+				terminalConfiguration.isPinBEnabled());
+		
+		controller.setTerminalConfiguration(tcon);
+		
+	}
+	
+	/**
 	 * Runs a given 'wiperAction' for the volatile-wiper, the
 	 * non-volatile-wiper or both according the current nonVolatileMode.
 	 * 
 	 * @param wiperAction The action to be run
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
-	 * @see MCP45xxMCP46xxPotentiometer#nonVolatileMode
+	 * @see PotentiometerImpl#nonVolatileMode
 	 */
 	private void doWiperAction(final WiperAction wiperAction) throws IOException {
 		
@@ -563,7 +597,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		switch (nonVolatileMode) {
 		case VOLATILE_ONLY:
 		case VOLATILE_AND_NONVOLATILE:
-			wiperAction.run(MCP45xxMCP46xxController.VOLATILE_WIPER);
+			wiperAction.run(DeviceController.VOLATILE_WIPER);
 			break;
 		case NONVOLATILE_ONLY:
 			// do nothing
@@ -573,7 +607,7 @@ public abstract class MCP45xxMCP46xxPotentiometer
 		switch (nonVolatileMode) {
 		case NONVOLATILE_ONLY:
 		case VOLATILE_AND_NONVOLATILE:
-			wiperAction.run(MCP45xxMCP46xxController.NONVOLATILE_WIPER);
+			wiperAction.run(DeviceController.NONVOLATILE_WIPER);
 			break;
 		case VOLATILE_ONLY:
 			// do nothing

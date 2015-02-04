@@ -37,28 +37,33 @@ import com.pi4j.io.i2c.I2CDevice;
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP45xxMCP46xxController {
+public class DeviceController {
 	
 	// for 'nonVolatile' parameters
+	
 	public static final boolean VOLATILE_WIPER = false;
 	public static final boolean NONVOLATILE_WIPER = true;
 	
-	// Register memory addresses (see TABLE 4-1)
+	// register memory addresses (see TABLE 4-1)
+	
 	private static final byte MEMADDR_WIPER0 = 0x00;
 	private static final byte MEMADDR_WIPER1 = 0x01;
 	private static final byte MEMADDR_WIPER0_NV = 0x02;
 	private static final byte MEMADDR_WIPER1_NV = 0x03;
-	private static final byte MEMADDR_TCON = 0x04;
+	private static final byte MEMADDR_TCON = 0x04; // terminal control
 	private static final byte MEMADDR_STATUS = 0x05;
 	
-	// Commands
+	// commands
+	
 	private static final byte CMD_WRITE = (0x00 << 2);
 	private static final byte CMD_INC = (0x01 << 2);
 	private static final byte CMD_DEC = (0x02 << 2);
 	private static final byte CMD_READ = (0x03 << 2);
 	
-	// TCON Register bits
-	private static final int TCON_GCEN = (1 << 8); // general call enable bit
+	// terminal control register bits
+	
+	// general call not yet supported by this implementation
+	// private static final int TCON_GCEN = (1 << 8);
 	private static final int TCON_RH0HW = (1 << 3);
 	private static final int TCON_RH0A = (1 << 2);
 	private static final int TCON_RH0W = (1 << 1);
@@ -68,7 +73,8 @@ public class MCP45xxMCP46xxController {
 	private static final int TCON_RH1W = (1 << 5);
 	private static final int TCON_RH1B = (1 << 4);
 	
-	// Status-bits (see 4.2.2.1)
+	// status-bits (see 4.2.2.1)
+	
 	private static final int STATUS_RESERVED_MASK = 0b1111111110000;
 	private static final int STATUS_RESERVED_VALUE = 0b1111111110000;
 	private static final int STATUS_EEPROM_WRITEACTIVE_BIT = 0b1000;
@@ -76,36 +82,109 @@ public class MCP45xxMCP46xxController {
 	private static final int STATUS_WIPERLOCK0_BIT = 0b0010;
 	private static final int STATUS_EEPROM_WRITEPROTECTION_BIT = 0b0001;
 	
+	/**
+	 * The device's terminal-configuration for a certain channel (see 4.2.2.2)
+	 */
+	static class TerminalConfiguration {
+		
+		private Channel channel;
+		private boolean channelEnabled;
+		private boolean pinAEnabled;
+		private boolean pinWEnabled;
+		private boolean pinBEnabled;
+		
+		TerminalConfiguration(Channel channel,
+				boolean channelEnabled, boolean pinAEnabled,
+				boolean pinWEnabled, boolean pinBEnabled) {
+			this.channel = channel;
+			this.channelEnabled = channelEnabled;
+			this.pinAEnabled = pinAEnabled;
+			this.pinWEnabled = pinWEnabled;
+			this.pinBEnabled = pinBEnabled;
+		}
+
+		public Channel getChannel() {
+			return channel;
+		}
+		
+		/**
+		 * @return Whether the entire channel is enabled or disabled
+		 */
+		public boolean isChannelEnabled() {
+			return channelEnabled;
+		}
+
+		/**
+		 * @return If channel is enabled, whether pin A is enabled
+		 */
+		public boolean isPinAEnabled() {
+			return pinAEnabled;
+		}
+
+		/**
+		 * @return If channel is enabled, whether pin W is enabled
+		 */
+		public boolean isPinWEnabled() {
+			return pinWEnabled;
+		}
+
+		/**
+		 * @return If channel is enabled, whether pin B is enabled
+		 */
+		public boolean isPinBEnabled() {
+			return pinBEnabled;
+		}
+		
+	}
+	
+	/**
+	 * The device's status
+	 */
 	static class DeviceStatus {
 		
 		private boolean eepromWriteActive;
 		private boolean eepromWriteProtected;
-		private boolean wiper0Locked;
-		private boolean wiper1Locked;
+		private boolean channelALocked;
+		private boolean channelBLocked;
 		
 		DeviceStatus(boolean eepromWriteActive, boolean eepromWriteProtected,
-				boolean wiper0Locked, boolean wiper1Locked) {
-			super();
+				boolean channelALocked, boolean channelBLocked) {
 			this.eepromWriteActive = eepromWriteActive;
 			this.eepromWriteProtected = eepromWriteProtected;
-			this.wiper0Locked = wiper0Locked;
-			this.wiper1Locked = wiper1Locked;
+			this.channelALocked = channelALocked;
+			this.channelBLocked = channelBLocked;
 		}
 
+		/**
+		 * Writing to EEPROM takes a couple of cycles. During this time
+		 * any actions taken on non-volatile wipers fail due to active
+		 * writing.
+		 * 
+		 * @return Whether writing to EEPROM is active
+		 */
 		public boolean isEepromWriteActive() {
 			return eepromWriteActive;
 		}
 
+		/**
+		 * @return Whether EEPROM write-protection is enabled
+		 */
 		public boolean isEepromWriteProtected() {
 			return eepromWriteProtected;
 		}
 
-		public boolean isWiper0Locked() {
-			return wiper0Locked;
+		/**
+		 * @return Whether wiper of channel 'A' is locked
+		 */
+		public boolean isChannelALocked() {
+			return channelALocked;
 		}
 
-		public boolean isWiper1Locked() {
-			return wiper1Locked;
+		/**
+		 * @return Whether wiper of channel 'B' is locked
+		 */
+		public boolean isChannelBLocked() {
+			return channelBLocked;
 		}
 		
 	}
@@ -135,22 +214,28 @@ public class MCP45xxMCP46xxController {
 			this.terminalBConnectControlBit = terminalBConnectControlBit;
 			this.wiperConnectControlBit = wiperConnectControlBit;
 		}
-		public byte getVolatileMemoryAddress() {
+		
+		byte getVolatileMemoryAddress() {
 			return volatileMemoryAddress;
 		}
-		public byte getNonVolatileMemoryAddress() {
+		
+		byte getNonVolatileMemoryAddress() {
 			return nonVolatileMemoryAddress;
 		}
-		public int getHardwareConfigControlBit() {
+		
+		int getHardwareConfigControlBit() {
 			return hardwareConfigControlBit;
 		}
-		public int getTerminalAConnectControlBit() {
+		
+		int getTerminalAConnectControlBit() {
 			return terminalAConnectControlBit;
 		}
-		public int getTerminalBConnectControlBit() {
+		
+		int getTerminalBConnectControlBit() {
 			return terminalBConnectControlBit;
 		}
-		public int getWiperConnectControlBit() {
+		
+		int getWiperConnectControlBit() {
 			return wiperConnectControlBit;
 		}
 		
@@ -167,7 +252,7 @@ public class MCP45xxMCP46xxController {
 	 * @param i2cDevice The Pi4J-I2CDevice to which the instance is connected to
 	 * @throws IOException throw 
 	 */
-	MCP45xxMCP46xxController(final I2CDevice i2cDevice) throws IOException {
+	DeviceController(final I2CDevice i2cDevice) throws IOException {
 		
 		// input validation
 		if (i2cDevice == null) {
@@ -318,6 +403,93 @@ public class MCP45xxMCP46xxController {
 		
 		// write the value to the device
 		write(memAddr, value);
+		
+	}
+	
+	/**
+	 * Fetches the terminal-configuration from the device for a certain channel.
+	 * 
+	 * @param channel The channel
+	 * @return The current terminal-configuration
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public TerminalConfiguration getTerminalConfiguration(
+			final Channel channel) throws IOException {
+		
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
+		
+		// read configuration from device
+		int tcon = read(MEMADDR_TCON);
+		
+		// build result
+		boolean channelEnabled = (tcon & channel.getHardwareConfigControlBit()) > 0;
+		boolean pinAEnabled = (tcon & channel.getTerminalAConnectControlBit()) > 0;
+		boolean pinWEnabled = (tcon & channel.getWiperConnectControlBit()) > 0;
+		boolean pinBEnabled = (tcon & channel.getTerminalBConnectControlBit()) > 0;
+		
+		return new TerminalConfiguration(channel, channelEnabled,
+				pinAEnabled, pinWEnabled, pinBEnabled);
+		
+	}
+	
+	/**
+	 * Sets the given terminal-configuration to the device.
+	 * 
+	 * @param config A terminal-configuration for a certain channel.
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setTerminalConfiguration(final TerminalConfiguration config)
+			throws IOException {
+		
+		if (config == null) {
+			throw new RuntimeException("null-config is not allowed!");
+		}
+		final Channel channel = config.getChannel();
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "parameter 'channel'");
+		}
+		
+		// read current configuration from device
+		int tcon = read(MEMADDR_TCON);
+		
+		// modify configuration
+		tcon = setBit(tcon, channel.getHardwareConfigControlBit(),
+				config.isChannelEnabled());
+		tcon = setBit(tcon, channel.getTerminalAConnectControlBit(),
+				config.isPinAEnabled());
+		tcon = setBit(tcon, channel.getWiperConnectControlBit(),
+				config.isPinWEnabled());
+		tcon = setBit(tcon, channel.getTerminalBConnectControlBit(),
+				config.isPinBEnabled());
+		
+		// write new configuration to device
+		write(MEMADDR_TCON, tcon);
+		
+	}
+	
+	/**
+	 * Sets or clears a bit in the given memory (integer).
+	 * 
+	 * @param mem The memory to modify
+	 * @param mask The mask which defines to bit to be set/cleared
+	 * @param value Whether to set the bit (true) or clear the bit (false)
+	 * @return The modified memory
+	 */
+	private int setBit(final int mem, final int mask, final boolean value) {
+		
+		final int result;
+		if (value) {
+			result = mem | mask;  // set bit by using OR
+		} else {
+			result = mem & ~mask; // clear bit by using AND with the inverted mask
+		}
+		return result;
 		
 	}
 	
