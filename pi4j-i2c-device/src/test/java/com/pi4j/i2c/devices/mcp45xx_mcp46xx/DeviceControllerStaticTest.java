@@ -1,6 +1,13 @@
 package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -9,7 +16,7 @@ import com.pi4j.io.i2c.I2CDevice;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  MCP45xxMCP46xxControllerFactory.java  
+ * FILENAME      :  MCP45xxMCP46xxControllerTest.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,20 +39,34 @@ import com.pi4j.io.i2c.I2CDevice;
  */
 
 /**
- * Factory which builds controller-instances. Usually the user does
- * not need to know about the controller-factory. It is used to
- * build testable potentiometers used by the JUnit-tests.
+ * Test for controller for MCP45XX and MCP46XX ICs.
  * 
+ * @see DeviceController
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public interface MCP45xxMCP46xxControllerFactory {
+@RunWith(MockitoJUnitRunner.class)
+public class DeviceControllerStaticTest {
 
-	/**
-	 * @param i2cDevice The underlying I2CDevice
-	 * @return The controller built
-	 * @throws IOException Thrown if any communication to the device fails
-	 */
-	MCP45xxMCP46xxController getController(final I2CDevice i2cDevice)
-			throws IOException;
+	@Mock
+	private I2CDevice i2cDevice;
+
+	@Test
+	public void testCreation() throws IOException {
+		
+		// wrong parameter
+		
+		try {
+			new DeviceController(null);
+			fail("Got no RuntimeException on constructing "
+					+ "a MCP45xxMCP46xxController using a null-i2cDevice");
+		} catch (RuntimeException e) {
+			// expected expection
+		}
+
+		// correct parameter
+		
+		new DeviceController(i2cDevice);
+
+	}
 	
 }

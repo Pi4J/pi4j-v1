@@ -1,14 +1,8 @@
 package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 
@@ -20,8 +14,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.Channel;
-import com.pi4j.i2c.devices.mcp45xx_mcp46xx.MCP45xxMCP46xxController.DeviceStatus;
+import com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel;
+import com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.DeviceStatus;
+import com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.TerminalConfiguration;
 import com.pi4j.io.i2c.I2CDevice;
 
 /*
@@ -54,21 +49,21 @@ import com.pi4j.io.i2c.I2CDevice;
 /**
  * Test for controller for MCP45XX and MCP46XX ICs.
  * 
- * @see MCP45xxMCP46xxController
+ * @see DeviceController
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MCP45xxMCP46xxControllerTest {
+public class DeviceControllerTest {
 
 	@Mock
 	private I2CDevice i2cDevice;
 
-	private MCP45xxMCP46xxController controller;
+	private DeviceController controller;
 	
 	@Before
 	public void initialize() throws IOException {
 		
-		controller = new MCP45xxMCP46xxController(i2cDevice);
+		controller = new DeviceController(i2cDevice);
 		
 	}
 	
@@ -90,6 +85,8 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b1011100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 
@@ -106,6 +103,8 @@ public class MCP45xxMCP46xxControllerTest {
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b1011100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 
@@ -116,12 +115,12 @@ public class MCP45xxMCP46xxControllerTest {
 		assertEquals("Unexpected EEPROM-write-active-flag according to "
 				+ "status-bits 0b1111111110101 (see 4.2.2.1)",
 				Boolean.FALSE, deviceStatus1.isEepromWriteActive());
-		assertEquals("Unexpected wiper0-locked-flag according to "
+		assertEquals("Unexpected channel-B-locked-flag according to "
 				+ "status-bits 0b1111111110101 (see 4.2.2.1)",
-				Boolean.TRUE, deviceStatus1.isWiper1Locked());
-		assertEquals("Unexpected wiper1-locked-flag according to "
+				Boolean.TRUE, deviceStatus1.isChannelBLocked());
+		assertEquals("Unexpected channel-A-locked-flag according to "
 				+ "status-bits 0b1111111110101 (see 4.2.2.1)",
-				Boolean.FALSE, deviceStatus1.isWiper0Locked());
+				Boolean.FALSE, deviceStatus1.isChannelALocked());
 		assertEquals("Unexpected EEPROM-write-protected-flag according to "
 				+ "status-bits 0b1111111110101 (see 4.2.2.1)",
 				Boolean.TRUE, deviceStatus1.isEepromWriteProtected());
@@ -146,8 +145,14 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b1011100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		
+		assertTrue("On calling 'getDeviceStatus' the method I2CDevice.read(...)"
+				+ "is called with a byte-array as first argument. The length of this "
+				+ "array must be at least 2 but was " + length[0], length[0] >= 2);
 		
 	}
 	
@@ -175,6 +180,8 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b0001100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 
@@ -192,6 +199,8 @@ public class MCP45xxMCP46xxControllerTest {
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b0011100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 			
@@ -209,6 +218,8 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b0101100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 
@@ -226,6 +237,8 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		verify(i2cDevice).write((byte) 0b0111100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
 		// test for read was called
 		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
 		
@@ -257,7 +270,7 @@ public class MCP45xxMCP46xxControllerTest {
 		
 		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0000000, (byte) 0b00000000 }, 0, 2);
-		// 'write' is called on time
+		// test for write was called only once
 		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
 		
 		// test wiper 1 - volatile
@@ -402,6 +415,132 @@ public class MCP45xxMCP46xxControllerTest {
 		verify(i2cDevice).write(new byte[] { (byte) 0b0000100 }, 0, 1);
 		// 'write' called on time
 		verify(i2cDevice).write(any(byte[].class), anyInt(), anyInt());
+		
+	}
+	
+	@Test
+	public void testGetTerminalConfiguration() throws IOException {
+		
+		try {
+			
+			controller.getTerminalConfiguration(null);
+			fail("Got no RuntimeException on calling 'getTerminalConfiguration(null)'!");
+		
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// 0b0111000011 -> TCON-bits (see 4.2.2.2)
+		mockReadResult(i2cDevice, (byte) 0, (byte) 0b11100011, null);
+		
+		TerminalConfiguration tconA = controller.getTerminalConfiguration(Channel.A);
+
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		verify(i2cDevice).write((byte) 0b1001100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
+		// test for read was called
+		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		
+		assertNotNull("Calling 'getTerminalConfiguration(Channel.A)' did return null!",
+				tconA);
+		assertEquals("Result of 'getTerminalConfiguration(Channel.A)' did not return '"
+				+ "Channel.A' on calling 'getChannel()'!", Channel.A, tconA.getChannel());
+		assertEquals("According to mocked read-result the channel should be disabled!",
+				false, tconA.isChannelEnabled());
+		assertEquals("According to mocked read-result the pin A should be disabled!",
+				false, tconA.isPinAEnabled());
+		assertEquals("According to mocked read-result the pin W should be enabled!",
+				true, tconA.isPinWEnabled());
+		assertEquals("According to mocked read-result the pin B should be enabled!",
+				true, tconA.isPinBEnabled());
+
+		TerminalConfiguration tconB = controller.getTerminalConfiguration(Channel.B);
+
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		verify(i2cDevice, times(2)).write((byte) 0b1001100);
+		// test for write was called only once
+		verify(i2cDevice, times(2)).write(anyByte());
+		// test for read was called
+		verify(i2cDevice, times(2)).read(any(byte[].class), anyInt(), anyInt());
+		
+		assertNotNull("Calling 'getTerminalConfiguration(Channel.B)' did return null!",
+				tconB);
+		assertEquals("Result of 'getTerminalConfiguration(Channel.B)' did not return '"
+				+ "Channel.A' on calling 'getChannel()'!", Channel.B, tconB.getChannel());
+		assertEquals("According to mocked read-result the channel should be enabled!",
+				true, tconB.isChannelEnabled());
+		assertEquals("According to mocked read-result the pin A should be enabled!",
+				true, tconB.isPinAEnabled());
+		assertEquals("According to mocked read-result the pin W should be enabled!",
+				true, tconB.isPinWEnabled());
+		assertEquals("According to mocked read-result the pin B should be disabled!",
+				false, tconB.isPinBEnabled());
+		
+	}
+	
+	@Test
+	public void testSetTerminalConfiguration() throws IOException {
+		
+		try {
+			
+			controller.setTerminalConfiguration(null);
+			fail("Got no RuntimeException on calling 'setTerminalConfiguration(null)'!");
+		
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			
+			controller.setTerminalConfiguration(new TerminalConfiguration(
+					null, false, false, false, false));
+			fail("Got no RuntimeException on calling 'setTerminalConfiguration(tcon)' "
+					+ " where tcon.getChannel() is null!");
+		
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// 0b0101010101 -> TCON-bits (see 4.2.2.2)
+		mockReadResult(i2cDevice, (byte) 0, (byte) 0b0101010101, null);
+		
+		TerminalConfiguration tconA = new TerminalConfiguration(Channel.A,
+				true, true, true, false);
+		controller.setTerminalConfiguration(tconA);
+		
+		// reading current configuration:
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		verify(i2cDevice).write((byte) 0b1001100);
+		// test for write was called only once
+		verify(i2cDevice).write(anyByte());
+		// test for read was called
+		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		// The first four bits of the second byte are the same four bits of
+		// the mocked read-result. Those four bits represent the configuration
+		// of wiper1. This test only modifies wiper0, so only the last four
+		// bits have to be according to 'tconA'.
+		verify(i2cDevice).write(new byte[] { (byte) 0b1000000, (byte) 0b01011110 }, 0, 2);
+
+		TerminalConfiguration tconB = new TerminalConfiguration(Channel.B,
+				false, false, false, true);
+		controller.setTerminalConfiguration(tconB);
+		
+		// reading current configuration:
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		verify(i2cDevice, times(2)).write((byte) 0b1001100);
+		// test for write was called only once
+		verify(i2cDevice, times(2)).write(anyByte());
+		// test for read was called
+		verify(i2cDevice, times(2)).read(any(byte[].class), anyInt(), anyInt());
+		
+		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
+		// The last four bits of the second byte are the same four bits of
+		// the mocked read-result. Those four bits represent the configuration
+		// of wiper0. This test only modifies wiper1, so only the last four
+		// bits have to be according to 'tconB'.
+		verify(i2cDevice).write(new byte[] { (byte) 0b1000000, (byte) 0b00010101 }, 0, 2);
 		
 	}
 	

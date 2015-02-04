@@ -9,7 +9,7 @@ import com.pi4j.io.i2c.I2CDevice;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  DefaultMCP45xxMCP46xxControllerFactory.java  
+ * FILENAME      :  MCP45xxMCP46xxControllerFactory.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,40 +32,20 @@ import com.pi4j.io.i2c.I2CDevice;
  */
 
 /**
- * Default-factory which is used by the potentiometer's constructor which
- * hides the 'controllerFactory'-parameter.
+ * Factory which builds controller-instances. Usually the user does
+ * not need to know about the controller-factory. It is used to
+ * build testable potentiometers used by the JUnit-tests.
  * 
- * @see MCP45xxMCP46xxControllerFactory
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class DefaultMCP45xxMCP46xxControllerFactory
-		implements MCP45xxMCP46xxControllerFactory {
+public interface DeviceControllerFactory {
 
 	/**
-	 * A static instance
+	 * @param i2cDevice The underlying I2CDevice
+	 * @return The controller built
+	 * @throws IOException Thrown if any communication to the device fails
 	 */
-	private static final MCP45xxMCP46xxControllerFactory defaultFactory
-			= new DefaultMCP45xxMCP46xxControllerFactory();
-	
-	/**
-	 * @return The static instance
-	 */
-	public static MCP45xxMCP46xxControllerFactory getInstance() {
-		
-		return defaultFactory;
-		
-	}
-	
-	/**
-	 * @param i2cDevice The underlying device
-	 * @return The controller for the given device
-	 */
-	@Override
-	public MCP45xxMCP46xxController getController(final I2CDevice i2cDevice)
-			throws IOException {
-		
-		return new MCP45xxMCP46xxController(i2cDevice);
-		
-	}
+	DeviceController getController(final I2CDevice i2cDevice)
+			throws IOException;
 	
 }
