@@ -38,6 +38,7 @@ public class DeviceStatus {
 	
 	private boolean eepromWriteActive;
 	private boolean eepromWriteProtected;
+	private Channel wiperLockChannel;
 	private boolean wiperLockActive;
 	
 	/**
@@ -46,11 +47,20 @@ public class DeviceStatus {
 	DeviceStatus(
 			final boolean eepromWriteActive,
 			final boolean eepromWriteProtected,
+			final Channel wiperLockChannel,
 			final boolean wiperLockActive) {
-		super();
+		
+		if (wiperLockChannel == null) {
+			throw new RuntimeException("null-wiperLockChannel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandatory for "
+					+ "parameter 'channel'");
+		}
+		
 		this.eepromWriteActive = eepromWriteActive;
 		this.eepromWriteProtected = eepromWriteProtected;
+		this.wiperLockChannel = wiperLockChannel;
 		this.wiperLockActive = wiperLockActive;
+		
 	}
 
 	/**
@@ -66,12 +76,62 @@ public class DeviceStatus {
 	public boolean isEepromWriteProtected() {
 		return eepromWriteProtected;
 	}
+	
+	/**
+	 * @return The channel the wiper-lock-active status is for
+	 */
+	public Channel getWiperLockChannel() {
+		return wiperLockChannel;
+	}
 
 	/**
 	 * @return Whether the wiper's lock is active
 	 */
 	public boolean isWiperLockActive() {
 		return wiperLockActive;
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (!getClass().equals(obj.getClass())) {
+			return false;
+		}
+		final DeviceStatus other = (DeviceStatus) obj;
+		if (eepromWriteActive != other.eepromWriteActive) {
+			return false;
+		}
+		if (eepromWriteProtected != other.eepromWriteProtected) {
+			return false;
+		}
+		if (wiperLockChannel != other.wiperLockChannel) {
+			return false;
+		}
+		if (wiperLockActive != other.wiperLockActive) {
+			return false;
+		}
+		return true;
+		
+	}
+	
+	@Override
+	public String toString() {
+		
+		final StringBuffer result = new StringBuffer(getClass().getName());
+		result.append("{\n");
+		result.append("  eepromWriteActive='").append(eepromWriteActive);
+		result.append("',\n  eepromWriteProtected='").append(eepromWriteProtected);
+		result.append("',\n  wiperLockChannel='").append(wiperLockChannel);
+		result.append("',\n  wiperLockActive='").append(wiperLockActive);
+		result.append("'\n}");
+		return result.toString();
+		
 	}
 	
 }

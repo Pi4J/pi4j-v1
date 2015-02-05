@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import com.pi4j.device.DeviceBase;
 import com.pi4j.device.potentiometer.DigitalPotentiometer;
-import com.pi4j.i2c.devices.MCP4561;
-import com.pi4j.i2c.devices.MCP4651;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -39,8 +37,8 @@ import com.pi4j.io.i2c.I2CDevice;
 /**
  * Abstract Pi4J-device for MCP45XX and MCP46XX ICs.
  * 
- * @see MCP4561
- * @see MCP4651
+ * @see com.pi4j.i2c.devices.MCP4561
+ * @see com.pi4j.i2c.devices.MCP4651
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 public abstract class PotentiometerImpl
@@ -176,7 +174,7 @@ public abstract class PotentiometerImpl
 		if (channel == null) {
 			throw new RuntimeException(
 					"For building a MCP45xxMCP46xxPotentiometer "
-					+ "specifying a channel is mandetory! If the device "
+					+ "specifying a channel is mandatory! If the device "
 					+ "knows more than one potentiometer/rheostat the "
 					+ "channel defines which of them is controlled "
 					+ "by this object-instance");
@@ -184,14 +182,14 @@ public abstract class PotentiometerImpl
 		if (controllerFactory == null) {
 			throw new RuntimeException(
 					"For building a MCP45xxMCP46xxPotentiometer "
-					+ "providing a controllerFactory is mandetory! "
+					+ "providing a controllerFactory is mandatory! "
 					+ "Use 'DefaultMCP45xxMCP46xxControllerFactory."
 					+ "getInstance()'.");
 		}
 		if (nonVolatileMode == null) {
 			throw new RuntimeException(
 					"For building a MCP45xxMCP46xxPotentiometer "
-					+ "providing a nonVolatileMode is mandetory!.");
+					+ "providing a nonVolatileMode is mandatory!.");
 		}
 		
 		// save channel to use
@@ -228,11 +226,11 @@ public abstract class PotentiometerImpl
 			// the device's volatile-wiper will be set to the value stored
 			// in the non-volatile memory. so for those devices the wiper's
 			// current value has to be retrieved
-			currentValue = controller.getValue(channel.getMcpChannel(), false);
+			currentValue = controller.getValue(channel.getDeviceControllerChannel(), false);
 			
 		} else {
 			
-			controller.setValue(channel.getMcpChannel(),
+			controller.setValue(channel.getDeviceControllerChannel(),
 					initialValueForVolatileWipers,
 					DeviceController.VOLATILE_WIPER);
 			
@@ -240,6 +238,13 @@ public abstract class PotentiometerImpl
 			
 		}
 		
+	}
+	
+	/**
+	 * @return The channel this potentiometer is configured for
+	 */
+	public Channel getChannel() {
+		return channel;
 	}
 	
 	/**
@@ -321,7 +326,7 @@ public abstract class PotentiometerImpl
 	 */
 	public int updateCacheFromDevice() throws IOException {
 		
-		currentValue = controller.getValue(channel.getMcpChannel(), false);
+		currentValue = controller.getValue(channel.getDeviceControllerChannel(), false);
 		return currentValue;
 		
 	}
@@ -340,7 +345,7 @@ public abstract class PotentiometerImpl
 			throw new RuntimeException("This device is not capable of non-volatile wipers!");
 		}
 		
-		return controller.getValue(channel.getMcpChannel(), true);
+		return controller.getValue(channel.getDeviceControllerChannel(), true);
 		
 	}
 	
@@ -385,7 +390,7 @@ public abstract class PotentiometerImpl
 			@Override
 			public void run(final boolean nonVolatile) throws IOException {
 				
-				controller.setValue(channel.getMcpChannel(), newValue,
+				controller.setValue(channel.getDeviceControllerChannel(), newValue,
 						nonVolatile);
 				
 			}
@@ -427,10 +432,10 @@ public abstract class PotentiometerImpl
 			return;
 		}
 		if (steps < 0) {
-			throw new RuntimeException("Only possitive values for parameter 'steps' allowed!");
+			throw new RuntimeException("Only positive values for parameter 'steps' allowed!");
 		}
 		if (getNonVolatileMode() != NonVolatileMode.VOLATILE_ONLY) {
-			throw new RuntimeException("'decrease' is only valid for NonVolatileMode.RAM_ONLY!");
+			throw new RuntimeException("'decrease' is only valid for NonVolatileMode.VOLATILE_ONLY!");
 		}
 
 		// check boundaries
@@ -454,7 +459,7 @@ public abstract class PotentiometerImpl
 		// for a small number of steps use 'decrease'-method
 		else {
 			
-			controller.decrease(channel.getMcpChannel(), actualSteps);
+			controller.decrease(channel.getDeviceControllerChannel(), actualSteps);
 			
 			currentValue = newValue;
 			
@@ -489,10 +494,10 @@ public abstract class PotentiometerImpl
 			return;
 		}
 		if (steps < 0) {
-			throw new RuntimeException("only possitive values for parameter 'steps' allowed!");
+			throw new RuntimeException("only positive values for parameter 'steps' allowed!");
 		}
 		if (getNonVolatileMode() != NonVolatileMode.VOLATILE_ONLY) {
-			throw new RuntimeException("'increase' is only valid for NonVolatileMode.RAM_ONLY!");
+			throw new RuntimeException("'increase' is only valid for NonVolatileMode.VOLATILE_ONLY!");
 		}
 
 		// check boundaries
@@ -516,7 +521,7 @@ public abstract class PotentiometerImpl
 		// for a small number of step simply repeat 'increase'-commands
 		else {
 			
-			controller.increase(channel.getMcpChannel(), actualSteps);
+			controller.increase(channel.getDeviceControllerChannel(), actualSteps);
 			
 			currentValue = newValue;
 			
@@ -530,7 +535,7 @@ public abstract class PotentiometerImpl
 	 */
 	public DeviceStatus getDeviceStatus() throws IOException {
 		
-		DeviceController.DeviceStatus deviceStatus
+		DeviceControllerDeviceStatus deviceStatus
 				= controller.getDeviceStatus();
 		
 		boolean wiperLockActive
@@ -540,6 +545,7 @@ public abstract class PotentiometerImpl
 		return new DeviceStatus(
 				deviceStatus.isEepromWriteActive(),
 				deviceStatus.isEepromWriteProtected(),
+				channel,
 				wiperLockActive);
 		
 	}
@@ -550,8 +556,8 @@ public abstract class PotentiometerImpl
 	 */
 	public TerminalConfiguration getTerminalConfiguration() throws IOException {
 		
-		DeviceController.TerminalConfiguration tcon
-				= controller.getTerminalConfiguration(channel.getMcpChannel());
+		DeviceControllerTerminalConfiguration tcon
+				= controller.getTerminalConfiguration(channel.getDeviceControllerChannel());
 		
 		return new TerminalConfiguration(channel,
 				tcon.isChannelEnabled(), tcon.isPinAEnabled(),
@@ -566,15 +572,98 @@ public abstract class PotentiometerImpl
 	public void setTerminalConfiguration(
 			final TerminalConfiguration terminalConfiguration) throws IOException {
 		
-		DeviceController.TerminalConfiguration tcon
-				= new DeviceController.TerminalConfiguration(
-				channel.getMcpChannel(),
+		if (terminalConfiguration == null) {
+			throw new RuntimeException("Setting a null-terminalConfiguration is not valid!");
+		}
+		if (terminalConfiguration.getChannel() != channel) {
+			throw new RuntimeException("Setting a terminalConfiguration with a channel "
+					+ "other than the potentiometer's channel is not valid!");
+		}
+		
+		DeviceControllerTerminalConfiguration tcon
+				= new DeviceControllerTerminalConfiguration(
+				channel.getDeviceControllerChannel(),
 				terminalConfiguration.isChannelEnabled(),
 				terminalConfiguration.isPinAEnabled(),
 				terminalConfiguration.isPinWEnabled(),
 				terminalConfiguration.isPinBEnabled());
 		
 		controller.setTerminalConfiguration(tcon);
+		
+	}
+	
+	/**
+	 * Enables or disables wiper-lock. See chapter 5.3.
+	 * 
+	 * @param enabled wiper-lock for the poti's channel has to be enabled
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setWiperLock(final boolean enabled) throws IOException {
+		
+		controller.setWiperLock(channel.getDeviceControllerChannel(), enabled);
+		
+	}
+	
+	/**
+	 * Enables or disables write-protection for devices capable of non-volatile memory.
+	 * Enabling write-protection does not only protect non-volatile wipers it also
+	 * protects any other non-volatile information stored (f.e. wiper-locks).
+	 * 
+	 * @param enabled write-protection has to be enabled
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setWriteProtection(final boolean enabled) throws IOException {
+		
+		controller.setWriteProtection(enabled);
+		
+	}
+	
+	/**
+	 * Tests whether a given object equals to this object.
+	 * <p>
+	 * Especially to any class deriving PotentiometerImpl
+	 * this test does not take properties into account which
+	 * do not point to a specific device/channel.
+	 * 
+	 * @param The other object
+	 * @result Whether the other object equals to this object.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (!getClass().equals(obj.getClass())) {
+			return false;
+		}
+		PotentiometerImpl other = (PotentiometerImpl) obj;
+		if (channel != other.channel) {
+			return false;
+		}
+		if (!controller.equals(other.controller)) {
+			return false;
+		}
+		// nonVolatileMode and currentValue is not taken into account
+		// because the do not point to a specific device/channel
+		return true;
+		
+	}
+	
+	@Override
+	public String toString() {
+		
+		final StringBuffer result = new StringBuffer(getClass().getName());
+		result.append("{\n");
+		result.append("  channel='").append(channel);
+		result.append("',\n  controller='").append(controller);
+		result.append("',\n  nonVolatileMode='").append(nonVolatileMode);
+		result.append("',\n  currentValue='").append(currentValue);
+		result.append("'\n}");
+		return result.toString();
 		
 	}
 	
@@ -587,11 +676,6 @@ public abstract class PotentiometerImpl
 	 * @see PotentiometerImpl#nonVolatileMode
 	 */
 	private void doWiperAction(final WiperAction wiperAction) throws IOException {
-		
-		if (wiperAction == null) {
-			throw new RuntimeException(
-					"null-wiperAction parameter is not supported");
-		}
 		
 		// for volatile-wiper
 		switch (nonVolatileMode) {

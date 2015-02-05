@@ -127,8 +127,8 @@ public class PotentiometerImplTest {
 		
 		// prepare controller-status mock
 		
-		DeviceController.DeviceStatus deviceStatusMock
-				= mock(DeviceController.DeviceStatus.class);
+		DeviceControllerDeviceStatus deviceStatusMock
+				= mock(DeviceControllerDeviceStatus.class);
 		when(deviceStatusMock.isEepromWriteActive()).thenReturn(WRITE_ACTIVE);
 		when(deviceStatusMock.isEepromWriteProtected()).thenReturn(WRITE_PROTECTED);
 		when(deviceStatusMock.isChannelALocked()).thenReturn(WIPER0_LOCKED);
@@ -146,6 +146,8 @@ public class PotentiometerImplTest {
 				WRITE_ACTIVE, deviceStatusA.isEepromWriteActive());
 		assertEquals("Got unexpected write-protected-flag",
 				WRITE_PROTECTED, deviceStatusA.isEepromWriteProtected());
+		assertEquals("Got wrong channel in device-status",
+				potiA.getChannel(), deviceStatusA.getWiperLockChannel());
 		assertEquals("Got unexpected write-locked-flag",
 				WIPER0_LOCKED, deviceStatusA.isWiperLockActive());
 		
@@ -159,6 +161,8 @@ public class PotentiometerImplTest {
 				WRITE_ACTIVE, deviceStatusB.isEepromWriteActive());
 		assertEquals("Got unexpected write-protected-flag",
 				WRITE_PROTECTED, deviceStatusB.isEepromWriteProtected());
+		assertEquals("Got wrong channel in device-status",
+				potiB.getChannel(), deviceStatusB.getWiperLockChannel());
 		assertEquals("Got unexpected write-locked-flag",
 				WIPER1_LOCKED, deviceStatusB.isWiperLockActive());
 
@@ -273,11 +277,11 @@ public class PotentiometerImplTest {
 		
 		// controller 'setValue' used to set value '50' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				50, false);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -293,11 +297,11 @@ public class PotentiometerImplTest {
 		
 		// controller 'setValue' used to set '60' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				60, true);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -314,15 +318,15 @@ public class PotentiometerImplTest {
 		
 		// controller 'setValue' used to set '70' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				70, true);
 		// controller 'setValue' used to set '70' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				70, false);
 		// controller 'setValue' used two times
 		verify(controller, times(2)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -338,11 +342,11 @@ public class PotentiometerImplTest {
 		
 		// controller 'setValue' used to set '0' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				0, false);
 		// controller 'setValue' used one time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -358,11 +362,11 @@ public class PotentiometerImplTest {
 		
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue5 = potiA.getCurrentValue();
@@ -412,10 +416,10 @@ public class PotentiometerImplTest {
 		
 		// controller 'increase' used with '1' step on channel 'A' for volatile-wiper
 		verify(controller).increase(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 1);
+				DeviceControllerChannel.A, 1);
 		// controller 'increase' used one time
 		verify(controller).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -428,10 +432,10 @@ public class PotentiometerImplTest {
 		
 		// controller 'increase' used with '2' steps on channel 'A' for volatile-wiper
 		verify(controller).increase(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 2);
+				DeviceControllerChannel.A, 2);
 		// controller 'increase' used on time
 		verify(controller).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -445,15 +449,15 @@ public class PotentiometerImplTest {
 		// controller 'setValue' used to set '253' on channel 'A' for volatile-wiper
 		// instead of increase because for more than 5 steps using 'setValue' is "cheaper"
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				253, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 
 		reset(controller);
@@ -463,15 +467,15 @@ public class PotentiometerImplTest {
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		// instead of increase because this hits the upper boundary
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -483,10 +487,10 @@ public class PotentiometerImplTest {
 		potiA.increase();
 		
 		verify(controller, times(0)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -500,6 +504,8 @@ public class PotentiometerImplTest {
 		
 		// wrong parameters
 		
+		potiA.setCurrentValue(10);
+		
 		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
 		try {
 			
@@ -511,7 +517,7 @@ public class PotentiometerImplTest {
 		potiA.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
 		try {
 			
-			potiA.decrease();
+			potiA.decrease(10);
 			
 		} catch (RuntimeException e) {
 			// expected because only VOLATILE_ONLY is supported
@@ -528,16 +534,15 @@ public class PotentiometerImplTest {
 		// success
 		
 		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		potiA.setCurrentValue(10);
 
 		reset(controller);
 		
 		potiA.decrease();
 		
 		verify(controller).decrease(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 1);
+				DeviceControllerChannel.A, 1);
 		verify(controller).decrease(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -549,9 +554,9 @@ public class PotentiometerImplTest {
 		potiA.decrease(2);
 		
 		verify(controller).decrease(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, 2);
+				DeviceControllerChannel.A, 2);
 		verify(controller).decrease(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -559,37 +564,55 @@ public class PotentiometerImplTest {
 				7, currentValue2);
 		
 		reset(controller);
+
+		potiA.decrease(6);
+		
+		verify(controller).setValue(
+				DeviceControllerChannel.A,
+				1, false);
+		verify(controller).setValue(
+				any(DeviceControllerChannel.class),
+				anyInt(), anyBoolean());
+		verify(controller, times(0)).increase(
+				any(DeviceControllerChannel.class),
+				anyInt());
+		
+		int currentValue3 = potiA.getCurrentValue();
+		assertEquals("Expected to get 1 on calling 'getCurrentValue()'!",
+				1, currentValue3);
+		
+		reset(controller);
 		
 		potiA.decrease(20);
 		
 		verify(controller).setValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A,
+				DeviceControllerChannel.A,
 				0, false);
 		verify(controller).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
-		int currentValue3 = potiA.getCurrentValue();
+		int currentValue4 = potiA.getCurrentValue();
 		assertEquals("Expected to get 0 on calling 'getCurrentValue()'!",
-				0, currentValue3);
+				0, currentValue4);
 
 		reset(controller);
 		
 		potiA.decrease();
 		
 		verify(controller, times(0)).setValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
-		int currentValue4 = potiA.getCurrentValue();
+		int currentValue5 = potiA.getCurrentValue();
 		assertEquals("Expected to get 0 on calling 'getCurrentValue()'!",
-				0, currentValue4);
+				0, currentValue5);
 		
 	}
 	
@@ -604,18 +627,18 @@ public class PotentiometerImplTest {
 		reset(controller);
 		
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				eq(true))).thenReturn(70);
 		
 		int currentValue2 = potiA.updateCacheFromDevice();
 		
 		verify(controller).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, false);
+				DeviceControllerChannel.A, false);
 		verify(controller).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get updated value by method 'updateCacheFromDevice()'",
@@ -641,26 +664,188 @@ public class PotentiometerImplTest {
 		}
 		
 		verify(controller, times(0)).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				eq(true))).thenReturn(70);
 		
 		int nonVolatileValue = potiA.getNonVolatileValue();
 
 		verify(controller).getValue(
-				com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A, true);
+				DeviceControllerChannel.A, true);
 		verify(controller).getValue(
-				any(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get non-volatile-value on calling 'getNonVolatileValue()'",
 				70, nonVolatileValue);
+		
+	}
+	
+	@Test
+	public void testGetTerminalConfiguration() throws IOException {
+		
+		// channel A poti
+		
+		final DeviceControllerTerminalConfiguration mockedTconA =
+				new DeviceControllerTerminalConfiguration(
+						DeviceControllerChannel.A,
+						true, false, true, false);
+		when(controller.getTerminalConfiguration(
+				eq(DeviceControllerChannel.A))).thenReturn(mockedTconA);
+		
+		TerminalConfiguration tconA = potiA.getTerminalConfiguration();
+		
+		assertNotNull("'getTerminalConfiguration()' return null but expected a "
+				+ "properly filled object!", tconA);
+		assertNotNull("'getTerminalConfiguration()' returned an object which "
+				+ "method 'getChannel() returns null and not the poti's "
+				+ "channel!", tconA.getChannel());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the poti's channel!", Channel.A, tconA.getChannel());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'channelEnabled'!",
+				mockedTconA.isChannelEnabled(), tconA.isChannelEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinAEnabled'!",
+				mockedTconA.isPinAEnabled(), tconA.isPinAEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinWEnabled'!",
+				mockedTconA.isPinWEnabled(), tconA.isPinWEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinBEnabled'!",
+				mockedTconA.isPinBEnabled(), tconA.isPinBEnabled());
+
+		// channel B poti
+		
+		final DeviceControllerTerminalConfiguration mockedTconB =
+				new DeviceControllerTerminalConfiguration(
+						DeviceControllerChannel.B,
+						false, true, false, true);
+		when(controller.getTerminalConfiguration(
+				eq(DeviceControllerChannel.B))).thenReturn(mockedTconB);
+		
+		TerminalConfiguration tconB = potiB.getTerminalConfiguration();
+		
+		assertNotNull("'getTerminalConfiguration()' return null but expected a "
+				+ "properly filled object!", tconB);
+		assertNotNull("'getTerminalConfiguration()' returned an object which "
+				+ "method 'getChannel() returns null and not the poti's "
+				+ "channel!", tconB.getChannel());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the poti's channel!", Channel.B, tconB.getChannel());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'channelEnabled'!",
+				mockedTconB.isChannelEnabled(), tconB.isChannelEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinAEnabled'!",
+				mockedTconB.isPinAEnabled(), tconB.isPinAEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinWEnabled'!",
+				mockedTconB.isPinWEnabled(), tconB.isPinWEnabled());
+		assertEquals("'getTerminalConfiguration()' returned a configuration "
+				+ "not matching the mocked controllers configuration 'pinBEnabled'!",
+				mockedTconB.isPinBEnabled(), tconB.isPinBEnabled());
+		
+	}
+	
+	@Test
+	public void testSetTerminalConfiguration() throws IOException {
+		
+		try {
+			
+			potiA.setTerminalConfiguration(null);
+			fail("Expected 'setTerminalConfiguration(null)' to throw RuntimeException!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			
+			potiA.setTerminalConfiguration(new TerminalConfiguration(
+					Channel.B, true, true, true, true));
+			fail("Expected 'setTerminalConfiguration(...)' to throw RuntimeException "
+					+ "because the given configuration's channel does not match "
+					+ "the potentiometers channel!");
+			
+		} catch (RuntimeException e) {
+			// expected
+		}
+		
+		// test poti A
+		
+		potiA.setTerminalConfiguration(new TerminalConfiguration(
+				Channel.A, true, false, true, false));
+		
+		verify(controller).setTerminalConfiguration(new DeviceControllerTerminalConfiguration(
+				DeviceControllerChannel.A, true, false, true, false));
+		verify(controller).setTerminalConfiguration(any(DeviceControllerTerminalConfiguration.class));
+		
+		
+	}
+	
+	@Test
+	public void testSetWriteProtection() throws IOException {
+		
+		// enable lock
+		
+		potiA.setWriteProtection(true);
+		
+		verify(controller).setWriteProtection(true);
+		verify(controller).setWriteProtection(anyBoolean());
+		
+		// disable lock
+		
+		reset(controller);
+		
+		potiA.setWriteProtection(false);
+		
+		verify(controller).setWriteProtection(false);
+		verify(controller).setWriteProtection(anyBoolean());
+
+	}
+	
+	@Test
+	public void testSetWiperLock() throws IOException {
+		
+		// enable lock for poti A
+		
+		potiA.setWiperLock(true);
+		
+		verify(controller).setWiperLock(DeviceControllerChannel.A, true);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
+		
+		// disable lock for poti A
+		
+		reset(controller);
+		
+		potiA.setWiperLock(false);
+		
+		verify(controller).setWiperLock(DeviceControllerChannel.A, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
+		
+		// disable lock for poti B
+		
+		reset(controller);
+		
+		potiB.setWiperLock(false);
+		
+		verify(controller).setWiperLock(DeviceControllerChannel.B, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
+		
+		// disable lock for poti B
+		
+		reset(controller);
+		
+		potiB.setWiperLock(false);
+		
+		verify(controller).setWiperLock(DeviceControllerChannel.B, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
 		
 	}
 	
