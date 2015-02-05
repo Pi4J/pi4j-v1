@@ -46,12 +46,13 @@ public class DeviceController {
 	
 	// register memory addresses (see TABLE 4-1)
 	
-	private static final byte MEMADDR_WIPER0 = 0x00;
-	private static final byte MEMADDR_WIPER1 = 0x01;
-	private static final byte MEMADDR_WIPER0_NV = 0x02;
-	private static final byte MEMADDR_WIPER1_NV = 0x03;
+	static final byte MEMADDR_WIPER0 = 0x00;
+	static final byte MEMADDR_WIPER1 = 0x01;
+	static final byte MEMADDR_WIPER0_NV = 0x02;
+	static final byte MEMADDR_WIPER1_NV = 0x03;
 	private static final byte MEMADDR_TCON = 0x04; // terminal control
 	private static final byte MEMADDR_STATUS = 0x05;
+	private static final byte MEMADDR_WRITEPROTECTION = 0x0F;
 	
 	// commands
 	
@@ -64,14 +65,14 @@ public class DeviceController {
 	
 	// general call not yet supported by this implementation
 	// private static final int TCON_GCEN = (1 << 8);
-	private static final int TCON_RH0HW = (1 << 3);
-	private static final int TCON_RH0A = (1 << 2);
-	private static final int TCON_RH0W = (1 << 1);
-	private static final int TCON_RH0B = (1 << 0);
-	private static final int TCON_RH1HW = (1 << 7);
-	private static final int TCON_RH1A = (1 << 6);
-	private static final int TCON_RH1W = (1 << 5);
-	private static final int TCON_RH1B = (1 << 4);
+	static final int TCON_RH0HW = (1 << 3);
+	static final int TCON_RH0A = (1 << 2);
+	static final int TCON_RH0W = (1 << 1);
+	static final int TCON_RH0B = (1 << 0);
+	static final int TCON_RH1HW = (1 << 7);
+	static final int TCON_RH1A = (1 << 6);
+	static final int TCON_RH1W = (1 << 5);
+	static final int TCON_RH1B = (1 << 4);
 	
 	// status-bits (see 4.2.2.1)
 	
@@ -81,165 +82,6 @@ public class DeviceController {
 	private static final int STATUS_WIPERLOCK1_BIT = 0b0100;
 	private static final int STATUS_WIPERLOCK0_BIT = 0b0010;
 	private static final int STATUS_EEPROM_WRITEPROTECTION_BIT = 0b0001;
-	
-	/**
-	 * The device's terminal-configuration for a certain channel (see 4.2.2.2)
-	 */
-	static class TerminalConfiguration {
-		
-		private Channel channel;
-		private boolean channelEnabled;
-		private boolean pinAEnabled;
-		private boolean pinWEnabled;
-		private boolean pinBEnabled;
-		
-		TerminalConfiguration(Channel channel,
-				boolean channelEnabled, boolean pinAEnabled,
-				boolean pinWEnabled, boolean pinBEnabled) {
-			this.channel = channel;
-			this.channelEnabled = channelEnabled;
-			this.pinAEnabled = pinAEnabled;
-			this.pinWEnabled = pinWEnabled;
-			this.pinBEnabled = pinBEnabled;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-		
-		/**
-		 * @return Whether the entire channel is enabled or disabled
-		 */
-		public boolean isChannelEnabled() {
-			return channelEnabled;
-		}
-
-		/**
-		 * @return If channel is enabled, whether pin A is enabled
-		 */
-		public boolean isPinAEnabled() {
-			return pinAEnabled;
-		}
-
-		/**
-		 * @return If channel is enabled, whether pin W is enabled
-		 */
-		public boolean isPinWEnabled() {
-			return pinWEnabled;
-		}
-
-		/**
-		 * @return If channel is enabled, whether pin B is enabled
-		 */
-		public boolean isPinBEnabled() {
-			return pinBEnabled;
-		}
-		
-	}
-	
-	/**
-	 * The device's status
-	 */
-	static class DeviceStatus {
-		
-		private boolean eepromWriteActive;
-		private boolean eepromWriteProtected;
-		private boolean channelALocked;
-		private boolean channelBLocked;
-		
-		DeviceStatus(boolean eepromWriteActive, boolean eepromWriteProtected,
-				boolean channelALocked, boolean channelBLocked) {
-			this.eepromWriteActive = eepromWriteActive;
-			this.eepromWriteProtected = eepromWriteProtected;
-			this.channelALocked = channelALocked;
-			this.channelBLocked = channelBLocked;
-		}
-
-		/**
-		 * Writing to EEPROM takes a couple of cycles. During this time
-		 * any actions taken on non-volatile wipers fail due to active
-		 * writing.
-		 * 
-		 * @return Whether writing to EEPROM is active
-		 */
-		public boolean isEepromWriteActive() {
-			return eepromWriteActive;
-		}
-
-		/**
-		 * @return Whether EEPROM write-protection is enabled
-		 */
-		public boolean isEepromWriteProtected() {
-			return eepromWriteProtected;
-		}
-
-		/**
-		 * @return Whether wiper of channel 'A' is locked
-		 */
-		public boolean isChannelALocked() {
-			return channelALocked;
-		}
-
-		/**
-		 * @return Whether wiper of channel 'B' is locked
-		 */
-		public boolean isChannelBLocked() {
-			return channelBLocked;
-		}
-		
-	}
-	
-	/**
-	 * The wiper - used for devices knowing more than one wiper.
-	 */
-	static enum Channel {
-		
-		A(MEMADDR_WIPER0, MEMADDR_WIPER0_NV, TCON_RH0HW, TCON_RH0A, TCON_RH0B, TCON_RH0W),
-		B(MEMADDR_WIPER1, MEMADDR_WIPER1_NV, TCON_RH1HW, TCON_RH1A, TCON_RH1B, TCON_RH1W);
-		
-		private byte volatileMemoryAddress;
-		private byte nonVolatileMemoryAddress;
-		private int hardwareConfigControlBit;
-		private int terminalAConnectControlBit;
-		private int terminalBConnectControlBit;
-		private int wiperConnectControlBit;
-		
-		private Channel(byte volatileMemoryAddress, byte nonVolatileMemoryAddress,
-				int hardwareConfigControlBit, int terminalAConnectControlBit,
-				int terminalBConnectControlBit, int wiperConnectControlBit) {
-			this.volatileMemoryAddress = volatileMemoryAddress;
-			this.nonVolatileMemoryAddress = nonVolatileMemoryAddress;
-			this.hardwareConfigControlBit = hardwareConfigControlBit;
-			this.terminalAConnectControlBit = terminalAConnectControlBit;
-			this.terminalBConnectControlBit = terminalBConnectControlBit;
-			this.wiperConnectControlBit = wiperConnectControlBit;
-		}
-		
-		byte getVolatileMemoryAddress() {
-			return volatileMemoryAddress;
-		}
-		
-		byte getNonVolatileMemoryAddress() {
-			return nonVolatileMemoryAddress;
-		}
-		
-		int getHardwareConfigControlBit() {
-			return hardwareConfigControlBit;
-		}
-		
-		int getTerminalAConnectControlBit() {
-			return terminalAConnectControlBit;
-		}
-		
-		int getTerminalBConnectControlBit() {
-			return terminalBConnectControlBit;
-		}
-		
-		int getWiperConnectControlBit() {
-			return wiperConnectControlBit;
-		}
-		
-	};
 	
 	/**
 	 * the underlying Pi4J-device
@@ -269,7 +111,7 @@ public class DeviceController {
 	 * @return The device's status
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public DeviceStatus getDeviceStatus() throws IOException {
+	public DeviceControllerDeviceStatus getDeviceStatus() throws IOException {
 
 		// get status from device
 		int deviceStatus = read(MEMADDR_STATUS);
@@ -293,7 +135,7 @@ public class DeviceController {
 		boolean wiperLock1
 				= (deviceStatus & STATUS_WIPERLOCK1_BIT) > 0;
 		
-		return new DeviceStatus(
+		return new DeviceControllerDeviceStatus(
 				eepromWriteActive, eepromWriteProtection,
 				wiperLock0, wiperLock1);
 		
@@ -306,12 +148,12 @@ public class DeviceController {
 	 * @param steps The number of steps
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void increase(final Channel channel, final int steps)
+	public void increase(final DeviceControllerChannel channel, final int steps)
 			throws IOException {
 		
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		
@@ -329,12 +171,12 @@ public class DeviceController {
 	 * @param steps The number of steps
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void decrease(final Channel channel, final int steps)
+	public void decrease(final DeviceControllerChannel channel, final int steps)
 			throws IOException {
 
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		
@@ -353,12 +195,12 @@ public class DeviceController {
 	 * @return The wiper's value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public int getValue(final Channel channel, final boolean nonVolatile)
+	public int getValue(final DeviceControllerChannel channel, final boolean nonVolatile)
 			throws IOException {
 		
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		
@@ -382,12 +224,12 @@ public class DeviceController {
 	 * @param nonVolatile volatile or non-volatile value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void setValue(final Channel channel, final int value,
+	public void setValue(final DeviceControllerChannel channel, final int value,
 			final boolean nonVolatile) throws IOException {
 		
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		if (value < 0) {
@@ -413,12 +255,12 @@ public class DeviceController {
 	 * @return The current terminal-configuration
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public TerminalConfiguration getTerminalConfiguration(
-			final Channel channel) throws IOException {
+	public DeviceControllerTerminalConfiguration getTerminalConfiguration(
+			final DeviceControllerChannel channel) throws IOException {
 		
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		
@@ -431,7 +273,7 @@ public class DeviceController {
 		boolean pinWEnabled = (tcon & channel.getWiperConnectControlBit()) > 0;
 		boolean pinBEnabled = (tcon & channel.getTerminalBConnectControlBit()) > 0;
 		
-		return new TerminalConfiguration(channel, channelEnabled,
+		return new DeviceControllerTerminalConfiguration(channel, channelEnabled,
 				pinAEnabled, pinWEnabled, pinBEnabled);
 		
 	}
@@ -442,16 +284,16 @@ public class DeviceController {
 	 * @param config A terminal-configuration for a certain channel.
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void setTerminalConfiguration(final TerminalConfiguration config)
+	public void setTerminalConfiguration(final DeviceControllerTerminalConfiguration config)
 			throws IOException {
 		
 		if (config == null) {
 			throw new RuntimeException("null-config is not allowed!");
 		}
-		final Channel channel = config.getChannel();
+		final DeviceControllerChannel channel = config.getChannel();
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
-					+ "knowing just one wiper Channel.A is mandetory for "
+					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
 		
@@ -470,6 +312,47 @@ public class DeviceController {
 		
 		// write new configuration to device
 		write(MEMADDR_TCON, tcon);
+		
+	}
+	
+	/**
+	 * Enables or disables a wiper's lock.
+	 * <p>
+	 * Hint: This will only work using the &quot;High Volate Command&quot; (see 3.1).
+	 * 
+	 * @param enabled Whether to enable the wiper's lock
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setWiperLock(final DeviceControllerChannel channel,
+			final boolean locked) throws IOException {
+		
+		if (channel == null) {
+			throw new RuntimeException("null-channel is not allowed. For devices "
+					+ "knowing just one wiper Channel.A is mandatory for "
+					+ "parameter 'channel'");
+		}
+		
+		byte memAddr = channel.getNonVolatileMemoryAddress();
+		
+		// increasing or decreasing on non-volatile wipers
+		// enables or disables WiperLock (see 7.8)
+		increaseOrDecrease(memAddr, locked, 1);
+		
+	}
+	
+	/**
+	 * Enables or disables the device's write-protection.
+	 * <p>
+	 * Hint: This will only work using the &quot;High Volate Command&quot; (see 3.1).
+	 * 
+	 * @param enabled Whether to enable write-protection
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	public void setWriteProtection(final boolean enabled) throws IOException {
+		
+		// increasing or decreasing on WP-memory-address
+		// enables or disables write-protection (see 7.8)
+		increaseOrDecrease(MEMADDR_WRITEPROTECTION, enabled, 1);
 		
 	}
 	
@@ -583,6 +466,37 @@ public class DeviceController {
 		
 		// write sequence to the device
 		i2cDevice.write(sequence, 0, sequence.length);
+		
+	}
+	
+	@Override
+	public String toString() {
+
+		final StringBuffer result = new StringBuffer(getClass().getName());
+		result.append("{\n");
+		result.append("  i2cDevice='").append(i2cDevice);
+		result.append("'\n}");
+		return result.toString();
+
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (!getClass().equals(obj.getClass())) {
+			return false;
+		}
+		DeviceController other = (DeviceController) obj;
+		if (!i2cDevice.equals(other.i2cDevice)) {
+			return false;
+		}
+		return true;
 		
 	}
 

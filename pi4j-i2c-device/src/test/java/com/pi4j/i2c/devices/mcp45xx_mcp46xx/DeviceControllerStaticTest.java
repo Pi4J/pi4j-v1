@@ -1,6 +1,7 @@
 package com.pi4j.i2c.devices.mcp45xx_mcp46xx;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 
@@ -56,9 +57,11 @@ public class DeviceControllerStaticTest {
 		// wrong parameter
 		
 		try {
+			
 			new DeviceController(null);
 			fail("Got no RuntimeException on constructing "
-					+ "a MCP45xxMCP46xxController using a null-i2cDevice");
+					+ "a DeviceController using a null-i2cDevice");
+			
 		} catch (RuntimeException e) {
 			// expected expection
 		}
@@ -67,6 +70,43 @@ public class DeviceControllerStaticTest {
 		
 		new DeviceController(i2cDevice);
 
+	}
+	
+	@Test
+	public void testToString() throws IOException {
+		
+		when(i2cDevice.toString()).thenReturn("I2CDeviceMock");
+		
+		String toString = new DeviceController(i2cDevice).toString();
+		
+		assertNotNull("result of 'toString()' is null!", toString);
+		assertEquals("Unexpected result from calling 'toString'!",
+				"com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController{\n"
+				+ "  i2cDevice='I2CDeviceMock'\n}",
+				toString);
+		
+	}
+	
+	@Test
+	public void testEquals() throws IOException {
+		
+		final DeviceController deviceController = new DeviceController(i2cDevice);
+		final DeviceController copyDeviceController = new DeviceController(i2cDevice);
+
+		final I2CDevice otherI2cDevice = mock(I2CDevice.class);
+		final DeviceController otherDeviceController = new DeviceController(otherI2cDevice);
+		
+		assertNotEquals("'dc.equals(null)' returns true!",
+				deviceController, null);
+		assertEquals("'dc.equals(dc) returns false!",
+				deviceController, deviceController);
+		assertNotEquals("'dc.equals(\"Test\")' returns true!",
+				deviceController, "Test");
+		assertEquals("'dc.equals(copyOfDc)' returns false!",
+				deviceController, copyDeviceController);
+		assertNotEquals("'dc.equals(otherDc)' returns true!",
+				deviceController, otherDeviceController);
+		
 	}
 	
 }

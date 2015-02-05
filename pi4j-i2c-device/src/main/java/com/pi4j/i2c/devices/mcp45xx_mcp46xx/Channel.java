@@ -38,26 +38,35 @@ public enum Channel {
 	/**
 	 * Pins P0A, P0W, P0B
 	 */
-	A(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.A),
+	A(DeviceControllerChannel.A),
 	
 	/**
 	 * Pins P1A, P1W, P1B
 	 */
-	B(com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel.B);
+	B(DeviceControllerChannel.B);
 	
 	/**
 	 * The controller's channel 
 	 */
-	private com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel mcpChannel;
+	private DeviceControllerChannel deviceControllerChannel;
 	
-	private Channel(final com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel mcpChannel) {
+	private Channel(final DeviceControllerChannel deviceControllerChannel) {
 		
-		this.mcpChannel = mcpChannel;
+		this.deviceControllerChannel = deviceControllerChannel;
 		
 	}
 	
-	public com.pi4j.i2c.devices.mcp45xx_mcp46xx.DeviceController.Channel getMcpChannel() {
-		return mcpChannel;
+	public DeviceControllerChannel getDeviceControllerChannel() {
+		return deviceControllerChannel;
+	}
+	
+	@Override
+	public String toString() {
+
+		final StringBuffer result = new StringBuffer(getClass().getName());
+		result.append(".").append(name());
+		return result.toString();
+
 	}
 	
 }
