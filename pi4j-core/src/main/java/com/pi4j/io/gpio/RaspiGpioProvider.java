@@ -62,7 +62,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
     public void export(Pin pin, PinMode mode) {
         super.export(pin, mode);
        
-        //System.out.println("-- EXPORTING PIN [" + pin.getAddress() + "] to mode [" + mode.getName() + "]");       
+        //System.out.println("-- EXPORTING PIN [" + pin.getAddress() + "] to mode [" + mode.getName() + "]");
 
         // if not already exported, export the pin and set the pin direction
         if(!com.pi4j.wiringpi.GpioUtil.isExported(pin.getAddress())){
@@ -70,7 +70,7 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
         }
         // if the pin is already exported, then check its current configured direction
         // if the direction does not match, then set the new direction for the pin
-        else if(com.pi4j.wiringpi.GpioUtil.getDirection(pin.getAddress()) == mode.getDirection().getValue()){
+        else if(com.pi4j.wiringpi.GpioUtil.getDirection(pin.getAddress()) != mode.getDirection().getValue()){
             com.pi4j.wiringpi.GpioUtil.setDirection(pin.getAddress(), mode.getDirection().getValue());
         }
 
