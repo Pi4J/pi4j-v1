@@ -17,7 +17,7 @@ Snapshot builds are available from
    *  [Downloads] http://pi4j.com/download.html
    
  
-Copyright (C) 2012-2014 Pi4J
+Copyright (C) 2012-2015 Pi4J
 
 ## LICENSE
  
@@ -40,8 +40,9 @@ Copyright (C) 2012-2014 Pi4J
 
 ## IN DEVEOPMENT
 
-2014-11-26 :: 1.0-SNAPSHOT
+2015-02-11 :: 1.0-SNAPSHOT
 
+  *  Fixed issue where GPIO state would reset on provisioning
   *  Added support for RaspberryPi Model A+
   *  Added support for debounce logic on digital input pin events
   *  Added easy install/uninstall scripts (get.pi4j.com)
