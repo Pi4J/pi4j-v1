@@ -27,6 +27,11 @@ Pin Numbering - Raspberry Pi Model B (Revision 2.0)
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme for the P1 header pins.
 
++--------------------------------------------
+  ATTENTION: PLEASE NOTE THAT THIS WIRING DIAGRAM IS NOT USING THE BROADCOM
+  GPIO NUMBERING SCHEME, BUT RATHER THE WIRINGPI/PI4J PIN NUMBERING SCHEME!
++--------------------------------------------
+
 [../images/p1header.png]
 
   {{{../images/p1header-large.png}(click here for hi-resolution image)}}
@@ -36,6 +41,11 @@ Pin Numbering - Raspberry Pi Model B (Revision 2.0)
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme for the P5 header pins.  The P6 header does not have any header pins pre-soldered.  If you want to make use of these pins, you will need to install and solder the header pins to the board.
   (NOTE: The P5 header is only available on (model A and B) board revisions 2.0 and newer.)
+
++--------------------------------------------
+  ATTENTION: PLEASE NOTE THAT THIS WIRING DIAGRAM IS NOT USING THE BROADCOM
+  GPIO NUMBERING SCHEME, BUT RATHER THE WIRINGPI/PI4J PIN NUMBERING SCHEME!
++--------------------------------------------
 
 [../images/p5header.png]
 
