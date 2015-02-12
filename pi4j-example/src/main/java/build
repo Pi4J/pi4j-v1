@@ -86,8 +86,8 @@ javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PCA9685GpioExample.java
 echo "[18 of 34] ... compiling : PCA9685GpioServoExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PCA9685GpioServoExample.java
 
-echo "[19 of 34] ... compiling : PibrellaExample.java"
-javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PibrellaExample.java
+echo "[19 of 34] ... compiling : PiBrellaExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PiBrellaExample.java
 
 echo "[20 of 34] ... compiling : PiFaceExample.java"
 javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PiFaceExample.java
