@@ -30,6 +30,7 @@ package com.pi4j.io.spi.impl;
 
 import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
+import com.pi4j.io.spi.SpiMode;
 import com.pi4j.wiringpi.Spi;
 
 import java.io.IOException;
@@ -41,6 +42,32 @@ import java.nio.charset.Charset;
 public class SpiDeviceImpl implements SpiDevice {
 
     protected final SpiChannel channel;
+    protected final SpiMode mode;
+
+    /**
+     * Creates the SPI Device at the given spi and input channel
+     *
+     * @param channel
+     *            spi channel to use
+     * @param speed
+     *            spi speed/rate (in Hertz) for channel to communicate at
+     *            (range is 500kHz - 32MHz)
+     * @param mode
+     *            spi mode (see http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Mode_numbers)
+     *
+     */
+    public SpiDeviceImpl(SpiChannel channel, int speed, SpiMode mode) throws IOException {
+        this.channel = channel;
+        this.mode = mode;
+        try {
+            int fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
+            if (fd <= -1) {
+                throw new IOException("SPI port setup failed, wiringPiSPISetupMode returned " + fd);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            throw new IOException("SPI port setup failed, no SPI available.", e);
+        }
+    }
 
     /**
      * Creates the SPI Device at the given spi and input channel
@@ -52,15 +79,20 @@ public class SpiDeviceImpl implements SpiDevice {
      *            (range is 500kHz - 32MHz)
      */
     public SpiDeviceImpl(SpiChannel channel, int speed) throws IOException {
-        this.channel = channel;
-        try {
-            int fd = Spi.wiringPiSPISetup(channel.getChannel(), speed);
-            if (fd <= -1) {
-                throw new IOException("SPI port setup failed, wiringSPISetup returned " + fd);
-            }
-        } catch (UnsatisfiedLinkError e) {
-            throw new IOException("SPI port setup failed, no SPI available.", e);
-        }
+        this(channel, speed, DEFAULT_SPI_MODE);
+    }
+
+    /**
+     * Creates the SPI Device at the given SPI and input channel
+     * (A default speed of 1 MHz will be used)
+     *
+     * @param channel
+     *            spi channel to use
+     * @param mode
+     *            spi mode (see http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Mode_numbers)
+     */
+    public SpiDeviceImpl(SpiChannel channel, SpiMode mode) throws IOException {
+        this(channel, DEFAULT_SPI_SPEED, mode);
     }
 
     /**

@@ -40,19 +40,22 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-11 :: 1.0-SNAPSHOT
+2015-02-12 :: 1.0-SNAPSHOT
 
-  *  Fixed issue where GPIO state would reset on provisioning
+  *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
-  *  Added support for debounce logic on digital input pin events
-  *  Added easy install/uninstall scripts (get.pi4j.com)
-  *  Added APT package and repository support (repository.pi4j.com)
   *  Added support for RaspberryPi Model B+
   *  Added support for RaspberryPi Compute Module
-  *  Removed support (and complicated builds) for soft-float ABI
+  *  Added support for debounce logic on digital input pin events
+  *  Added support for SPI modes
+  *  Added easy install/uninstall scripts (get.pi4j.com)
+  *  Added APT package and repository support (repository.pi4j.com)
+  *  Fixed issue where GPIO state would reset on provisioning
   *  Simplified native library loader to find embedded hard-float native lib
-  *  Updated documentation in preparation for 1.0 release
+  *  Fixed large number of bug tickets (see GitHub)
   *  Fixed JDK8 build errors.
+  *  Removed support (and complicated builds) for soft-float ABI
+  *  Updated documentation in preparation for 1.0 release
   *  Cleaned up build
 
 ## RELEASES

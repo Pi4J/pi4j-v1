@@ -63,7 +63,9 @@ public class SpiExample {
         System.out.println("<--Pi4J--> SPI test program using MCP3002 AtoD Chip");
 
         // create SPI object instance for SPI for communication
-        spi = SpiFactory.getInstance(SpiChannel.CS0, SpiDevice.DEFAULT_SPI_SPEED); // default speed 1 MHz
+        spi = SpiFactory.getInstance(SpiChannel.CS0,
+                                     SpiDevice.DEFAULT_SPI_SPEED, // default spi speed 1 MHz
+                                     SpiDevice.DEFAULT_SPI_MODE); // default spi mode 0
 
         // infinite loop
         while(true) {

@@ -56,7 +56,8 @@ public class SystemInfo {
         ModelB_Rev1,
         ModelB_Rev2,
         ModelB_Plus_Rev1,
-        Compute_Module_Rev1
+        Compute_Module_Rev1,
+        Model2B_Rev1
     }    
     
     private static Map<String, String> cpuInfo;
@@ -309,7 +310,12 @@ public class SystemInfo {
         case "000f":  // Model B Revision 2 512MB (Qisda)
             return BoardType.ModelB_Rev2;
         case "0010":  // Model B Plus 512MB (Sony)
-            return BoardType.ModelB_Plus_Rev1;
+        {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
+            if(getHardware().equalsIgnoreCase("BCM2709"))
+                return BoardType.Model2B_Rev1;
+            else
+                return BoardType.ModelB_Plus_Rev1;
+        }
         case "0011":  // Compute Module 512MB (Sony)
             return BoardType.Compute_Module_Rev1;
         case "0012":  // Model A Plus 512MB (Sony)

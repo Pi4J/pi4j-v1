@@ -62,6 +62,11 @@ public class Spi {
 
     public static int CHANNEL_0 = 0;
     public static int CHANNEL_1 = 1;
+
+    public static int MODE_0 = 0;
+    public static int MODE_1 = 1;
+    public static int MODE_2 = 2;
+    public static int MODE_3 = 3;
     
     // private constructor 
     private Spi()  {
@@ -93,6 +98,31 @@ public class Spi {
      * @return return -1 on error
      */
     public static native int wiringPiSPISetup(int channel, int speed);
+
+
+    /**
+     * <p>wiringPiSPISetupMode:</p>
+     *
+     * <p>
+     * This is the way to initialise a channel (The Pi has 2 channels; 0 and 1). The speed parameter is an integer in
+     * the range 500,000 through 32,000,000 and represents the SPI clock speed in Hz.
+     * </p>
+     *
+     * <p>
+     * The returned value is the Linux file-descriptor for the device, or -1 on error. If an error has happened, you
+     * may use the standard errno global variable to see why.
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
+     * @see <a
+     *      hfref="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Mode_numbers">http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Mode_numbers</a>
+     * @param channel SPI channel
+     * @param speed SPI speed
+     * @param mode SPI mode (Mode is 0, 1, 2 or 3; see http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Mode_numbers)
+     * @return return -1 on error
+     */
+    public static native int wiringPiSPISetupMode (int channel, int speed, int mode);
 
     /**
      * <p>wiringPiSPIGetFd:</p>

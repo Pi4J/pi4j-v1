@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 
 public interface SpiDevice {
 
+    public static final SpiMode DEFAULT_SPI_MODE = SpiMode.MODE_0;
     public static final int DEFAULT_SPI_SPEED = 1000000; // 1MHz (range is 500kHz - 32MHz)
     public static final int MAX_SUPPORTED_BYTES = 2048;
 
