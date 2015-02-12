@@ -16,13 +16,6 @@
 	<!-- PROJECT DEPENDENCIES -->
 	<dependencies>
 		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-native</artifactId>
-			<version>${project.version}</version>
-			<type>so</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
