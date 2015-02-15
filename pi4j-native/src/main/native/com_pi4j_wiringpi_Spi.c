@@ -126,3 +126,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
 {
 	return wiringPiSPISetup(channel, speed);
 }
+
+/*
+ * Class:     com_pi4j_wiringpi_Spi
+ * Method:    wiringPiSPISetupMode
+ * Signature: (III)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetupMode
+  (JNIEnv *env, jclass class, jint channel, jint speed, jint mode)
+{
+	return wiringPiSPISetupMode(channel, speed, mode);
+}
