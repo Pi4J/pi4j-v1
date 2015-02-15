@@ -74,6 +74,7 @@
             <item name="Raspberry Pi - Model B (Rev 2)" href="pins/model-b-rev2.html" />
             <item name="Raspberry Pi - Model B+" href="pins/model-b-plus.html" />
             <item name="Raspberry Pi - Compute Module" href="pins/model-cm-rev1.html" />
+            <item name="Raspberry Pi 2 - Model B" href="pins/model-2b-rev1.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />

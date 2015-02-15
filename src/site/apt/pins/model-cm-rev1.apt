@@ -28,11 +28,6 @@ Pin Numbering - Raspberry Pi Compute Module
 
   The diagram below illustrates the (BANK0) GPIO pinout using the Broadcom GPIO numbering scheme.
 
-+--------------------------------------------
-  ATTENTION: PLEASE NOTE THAT THIS WIRING DIAGRAM IS NOT USING THE BROADCOM
-  GPIO NUMBERING SCHEME, BUT RATHER THE WIRINGPI/PI4J PIN NUMBERING SCHEME!
-+--------------------------------------------
-
 [../images/j5header.png]
 
   {{{../images/j5header-large.png}(click here for hi-resolution image)}}
@@ -40,11 +35,6 @@ Pin Numbering - Raspberry Pi Compute Module
 * J6 Pinout  (60-pin Header)
 
   The diagram below illustrates the (BANK1) J6 GPIO pinout using the Broadcom GPIO numbering scheme.
-
-+--------------------------------------------
-  ATTENTION: PLEASE NOTE THAT THIS WIRING DIAGRAM IS NOT USING THE BROADCOM
-  GPIO NUMBERING SCHEME, BUT RATHER THE WIRINGPI/PI4J PIN NUMBERING SCHEME!
-+--------------------------------------------
 
 [../images/j6header.png]
 
