@@ -40,7 +40,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-12 :: 1.0-SNAPSHOT
+2015-02-15 :: 1.0-SNAPSHOT
 
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
@@ -57,6 +57,12 @@ Copyright (C) 2012-2015 Pi4J
   *  Removed support (and complicated builds) for soft-float ABI
   *  Updated documentation in preparation for 1.0 release
   *  Cleaned up build
+
+  Enhancements Added:
+  https://github.com/Pi4J/pi4j/issues?q=label%3Aenhancement+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
+
+  Bugs/Defects Fixed:
+  https://github.com/Pi4J/pi4j/issues?q=label%3Abug+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
 
 ## RELEASES
 
