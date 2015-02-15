@@ -50,19 +50,13 @@ Copyright (C) 2012-2015 Pi4J
   *  Added support for SPI modes
   *  Added easy install/uninstall scripts (get.pi4j.com)
   *  Added APT package and repository support (repository.pi4j.com)
-  *  Fixed issue where GPIO state would reset on provisioning
   *  Simplified native library loader to find embedded hard-float native lib
-  *  Fixed large number of bug tickets (see GitHub)
   *  Fixed JDK8 build errors.
   *  Removed support (and complicated builds) for soft-float ABI
   *  Updated documentation in preparation for 1.0 release
   *  Cleaned up build
-
-  Enhancements Added:
-  https://github.com/Pi4J/pi4j/issues?q=label%3Aenhancement+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
-
-  Bugs/Defects Fixed:
-  https://github.com/Pi4J/pi4j/issues?q=label%3Abug+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
+  *  Enhancements Added: https://github.com/Pi4J/pi4j/issues?q=label%3Aenhancement+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
+  *  Bugs/Defects Fixed: https://github.com/Pi4J/pi4j/issues?q=label%3Abug+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
 
 ## RELEASES
 
