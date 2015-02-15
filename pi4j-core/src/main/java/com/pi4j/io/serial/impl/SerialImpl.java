@@ -1028,7 +1028,7 @@ public class SerialImpl implements Serial {
 
         try {
             // write serial data to transmit buffer
-            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+            com.pi4j.jni.Serial.writeln(fileDescriptor, charset, data);
         } catch (IOException e) {
             throw new SerialPortException(e);
         }
@@ -1047,7 +1047,7 @@ public class SerialImpl implements Serial {
 
         try {
             // write serial data to transmit buffer
-            com.pi4j.jni.Serial.write(fileDescriptor, data);
+            com.pi4j.jni.Serial.writeln(fileDescriptor, data);
         } catch (IOException e) {
             throw new SerialPortException(e);
         }
@@ -1068,7 +1068,7 @@ public class SerialImpl implements Serial {
 
         try {
             // write serial data to transmit buffer
-            com.pi4j.jni.Serial.write(fileDescriptor, charset, data);
+            com.pi4j.jni.Serial.writeln(fileDescriptor, charset, data);
         } catch (IOException e) {
             throw new SerialPortException(e);
         }
@@ -1087,7 +1087,7 @@ public class SerialImpl implements Serial {
 
         try {
             // write serial data to transmit buffer
-            com.pi4j.jni.Serial.write(fileDescriptor, data);
+            com.pi4j.jni.Serial.writeln(fileDescriptor, data);
         } catch (IOException e) {
             throw new SerialPortException(e);
         }
