@@ -19,6 +19,7 @@ LIBS    =  -L/usr/local/lib /usr/local/lib/libwiringPi.a /usr/local/lib/libwirin
 SRC	=   com_pi4j_jni_Exception.c      \
         com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
+	    com_pi4j_jni_SerialInterrupt.c\
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_I2C.c       \
@@ -31,11 +32,13 @@ SRC	=   com_pi4j_jni_Exception.c      \
         com_pi4j_wiringpi_Nes.c       \
         com_pi4j_wiringpi_GpioPin.c   \
         com_pi4j_wiringpi_GpioUtil.c  \
-        com_pi4j_wiringpi_GpioInterrupt.c
+        com_pi4j_wiringpi_GpioInterrupt.c \
+        com_pi4j_jni_Loader.c
 
 OBJ	=   com_pi4j_jni_Exception.o      \
         com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
+	    com_pi4j_jni_SerialInterrupt.o\
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
         com_pi4j_wiringpi_I2C.o       \
@@ -48,7 +51,8 @@ OBJ	=   com_pi4j_jni_Exception.o      \
         com_pi4j_wiringpi_Nes.o       \
         com_pi4j_wiringpi_GpioPin.o   \
         com_pi4j_wiringpi_GpioUtil.o  \
-        com_pi4j_wiringpi_GpioInterrupt.o
+        com_pi4j_wiringpi_GpioInterrupt.o \
+        com_pi4j_jni_Loader.o
 
 all:		$(TARGET)
 
@@ -88,6 +92,7 @@ uninstall:
 com_pi4j_jni_Exception.o: com_pi4j_jni_Exception.h
 com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
+com_pi4j_jni_SerialInterrupt.o: com_pi4j_jni_SerialInterrupt.h
 com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h  
 com_pi4j_wiringpi_GpioPin.o: com_pi4j_wiringpi_GpioPin.h
 com_pi4j_wiringpi_GpioUtil.o: com_pi4j_wiringpi_GpioUtil.h
@@ -100,3 +105,4 @@ com_pi4j_wiringpi_SoftTone.o: com_pi4j_wiringpi_SoftTone.h
 com_pi4j_wiringpi_Spi.o: com_pi4j_wiringpi_Spi.h
 com_pi4j_wiringpi_Gertboard.o: com_pi4j_wiringpi_Gertboard.h
 com_pi4j_wiringpi_Nes.o: com_pi4j_wiringpi_Nes.h
+com_pi4j_jni_Loader.o: com_pi4j_jni_Loader.h

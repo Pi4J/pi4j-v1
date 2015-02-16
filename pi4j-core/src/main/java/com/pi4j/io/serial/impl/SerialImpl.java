@@ -1178,6 +1178,15 @@ public class SerialImpl implements Serial {
             monitor.shutdown();
     }
 
+
+    /**
+     * This method returns the serial device file descriptor
+     * @return fileDescriptor file descriptor
+     */
+    public int getFileDescriptor(){
+        return fileDescriptor;
+    }
+
     /**
      * This method returns the serial data receive monitor delay interval in milliseconds.
      * @return interval milliseconds

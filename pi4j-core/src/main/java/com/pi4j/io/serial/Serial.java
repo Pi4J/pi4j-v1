@@ -698,6 +698,12 @@ public interface Serial {
     public void shutdown();
 
     /**
+     * This method returns the serial device file descriptor
+     * @return fileDescriptor file descriptor
+     */
+    public int getFileDescriptor();
+    
+    /**
      * This method returns the serial data receive monitor delay interval in milliseconds.
      * @return interval milliseconds
      */

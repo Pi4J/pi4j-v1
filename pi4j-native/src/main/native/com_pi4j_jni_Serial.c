@@ -42,8 +42,8 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/epoll.h>
 #include <linux/serial.h>
+#include <err.h>
 
 // determine result data array length from the number of bytes available on the receive buffer
 int getAvailableByteCount(int fd){
@@ -90,7 +90,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
   (JNIEnv *env, jclass obj, jstring port, jint baud, jint dataBits, jint parity, jint stopBits,
    jint flowControl, jboolean echo, jboolean flushRx, jboolean flushTx)
 {
-    struct serial_struct serinfo;
     struct termios options ;
     speed_t myBaud ;
     int     status, fd ;

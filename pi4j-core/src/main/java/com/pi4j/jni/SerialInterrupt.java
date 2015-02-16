@@ -1,11 +1,11 @@
-package com.pi4j.wiringpi;
+package com.pi4j.jni;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioInterrupt.java  
+ * FILENAME      :  SerialInterrupt.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,34 +34,21 @@ import java.util.Vector;
 
 /**
  * <p>
- * This class provides static methods to configure the native Pi4J library to listen to GPIO
+ * This class provides static methods to configure the native Pi4J library to listen to serial
  * interrupts and invoke callbacks into this class. Additionally, this class provides a listener
- * registration allowing Java consumers to subscribe to GPIO pin state changes.
- * </p>
- * 
- * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
- * the following system libraries:
- * <ul>
- * <li>pi4j</li>
- * <li>wiringPi</li>
- * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
- * </blockquote>
+ * registration allowing Java consumers to subscribe to serial data receive events.
  * </p>
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class GpioInterrupt {
+public class SerialInterrupt {
 
-    private static Vector<GpioInterruptListener> listeners = new Vector<>();
-    private Object lock;
+    private static Vector<SerialInterruptListener> listeners = new Vector<>();
 
-    // private constructor 
-    private GpioInterrupt()  {
+    // private constructor
+    private SerialInterrupt()  {
         // forbid object construction 
     }
     
@@ -73,35 +60,31 @@ public class GpioInterrupt {
     /**
      * <p>
      * This method is used to instruct the native code to setup a monitoring thread to monitor
-     * interrupts that represent changes to the selected GPIO pin.
+     * interrupts that represent changes to the selected serial port.
      * </p>
      * 
-     * <p>
-     * <b>The GPIO pin must first be exported before it can be monitored.</b>
-     * </p>
-     * 
-     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param fileDescriptor the serial file descriptor/handle
      * @return A return value of a negative number represents an error. A return value of '0'
-     *         represents success and that the GPIO pin is already being monitored. A return value
+     *         represents success and that the serial port is already being monitored. A return value
      *         of '1' represents success and that a new monitoring thread was created to handle the
-     *         requested GPIO pin number.
+     *         requested serial port.
      */
-    public static native int enablePinStateChangeCallback(int pin);
+    public static native int enableSerialDataReceiveCallback(int fileDescriptor);
 
     /**
      * <p>
      * This method is used to instruct the native code to stop the monitoring thread monitoring
-     * interrupts on the selected GPIO pin.
+     * interrupts on the selected serial port.
      * </p>
-     * 
-     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     *
+     * @param fileDescriptor the serial file descriptor/handle
 
      * @return A return value of a negative number represents an error. A return value of '0'
      *         represents success and that no existing monitor was previously running. A return
      *         value of '1' represents success and that an existing monitoring thread was stopped
-     *         for the requested GPIO pin number.
+     *         for the requested serial port.
      */
-    public static native int disablePinStateChangeCallback(int pin);
+    public static native int disableSerialDataReceiveCallback(int fileDescriptor);
 
     /**
      * <p>
@@ -109,25 +92,25 @@ public class GpioInterrupt {
      * GPIO interrupt is detected. This method should not be called from any Java consumers. (Thus
      * is is marked as a private method.)
      * </p>
-     * 
-     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @param state New GPIO pin state.
+     *
+     * @param fileDescriptor the serial file descriptor/handle
+     * //@param data byte array of data received on this event from the serial receive buffer
      */
     @SuppressWarnings("unchecked")
-    private static void pinStateChangeCallback(int pin, boolean state) {
+    private static void onDataReceiveCallback(int fileDescriptor, byte[] data) {
 
-        Vector<GpioInterruptListener> listenersClone;
-        listenersClone = (Vector<GpioInterruptListener>) listeners.clone();
+        Vector<SerialInterruptListener> listenersClone;
+        listenersClone = (Vector<SerialInterruptListener>) listeners.clone();
 
         for (int i = 0; i < listenersClone.size(); i++) {
-            GpioInterruptListener listener = listenersClone.elementAt(i);
+            SerialInterruptListener listener = listenersClone.elementAt(i);
             if(listener != null) {
-                GpioInterruptEvent event = new GpioInterruptEvent(listener, pin, state);
-                listener.pinStateChange(event);
+                SerialInterruptEvent event = new SerialInterruptEvent(listener, fileDescriptor, data);
+                listener.onDataReceive(event);
             }
         }
 
-        //System.out.println("GPIO PIN [" + pin + "] = " + state);
+        //System.out.println("SERIAL PORT [" + fileDescriptor + "] DATA LENGTH = " + data.length + " / " + new String(data));
     }
 
     /**
@@ -136,12 +119,12 @@ public class GpioInterrupt {
      * changes.
      * </p>
      * 
-     * @see com.pi4j.wiringpi.GpioInterruptListener
-     * @see com.pi4j.wiringpi.GpioInterruptEvent
+     * @see com.pi4j.jni.SerialInterruptListener
+     * @see com.pi4j.jni.SerialInterruptEvent
      * 
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void addListener(GpioInterruptListener listener) {
+    public static synchronized void addListener(SerialInterruptListener listener) {
         if (!listeners.contains(listener)) {
             listeners.addElement(listener);
         }
@@ -152,13 +135,13 @@ public class GpioInterrupt {
      * Java consumer code can all this method to unregister itself as a listener for pin state
      * changes.
      * </p>
+     *
+     * @see com.pi4j.jni.SerialInterruptListener
+     * @see com.pi4j.jni.SerialInterruptEvent
      * 
-     * @see com.pi4j.wiringpi.GpioInterruptListener
-     * @see com.pi4j.wiringpi.GpioInterruptEvent
-     * 
-     * @param listener A class instance that implements the GpioInterruptListener interface.
+     * @param listener A class instance that implements the SerialInterruptListener interface.
      */
-    public static synchronized void removeListener(GpioInterruptListener listener) {
+    public static synchronized void removeListener(SerialInterruptListener listener) {
         if (listeners.contains(listener)) {
             listeners.removeElement(listener);
         }
@@ -169,13 +152,13 @@ public class GpioInterrupt {
      * <p>
      * Returns true if the listener is already registered for event callbacks.
      * </p>
+     *
+     * @see com.pi4j.jni.SerialInterruptListener
+     * @see com.pi4j.jni.SerialInterruptEvent
      * 
-     * @see com.pi4j.wiringpi.GpioInterruptListener
-     * @see com.pi4j.wiringpi.GpioInterruptEvent
-     * 
-     * @param listener A class instance that implements the GpioInterruptListener interface.
+     * @param listener A class instance that implements the SerialInterruptListener interface.
      */
-    public static synchronized boolean hasListener(GpioInterruptListener listener) {
+    public static synchronized boolean hasListener(SerialInterruptListener listener) {
         return listeners.contains(listener);
     }    
 }
