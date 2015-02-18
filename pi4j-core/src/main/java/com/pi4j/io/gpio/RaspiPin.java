@@ -31,6 +31,8 @@ package com.pi4j.io.gpio;
 import com.pi4j.io.gpio.impl.PinImpl;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Raspberry Pi pin definitions.
@@ -38,7 +40,6 @@ import java.util.EnumSet;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public class RaspiPin  {
     
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 
@@ -77,14 +78,24 @@ public class RaspiPin  {
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires 2B, A+, B+ or newer model (40 pin header)
 
     private static Pin createDigitalPin(int address, String name) {
-        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
+        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     PinPullResistance.all());
+        pins.put(name, pin);
+        return pin;
     }
 
     private static Pin createDigitalAndPwmPin(int address, String name) {
-        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
+        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                            EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
                            PinPullResistance.all());
+        pins.put(name, pin);
+        return pin;
+    }
+    
+    private static Map<String, Pin> pins = new HashMap<String, Pin>();
+    
+    public static Pin getPinByName(String name) {
+    	return pins.get(name);
     }
 }
