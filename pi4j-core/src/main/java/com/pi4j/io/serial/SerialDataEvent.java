@@ -28,6 +28,7 @@ package com.pi4j.io.serial;
  */
 
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -60,39 +61,45 @@ import java.util.EventObject;
 public class SerialDataEvent extends EventObject {
 
     private static final long serialVersionUID = 1L;
-    private final ByteBuffer data;
+    private final Serial serial;
 
     /**
      * Default event constructor.
-     * 
-     * @param obj The com.pi4j.io.serial.Serial class instance that initiates this event.
-     * @param data The data received.
      */
-    public SerialDataEvent(Object obj, ByteBuffer data) {
-        super(obj);
-        this.data = (ByteBuffer)data.flip();
+    public SerialDataEvent(Serial serial) {
+        super(serial);
+        this.serial = serial;
     }
 
-    public int length() {
-        return data.capacity();
+    public Serial getSerial(){
+        return this.serial;
     }
 
-    public ByteBuffer getByteBuffer() { return data; }
-
-    public byte[] getBytes() {
-        return data.array();
+    public SerialDataReader getReader(){
+        return this.serial;
     }
 
-    public String getString(Charset charset){
+    public int available() throws IOException {
+        return getReader().available();
+    }
+
+    public byte[] getBytes() throws IOException {
+        return getReader().read();
+    }
+
+    public ByteBuffer getByteBuffer() throws IOException {
+        return ByteBuffer.wrap(getBytes());
+    }
+
+    public String getString(Charset charset) throws IOException {
         return getCharBuffer(charset).toString();
     }
 
-    public String getAsciiString(){
+    public String getAsciiString() throws IOException {
         return getCharBuffer(StandardCharsets.US_ASCII).toString();
     }
 
-    public CharBuffer getCharBuffer(Charset charset){
-        return charset.decode(data);
+    public CharBuffer getCharBuffer(Charset charset) throws IOException {
+        return getReader().read(charset);
     }
-
 }

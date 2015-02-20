@@ -28,13 +28,9 @@ package com.pi4j.io.serial;
  */
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Writer;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.Collection;
 
 /**
  * <p>This interface provides a set of functions for 'Serial' communication.</p>
@@ -60,7 +56,7 @@ import java.util.Collection;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public interface Serial {
+public interface Serial extends SerialDataReader, SerialDataWriter {
 
     /**
      * The default hardware COM port provided via the Raspberry Pi GPIO header.
@@ -68,11 +64,8 @@ public interface Serial {
      * @see #open(String, int)
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
-
     public static final String FIRST_USB_COM_PORT = "/dev/ttyUSB0";
     public static final String SECOND_USB_COM_PORT = "/dev/ttyUSB1";
-
-    public static final int DEFAULT_MONITOR_INTERVAL = 100; // milliseconds
 
 
     /**
@@ -101,17 +94,11 @@ public interface Serial {
      *          The stop bits to use for serial communication. (1,2)
      * @param flowControl
      *          The flow control option to use for serial communication. (none, hardware, software)
-     * @param echo
-     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
-     * @param flushRx
-     *          Optionally flush the receive buffer when opening the serial port. ('false' by default)
-     * @param flushTx
-     *          Optionally flush the transmit buffer when opening the serial port. ('false' by default)
      *
      * @throws SerialPortException Exception thrown on any error.
      */
-    public void open(String device, int baud, int dataBits, int parity, int stopBits,
-                     int flowControl, boolean echo, boolean flushRx, boolean flushTx) throws SerialPortException;
+    public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
+            throws SerialPortException;
 
 
     /**
@@ -143,78 +130,6 @@ public interface Serial {
      * @throws SerialPortException Exception thrown on any error.
      */
     public void open(String device, int baud) throws SerialPortException;
-
-
-    /**
-     * <p>
-     * This opens and initializes the serial port/device and sets the communication parameters.
-     * It sets the port into raw mode (character at a time and no translations).
-     * </p>
-     *
-     * <p>
-     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
-     * </p>
-     *
-     * @see #DEFAULT_COM_PORT
-     *
-     * @param device
-     *          The device address of the serial port to access. You can use constant
-     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *          GPIO header.
-     * @param baud
-     *          The baud rate to use with the serial port.
-     * @param dataBits
-     *          The data bits to use for serial communication. (5,6,7,8)
-     * @param parity
-     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
-     * @param stopBits
-     *          The stop bits to use for serial communication. (1,2)
-     * @param flowControl
-     *          The flow control option to use for serial communication. (none, hardware, software)
-     *
-     * @throws SerialPortException Exception thrown on any error.
-     */
-    public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
-            throws SerialPortException;
-
-    /**
-     * <p>
-     * This opens and initializes the serial port/device and sets the communication parameters.
-     * It sets the port into raw mode (character at a time and no translations).
-     * </p>
-     *
-     * <p>
-     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
-     * </p>
-     *
-     * @see #DEFAULT_COM_PORT
-     *
-     * @param device
-     *          The device address of the serial port to access. You can use constant
-     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *          GPIO header.
-     * @param baud
-     *          The baud rate to use with the serial port.
-     * @param dataBits
-     *          The data bits to use for serial communication. (5,6,7,8)
-     * @param parity
-     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
-     * @param stopBits
-     *          The stop bits to use for serial communication. (1,2)
-     * @param flowControl
-     *          The flow control option to use for serial communication. (none, hardware, software)
-     * @param echo
-     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
-     * @param flushRx
-     *          Optionally flush the receive buffer when opening the serial port. ('false' by default)
-     * @param flushTx
-     *          Optionally flush the transmit buffer when opening the serial port. ('false' by default)
-     *
-     * @throws SerialPortException Exception thrown on any error.
-     */
-    public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
-                     FlowControl flowControl, boolean echo, boolean flushRx, boolean flushTx) throws SerialPortException;
-
 
     /**
      * <p>
@@ -291,7 +206,7 @@ public interface Serial {
 
     /**
      * <p>
-     *     Discards all data in both the serial receive and transmit buffers.
+     *     Forces the transmission of any remaining data in the serial port transmit buffer.
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      */
@@ -299,16 +214,30 @@ public interface Serial {
 
     /**
      * <p>
-     *     Discards all data in either or both the serial receive and transmit buffers.
+     *     Discards any data in the serial receive (input) buffer.
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
-     * @param rxBuffer
-     *          Flush the serial port receive buffer (input)
-     * @param txBuffer
-     *          Flush the serial port transmit buffer (output)
      */
-    public void flush(boolean rxBuffer, boolean txBuffer) throws IllegalStateException, SerialPortException;
+    public void discardInput() throws IllegalStateException, SerialPortException;
+
+    /**
+     * <p>
+     *     Discards any data in the serial transmit (output) buffer.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     */
+    public void discardOutput() throws IllegalStateException, SerialPortException;
+
+    /**
+     * <p>
+     *     Discards any data in  both the serial receive and transmit buffers.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     */
+    public void discardAll() throws IllegalStateException, SerialPortException;
 
     /**
      * <p>
@@ -329,331 +258,80 @@ public interface Serial {
     public void sendBreak() throws IllegalStateException, SerialPortException;
 
     /**
-     * <p>Enable or disable ECHO of input bytes back to sender.</p>
+     * <p>
+     *     Send a constant BREAK signal to connected device. (Turn break on/off)
+     *     When enabled this will send a steady stream of zero bits.
+     *     When enabled, no (other) data transmitting is possible.
+     * </p>
+     *
+     * @param enabled
+     *          The enable or disable state to control the BREAK signal
      */
-    public void echo(boolean enabled) throws SerialPortException;
+    public void setBreak(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * Gets the number of bytes available for reading, or -1 for any error condition.
+     * <p>
+     *     Control the RTS (request-to-send) pin state.
+     *     When enabled this will set the RTS pin to the HIGH state.
+     * </p>
      *
-     * @return Returns the number of bytes available for reading, or -1 for any error
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
      */
-    public int available() throws IllegalStateException;
+    public void setRTS(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * This method is called to determine if and how many bytes are available on the serial received
-     * data buffer.
-     * @deprecated Use 'available()' instead.
+     * <p>
+     *     Control the DTR (data-terminal-ready) pin state.
+     *     When enabled this will set the DTR pin to the HIGH state.
+     * </p>
      *
-     * @return The number of available bytes pending in the serial received buffer is returned.
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
      */
-    @Deprecated
-    public int availableBytes() throws IllegalStateException;
-
-
-
-    // ----------------------------------------
-    // READ OPERATIONS
-    // ----------------------------------------
+    public void setDTR(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads all available bytes from the serial port/device.</p>
-     *
-     * @return Returns a byte array with the data read from the serial port.
+     * <p>
+     *     Get the RTS (request-to-send) pin state.
+     * </p>
      */
-    public byte[] read() throws IllegalStateException, SerialPortException;
+    public boolean getRTS() throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads a length of bytes from the port/serial device.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     *
-     * @return Returns a byte array with the data read from the serial port.
+     * <p>
+     *     Get the DTR (data-terminal-ready) pin state.
+     * </p>
      */
-    public byte[] read(int length) throws IllegalStateException, SerialPortException;
+    public boolean getDTR() throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads all available bytes from the serial device into a provided ByteBuffer.</p>
-     *
-     * @param buffer
-     *          The ByteBuffer object to write to.
+     * <p>
+     *     Get the CTS (clean-to-send) pin state.
+     * </p>
      */
-    public void read(ByteBuffer buffer) throws IllegalStateException, SerialPortException;
+    public boolean getCTS() throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads a length bytes from the serial port/device into a provided ByteBuffer.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param buffer
-     *          The ByteBuffer object to write to.
-     *
+     * <p>
+     *     Get the DSR (data-set-ready) pin state.
+     * </p>
      */
-    public void read(int length, ByteBuffer buffer) throws IllegalStateException, SerialPortException;
+    public boolean getDSR() throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads all available bytes from the serial device into a provided OutputStream.</p>
-     *
-     * @param stream
-     *          The OutputStream object to write to.
+     * <p>
+     *     Get the RI (ring-indicator) pin state.
+     * </p>
      */
-    public void read(OutputStream stream) throws IllegalStateException, SerialPortException;
-    /**
-     * <p>Reads a length bytes from the serial port/device into a provided OutputStream.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param stream
-     *          The OutputStream object to write to.
-     *
-     */
-    public void read(int length, OutputStream stream) throws IllegalStateException, SerialPortException;
+    public boolean getRI() throws IllegalStateException, IOException;
 
     /**
-     * <p>Reads all available bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
-     *
-     * @param collection
-     *          The collection of CharSequence objects to append to.
-     *
+     * <p>
+     *     Get the CD (carrier-detect) pin state.
+     * </p>
      */
-    public void read(Collection<ByteBuffer> collection) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Reads a length of bytes from the serial port/device into a provided collection of ByteBuffer objects.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param collection
-     *          The collection of CharSequence objects to append to.
-     *
-     */
-    public void read(int length, Collection<ByteBuffer> collection) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Reads all available bytes from the port/serial device and returns a CharBuffer from the decoded bytes.</p>
-     *
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     *
-     * @return Returns a character set with the data read from the serial port.
-     */
-    public CharBuffer read(Charset charset) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Reads a length of bytes from the port/serial device and returns a CharBuffer from the decoded bytes.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     *
-     * @return Returns a character set with the data read from the serial port.
-     */
-    public CharBuffer read(int length, Charset charset) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Reads all available bytes from the serial port/device into a provided Writer.</p>
-     *
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     * @param writer
-     *          The Writer object to write to.
-     *
-     */
-    public void read(Charset charset, Writer writer) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Reads a length bytes from the serial port/device into a provided Writer.</p>
-     *
-     * @param length
-     *          The number of bytes to get from the serial port/device.
-     *          This number must not be higher than the number of available bytes.
-     * @param charset
-     *          The character set to use for encoding/decoding bytes to/from text characters
-     * @param writer
-     *          The Writer object to write to.
-     *
-     */
-    public void read(int length, Charset charset, Writer writer) throws IllegalStateException, SerialPortException;
-
-
-    // ----------------------------------------
-    // WRITE OPERATIONS
-    // ----------------------------------------
-
-    /**
-     * <p>Sends an array of bytes to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *            A ByteBuffer of data to be transmitted.
-     * @param offset
-     *            The starting index (inclusive) in the array to send from.
-     * @param length
-     *            The number of bytes from the byte array to transmit to the serial port.
-     */
-    public void write(byte[] data, int offset, int length) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one of more bytes to the serial device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *            One or more bytes (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(byte ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one of more bytes arrays to the serial device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *            One or more byte arrays of data to be transmitted. (variable-length-argument)
-     */
-    public void write(byte[] ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * Read the content of byte buffer and write the data to the serial port transmit buffer.
-     * (The buffer is read from the current position up to the 'limit' value, not the 'capacity'.  You may need to
-     * rewind() or flip() the byte buffer if you have just written to it.)
-     *
-     * @param data
-     *            A ByteBuffer of data to be transmitted.
-     */
-    public void write(ByteBuffer ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * Read content from an input stream of data and write it to the serial port transmit buffer.
-     *
-     * @param input
-     *          An InputStream of data to be transmitted
-     */
-    public void write(InputStream input) throws IllegalStateException, SerialPortException;
-    /**
-     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           An array of chars to be decoded into bytes and transmitted.
-     * @param offset
-     *           The starting index (inclusive) in the array to send from.
-     * @param length
-     *           The number of characters from the char array to transmit to the serial port.
-     */
-    public void write(Charset charset, char[] data, int offset, int length) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends an array of characters to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           One or more characters (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(Charset charset, char ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends an array of ASCII characters to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *           One or more ASCII characters (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(char ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more CharBuffers to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           One or more CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(Charset charset, CharBuffer ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more ASCII CharBuffers to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *           One or more ASCII CharBuffers (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(CharBuffer ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more string objects to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(Charset charset, CharSequence ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more ASCII string objects to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(CharSequence ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends a collection of string objects to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends a collection of ASCII string objects to the serial port/device identified by the given file descriptor.</p>
-     *
-     * @param data
-     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void write(Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           One or more string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void writeln(Charset charset, CharSequence ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends one or more ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
-     *
-     * @param data
-     *           One or more ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void writeln(CharSequence ... data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends a collection of string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
-     *
-     * @param charset
-     *           The character set to use for encoding/decoding bytes to/from text characters
-     * @param data
-     *           A collection of string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void writeln(Charset charset, Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException;
-
-    /**
-     * <p>Sends a collection of ASCII string objects each appended with a line terminator (CR+LF) to the serial port/device.</p>
-     *
-     * @param data
-     *           A collection of ASCII string objects (or an array) of data to be transmitted. (variable-length-argument)
-     */
-    public void writeln(Collection<? extends CharSequence> data) throws IllegalStateException, SerialPortException;
-
+    public boolean getCD() throws IllegalStateException, IOException;
 
 
     // ----------------------------------------
@@ -683,36 +361,27 @@ public interface Serial {
      * @param listener A class instance that implements the SerialListener interface.
      */
     public void removeListener(SerialDataListener... listener);
-        
-    /**
-     * This method returns TRUE if the serial interface has been shutdown.
-     * 
-     * @return shutdown state
-     */
-    public boolean isShutdown();
-    
-    
-    /**
-     * This method can be called to forcefully shutdown all serial data monitoring threads.
-     */
-    public void shutdown();
+
+
+    // ----------------------------------------
+    // FILE OPERATIONS
+    // ----------------------------------------
 
     /**
      * This method returns the serial device file descriptor
      * @return fileDescriptor file descriptor
      */
     public int getFileDescriptor();
-    
-    /**
-     * This method returns the serial data receive monitor delay interval in milliseconds.
-     * @return interval milliseconds
-     */
-    public int getMonitorInterval();
 
     /**
-     * This method set the serial data receive monitor delay interval in milliseconds.
-     *
-     * @param interval number of milliseconds
+     * This method returns the input data stream for the serial port's receive buffer
+     * @return InputStream input stream
      */
-    public void setMonitorInterval(int interval);
+    public InputStream getInputStream();
+
+    /**
+     * This method returns the output data stream for the serial port's transmit buffer
+     * @return OutputStream output stream
+     */
+    public OutputStream getOutputStream();
 }

@@ -30,7 +30,8 @@ package com.pi4j.jni;
 
 import com.pi4j.util.NativeLibraryLoader;
 
-import java.util.Vector;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -45,7 +46,7 @@ import java.util.Vector;
  */
 public class SerialInterrupt {
 
-    private static Vector<SerialInterruptListener> listeners = new Vector<>();
+    private static Map<Integer, SerialInterruptListener> listeners = new ConcurrentHashMap<Integer, SerialInterruptListener>();
 
     // private constructor
     private SerialInterrupt()  {
@@ -99,11 +100,9 @@ public class SerialInterrupt {
     @SuppressWarnings("unchecked")
     private static void onDataReceiveCallback(int fileDescriptor, byte[] data) {
 
-        Vector<SerialInterruptListener> listenersClone;
-        listenersClone = (Vector<SerialInterruptListener>) listeners.clone();
-
-        for (int i = 0; i < listenersClone.size(); i++) {
-            SerialInterruptListener listener = listenersClone.elementAt(i);
+        // notify event listeners
+        if(listeners.containsKey(fileDescriptor)){
+            SerialInterruptListener listener = listeners.get(fileDescriptor);
             if(listener != null) {
                 SerialInterruptEvent event = new SerialInterruptEvent(listener, fileDescriptor, data);
                 listener.onDataReceive(event);
@@ -121,12 +120,14 @@ public class SerialInterrupt {
      * 
      * @see com.pi4j.jni.SerialInterruptListener
      * @see com.pi4j.jni.SerialInterruptEvent
-     * 
+     *
+     * @param fileDescriptor the serial file descriptor/handle
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void addListener(SerialInterruptListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.addElement(listener);
+    public static synchronized void addListener(int fileDescriptor, SerialInterruptListener listener) {
+        if (!listeners.containsKey(fileDescriptor)) {
+            listeners.put(fileDescriptor, listener);
+            enableSerialDataReceiveCallback(fileDescriptor);
         }
     }
 
@@ -138,12 +139,13 @@ public class SerialInterrupt {
      *
      * @see com.pi4j.jni.SerialInterruptListener
      * @see com.pi4j.jni.SerialInterruptEvent
-     * 
-     * @param listener A class instance that implements the SerialInterruptListener interface.
+     *
+     * @param fileDescriptor the serial file descriptor/handle
      */
-    public static synchronized void removeListener(SerialInterruptListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.removeElement(listener);
+    public static synchronized void removeListener(int fileDescriptor) {
+        if (listeners.containsKey(fileDescriptor)) {
+            listeners.remove(fileDescriptor);
+            disableSerialDataReceiveCallback(fileDescriptor);
         }
     }
     
@@ -155,10 +157,10 @@ public class SerialInterrupt {
      *
      * @see com.pi4j.jni.SerialInterruptListener
      * @see com.pi4j.jni.SerialInterruptEvent
-     * 
-     * @param listener A class instance that implements the SerialInterruptListener interface.
+     *
+     * @param fileDescriptor the serial file descriptor/handle
      */
-    public static synchronized boolean hasListener(SerialInterruptListener listener) {
-        return listeners.contains(listener);
+    public static synchronized boolean hasListener(int fileDescriptor) {
+        return listeners.containsKey(fileDescriptor);
     }    
 }

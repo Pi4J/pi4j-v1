@@ -1,0 +1,274 @@
+package com.pi4j.io.serial.impl;
+
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Java Library (Core)
+ * FILENAME      :  SerialByteBuffer.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 - 2015 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+
+public class SerialByteBuffer {
+
+    public static int DEFAULT_BUFFER_SCALE_FACTOR = 2;
+    public static int DEFAULT_INITIAL_BUFFER_SIZE = 4096;
+    public static int DEFAULT_MAXIMUM_BUFFER_SIZE = 5000000; // 5MB
+
+    private InputStream stream = new SerialByteBufferInputStream();
+    private volatile int writeIndex = 0;
+    private volatile int readIndex = 0;
+    private byte[] buffer;
+
+    public SerialByteBuffer(){
+        // initialize buffer with default capacity
+        this(DEFAULT_INITIAL_BUFFER_SIZE);
+    }
+
+    public SerialByteBuffer(int initialCapacity){
+        // initialize buffer with user provided capacity
+        buffer = new byte[initialCapacity];
+    }
+
+    public synchronized void clear(){
+        // reset read and write index pointers
+        readIndex = writeIndex = 0;
+    }
+
+    public InputStream getInputStream(){
+        // return the input stream
+        return stream;
+    }
+
+    public synchronized int capacity(){
+        // return the buffer's total capacity
+        return buffer.length;
+    }
+
+    public synchronized int remaining(){
+        // return the number of (unused) bytes still available in the current buffer's capacity
+        if (writeIndex < readIndex)
+            return (readIndex - writeIndex - 1);
+        return ((buffer.length - 1) - (writeIndex - readIndex));
+    }
+
+    public synchronized int available(){
+        // return the number of bytes that are ready to be read
+        if (readIndex <= writeIndex)
+            return (writeIndex - readIndex);
+        return (buffer.length - (readIndex - writeIndex));
+    }
+
+    private void resize(int min_capacity){
+
+        // double the buffer capacity
+        int new_capacity = buffer.length;
+
+        // if doubling the capacity is not large enough to accommodate the
+        // new minimum capacity demands, then double it again ... and
+        // again ... until it's size is sufficient
+        while (new_capacity < min_capacity) {
+            new_capacity = new_capacity * DEFAULT_BUFFER_SCALE_FACTOR;
+            if(new_capacity > DEFAULT_MAXIMUM_BUFFER_SIZE){
+                new_capacity = DEFAULT_MAXIMUM_BUFFER_SIZE;
+            }
+        }
+
+        // create a new buffer that can hold the newly determined capacity
+        byte[] new_buffer = new byte[new_capacity];
+
+        System.out.println("---->>>>>> RESIZED - NEW CAPACITY = " + new_capacity);
+//        int marked = marked();
+        int available = available();
+//        if (markIndex <= writeIndex){
+//            // any space between the mark and
+//            // the first write needs to be saved.
+//            // In this case it is all in one piece.
+//            int length = writeIndex - markIndex;
+//            System.arraycopy(buffer, markIndex, temp_buffer, 0, length);
+//        }
+//        else {
+//            int length1 = buffer.length - markIndex;
+//            System.arraycopy(buffer, markIndex, temp_buffer, 0, length1);
+//            int length2 = writeIndex;
+//            System.arraycopy(buffer, 0, temp_buffer, length1, length2);
+//        }
+
+        int length = writeIndex;
+        System.arraycopy(buffer, readIndex, new_buffer, 0, length);
+
+//        int length1 = buffer.length - 0;
+//        System.arraycopy(buffer, readIndex, temp_buffer, 0, length1);
+//        int length2 = writeIndex;
+//        System.arraycopy(buffer, 0, temp_buffer, length1, length2);
+
+
+        buffer = new_buffer;
+        //markIndex = 0;
+//        readIndex = marked;
+//        writeIndex = marked + available;
+
+        readIndex = 0;
+        writeIndex = available;
+    }
+
+    public synchronized void write(byte[] data) throws IOException {
+        write(data, 0, data.length);
+    }
+
+    public synchronized void write(byte[] data, int offset, int length) throws IOException {
+        while (length > 0) {
+            int remaining_space = remaining();
+            if(remaining_space < length) {
+                resize(buffer.length + length);
+            }
+            int realLen = Math.min(length, remaining_space);
+            int firstLen = Math.min(realLen, buffer.length - writeIndex);
+            int secondLen = Math.min(realLen - firstLen, buffer.length - readIndex - 1);
+            int written = firstLen + secondLen;
+            if (firstLen > 0) {
+                System.arraycopy(data, offset, buffer, writeIndex, firstLen);
+            }
+            if (secondLen > 0) {
+                System.arraycopy(data, offset + firstLen, buffer, 0, secondLen);
+                writeIndex = secondLen;
+            } else {
+                writeIndex += written;
+            }
+            if (writeIndex == buffer.length) {
+                writeIndex = 0;
+            }
+            offset += written;
+            length -= written;
+        }
+        if (length > 0) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception x) {
+                throw new IOException("Waiting for available space in buffer interrupted.");
+            }
+        }
+    }
+
+    protected class SerialByteBufferInputStream extends InputStream {
+
+        @Override
+        public int available() throws IOException {
+            synchronized (SerialByteBuffer.this){
+                return (SerialByteBuffer.this.available());
+            }
+        }
+
+        @Override
+        public int read() throws IOException {
+            while (true){
+                synchronized (SerialByteBuffer.this){
+                    int available = SerialByteBuffer.this.available();
+                    if (available > 0){
+                        int result = buffer[readIndex] & 0xff; // we only care about fist 8 buts
+                        readIndex++; // increment read index position
+                        // if the read index reaches the maximum buffer capacity, then rollover to zero index
+                        if (readIndex == buffer.length)
+                            readIndex = 0;
+
+                        //ensureMark();
+                        //markIndex = readIndex;
+
+                        return result;
+                    }
+                }
+                try {
+                    Thread.sleep(100);
+                } catch(Exception x){
+                    throw new IOException("Blocking read operation interrupted.");
+                }
+            }
+        }
+
+        @Override
+        public int read(byte[] data) throws IOException {
+            return read(data, 0, data.length);
+        }
+
+        @Override
+        public int read(byte[] data, int off, int len) throws IOException {
+            while (true){
+                synchronized (SerialByteBuffer.this){
+                    int available = SerialByteBuffer.this.available();
+                    if (available > 0){
+                        int length = Math.min(len, available);
+                        int firstLen = Math.min(length, buffer.length - readIndex);
+                        int secondLen = length - firstLen;
+                        System.arraycopy(buffer, readIndex, data, off, firstLen);
+                        if (secondLen > 0){
+                            System.arraycopy(buffer, 0, data, off+firstLen,  secondLen);
+                            readIndex = secondLen;
+                        } else {
+                            readIndex += length;
+                        }
+                        if (readIndex == buffer.length) {
+                            readIndex = 0;
+                        }
+
+                        return length;
+                    }
+                }
+                try {
+                    Thread.sleep(100);
+                } catch(Exception x){
+                    throw new IOException("Blocking read operation interrupted.");
+                }
+            }
+        }
+
+        @Override
+        public long skip(long n) throws IOException, IllegalArgumentException {
+            while (true){
+                synchronized (SerialByteBuffer.this){
+                    int available = SerialByteBuffer.this.available();
+                    if (available > 0){
+                        int length = Math.min((int)n, available);
+                        int firstLen = Math.min(length, buffer.length - readIndex);
+                        int secondLen = length - firstLen;
+                        if (secondLen > 0){
+                            readIndex = secondLen;
+                        } else {
+                            readIndex += length;
+                        }
+                        if (readIndex == buffer.length) {
+                            readIndex = 0;
+                        }
+                        //ensureMark();
+                        return length;
+                    }
+                }
+                try {
+                    Thread.sleep(100);
+                } catch(Exception x){
+                    throw new IOException("Blocking read operation interrupted.");
+                }
+            }
+        }
+    }
+}
