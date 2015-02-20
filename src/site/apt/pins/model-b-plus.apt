@@ -29,7 +29,7 @@ Pin Numbering - Raspberry Pi Model B+
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
 
-[../images/j8header-a-plus.png]
+[../images/j8header-b-plus.png]
 
   {{{../images/j8header-b-plus-large.png}(click here for hi-resolution image)}}
 
