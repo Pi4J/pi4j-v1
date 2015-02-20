@@ -125,91 +125,12 @@ public class Serial {
      *          The stop bits to use for serial communication. (1,2)
      * @param flowControl
      *          The stop bits to use for serial communication. (none, hardware, software)
-     * @param echo
-     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
-     * @param flushRx
-     *          Optionally flush the receive buffer when opening the serial port. ('false' by default)
-     * @param flushTx
-     *          Optionally flush the transmit buffer when opening the serial port. ('false' by default)
      *
      * @return The return value is the file descriptor or a negative value for any error.
      *          An IOException will be thrown for all error conditions.
      */
     public synchronized static native int open(String device, int baud, int dataBits, int parity, int stopBits,
-                                               int flowControl, boolean echo, boolean flushRx, boolean flushTx)
-                                               throws IOException;
-
-    /**
-     * <p>
-     * This opens and initializes the serial device and sets the communication parameters.
-     * It sets the port into raw mode (character at a time and no translations).
-     * </p>
-     *
-     * <p>
-     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
-     * </p>
-     *
-     * @see #DEFAULT_COM_PORT
-     *
-     * @param device
-     *          The device address of the serial port/port to access. You can use constant
-     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *          GPIO header.
-     * @param baud
-     *          The baud rate to use with the serial port. (Custom baud rate are not supported)
-     * @param dataBits
-     *          The data bits to use for serial communication. (5,6,7,8)
-     * @param parity
-     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
-     * @param stopBits
-     *          The stop bits to use for serial communication. (1,2)
-     * @param flowControl
-     *          The stop bits to use for serial communication. (none, hardware, software)
-     * @param echo
-     *          Enable/disable echoing data received back to the sender.  ('false' (Disabled) by default)
-     *
-     * @return The return value is the file descriptor or a negative value for any error.
-     *          An IOException will be thrown for all error conditions.
-     */
-    public synchronized static int open(String device, int baud, int dataBits, int parity, int stopBits,
-                                               int flowControl, boolean echo) throws IOException {
-        return open(device, baud, dataBits, parity, stopBits, flowControl, echo, false, false);
-    }
-
-    /**
-     * <p>
-     * This opens and initializes the serial port/device and sets the communication parameters.
-     * It sets the port into raw mode (character at a time and no translations).
-     * </p>
-     *
-     * <p>
-     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
-     * </p>
-     *
-     * @see #DEFAULT_COM_PORT
-     *
-     * @param device
-     *          The device address of the serial port to access. You can use constant
-     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *          GPIO header.
-     * @param baud
-     *          The baud rate to use with the serial port. (Custom baud rate are not supported)
-     * @param dataBits
-     *          The data bits to use for serial communication. (5,6,7,8)
-     * @param parity
-     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
-     * @param stopBits
-     *          The stop bits to use for serial communication. (1,2)
-     * @param flowControl
-     *          The stop bits to use for serial communication. (none, hardware, software)
-     *
-     * @return The return value is the file descriptor or a negative value for any error.
-     *          An IOException will be thrown for all error conditions.
-     */
-    public synchronized static int open(String device, int baud, int dataBits, int parity, int stopBits,
-                                        int flowControl) throws IOException {
-        return open(device, baud, dataBits, parity, stopBits, flowControl, false, false, false);
-    }
+                                               int flowControl) throws IOException;
 
     /**
      * <p>
@@ -245,7 +166,7 @@ public class Serial {
      */
     public synchronized static int open(String device, int baud, int dataBits, int parity, int stopBits)
                                                throws IOException {
-        return open(device, baud, dataBits, parity, stopBits, FLOW_CONTROL_NONE, false, false, false);
+        return open(device, baud, dataBits, parity, stopBits, FLOW_CONTROL_NONE);
     }
 
     /**
@@ -279,7 +200,7 @@ public class Serial {
      *          An IOException will be thrown for all error conditions.
      */
     public synchronized static int open(String device, int baud, int dataBits, int parity) throws IOException {
-        return open(device, baud, dataBits, parity, STOP_BITS_1, FLOW_CONTROL_NONE, false, false, false);
+        return open(device, baud, dataBits, parity, STOP_BITS_1, FLOW_CONTROL_NONE);
     }
 
     /**
@@ -315,7 +236,7 @@ public class Serial {
      *          An IOException will be thrown for all error conditions.
      */
     public synchronized static int open(String device, int baud, int dataBits) throws IOException {
-        return open(device, baud, dataBits, PARITY_NONE, STOP_BITS_1, FLOW_CONTROL_NONE, false, false, false);
+        return open(device, baud, dataBits, PARITY_NONE, STOP_BITS_1, FLOW_CONTROL_NONE);
     }
 
     /**
@@ -351,7 +272,7 @@ public class Serial {
      *          An IOException will be thrown for all error conditions.
      */
     public synchronized static int open(String device, int baud) throws IOException {
-        return open(device, baud, DATA_BITS_8, PARITY_NONE, STOP_BITS_1, FLOW_CONTROL_NONE, false, false, false);
+        return open(device, baud, DATA_BITS_8, PARITY_NONE, STOP_BITS_1, FLOW_CONTROL_NONE);
     }
 
     /**
@@ -366,29 +287,46 @@ public class Serial {
 
     /**
      * <p>
-     *     Discards all data in both the serial receive and transmit buffers.
+     *     Discards all data in the serial receive and transmit buffer.
      *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native void discardInput(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Discards all data in the serial transmit buffer.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native void discardOutput(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Discards all data in the serial transmit and receive buffers.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native void discardAll(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Forces (drains) all data in transmit buffers.
      * </p>
      *
      * @param fd
      *          The file descriptor of the serial port/device.
      */
     public synchronized static native void flush(int fd) throws IOException;
-
-    /**
-     * <p>
-     *     Discards all data in either or both the serial receive and transmit buffers.
-     *     Please note that this does not force the transmission of data, it discards it!
-     * </p>
-     *
-     * @param fd
-     *          The file descriptor of the serial port/device.
-     * @param rxBuffer
-     *          Flush the serial port receive buffer (input)
-     * @param txBuffer
-     *          Flush the serial port transmit buffer (output)
-     */
-    public synchronized static native void flush(int fd, boolean rxBuffer, boolean txBuffer) throws IOException;
 
     /**
      * <p>
@@ -415,12 +353,108 @@ public class Serial {
     }
 
     /**
-     * <p>Enable or disable ECHO of input bytes back to sender.</p>
+     * <p>
+     *     Send a constant BREAK signal to connected device. (Turn break on/off)
+     *     When enabled this will send a steady stream of zero bits.
+     *     When enabled, no (other) data transmitting is possible.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param enabled
+     *          The enable or disable state to control the BREAK signal
+     */
+    public synchronized static native void setBreak(int fd, boolean enabled) throws IOException;
+
+    /**
+     * <p>
+     *     Control the RTS (request-to-send) pin state.
+     *     When enabled this will set the RTS pin to the HIGH state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
+     */
+    public synchronized static native void setRTS(int fd, boolean enabled) throws IOException;
+
+    /**
+     * <p>
+     *     Control the DTR (data-terminal-ready) pin state.
+     *     When enabled this will set the DTR pin to the HIGH state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
+     */
+    public synchronized static native void setDTR(int fd, boolean enabled) throws IOException;
+
+    /**
+     * <p>
+     *     Get the RTS (request-to-send) pin state.
+     * </p>
      *
      * @param fd
      *          The file descriptor of the serial port/device.
      */
-    public synchronized static native void echo(int fd, boolean enabled) throws IOException;
+    public synchronized static native boolean getRTS(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Get the DTR (data-terminal-ready) pin state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native boolean getDTR(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Get the CST (clear-to-send) pin state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native boolean getCTS(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Get the DSR (data-set-ready) pin state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native boolean getDSR(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Get the RI (ring-indicator) pin state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native boolean getRI(int fd) throws IOException;
+
+    /**
+     * <p>
+     *     Get the CD (carrier-detect) pin state.
+     * </p>
+     *
+     * @param fd
+     *          The file descriptor of the serial port/device.
+     */
+    public synchronized static native boolean getCD(int fd) throws IOException;
+
+    // ----------------------------------------
+    // READ OPERATIONS
+    // ----------------------------------------
 
     /**
      * Returns the number of characters available for reading, or -1 for any error condition, in
@@ -433,10 +467,6 @@ public class Serial {
      */
     public synchronized static native int available(int fd);
 
-
-    // ----------------------------------------
-    // READ OPERATIONS
-    // ----------------------------------------
 
     /**
      * <p>Reads all available bytes from the serial port/device.</p>

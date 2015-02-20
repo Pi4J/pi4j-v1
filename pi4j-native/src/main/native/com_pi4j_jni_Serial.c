@@ -84,11 +84,11 @@ int getAvailableByteCount(int fd){
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    open
- * Signature: (Ljava/lang/String;IIIIIZZZ)I
+ * Signature: (Ljava/lang/String;IIIII)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
   (JNIEnv *env, jclass obj, jstring port, jint baud, jint dataBits, jint parity, jint stopBits,
-   jint flowControl, jboolean echo, jboolean flushRx, jboolean flushTx)
+   jint flowControl)
 {
     struct termios options ;
     speed_t myBaud ;
@@ -99,7 +99,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
 	int len = (*env)->GetStringLength(env, port);
 	(*env)->GetStringUTFRegion(env, port, 0, len, device);
 
-    // open serial port
+    // open serial port //
     if ((fd = open (device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)) == -1){
         int err_number = errno;
         char err_message[100];
@@ -299,13 +299,8 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     // LOCAL MODE CONFIGURATION
     // ------------------------
 
-    // configure echo back of received bytes to sender
-    if(echo == JNI_FALSE){
-        options.c_lflag &= ~ECHO; // disable ECHO
-    }
-    else{
-        options.c_lflag |= ECHO;  // enable ECHO
-    }
+    // disable echo
+    options.c_lflag &= ~ECHO; // disable ECHO
 
     // do not echo erase character as error-correcting backspace (this is not a terminal)
     options.c_lflag &= ~ECHOE;
@@ -366,59 +361,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
     // set the state of the "MODEM" bits
     ioctl (fd, TIOCMSET, &status);
 
-    // flush serial recieve buffer
-    if(flushRx == JNI_TRUE) tcflush (fd, TCIFLUSH);
-
-    // flush serial recieve buffer
-    if(flushTx == JNI_TRUE) tcflush (fd, TCOFLUSH);
+    // flush serial receive and transmit buffers
+    tcflush (fd, TCIOFLUSH);
 
     // ok, lets take a short breath ...
-    usleep (10000) ;	// 10mS
+    usleep(50000) ; // 50 ms
 
-
-//
-//    // create epoll
-//    int epfd = epoll_create(1); // argument must be greater than 0; but value is not used
-//
-//    struct epoll_event ev;
-//    struct epoll_event events;
-//    ev.events = EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP;
-//    ev.data.fd = fd;
-//
-//    int res = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
-//
-//    if( res < 0 )
-//        printf("Error epoll_ctl: %i\n", errno);
-//
-//    while(1){
-//        // wait for input
-//        int n = epoll_wait(epfd, &events, 1, -1);
-//
-//        printf("Epoll unblocked\n");
-//        if(n < 0)
-//            perror("Epoll failed\n");
-//        else if(n==0)
-//            printf("TIMEOUT\n");
-//        else
-//        {
-//           // sleep a little before raising event notification (callback)
-//           usleep (50000) ;	// 50mS
-//
-//           int length = getAvailableByteCount(fd);
-//           printf("Bytes available: %d\n", length);
-//
-//           // copy the data bytes from the serial receive buffer into the payload result
-//           int i;
-//           for (i = 0; i < length; i++) {
-//
-//                // read a single byte from the RX buffer
-//                uint8_t x ;
-//                if (read (fd, &x, 1) != 1){
-//                    return NULL;   // ERROR READING RX BUFFER
-//                }
-//           }
-//        }
-//    }
+    // flush serial receive and transmit buffers
+    tcflush (fd, TCIOFLUSH);
 
     // return file descriptor
 	return fd;
@@ -459,48 +409,71 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
  * Method:    flush
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__I
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
   (JNIEnv *env, jclass obj, jint fd)
 {
-	// flush the transmit and receive buffers for the serial port
-	if(tcflush (fd, TCIOFLUSH) == -1){
+	// drain the transmit buffer to the serial port
+	if(tcdrain(fd) != 0){
         int err_number = errno;
         char err_message[100];
-        sprintf(err_message, "Failed to flush serial input (RX) and output (TX) buffers. (Error #%d)", err_number);
+        sprintf(err_message, "Failed to drain serial output (TX) buffers. (Error #%d)", err_number);
         throwIOException(env, err_message);
 	}
 }
 
 /*
  * Class:     com_pi4j_jni_Serial
- * Method:    flush
- * Signature: (IZZ)V
+ * Method:    discardInput
+ * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__IZZ
-  (JNIEnv *env, jclass obj, jint fd, jboolean rxBuffer, jboolean txBuffer)
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardInput
+  (JNIEnv *env, jclass obj, jint fd)
 {
-    // RX BUFFER
-    if(rxBuffer == JNI_TRUE){
-        // flush the receive buffes for the serial port
-        if(tcflush (fd, TCIFLUSH) == -1){
-            int err_number = errno;
-            char err_message[100];
-            sprintf(err_message, "Failed to flush serial input (RX) buffer. (Error #%d)", err_number);
-            throwIOException(env, err_message);
-        }
+    // flush the receive buffer for the serial port
+    if(tcflush (fd, TCIFLUSH) != 0){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to discard serial input (RX) buffer. (Error #%d)", err_number);
+        throwIOException(env, err_message);
     }
+}
 
-    // TX BUFFER
-    if(txBuffer == JNI_TRUE){
-        // flush the transmit buffer for the serial port
-        if(tcflush (fd, TCOFLUSH) == -1){
-            int err_number = errno;
-            char err_message[100];
-            sprintf(err_message, "Failed to flush serial output (TX) buffer. (Error #%d)", err_number);
-            throwIOException(env, err_message);
-        }
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    discardOutput
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardOutput
+  (JNIEnv *env, jclass obj, jint fd)
+{
+    // flush the transmit buffer for the serial port
+    if(tcflush (fd, TCOFLUSH) != 0){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to discard serial output (TX) buffer. (Error #%d)", err_number);
+        throwIOException(env, err_message);
+    }
+}
+
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    discardAll
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardAll
+  (JNIEnv *env, jclass obj, jint fd)
+{
+    // flush the transmit and receive buffers for the serial port
+	if(tcflush (fd, TCIOFLUSH) != 0){
+        int err_number = errno;
+        char err_message[100];
+        sprintf(err_message, "Failed to discard serial input (RX) and output (TX) buffers. (Error #%d)", err_number);
+        throwIOException(env, err_message);
 	}
 }
+
 
 
 /*
@@ -518,13 +491,288 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
   (JNIEnv *env, jclass obj, jint fd, jint duration)
 {
 	// transmit break
-	if(tcsendbreak(fd, duration) == -1){
+	if(tcsendbreak(fd, duration) != 0){
         int err_number = errno;
         char err_message[100];
         sprintf(err_message, "Failed to transmit BREAK signal to serial port. (Error #%d)", err_number);
         throwIOException(env, err_message);
 	}
 }
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setBreak
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setBreak
+  (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
+{
+  if(enabled == JNI_FALSE)
+  {
+     printf("SERIAL SET BREAK - FALSE\n");
+     if(ioctl(fd, TIOCCBRK, NULL) == 0)
+     {
+        printf("SERIAL SET BREAK - SUCCESS\n");
+        return;
+     }
+  }
+  else
+  {
+     printf("SERIAL SET BREAK - TRUE\n");
+     if(ioctl(fd, TIOCSBRK, NULL) == 0)
+     {
+        printf("SERIAL SET BREAK - SUCCESS\n");
+        return;
+     }
+  }
+
+  printf("SERIAL SET BREAK - ERROR\n");
+  // raise IOException if failed
+  int err_number = errno;
+  char err_message[100];
+  sprintf(err_message, "Failed to set RTS pin state. (Error #%d)", err_number);
+  throwIOException(env, err_message);
+}
+
+/*
+ *********************************************************************************
+ *	Serial Port PIN states
+ *********************************************************************************
+ */
+
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setRTS
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setRTS
+  (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
+{
+  int status;
+  int ret;
+
+  status |= TIOCM_RTS;
+
+  if(enabled == JNI_FALSE)
+  {
+     ret = ioctl(fd, TIOCMBIC, &status);
+  }
+  else
+  {
+     ret = ioctl(fd, TIOCMBIS, &status);
+  }
+
+  // raise IOException if failed
+  if(ret != 0)
+  {
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to set RTS pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setDTR
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setDTR
+  (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
+{
+  int status;
+  int ret;
+
+  status |= TIOCM_DTR;
+
+  if(enabled == JNI_FALSE)
+  {
+     ret = ioctl(fd, TIOCMBIC, &status);
+  }
+  else
+  {
+     ret = ioctl(fd, TIOCMBIS, &status);
+  }
+
+  // raise IOException if failed
+  if(ret != 0)
+  {
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to set DTR pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getRTS
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRTS
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get RTS pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_RTS)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getDTR
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDTR
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get DTR pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_DTR)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getCTS
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCTS
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get CTS pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_CTS)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getDSR
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDSR
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get DSR pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_DSR)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getRI
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRI
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get RI pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_RI)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getCD
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCD
+  (JNIEnv *env, jclass obj, jint fd)
+{
+  int status;
+  int ret;
+
+  // attempt to get status
+  if (ioctl(fd, TIOCMGET, &status) == -1)
+  {
+    // raise IOException if failed
+    int err_number = errno;
+    char err_message[100];
+    sprintf(err_message, "Failed to get CD pin state. (Error #%d)", err_number);
+    throwIOException(env, err_message);
+  }
+  else {
+    if (status & TIOCM_CD)
+      return JNI_TRUE;
+    else
+      return JNI_FALSE;
+  }
+}
+
 
 /*
  *********************************************************************************

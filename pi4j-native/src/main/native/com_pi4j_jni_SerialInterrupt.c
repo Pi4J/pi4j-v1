@@ -154,6 +154,7 @@ int monitorSerialInterrupt(void *threadarg)
        usleep (50000) ;	// 50mS
 
        int length = getAvailableDataLength(fileDescriptor);
+
        //printf("SERIAL EPOLL - Bytes available: %d\n", length);
 
        // create a new payload result byte array

@@ -36,10 +36,10 @@ extern "C" {
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    open
- * Signature: (Ljava/lang/String;IIIIIZZZ)I
+ * Signature: (Ljava/lang/String;IIIII)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_Serial_open
-  (JNIEnv *, jclass, jstring, jint, jint, jint, jint, jint, jboolean, jboolean, jboolean);
+  (JNIEnv *, jclass, jstring, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_pi4j_jni_Serial
@@ -51,19 +51,35 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_close
 
 /*
  * Class:     com_pi4j_jni_Serial
- * Method:    flush
+ * Method:    discardInput
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__I
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardInput
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    discardOutput
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardOutput
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    discardAll
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_discardAll
   (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_pi4j_jni_Serial
  * Method:    flush
- * Signature: (IZZ)V
+ * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__IZZ
-  (JNIEnv *, jclass, jint, jboolean, jboolean);
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_pi4j_jni_Serial
@@ -72,6 +88,78 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_flush__IZZ
  */
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
   (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setBreak
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setBreak
+  (JNIEnv *, jclass, jint, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setRTS
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setRTS
+  (JNIEnv *, jclass, jint, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    setDTR
+ * Signature: (IZ)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setDTR
+  (JNIEnv *, jclass, jint, jboolean);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getRTS
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRTS
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getDTR
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDTR
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getCTS
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCTS
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getDSR
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDSR
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getRI
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRI
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_jni_Serial
+ * Method:    getCD
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCD
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_pi4j_jni_Serial
