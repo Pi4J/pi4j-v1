@@ -41,6 +41,8 @@ import java.util.Map;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 public class RaspiPin  {
+
+    private static Map<String, Pin> pins;
     
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 
     public static final Pin GPIO_01 = createDigitalAndPwmPin(1, "GPIO 1"); // supports PWM0 [ALT5]
@@ -77,10 +79,14 @@ public class RaspiPin  {
     public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28"); // requires 2B, A+, B+ or newer model (40 pin header)
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires 2B, A+, B+ or newer model (40 pin header)
 
+
     private static Pin createDigitalPin(int address, String name) {
         Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     PinPullResistance.all());
+        if(pins == null){
+            pins = new HashMap<String, Pin>();
+        }
         pins.put(name, pin);
         return pin;
     }
@@ -89,11 +95,12 @@ public class RaspiPin  {
         Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                            EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
                            PinPullResistance.all());
+        if(pins == null){
+            pins = new HashMap<String, Pin>();
+        }
         pins.put(name, pin);
         return pin;
     }
-    
-    private static Map<String, Pin> pins = new HashMap<String, Pin>();
     
     public static Pin getPinByName(String name) {
     	return pins.get(name);
