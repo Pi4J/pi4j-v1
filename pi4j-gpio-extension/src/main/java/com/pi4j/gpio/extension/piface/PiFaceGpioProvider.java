@@ -113,6 +113,9 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         // create SPI object instance
         spi = SpiFactory.getInstance(spiChannel, spiSpeed);
 
+        // set SPI chip address
+        this.address = spiAddress;
+
         // IOCON – I/O EXPANDER CONFIGURATION REGISTER
         //
         // bit 7 BANK: Controls how the registers are addressed
