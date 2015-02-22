@@ -40,11 +40,12 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-15 :: 1.1-SNAPSHOT
+2015-02-22 :: 1.1-SNAPSHOT
 
   *  Added new Serial JNI implementation to support more advanced serial configuration/operations
   *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
+  *  Now requires Java 8 runtime.
 
 ## IN DEVEOPMENT
 
