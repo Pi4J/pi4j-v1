@@ -51,6 +51,11 @@ public interface SerialDataReader {
     // ----------------------------------------
 
     /**
+     * <p>discard/drain all available bytes from the serial port/device.</p>
+     */
+    public void discardData() throws IllegalStateException, IOException;
+
+    /**
      * <p>Reads all available bytes from the serial port/device.</p>
      *
      * @return Returns a byte array with the data read from the serial port.

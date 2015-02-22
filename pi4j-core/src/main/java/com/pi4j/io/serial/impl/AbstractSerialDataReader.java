@@ -1,11 +1,11 @@
-package com.pi4j.io.serial;
+package com.pi4j.io.serial.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  AbstractSerialDataReaderWriter.java  
+ * FILENAME      :  AbstractSerialDataReader.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,6 +27,8 @@ package com.pi4j.io.serial;
  * #L%
  */
 
+import com.pi4j.io.serial.SerialDataReader;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -35,7 +37,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-public abstract class AbstractSerialDataReaderWriter extends AbstractSerialDataWriter implements SerialDataReader, SerialDataWriter {
+public abstract class AbstractSerialDataReader implements SerialDataReader {
+
 
     // ----------------------------------------
     // READ OPERATIONS
@@ -55,6 +58,13 @@ public abstract class AbstractSerialDataReaderWriter extends AbstractSerialDataW
      * @return Returns a byte array with the data read from the serial port.
      */
     public abstract byte[] read() throws IllegalStateException, IOException;
+
+    /**
+     * <p>discard/drain all available bytes from the serial port/device.</p>
+     */
+    public void discardData() throws IllegalStateException, IOException{
+        read(); // simply read all bytes and do nothing with them to drain the buffer
+    }
 
     /**
      * <p>Reads a length of bytes from the port/serial device.</p>

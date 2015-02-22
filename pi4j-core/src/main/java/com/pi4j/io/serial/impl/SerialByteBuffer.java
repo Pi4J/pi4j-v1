@@ -29,12 +29,21 @@ package com.pi4j.io.serial.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.BufferOverflowException;
 
+/**
+ * This class implements a dynamic expanding byte buffer to
+ * accommodate new data received from the serial port
+ *
+ * Adapted from sources at:
+ * http://ostermiller.org/utils/src/CircularByteBuffer.java.html
+ * Stephen Ostermiller http://ostermiller.org/contact.pl?regarding=Java+Utilities
+ *
+ */
 public class SerialByteBuffer {
 
     public static int DEFAULT_BUFFER_SCALE_FACTOR = 2;
     public static int DEFAULT_INITIAL_BUFFER_SIZE = 4096;
-    public static int DEFAULT_MAXIMUM_BUFFER_SIZE = 5000000; // 5MB
 
     private InputStream stream = new SerialByteBufferInputStream();
     private volatile int writeIndex = 0;
@@ -80,68 +89,36 @@ public class SerialByteBuffer {
         return (buffer.length - (readIndex - writeIndex));
     }
 
-    private void resize(int min_capacity){
+    private void resize(int length) {
 
-        // double the buffer capacity
+        int min_capacity = buffer.length + length;
         int new_capacity = buffer.length;
 
-        // if doubling the capacity is not large enough to accommodate the
-        // new minimum capacity demands, then double it again ... and
-        // again ... until it's size is sufficient
+        // double the capacity until the buffer is large enough to accommodate the new demand
         while (new_capacity < min_capacity) {
-            new_capacity = new_capacity * DEFAULT_BUFFER_SCALE_FACTOR;
-            if(new_capacity > DEFAULT_MAXIMUM_BUFFER_SIZE){
-                new_capacity = DEFAULT_MAXIMUM_BUFFER_SIZE;
-            }
+            new_capacity *= DEFAULT_BUFFER_SCALE_FACTOR;
         }
 
-        // create a new buffer that can hold the newly determined capacity
+        // create a new buffer that can hold the newly determined
+        // capacity and copy the bytes from the old buffer into the new buffer
         byte[] new_buffer = new byte[new_capacity];
+        System.arraycopy(buffer, readIndex, new_buffer, 0, writeIndex);
 
-        System.out.println("---->>>>>> RESIZED - NEW CAPACITY = " + new_capacity);
-//        int marked = marked();
-        int available = available();
-//        if (markIndex <= writeIndex){
-//            // any space between the mark and
-//            // the first write needs to be saved.
-//            // In this case it is all in one piece.
-//            int length = writeIndex - markIndex;
-//            System.arraycopy(buffer, markIndex, temp_buffer, 0, length);
-//        }
-//        else {
-//            int length1 = buffer.length - markIndex;
-//            System.arraycopy(buffer, markIndex, temp_buffer, 0, length1);
-//            int length2 = writeIndex;
-//            System.arraycopy(buffer, 0, temp_buffer, length1, length2);
-//        }
-
-        int length = writeIndex;
-        System.arraycopy(buffer, readIndex, new_buffer, 0, length);
-
-//        int length1 = buffer.length - 0;
-//        System.arraycopy(buffer, readIndex, temp_buffer, 0, length1);
-//        int length2 = writeIndex;
-//        System.arraycopy(buffer, 0, temp_buffer, length1, length2);
-
-
-        buffer = new_buffer;
-        //markIndex = 0;
-//        readIndex = marked;
-//        writeIndex = marked + available;
-
+        // update pointers
+        buffer = new_buffer; // old buffer should get garbage collected
         readIndex = 0;
-        writeIndex = available;
+        writeIndex = available();
     }
 
-    public synchronized void write(byte[] data) throws IOException {
+    public  void write(byte[] data) throws IOException, BufferOverflowException {
         write(data, 0, data.length);
     }
 
-    public synchronized void write(byte[] data, int offset, int length) throws IOException {
+    public  void write(byte[] data, int offset, int length) throws IOException {
         while (length > 0) {
             int remaining_space = remaining();
             if(remaining_space < length) {
-                resize(buffer.length + length);
+                resize(length);
             }
             int realLen = Math.min(length, remaining_space);
             int firstLen = Math.min(realLen, buffer.length - writeIndex);
@@ -186,15 +163,11 @@ public class SerialByteBuffer {
                 synchronized (SerialByteBuffer.this){
                     int available = SerialByteBuffer.this.available();
                     if (available > 0){
-                        int result = buffer[readIndex] & 0xff; // we only care about fist 8 buts
+                        int result = buffer[readIndex] & 0xff; // we only care about fist 8 bits
                         readIndex++; // increment read index position
                         // if the read index reaches the maximum buffer capacity, then rollover to zero index
                         if (readIndex == buffer.length)
                             readIndex = 0;
-
-                        //ensureMark();
-                        //markIndex = readIndex;
-
                         return result;
                     }
                 }
@@ -259,7 +232,6 @@ public class SerialByteBuffer {
                         if (readIndex == buffer.length) {
                             readIndex = 0;
                         }
-                        //ensureMark();
                         return length;
                     }
                 }

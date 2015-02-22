@@ -5,7 +5,7 @@ package com.pi4j.io.serial;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SerialDataListener.java  
+ * FILENAME      :  SerialDataEventListener.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -51,7 +51,7 @@ package com.pi4j.io.serial;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public interface SerialDataListener extends java.util.EventListener {
+public interface SerialDataEventListener extends java.util.EventListener {
 
     /**
      * This is the event callback method that will be invoked when new serial data is received.

@@ -29,6 +29,7 @@ package com.pi4j.io.serial.impl;
 
 
 import com.pi4j.io.serial.*;
+import com.pi4j.io.serial.tasks.SerialDataEventDispatchTaskImpl;
 import com.pi4j.jni.SerialInterrupt;
 import com.pi4j.jni.SerialInterruptEvent;
 import com.pi4j.jni.SerialInterruptListener;
@@ -38,6 +39,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 
 /**
  * <p> This implementation class implements the 'Serial' interface using the WiringPi Serial library.</p>
@@ -56,7 +58,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @see com.pi4j.io.serial.Serial
  * @see com.pi4j.io.serial.SerialDataEvent
- * @see com.pi4j.io.serial.SerialDataListener
+ * @see com.pi4j.io.serial.SerialDataEventListener
  * @see com.pi4j.io.serial.SerialFactory
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
@@ -66,8 +68,49 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial {
 
     protected int fileDescriptor = -1;
-    protected final CopyOnWriteArrayList<SerialDataListener> listeners = new CopyOnWriteArrayList<>();
-    SerialByteBuffer receiveBuffer = new SerialByteBuffer();
+    protected final CopyOnWriteArrayList<SerialDataEventListener> listeners;
+    protected final ExecutorService executor;
+    protected final SerialByteBuffer receiveBuffer;
+    protected boolean bufferingDataReceived = true;
+
+    /**
+     * default constructor
+     */
+    public SerialImpl(){
+        listeners = new CopyOnWriteArrayList<>();
+        executor = SerialFactory.getExecutorServiceFactory().newSingleThreadExecutorService();
+        receiveBuffer = new SerialByteBuffer();
+
+        // register shutdown callback hook class
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    }
+
+    /**
+     * This class is used to perform any configured shutdown actions
+     * for the serial impl
+     *
+     * @author Robert Savage
+     *
+     */
+    private class ShutdownHook extends Thread {
+        public void run() {
+
+            // close serial port
+            if(isOpen()){
+                try {
+                    close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // remove serial port listener
+            SerialInterrupt.removeListener(fileDescriptor);
+
+            // perform shutdown of any monitoring threads
+            SerialFactory.shutdown();
+        }
+    }
 
     /**
      * <p>
@@ -96,61 +139,70 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * @param flowControl
      *          The flow control option to use for serial communication. (none, hardware, software)
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
-            throws SerialPortException{
-        try {
-            fileDescriptor = com.pi4j.jni.Serial.open(device, baud, dataBits, parity, stopBits, flowControl);
+            throws IOException{
 
-            // read in initial buffered data (if any) into the receive buffer
-            int available = com.pi4j.jni.Serial.available(fileDescriptor);
-            //System.out.println("DATA AVAIL: " + available);
-            if(available > 0) {
-                byte[] initial_data = com.pi4j.jni.Serial.read(fileDescriptor, available);
-                if (initial_data.length > 0) {
-                    try {
-                        // write data to the receive buffer
-                        receiveBuffer.write(initial_data);
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        // open serial port
+        fileDescriptor = com.pi4j.jni.Serial.open(device, baud, dataBits, parity, stopBits, flowControl);
+
+        // read in initial buffered data (if any) into the receive buffer
+        int available = com.pi4j.jni.Serial.available(fileDescriptor);
+
+        if(available > 0) {
+            byte[] initial_data = com.pi4j.jni.Serial.read(fileDescriptor, available);
+            if (initial_data.length > 0) {
+                try {
+                    // write data to the receive buffer
+                    receiveBuffer.write(initial_data);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+        }
 
-            // create a serial data listener event for data receive events from the serial device
-            SerialInterrupt.addListener(fileDescriptor, new SerialInterruptListener() {
-                @Override
-                public void onDataReceive(SerialInterruptEvent event) {
+        // create a serial data listener event for data receive events from the serial device
+        SerialInterrupt.addListener(fileDescriptor, new SerialInterruptListener() {
+            @Override
+            public void onDataReceive(SerialInterruptEvent event) {
 
-                    try {
+                try {
+                    SerialDataEvent sde = null;
+
+                    if(isBufferingDataReceived()) {
                         // stuff event data payload into the receive buffer
                         receiveBuffer.write(event.getData());
 
-                        System.out.println("BUFFER SIZE : " + receiveBuffer.capacity());
-                        System.out.println("BUFFER LEFT : " + receiveBuffer.remaining());
-                        System.out.println("BUFFER AVAIL: " + receiveBuffer.available());
+                        //System.out.println("BUFFER SIZE : " + receiveBuffer.capacity());
+                        //System.out.println("BUFFER LEFT : " + receiveBuffer.remaining());
+                        //System.out.println("BUFFER AVAIL: " + receiveBuffer.available());
 
-                        // notify event listener subscribers
-                        for(SerialDataListener listener : listeners){
-                            listener.dataReceived(new SerialDataEvent(SerialImpl.this));
-                        }
+                        // create the serial data event; since we are buffering data
+                        // it will be located in the receive buffer
+                        sde = new SerialDataEvent(SerialImpl.this);
                     }
-                    catch (IOException e) {
-                        e.printStackTrace();
+                    else{
+                        // create the serial data event; since we are NOT buffering data
+                        // we will pass the specific data payload directly into the event
+                        sde = new SerialDataEvent(SerialImpl.this, event.getData());
                     }
 
-                    //System.out.println("DATA RX: " + new String(event.getData()));
+                    // add a new serial data event notification to the thread pool for *immediate* execution
+                    // we notify the event listeners on a separate thread to prevent blocking the native monitoring thread
+                    executor.execute(new SerialDataEventDispatchTaskImpl(sde, listeners));
                 }
-            });
-        }
-        catch (IOException e) {
-            throw new SerialPortException("Cannot open serial port: " + e.getMessage());
-        }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // ensure file descriptor is valid
         if (fileDescriptor == -1) {
-            throw new SerialPortException("Cannot open serial port");
+            throw new IOException("Cannot open serial port");
         }
     }
 
@@ -180,10 +232,10 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * @param baud
      *          The baud rate to use with the serial port.
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void open(String device, int baud) throws SerialPortException{
+    public void open(String device, int baud) throws IOException{
         // open the serial port with config settings of "8N1" and no flow control
         open(device,
              baud,
@@ -220,11 +272,11 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * @param flowControl
      *          The flow control option to use for serial communication. (none, hardware, software)
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
-                     FlowControl flowControl) throws SerialPortException{
+                     FlowControl flowControl) throws IOException{
         // open the serial port with NO ECHO and NO (forced) BUFFER FLUSH
         open(device, baud.getValue(), dataBits.getValue(), parity.getIndex(),
                 stopBits.getValue(), flowControl.getIndex());
@@ -246,10 +298,10 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *          A serial configuration object that contains the device, baud rate, data bits, parity,
      *          stop bits, and flow control settings.
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws  IOException thrown on any error.
      */
     @Override
-    public void open(SerialConfig serialConfig) throws SerialPortException{
+    public void open(SerialConfig serialConfig) throws IOException{
         // open the serial port with config settings
         open(serialConfig.device(),
              serialConfig.baud().getValue(),
@@ -280,13 +332,16 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
     public boolean isClosed(){
         return !(isOpen());
     }
-    
+
 
     /**
      * This method is called to close a currently open open serial port.
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void close() throws IllegalStateException {
+    public void close() throws IllegalStateException, IOException {
     	
         // validate state
         if (isClosed()) 
@@ -296,11 +351,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
         SerialInterrupt.removeListener(fileDescriptor);
 
     	// close serial port now
-        try {
-            com.pi4j.jni.Serial.close(fileDescriptor);
-        } catch (IOException e) {
-            throw new SerialPortException("Cannot close serial port: " + e.getMessage());
-        }
+        com.pi4j.jni.Serial.close(fileDescriptor);
+
+        // reset file descriptor
         fileDescriptor = -1;
 	}
 
@@ -310,19 +363,18 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *     Forces the transmission of any remaining data in the serial port transmit buffer.
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void flush() throws IllegalStateException, SerialPortException{
+    public void flush() throws IllegalStateException, IOException{
         // validate state
         if (isClosed())
             throw new IllegalStateException("Serial connection is not open; cannot 'flush()'.");
 
         // flush data to serial port immediately
-        try {
-            com.pi4j.jni.Serial.flush(fileDescriptor);
-        } catch (IOException e) {
-            throw new SerialPortException(e);
-        }
+        com.pi4j.jni.Serial.flush(fileDescriptor);
     }
 
     /**
@@ -331,19 +383,17 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void discardInput() throws IllegalStateException, SerialPortException{
+    public void discardInput() throws IllegalStateException, IOException{
         // validate state
         if (isClosed())
             throw new IllegalStateException("Serial connection is not open; cannot 'discardInput()'.");
 
         // flush data to serial port immediately
-        try {
-            com.pi4j.jni.Serial.discardInput(fileDescriptor);
-        } catch (IOException e) {
-            throw new SerialPortException(e);
-        }
+        com.pi4j.jni.Serial.discardInput(fileDescriptor);
     }
 
     /**
@@ -352,19 +402,17 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void discardOutput() throws IllegalStateException, SerialPortException{
+    public void discardOutput() throws IllegalStateException, IOException{
         // validate state
         if (isClosed())
                 throw new IllegalStateException("Serial connection is not open; cannot 'discardOutput()'.");
 
         // flush data to serial port immediately
-        try {
-            com.pi4j.jni.Serial.discardOutput(fileDescriptor);
-        } catch (IOException e) {
-            throw new SerialPortException(e);
-        }
+        com.pi4j.jni.Serial.discardOutput(fileDescriptor);
     }
 
     /**
@@ -373,19 +421,17 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void discardAll() throws IllegalStateException, SerialPortException{
+    public void discardAll() throws IllegalStateException, IOException{
         // validate state
         if (isClosed())
             throw new IllegalStateException("Serial connection is not open; cannot 'discardAll()'.");
 
         // flush data to serial port immediately
-        try {
-            com.pi4j.jni.Serial.discardAll(fileDescriptor);
-        } catch (IOException e) {
-            throw new SerialPortException(e);
-        }
+        com.pi4j.jni.Serial.discardAll(fileDescriptor);
     }
 
     /**
@@ -395,19 +441,17 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *
      * @param duration
      *          The length of time (milliseconds) to send the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void sendBreak(int duration) throws IllegalStateException, SerialPortException{
+    public void sendBreak(int duration) throws IllegalStateException, IOException{
         // validate state
         if (isClosed())
             throw new IllegalStateException("Serial connection is not open; cannot 'sendBreak()'.");
 
         // send BREAK signal to serial port immediately
-        try {
-            com.pi4j.jni.Serial.sendBreak(fileDescriptor, duration);
-        } catch (IOException e) {
-            throw new SerialPortException(e);
-        }
+        com.pi4j.jni.Serial.sendBreak(fileDescriptor, duration);
     }
 
     /**
@@ -415,9 +459,11 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *     Send a BREAK signal to connected device for at least 0.25 seconds, and not more than 0.5 seconds
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
-    public void sendBreak() throws IllegalStateException, SerialPortException{
+    public void sendBreak() throws IllegalStateException, IOException{
         sendBreak(0);
     }
 
@@ -430,6 +476,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *
      * @param enabled
      *          The enable or disable state to control the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void setBreak(boolean enabled) throws IllegalStateException, IOException{
@@ -449,6 +497,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *
      * @param enabled
      *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void setRTS(boolean enabled) throws IllegalStateException, IOException{
@@ -468,6 +518,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *
      * @param enabled
      *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void setDTR(boolean enabled) throws IllegalStateException, IOException{
@@ -483,6 +535,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the RTS (request-to-send) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getRTS() throws IllegalStateException, IOException{
         // validate state
@@ -497,6 +552,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the DTR (data-terminal-ready) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getDTR() throws IllegalStateException, IOException{
         // validate state
@@ -511,6 +569,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the CTS (clean-to-send) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getCTS() throws IllegalStateException, IOException{
         // validate state
@@ -525,6 +586,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the DSR (data-set-ready) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getDSR() throws IllegalStateException, IOException{
         // validate state
@@ -539,6 +603,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the RI (ring-indicator) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getRI() throws IllegalStateException, IOException{
         // validate state
@@ -553,6 +620,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>
      *     Get the CD (carrier-detect) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getCD() throws IllegalStateException, IOException{
         // validate state
@@ -571,6 +641,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * Gets the number of bytes available for reading, or -1 for any error condition.
      *
      * @return Returns the number of bytes available for reading, or -1 for any error
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public int available() throws IllegalStateException, IOException {
@@ -587,6 +659,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p>Reads all available bytes from the serial port/device.</p>
      *
      * @return Returns a byte array with the data read from the serial port.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public byte[] read() throws IllegalStateException, IOException{
@@ -608,6 +682,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *          This number must not be higher than the number of available bytes.
      *
      * @return Returns a byte array with the data read from the serial port.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public byte[] read(int length) throws IllegalStateException, IOException{
@@ -617,7 +693,7 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
 
         // read serial data from receive buffer
         byte[] buffer = new byte[length];
-        receiveBuffer.getInputStream().read(buffer,0 , length);
+        receiveBuffer.getInputStream().read(buffer, 0 , length);
         return buffer;
     }
 
@@ -635,6 +711,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      *            The starting index (inclusive) in the array to send from.
      * @param length
      *            The number of bytes from the byte array to transmit to the serial port.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     @Override
     public void write(byte[] data, int offset, int length) throws IllegalStateException, IOException{
@@ -658,13 +736,13 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p> Java consumer code can call this method to register itself as a listener for serial data
      * events. </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see com.pi4j.io.serial.SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener  A class instance that implements the SerialListener interface.
      */
     @Override
-    public synchronized void addListener(SerialDataListener... listener) {
+    public synchronized void addListener(SerialDataEventListener... listener) {
         // add the new listener to the list of listeners
         Collections.addAll(listeners, listener);
     }
@@ -675,19 +753,19 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
      * <p> Java consumer code can call this method to unregister itself as a listener for serial data
      * events. </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see com.pi4j.io.serial.SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener A class instance that implements the SerialListener interface.
      */
     @Override
-    public synchronized void removeListener(SerialDataListener... listener) {
+    public synchronized void removeListener(SerialDataEventListener... listener) {
         // remove the listener from the list of listeners
-        for (SerialDataListener lsnr : listener) {
+        for (SerialDataEventListener lsnr : listener) {
             listeners.remove(lsnr);
         }
     }
-    
+
     /**
      * This method returns the serial device file descriptor
      * @return fileDescriptor file descriptor
@@ -716,6 +794,39 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
     }
 
 
+    /**
+     * This method returns the buffering state for data received from the serial device/port.
+     * @return 'true' if buffering is enabled; else 'false'
+     */
+    @Override
+    public boolean isBufferingDataReceived(){
+        return bufferingDataReceived;
+    }
+
+    /**
+     * <p>
+     *     This method controls the buffering state for data received from the serial device/port.
+     * </p>
+     * <p>
+     *   If the buffering state is enabled, then all data bytes received from the serial port will
+     *   get copied into a data receive buffer.  You can use the 'getInputStream()' or and of the 'read()'
+     *   methods to access this data.  The data will also be available via the 'SerialDataEvent' event.
+     *   It is important to know that if you are using data buffering, the data will continue to grow
+     *   in memory until your program consume it from the data reader/stream.
+     * </p>
+     * <p>
+     *   If the buffering state is disabled, then all data bytes received from the serial port will NOT
+     *   get copied into the data receive buffer, but will be included in the 'SerialDataEvent' event's
+     *   data payload.  If you program does not care about or use data received from the serial port,
+     *   then you should disable the data buffering state to prevent memory waste/leak.
+     * </p>
+     *
+     * @param enabled sets the buffering behavior state
+     */
+    @Override
+    public void setBufferingDataReceived(boolean enabled){
+        bufferingDataReceived = enabled;
+    }
 
 
     private class SerialOutputStream extends OutputStream {
@@ -735,7 +846,7 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
         }
 
         @Override
-        public void flush(){
+        public void flush() throws IOException {
             SerialImpl.this.flush();
         }
     }

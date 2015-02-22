@@ -31,6 +31,7 @@
 
 import com.pi4j.io.serial.*;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -40,7 +41,7 @@ import java.util.Date;
  */
 public class SerialExample {
     
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, IOException {
         
         // !! ATTENTION !!
         // By default, the serial port is configured as a console port 
@@ -52,18 +53,28 @@ public class SerialExample {
         // http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/
                 
         System.out.println("<--Pi4J--> Serial Communication Example ... started.");
-        System.out.println(" ... connect using settings: 38400, N, 8, 1.");
+        System.out.println(" ... connect using settings: 38400, 8, N, 1.");
         System.out.println(" ... data received on serial port should be displayed below.");
         
         // create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
 
         // create and register the serial data listener
-        serial.addListener(new SerialDataListener() {
+        serial.addListener(new SerialDataEventListener() {
             @Override
             public void dataReceived(SerialDataEvent event) {
+
+                // NOTE! - It is extremely important to read the data received from the
+                // serial port.  If it does not get read from the receive buffer, the
+                // buffer will continue to grow and consume memory.
+
                 // print out the data received to the console
-                System.out.print(event.getAsciiString());
+                try {
+                    System.out.print("[HEX DATA]   " + event.getHexByteString());
+                    System.out.print("[ASCII DATA] " + event.getAsciiString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }            
         });
                 
@@ -100,7 +111,7 @@ public class SerialExample {
             }
             
         }
-        catch(SerialPortException ex) {
+        catch(IOException ex) {
             System.out.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
             return;
         }

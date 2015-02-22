@@ -1,4 +1,4 @@
-package com.pi4j.io.serial;
+package com.pi4j.io.serial.impl;
 
 /*
  * #%L
@@ -26,6 +26,8 @@ package com.pi4j.io.serial;
  * limitations under the License.
  * #L%
  */
+
+import com.pi4j.io.serial.SerialDataWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

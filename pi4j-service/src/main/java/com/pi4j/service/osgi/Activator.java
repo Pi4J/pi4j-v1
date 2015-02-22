@@ -28,24 +28,24 @@ package com.pi4j.service.osgi;
  */
 
 
-import java.util.Properties;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
 import com.pi4j.io.gpio.service.GpioService;
 import com.pi4j.io.gpio.service.impl.GpioServiceImpl;
 import com.pi4j.system.service.NetworkInformationService;
 import com.pi4j.system.service.SystemInformationService;
 import com.pi4j.system.service.impl.NetworkInformationServiceImpl;
 import com.pi4j.system.service.impl.SystemInformationServiceImpl;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import java.util.Dictionary;
+import java.util.Properties;
 
 public class Activator implements BundleActivator
 {
     public void start(BundleContext bundleContext) throws Exception
     {
         // create OSGi bundle properties
-        Properties props = new Properties();
+        Dictionary props = new Properties();
         props.put("Language", "English");
 
         // create a new GPIO service instance

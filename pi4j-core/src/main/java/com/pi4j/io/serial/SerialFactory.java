@@ -28,6 +28,8 @@ package com.pi4j.io.serial;
  */
 
 
+import com.pi4j.concurrent.DefaultExecutorServiceFactory;
+import com.pi4j.concurrent.ExecutorServiceFactory;
 import com.pi4j.io.serial.impl.SerialImpl;
 
 /**
@@ -47,13 +49,18 @@ import com.pi4j.io.serial.impl.SerialImpl;
  * 
  * @see com.pi4j.io.serial.Serial
  * @see com.pi4j.io.serial.SerialDataEvent
- * @see com.pi4j.io.serial.SerialDataListener
+ * @see SerialDataEventListener
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 public class SerialFactory {
+
+    private static boolean isshutdown = false;
+
+    // we only allow a single default scheduled executor service factory to exists
+    private static ExecutorServiceFactory executorServiceFactory = null;
 
     // private constructor 
     private SerialFactory() {
@@ -67,5 +74,60 @@ public class SerialFactory {
      */
     public static Serial createInstance() {
         return new SerialImpl();
+    }
+
+    /**
+     * <p>Return instance of {@link ExecutorServiceFactory}.</p>
+     * <p>Note: .</p>
+     *
+     * @return Return a new GpioController impl instance.
+     */
+    public static ExecutorServiceFactory getExecutorServiceFactory() {
+        // if an executor service provider factory has not been created, then create a new default instance
+        if (executorServiceFactory == null) {
+            executorServiceFactory = new DefaultExecutorServiceFactory();
+        }
+        // return the provider instance
+        return executorServiceFactory;
+    }
+
+    /**
+     * Sets default {@link ExecutorServiceFactory}.
+     *
+     * @param executorServiceFactory service factory instance
+     */
+    public static void setExecutorServiceFactory(ExecutorServiceFactory executorServiceFactory) {
+        // set the default factory instance
+        SerialFactory.executorServiceFactory = executorServiceFactory;
+    }
+
+    /**
+     * This method returns TRUE if the serial controller has been shutdown.
+     *
+     * @return shutdown state
+     */
+    public static boolean isShutdown(){
+        return isshutdown;
+    }
+
+
+    /**
+     * This method can be called to forcefully shutdown all serial port
+     * monitoring, listening, and task threads/executors.
+     */
+    public static void shutdown()
+    {
+        // prevent reentrant invocation
+        if(isShutdown())
+            return;
+
+        // shutdown all executor services
+        //
+        // NOTE: we are not permitted to access the shutdown() method of the individual
+        // executor services, we must perform the shutdown with the factory
+        SerialFactory.getExecutorServiceFactory().shutdown();
+
+        // set is shutdown tracking variable
+        isshutdown = true;
     }
 }

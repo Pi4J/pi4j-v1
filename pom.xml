@@ -129,8 +129,8 @@
 		<github.global.server>github</github.global.server>
 
         <!-- JAVA COMPILER VERSIONS -->
-        <jdk.source.version>1.7</jdk.source.version>
-        <jdk.target.version>1.7</jdk.target.version>
+        <jdk.source.version>1.8</jdk.source.version>
+        <jdk.target.version>1.8</jdk.target.version>
 
         <!-- DEPENDENCY VERSIONS -->
         <org.osgi.core.version>4.3.0</org.osgi.core.version>

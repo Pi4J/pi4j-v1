@@ -49,7 +49,7 @@ import java.io.OutputStream;
  * 
  * @see com.pi4j.io.serial.SerialFactory
  * @see com.pi4j.io.serial.SerialDataEvent
- * @see com.pi4j.io.serial.SerialDataListener
+ * @see SerialDataEventListener
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
@@ -95,10 +95,10 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * @param flowControl
      *          The flow control option to use for serial communication. (none, hardware, software)
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
     public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
-            throws SerialPortException;
+            throws IOException;
 
 
     /**
@@ -127,9 +127,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * @param baud
      *          The baud rate to use with the serial port.
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
-    public void open(String device, int baud) throws SerialPortException;
+    public void open(String device, int baud) throws IOException;
 
     /**
      * <p>
@@ -158,10 +158,10 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * @param flowControl
      *          The flow control option to use for serial communication. (none, hardware, software)
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
     public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
-                     FlowControl flowControl) throws SerialPortException;
+                     FlowControl flowControl) throws IOException;
 
     /**
      * <p>
@@ -179,14 +179,17 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *          A serial configuration object that contains the device, baud rate, data bits, parity,
      *          stop bits, and flow control settings.
      *
-     * @throws SerialPortException Exception thrown on any error.
+     * @throws IOException thrown on any error.
      */
-    public void open(SerialConfig serialConfig) throws SerialPortException;
+    public void open(SerialConfig serialConfig) throws IOException;
 
     /**
      * This method is called to close a currently open open serial port.
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void close() throws IllegalStateException;
+    public void close() throws IllegalStateException, IOException;
 
     /**
      * This method is called to determine if the serial port is already open.
@@ -209,8 +212,11 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *     Forces the transmission of any remaining data in the serial port transmit buffer.
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void flush() throws IllegalStateException, SerialPortException;
+    public void flush() throws IllegalStateException, IOException;
 
     /**
      * <p>
@@ -218,8 +224,10 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void discardInput() throws IllegalStateException, SerialPortException;
+    public void discardInput() throws IllegalStateException, IOException;
 
     /**
      * <p>
@@ -227,8 +235,10 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void discardOutput() throws IllegalStateException, SerialPortException;
+    public void discardOutput() throws IllegalStateException, IOException;
 
     /**
      * <p>
@@ -236,8 +246,10 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void discardAll() throws IllegalStateException, SerialPortException;
+    public void discardAll() throws IllegalStateException, IOException;
 
     /**
      * <p>
@@ -246,16 +258,20 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *
      * @param duration
      *          The length of time (milliseconds) to send the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void sendBreak(int duration) throws IllegalStateException, SerialPortException;
+    public void sendBreak(int duration) throws IllegalStateException, IOException;
 
     /**
      * <p>
      *     Send a BREAK signal to connected device for at least 0.25 seconds, and not more than 0.5 seconds
      * </p>
      *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void sendBreak() throws IllegalStateException, SerialPortException;
+    public void sendBreak() throws IllegalStateException, IOException;
 
     /**
      * <p>
@@ -266,6 +282,8 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *
      * @param enabled
      *          The enable or disable state to control the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public void setBreak(boolean enabled) throws IllegalStateException, IOException;
 
@@ -277,6 +295,8 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *
      * @param enabled
      *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public void setRTS(boolean enabled) throws IllegalStateException, IOException;
 
@@ -288,6 +308,8 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *
      * @param enabled
      *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public void setDTR(boolean enabled) throws IllegalStateException, IOException;
 
@@ -295,6 +317,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the RTS (request-to-send) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getRTS() throws IllegalStateException, IOException;
 
@@ -302,6 +327,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the DTR (data-terminal-ready) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getDTR() throws IllegalStateException, IOException;
 
@@ -309,6 +337,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the CTS (clean-to-send) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getCTS() throws IllegalStateException, IOException;
 
@@ -316,6 +347,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the DSR (data-set-ready) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getDSR() throws IllegalStateException, IOException;
 
@@ -323,6 +357,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the RI (ring-indicator) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getRI() throws IllegalStateException, IOException;
 
@@ -330,6 +367,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * <p>
      *     Get the CD (carrier-detect) pin state.
      * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
     public boolean getCD() throws IllegalStateException, IOException;
 
@@ -344,23 +384,23 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * events.
      * </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener  A class instance that implements the SerialListener interface.
      */
-    public void addListener(SerialDataListener... listener);
+    public void addListener(SerialDataEventListener... listener);
 
     /**
      * <p> Java consumer code can call this method to unregister itself as a listener for serial data
      * events. </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener A class instance that implements the SerialListener interface.
      */
-    public void removeListener(SerialDataListener... listener);
+    public void removeListener(SerialDataEventListener... listener);
 
 
     // ----------------------------------------
@@ -384,4 +424,35 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      * @return OutputStream output stream
      */
     public OutputStream getOutputStream();
+
+    /**
+     * This method returns the buffering state for data received from the serial device/port.
+     * @return 'true' if buffering is enabled; else 'false'
+     */
+    public boolean isBufferingDataReceived();
+
+    /**
+     * <p>
+     *     This method controls the buffering state for data received from the serial device/port.
+     * </p>
+     * <p>
+     *   If the buffering state is enabled, then all data bytes received from the serial port will
+     *   get copied into a data receive buffer.  You can use the 'getInputStream()' or and of the 'read()'
+     *   methods to access this data.  The data will also be available via the 'SerialDataEvent' event.
+     *   It is important to know that if you are using data buffering, the data will continue to grow
+     *   in memory until your program consume it from the data reader/stream.
+     * </p>
+     * <p>
+     *   If the buffering state is disabled, then all data bytes received from the serial port will NOT
+     *   get copied into the data receive buffer, but will be included in the 'SerialDataEvent' event's
+     *   data payload.  If you program does not care about or use data received from the serial port,
+     *   then you should disable the data buffering state to prevent memory waste/leak.
+     * </p>
+     *
+     * @param enabled
+     *   Sets the buffering behavior state.
+     *
+     */
+    public void setBufferingDataReceived(boolean enabled);
+
 }
