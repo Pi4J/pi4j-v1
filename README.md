@@ -40,7 +40,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-15 :: 1.0-SNAPSHOT
+2015-02-22 :: 1.0-SNAPSHOT
 
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
