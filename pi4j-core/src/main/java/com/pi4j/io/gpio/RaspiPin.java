@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class RaspiPin  {
 
-    private static Map<String, Pin> pins;
+    private static Map<String, Pin> pins = new HashMap<String, Pin>();
     
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 
     public static final Pin GPIO_01 = createDigitalAndPwmPin(1, "GPIO 1"); // supports PWM0 [ALT5]
@@ -84,9 +84,7 @@ public class RaspiPin  {
         Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     PinPullResistance.all());
-        if(pins == null){
-            pins = new HashMap<String, Pin>();
-        }
+        if (pins == null) { pins = new HashMap<String, Pin>(); }
         pins.put(name, pin);
         return pin;
     }
@@ -95,9 +93,7 @@ public class RaspiPin  {
         Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
                            EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
                            PinPullResistance.all());
-        if(pins == null){
-            pins = new HashMap<String, Pin>();
-        }
+        if (pins == null) { pins = new HashMap<String, Pin>(); }
         pins.put(name, pin);
         return pin;
     }
