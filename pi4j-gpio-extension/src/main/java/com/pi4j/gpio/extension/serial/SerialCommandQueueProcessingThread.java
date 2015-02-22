@@ -28,8 +28,10 @@ package com.pi4j.gpio.extension.serial;
  */
 
 
-import java.util.concurrent.LinkedTransferQueue;
 import com.pi4j.io.serial.Serial;
+
+import java.io.IOException;
+import java.util.concurrent.LinkedTransferQueue;
 
 
 public class SerialCommandQueueProcessingThread extends Thread {
@@ -85,6 +87,8 @@ public class SerialCommandQueueProcessingThread extends Thread {
                     }
                     
                     Thread.sleep(delay);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                 }
