@@ -37,6 +37,10 @@ extern "C" {
 #define com_pi4j_wiringpi_GpioUtil_DIRECTION_IN 0L
 #undef com_pi4j_wiringpi_GpioUtil_DIRECTION_OUT
 #define com_pi4j_wiringpi_GpioUtil_DIRECTION_OUT 1L
+#undef com_pi4j_wiringpi_GpioUtil_DIRECTION_HIGH
+#define com_pi4j_wiringpi_GpioUtil_DIRECTION_HIGH 2L
+#undef com_pi4j_wiringpi_GpioUtil_DIRECTION_LOW
+#define com_pi4j_wiringpi_GpioUtil_DIRECTION_LOW 3L
 #undef com_pi4j_wiringpi_GpioUtil_EDGE_NONE
 #define com_pi4j_wiringpi_GpioUtil_EDGE_NONE 0L
 #undef com_pi4j_wiringpi_GpioUtil_EDGE_BOTH

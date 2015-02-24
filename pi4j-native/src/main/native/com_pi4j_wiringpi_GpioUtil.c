@@ -45,6 +45,8 @@
 // pin directions
 #define DIRECTION_IN 0
 #define DIRECTION_OUT 1
+#define DIRECTION_HIGH 2
+#define DIRECTION_LOW 3
 
 // edge detection conditions
 #define EDGE_NONE 0
@@ -100,7 +102,9 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 
 	// validate the pin direction
 	if(direction != DIRECTION_IN &&
-	   direction != DIRECTION_OUT)
+	   direction != DIRECTION_OUT &&
+	   direction != DIRECTION_HIGH &&
+	   direction != DIRECTION_LOW)
 	{
 		// throw exception
 		char errstr[255];
@@ -126,25 +130,55 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	fprintf (fd, "%d\n", edgePin) ;
 	fclose (fd) ;
 
-	// attempt to access the gpio pin's direction file
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
-	if ((fd = fopen (fName, "w")) == NULL)
+	// get the pin direction
+	int existing_direction = getExistingPinDirection(edgePin);
+
+	// set direction if its not already configured with the same direction value
+	if(direction != existing_direction)
 	{
-		// throw exception
-		char errstr[255];
-		sprintf (errstr, "Unable to open GPIO direction interface for pin [%d]: %s\n", pin, strerror (errno)) ;
-		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return;
-	}
+        // attempt to access the gpio pin's direction file
+        sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+        if ((fd = fopen (fName, "w")) == NULL)
+        {
+            // throw exception
+            char errstr[255];
+            sprintf (errstr, "Unable to open GPIO direction interface for pin [%d]: %s\n", pin, strerror (errno)) ;
+            (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+            return;
+        }
 
-	// write the IN/OUT direction to the direction file
-	if (direction == DIRECTION_IN)
-	  fprintf (fd, "in\n") ;
-	else
-	  fprintf (fd, "out\n") ;
+        // write the IN/OUT direction to the direction file
+        if (direction == DIRECTION_IN)
+        {
+          fprintf (fd, "in\n") ;
+        }
+        else if (direction == DIRECTION_OUT)
+        {
+          fprintf (fd, "out\n") ;
+        }
+        else if (direction == DIRECTION_HIGH)
+        {
+          fprintf (fd, "high\n") ;
+        }
+        else if (direction == DIRECTION_LOW)
+        {
+          fprintf (fd, "low\n") ;
+        }
+        else
+        {
+            // close the direction file
+            fclose (fd) ;
 
-	// close the direction file
-	fclose (fd) ;
+            // throw exception
+            char errstr[255];
+            sprintf (errstr, "Unsupported DIRECTION [%d] for GPIO pin [%d]\n", direction, pin) ;
+            (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+            return;
+        }
+
+	    // close the direction file
+	    fclose (fd) ;
+    }
 
 	// change ownership so the current user can actually use it!
 	sprintf (fName, "/sys/class/gpio/gpio%d/value", edgePin) ;
@@ -182,7 +216,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_unexport
 	{
 		// throw exception
 		char errstr[255];
-		sprintf (errstr, "Unable to open GPIO export interface for pin [%d]: %s\n", pin, strerror (errno)) ;
+		sprintf (errstr, "Unable to open GPIO unexport interface for pin [%d]: %s\n", pin, strerror (errno)) ;
 		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
 		return;
 	}
@@ -256,7 +290,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 
 	// validate the pin direction
 	if(direction != DIRECTION_IN &&
-	   direction != DIRECTION_OUT)
+	   direction != DIRECTION_OUT &&
+	   direction != DIRECTION_HIGH &&
+	   direction != DIRECTION_LOW)
 	{
 		// throw exception
 		char errstr[255];
@@ -267,6 +303,16 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 
 	// get the edge pin number
 	int edgePin = getEdgePin(pin);
+
+	// get the pin direction
+	int existing_direction = getExistingPinDirection(edgePin);
+
+	// no need to set direction if its already configured with the same direction value
+	if(direction == existing_direction)
+	{
+        // success
+        return (jboolean)1;
+	}
 
 	// attempt to access the gpio pin's direction file
 	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
@@ -281,9 +327,32 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 
 	// write the IN/OUT direction to the direction file
 	if (direction == DIRECTION_IN)
+	{
 	  fprintf (fd, "in\n") ;
-	else
+	}
+	else if (direction == DIRECTION_OUT)
+	{
 	  fprintf (fd, "out\n") ;
+	}
+	else if (direction == DIRECTION_HIGH)
+	{
+	  fprintf (fd, "high\n") ;
+	}
+	else if (direction == DIRECTION_LOW)
+	{
+	  fprintf (fd, "low\n") ;
+	}
+	else
+	{
+        // close the direction file
+        fclose (fd) ;
+
+		// throw exception
+		char errstr[255];
+		sprintf (errstr, "Unsupported DIRECTION [%d] for GPIO pin [%d]\n", direction, pin) ;
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return;
+	}
 
 	// close the direction file
 	fclose (fd) ;
@@ -301,10 +370,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 (JNIEnv *env, jclass class, jint pin)
 {
-	FILE *fd ;
-	char fName [128] ;
-	char data[RDBUF_LEN];
-
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
 	{
@@ -318,11 +383,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 	// get the edge pin number
 	int edgePin = getEdgePin(pin);
 
-	// construct the gpio direction file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+	// get the pin direction
+	int direction = getExistingPinDirection(edgePin);
 
-	// open the gpio direction file
-	if ((fd = fopen (fName, "r")) == NULL)
+	// check for errors
+	if(direction < 0)
 	{
 		// throw exception
 		char errstr[255];
@@ -331,14 +396,28 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 		return -1;
 	}
 
+	return direction;
+}
+
+int getExistingPinDirection(int edgePin)
+{
+	FILE *fd ;
+	char fName [128] ;
+	char data[RDBUF_LEN];
+
+	// construct the gpio direction file path
+	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+
+	// open the gpio direction file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		return -1;
+	}
+
 	// read the data from the file into the data buffer
 	if(fgets(data, RDBUF_LEN, fd) == NULL)
 	{
-		// throw exception
-		char errstr[255];
-		sprintf(errstr, "Unable to open GPIO direction interface for pin [%d]: %s\n", pin, strerror (errno)) ;
-		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return -1;
+		return -2;
 	}
 
 	// close the gpio direction file
@@ -355,15 +434,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 	}
 	else
 	{
-		// throw exception
-		char errstr[255];
-		sprintf(errstr, "Unrecognized GPIO pin [%d] direction: [%s]. Should be 'in' or 'out'.\n", pin, data) ;
-		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return -1;
+		return -3;
 	}
 }
-
-
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil

@@ -61,6 +61,7 @@ public interface GpioPin {
     void clearProperties();
     
     void export(PinMode mode);
+    void export(PinMode mode, PinState defaultState);
     void unexport();
     boolean isExported();
     

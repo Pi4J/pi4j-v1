@@ -87,6 +87,30 @@ public class GpioUtil {
     public static final int DIRECTION_OUT = 1;
 
     /**
+     * <p>GPIO PIN DIRECTION</p>
+     * <p>
+     * GPIO pin constant for OUT direction with an initial default HIGH value for writing digital pin states (0/1).
+     * </p>
+     *
+     * @see #export(int,int)
+     * @see #setDirection(int,int)
+     * @see #getDirection(int)
+     */
+    public static final int DIRECTION_HIGH = 2;
+
+    /**
+     * <p>GPIO PIN DIRECTION</p>
+     * <p>
+     * GPIO pin constant for OUT direction with an initial default LOW value for writing digital pin states (0/1).
+     * </p>
+     *
+     * @see #export(int,int)
+     * @see #setDirection(int,int)
+     * @see #getDirection(int)
+     */
+    public static final int DIRECTION_LOW= 3;
+
+    /**
      * <p>GPIO PIN EDGE DETECTION</p>
      * <p>
      * This constant is provided as an edge detection mode for use with the 'edge' method. This

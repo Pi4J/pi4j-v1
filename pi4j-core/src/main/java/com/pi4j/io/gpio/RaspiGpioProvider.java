@@ -3,6 +3,7 @@ package com.pi4j.io.gpio;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
+import com.pi4j.wiringpi.GpioUtil;
 
 /*
  * #%L
@@ -60,18 +61,35 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
 
     @Override
     public void export(Pin pin, PinMode mode) {
+        export(pin, mode, null);
+    }
+
+    @Override
+    public void export(Pin pin, PinMode mode, PinState defaultState) {
         super.export(pin, mode);
-       
+
         //System.out.println("-- EXPORTING PIN [" + pin.getAddress() + "] to mode [" + mode.getName() + "]");
+
+        // get mode configured direction value
+        int direction = mode.getDirection().getValue();
+
+        // if a default state was provided and the direction is OUT, then override the
+        // pin direction to include initial state value
+        if(defaultState != null && mode.getDirection() == PinDirection.OUT){
+            if(defaultState == PinState.LOW)
+                direction = GpioUtil.DIRECTION_LOW;
+            else if(defaultState == PinState.HIGH)
+                direction = GpioUtil.DIRECTION_HIGH;
+        }
 
         // if not already exported, export the pin and set the pin direction
         if(!com.pi4j.wiringpi.GpioUtil.isExported(pin.getAddress())){
-            com.pi4j.wiringpi.GpioUtil.export(pin.getAddress(), mode.getDirection().getValue());
+            com.pi4j.wiringpi.GpioUtil.export(pin.getAddress(), direction);
         }
         // if the pin is already exported, then check its current configured direction
         // if the direction does not match, then set the new direction for the pin
         else if(com.pi4j.wiringpi.GpioUtil.getDirection(pin.getAddress()) != mode.getDirection().getValue()){
-            com.pi4j.wiringpi.GpioUtil.setDirection(pin.getAddress(), mode.getDirection().getValue());
+            com.pi4j.wiringpi.GpioUtil.setDirection(pin.getAddress(), direction);
         }
 
         // set the pin input/output mode

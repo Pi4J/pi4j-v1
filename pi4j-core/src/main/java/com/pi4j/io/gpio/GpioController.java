@@ -41,6 +41,7 @@ import java.util.Collection;
 @SuppressWarnings("unused")
 public interface GpioController {
 
+    void export(PinMode mode, PinState defaultState, GpioPin... pin);
     void export(PinMode mode, GpioPin... pin);
     boolean isExported(GpioPin... pin);
     void unexport(GpioPin... pin);
@@ -132,7 +133,8 @@ public interface GpioController {
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin, int defaultValue);
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name);
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin);
-    
+
+    GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState);
     GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode);
     GpioPin provisionPin(GpioProvider provider, Pin pin, PinMode mode);
     GpioPin provisionPin(Pin pin, String name, PinMode mode);
