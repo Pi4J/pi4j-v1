@@ -26,32 +26,16 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinAnalog;
-import com.pi4j.io.gpio.GpioPinAnalogInput;
-import com.pi4j.io.gpio.GpioPinAnalogOutput;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.GpioPinDigital;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinInput;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.GpioPinShutdown;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.exception.GpioPinExistsException;
 import com.pi4j.io.gpio.exception.GpioPinNotProvisionedException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class GpioControllerImpl implements GpioController {
 
@@ -95,6 +79,11 @@ public class GpioControllerImpl implements GpioController {
 
     @Override
     public void export(PinMode mode, GpioPin... pin) {
+        export(mode, null, pin);
+    }
+
+    @Override
+    public void export(PinMode mode, PinState defaultState, GpioPin... pin){
         if (pin == null || pin.length == 0) {
             throw new IllegalArgumentException("Missing pin argument.");
         }
@@ -104,7 +93,7 @@ public class GpioControllerImpl implements GpioController {
                 throw new GpioPinNotProvisionedException(p.getPin());
             }
             // export the pin
-            p.export(mode);
+            p.export(mode, defaultState);
         }
     }
 
@@ -498,9 +487,14 @@ public class GpioControllerImpl implements GpioController {
     public GpioPin provisionPin(GpioProvider provider, Pin pin, PinMode mode) {
         return provisionPin(provider, pin, pin.getName(), mode);
     }
-    
+
     @Override
     public GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode) {
+        return provisionPin(provider, pin, name, mode, null);
+    }
+
+    @Override
+    public GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState) {
         // if an existing pin has been previously created, then throw an error
         for(GpioPin p : pins) {
             if (p.getProvider().equals(provider) && p.getPin().equals(pin)) {
@@ -517,7 +511,7 @@ public class GpioControllerImpl implements GpioController {
         }
 
         // export this pin 
-        gpioPin.export(mode);
+        gpioPin.export(mode, defaultState);
 
         // add this new pin instance to the managed collection
         pins.add(gpioPin);
@@ -669,7 +663,7 @@ public class GpioControllerImpl implements GpioController {
     @Override
     public GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name, PinState defaultState) {
         // create new GPIO pin instance
-        GpioPinDigitalOutput gpioPin = provisionDigitalOutputPin(provider, pin, name);
+        GpioPinDigitalOutput gpioPin = (GpioPinDigitalOutput)provisionPin(provider, pin, name, PinMode.DIGITAL_OUTPUT, defaultState);
 
         // apply default state
         if (defaultState != null) {

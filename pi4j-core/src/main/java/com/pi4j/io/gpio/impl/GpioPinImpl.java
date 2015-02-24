@@ -150,6 +150,12 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public void export(PinMode mode, PinState defaultState) {
+        // export the pin
+        provider.export(pin, mode, defaultState);
+    }
+
+    @Override
     public void unexport() {
         // unexport the pin
         provider.unexport(pin);
