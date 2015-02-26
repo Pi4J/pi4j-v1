@@ -1,11 +1,11 @@
-package com.pi4j.component;
+package com.pi4j.component.button;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ComponentListener.java  
+ * FILENAME      :  ButtonStateChangeEvent.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,6 +28,22 @@ package com.pi4j.component;
  */
 
 
-public interface ComponentListener extends java.util.EventListener {
-    // MARKER INTERFACE
+public class ButtonStateChangeEvent extends ButtonEvent {
+
+    protected final ButtonState oldState;
+    protected final ButtonState newState;
+
+    public ButtonStateChangeEvent(Button buttonComponent, ButtonState oldState, ButtonState newState) {
+        super(buttonComponent);
+        this.oldState = oldState;
+        this.newState = newState;
+    }
+
+    public ButtonState getOldState() {
+        return oldState;
+    }
+
+    public ButtonState getNewState() {
+        return newState;
+    }
 }

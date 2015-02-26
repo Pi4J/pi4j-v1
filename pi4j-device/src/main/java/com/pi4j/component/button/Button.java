@@ -1,11 +1,11 @@
-package com.pi4j.component;
+package com.pi4j.component.button;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ComponentListener.java  
+ * FILENAME      :  Button.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,6 +28,21 @@ package com.pi4j.component;
  */
 
 
-public interface ComponentListener extends java.util.EventListener {
-    // MARKER INTERFACE
+import com.pi4j.component.ObserveableComponent;
+
+public interface Button extends ObserveableComponent {
+    
+    boolean isPressed();
+    boolean isReleased();
+    ButtonState getState();
+    boolean isState(ButtonState state);
+ 
+    void addListener(ButtonStateChangeListener... listener);
+    void removeListener(ButtonStateChangeListener... listener);
+    void addListener(ButtonPressedListener... listener);
+    void removeListener(ButtonPressedListener... listener);
+    void addListener(ButtonReleasedListener... listener);
+    void removeListener(ButtonReleasedListener... listener);
+    void addListener(long duration, ButtonHoldListener... listener);
+    void removeListener(ButtonHoldListener... listener);
 }
