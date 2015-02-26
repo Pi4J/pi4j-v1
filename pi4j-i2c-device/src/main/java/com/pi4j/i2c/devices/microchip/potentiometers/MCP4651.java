@@ -3,8 +3,10 @@ package com.pi4j.i2c.devices.microchip.potentiometers;
 import java.io.IOException;
 
 import com.pi4j.i2c.devices.microchip.potentiometers.impl.Channel;
+import com.pi4j.i2c.devices.microchip.potentiometers.impl.DeviceStatus;
 import com.pi4j.i2c.devices.microchip.potentiometers.impl.PotentiometerImpl;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
 
 /*
  * #%L
@@ -80,10 +82,19 @@ public class MCP4651 extends PotentiometerImpl {
 	@Override
 	public int getMaxValue() {
 		
+		return MCP4651.maxValue();
+		
+	}
+
+	/**
+	 * @return The maximal value at which a wiper can be (256 for MCP4651)
+	 */
+	public static int maxValue() {
+		
 		return 256;
 		
 	}
-	
+
 	/**
 	 * @return Whether this device is a potentiometer or a rheostat (false for MCP4651)
 	 */
@@ -101,6 +112,103 @@ public class MCP4651 extends PotentiometerImpl {
 	public Channel[] getSupportedChannelsByDevice() {
 		
 		return supportedChannels;
+		
+	}
+	
+	public static void main(String[] args) throws IOException {
+		
+		// initialize bus
+		final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
+		try {
+			
+			final MCP4651 a = new MCP4651(
+					bus, false, false, false, Channel.A, 0);
+			final MCP4651 b = new MCP4651(
+					bus, false, false, false, Channel.B, MCP4651.maxValue());
+			
+			// Check device-status
+			final DeviceStatus aStatus = a.getDeviceStatus();
+			System.out.println("WiperLock for A active: " + aStatus.isWiperLockActive());
+			final DeviceStatus bStatus = b.getDeviceStatus();
+			System.out.println("WiperLock for B active: " + bStatus.isWiperLockActive());
+			
+			// for about 5 seconds
+			
+			for (int i = 0; i < MCP4651.maxValue(); ++i) {
+				
+				// increase a
+				a.increase();
+				
+				// decrease b
+				b.decrease();
+				
+				// wait a little bit
+				try {
+					Thread.sleep(19); // assume 1 ms for I2C-communication
+				} catch (InterruptedException e) {
+					// never mind
+				}
+				
+			}
+			
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+			
+			// for a minute (59 seconds at 26 steps and one second at 12 steps)
+			boolean aDirectionUp = false;
+			boolean bDirectionUp = true;
+			final int counter = 59 * 26 + 12;
+			for (int i = 0; i < counter; ++i) {
+				
+				// change wipers
+				if (aDirectionUp) {
+					a.increase(10);
+				} else {
+					a.decrease(10);
+				}
+				if (bDirectionUp) {
+					b.increase(10);
+				} else {
+					b.decrease(10);
+				}
+				
+				// reverse direction
+				if ((aDirectionUp && (a.getCurrentValue() == a.getMaxValue()))
+						|| (!aDirectionUp && (a.getCurrentValue() == 0))) {
+					aDirectionUp = !aDirectionUp;
+				}
+				if ((bDirectionUp && (b.getCurrentValue() == b.getMaxValue()))
+						|| (!aDirectionUp && (b.getCurrentValue() == 0))) {
+					bDirectionUp = !bDirectionUp;
+				}
+
+				// wait a little bit
+				try {
+					Thread.sleep(39); // assume 1 ms for I2C-communication
+				} catch (InterruptedException e) {
+					// never mind
+				}
+				
+			}
+			
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+			
+		} finally {
+			
+			try {
+				bus.close();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+			
+		}
 		
 	}
 	
