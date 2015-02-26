@@ -24,22 +24,22 @@
  * limitations under the License.
  * #L%
  */
-import com.pi4j.component.switches.SwitchListener;
-import com.pi4j.component.switches.SwitchState;
-import com.pi4j.component.switches.SwitchStateChangeEvent;
+import com.pi4j.component.button.ButtonEvent;
+import com.pi4j.component.button.ButtonPressedListener;
+import com.pi4j.component.button.ButtonReleasedListener;
 import com.pi4j.device.pibrella.Pibrella;
 import com.pi4j.device.pibrella.PibrellaLed;
 import com.pi4j.device.pibrella.impl.PibrellaDevice;
 
 import java.io.IOException;
 
-public class PiBrellaExample {
+public class PibrellaExample2 {
 
     static int cylonSpeed = 100;
 
     public static void main(String args[]) throws InterruptedException, IOException {
 
-        System.out.println("<--Pi4J--> PiBrella Example ... started.");
+        System.out.println("<--Pi4J--> Pibrella Example ... started.");
 
         // create the Pi-Face controller
         final Pibrella pibrella = new PibrellaDevice();
@@ -47,17 +47,19 @@ public class PiBrellaExample {
         // -----------------------------------------------------------------
         // create a button listener
         // -----------------------------------------------------------------
-        pibrella.button().addListener(new SwitchListener() {
+        pibrella.button().addListener(new ButtonPressedListener() {
             @Override
-            public void onStateChange(SwitchStateChangeEvent event) {
-                if(event.getNewState() == SwitchState.ON){
-                    System.out.println("[BUTTON PRESSED]");
-                    cylonSpeed = 30;
-                }
-                else{
-                    System.out.println("[BUTTON RELEASED]");
-                    cylonSpeed = 100;
-                }
+            public void onButtonPressed(ButtonEvent event) {
+                System.out.println("[BUTTON PRESSED]");
+                cylonSpeed = 30;
+            }
+        });
+
+        pibrella.button().addListener(new ButtonReleasedListener() {
+            @Override
+            public void onButtonReleased(ButtonEvent event) {
+                System.out.println("[BUTTON RELEASED]");
+                cylonSpeed = 100;
             }
         });
 
