@@ -33,7 +33,7 @@ import com.pi4j.device.pibrella.impl.PibrellaDevice;
 
 import java.io.IOException;
 
-public class PibrellaExample2 {
+public class PibrellaExample {
 
     static int cylonSpeed = 100;
 
