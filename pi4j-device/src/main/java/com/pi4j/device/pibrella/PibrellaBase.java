@@ -28,10 +28,10 @@ package com.pi4j.device.pibrella;
  */
 
 
+import com.pi4j.component.button.Button;
+import com.pi4j.component.button.impl.GpioButtonComponent;
 import com.pi4j.component.light.LED;
 import com.pi4j.component.light.impl.GpioLEDComponent;
-import com.pi4j.component.switches.MomentarySwitch;
-import com.pi4j.component.switches.impl.GpioMomentarySwitchComponent;
 import com.pi4j.device.DeviceBase;
 import com.pi4j.io.gpio.*;
 
@@ -43,7 +43,7 @@ public abstract class PibrellaBase extends DeviceBase implements Pibrella {
     private GpioPinDigitalOutput outputPins[];
     private GpioPinPwmOutput pwmOutput;
 
-    private MomentarySwitch button;
+    private Button button;
     private LED leds[];
     private Buzzer buzzer;
 
@@ -80,7 +80,7 @@ public abstract class PibrellaBase extends DeviceBase implements Pibrella {
         inputPins[4].setDebounce(20);
 
         // create switch components
-        button = new GpioMomentarySwitchComponent(inputPins[4], PinState.LOW, PinState.HIGH);
+        button = new GpioButtonComponent(inputPins[4], PinState.LOW, PinState.HIGH);
 
         // create LED components
         leds = new LED[] {        new GpioLEDComponent(outputPins[4]),
@@ -199,10 +199,10 @@ public abstract class PibrellaBase extends DeviceBase implements Pibrella {
     public LED ledGreen() { return getLed(PibrellaLed.GREEN.getIndex()); }
 
     @Override
-    public MomentarySwitch getButton() { return button; }
+    public Button getButton() { return button; }
 
     @Override
-    public MomentarySwitch button() { return getButton(); }
+    public Button button() { return getButton(); }
 
     @Override
     public Buzzer getBuzzer() {
