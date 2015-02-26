@@ -40,13 +40,15 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-24 :: 1.0-SNAPSHOT
+2015-02-26 :: 1.0-SNAPSHOT
 
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
   *  Added support for RaspberryPi Model B+
   *  Added support for RaspberryPi Compute Module
   *  Added support for debounce logic on digital input pin events
+  *  Added support for Button component interface
+  *  Added support for Pibrella device
   *  Added support for SPI modes
   *  Added easy install/uninstall scripts (get.pi4j.com)
   *  Added APT package and repository support (repository.pi4j.com)
