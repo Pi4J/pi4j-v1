@@ -236,8 +236,12 @@ public abstract class PotentiometerImpl
 			
 		} else {
 			
+			// check boundaries
+			final int newInitialValueForVolatileWipers
+					= getValueAccordingBoundaries(initialValueForVolatileWipers);
+			
 			controller.setValue(channel.getDeviceControllerChannel(),
-					initialValueForVolatileWipers,
+					newInitialValueForVolatileWipers,
 					DeviceController.VOLATILE_WIPER);
 			
 			currentValue = initialValueForVolatileWipers;
@@ -262,16 +266,6 @@ public abstract class PotentiometerImpl
 	 * @return All channels supported by the underlying device
 	 */
 	public abstract Channel[] getSupportedChannelsByDevice();
-	
-	/**
-	 * @return The maximal value at which a wiper can be
-	 */
-	public abstract int getMaxValue();
-	
-	/**
-	 * @return Whether this device is a potentiometer or a rheostat
-	 */
-	public abstract boolean isRheostat();
 	
 	/**
 	 * @param pinA0 Whether the device's address pin A0 is high (true) or low (false)
@@ -386,12 +380,13 @@ public abstract class PotentiometerImpl
 	}
 	
 	/**
+	 * Adjusts the given value according to boundaries (0 and getMaxValue()).
+	 * 
 	 * @param value The wiper's value to be set
 	 * 
-	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 * @return A valid wiper-value
 	 */
-	@Override
-	public void setCurrentValue(final int value) throws IOException {
+	private int getValueAccordingBoundaries(final int value) {
 		
 		// check boundaries
 		final int newValue;
@@ -404,6 +399,20 @@ public abstract class PotentiometerImpl
 		else {
 			newValue = value;
 		}
+		return newValue;
+
+	}
+	
+	/**
+	 * @param value The wiper's value to be set
+	 * 
+	 * @throws IOException Thrown if communication fails or device returned a malformed result
+	 */
+	@Override
+	public void setCurrentValue(final int value) throws IOException {
+		
+		// check boundaries
+		final int newValue = getValueAccordingBoundaries(value);
 		
 		// set wipers according nonVolatileMode
 		doWiperAction(new WiperAction() {
