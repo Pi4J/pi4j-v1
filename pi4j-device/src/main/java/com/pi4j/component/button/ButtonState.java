@@ -1,11 +1,11 @@
-package com.pi4j.component;
+package com.pi4j.component.button;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ComponentListener.java  
+ * FILENAME      :  ButtonState.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,6 +28,7 @@ package com.pi4j.component;
  */
 
 
-public interface ComponentListener extends java.util.EventListener {
-    // MARKER INTERFACE
+public enum ButtonState {
+    PRESSED,
+    RELEASED
 }
