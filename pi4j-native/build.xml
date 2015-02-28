@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pi4j-native" default="build-libpi4j.so" basedir=".">
-    <target name="build-libpi4j.so">
+<project name="pi4j-native" default="build-libpi4j.so-remote" basedir=".">
+
+    <!-- this target is used when building maven project remotely from your workstation -->
+    <target name="build-libpi4j.so-remote">
     
         <echo message="Building native libpi4j shared library"/>
     
@@ -50,4 +52,14 @@
 			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
 		
     </target>
+
+    <!-- this target is used when building maven project directly on the Raspberry Pi -->
+    <target name="build-libpi4j.so-local">
+        <echo message="Building native libpi4j shared library"/>
+        <exec command="sudo chmod +x build-local.sh" />
+        <exec executable="/bin/sh">
+            <arg line="build-local.sh"/>
+        </exec>
+    </target>
+
 </project>

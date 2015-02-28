@@ -13,8 +13,28 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
+    <!-- BUILD PROPERTIES -->
+    <properties>
+        <pi4j-native-ant-build-target>build-libpi4j.so-remote</pi4j-native-ant-build-target>
+    </properties>
+
 	<!-- BUILD PROFILES -->
 	<profiles>
+
+        <!-- SPECIAL PROFILE TO DETERMINE IF RUNNING ON THE PI HARDWARE -->
+        <profile>
+            <id>rpi-local</id>
+            <activation>
+                <os>
+                    <name>linux</name>
+                    <family>unix</family>
+                    <arch>arm</arch>
+                </os>
+            </activation>
+            <properties>
+                <pi4j-native-ant-build-target>build-libpi4j.so-local</pi4j-native-ant-build-target>
+            </properties>
+        </profile>
 
 		<!-- This profile is used to dynamically rebuild the native library .H 
 			header files from the defined JNI jar classes. This profile should only be 
@@ -136,7 +156,7 @@
 				                          value="${project.build.directory}"/>		
 				                <property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>
 
-                                <ant target="build-libpi4j.so" >
+                                <ant target="${pi4j-native-ant-build-target}" >
                                     <property name="pi-abi" value="hard-float"/>
                                     <property name="pi-port" value="${pi.port}"/>
                                     <property name="pi-host" value="${pi.host}"/>
