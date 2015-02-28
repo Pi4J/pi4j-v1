@@ -4,7 +4,7 @@ set -e
 
 case "$1" in
    configure)
-      ln -s /opt/pi4j/bin/pi4j /usr/bin/pi4j
+      ln --force --symbolic /opt/pi4j/bin/pi4j /usr/bin/pi4j
    ;;
    abort-upgrade|abort-remove|abort-deconfigure)
       echo "$1"
