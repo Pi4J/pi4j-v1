@@ -40,7 +40,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-02-26 :: 1.0-SNAPSHOT
+2015-03-01 :: 1.0-SNAPSHOT
 
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
@@ -50,6 +50,7 @@ Copyright (C) 2012-2015 Pi4J
   *  Added support for Button component interface
   *  Added support for Pibrella device
   *  Added support for SPI modes
+  *  Added support for building pi4j-native project directly on the Pi (using maven)
   *  Added easy install/uninstall scripts (get.pi4j.com)
   *  Added APT package and repository support (repository.pi4j.com)
   *  Simplified native library loader to find embedded hard-float native lib

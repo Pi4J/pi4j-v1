@@ -70,8 +70,13 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public void export(Pin pin, PinMode mode, PinState defaultState) {
+        // export the pin and set it's mode
         export(pin, mode);
-        setState(pin, defaultState);
+
+        // apply default state if one was provided and only if this pin is a digital output
+        if(defaultState != null && mode == PinMode.DIGITAL_OUTPUT) {
+            setState(pin, defaultState);
+        }
     }
 
     @Override
@@ -79,14 +84,14 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
-        
+
         if (!pin.getSupportedPinModes().contains(mode)) {
             throw new UnsupportedPinModeException(pin, mode);
         }
-        
+
         // cache exported state
         getPinCache(pin).setExported(true);
-        
+
         // cache mode
         getPinCache(pin).setMode(mode);
     }
