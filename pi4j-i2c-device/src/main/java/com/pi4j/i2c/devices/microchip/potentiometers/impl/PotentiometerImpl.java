@@ -12,13 +12,13 @@ import com.pi4j.io.i2c.I2CDevice;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  MCP45xxMCP46xxPotentiometer.java  
+ * FILENAME      :  PotentiometerImpl.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2013 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,21 +279,21 @@ public abstract class PotentiometerImpl
 			final boolean pinA2) {
 		
 		// constant component
-		int i2cAddress = 0b01010000;
+		int i2cAddress = 0b0101000;
 		
 		// dynamic component if device knows pin A0
 		if (pinA0) {
-			i2cAddress |= 0b00000010;
+			i2cAddress |= 0b0000001;
 		}
 		
 		// dynamic component if device knows pin A1
 		if (pinA1) {
-			i2cAddress |= 0b00000100;
+			i2cAddress |= 0b0000010;
 		}
 		
 		// dynamic component if device knows pin A2
 		if (pinA2) {
-			i2cAddress |= 0b00001000;
+			i2cAddress |= 0b0000100;
 		}
 		
 		return i2cAddress;
