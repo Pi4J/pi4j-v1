@@ -133,7 +133,7 @@ public class Lcd {
      * @param d0 pin number for driving bit 1
      * @param d1 pin number for driving bit 2
      * @param d2 pin number for driving bit 3
-     * @param d3 pin number for driving bit 4 (only used in 8-bit mode)
+     * @param d3 pin number for driving bit 4
      * @param d4 pin number for driving bit 5 (only used in 8-bit mode)
      * @param d5 pin number for driving bit 6 (only used in 8-bit mode)
      * @param d6 pin number for driving bit 7 (only used in 8-bit mode)
