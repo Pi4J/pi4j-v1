@@ -81,8 +81,8 @@ public class DeviceController {
 	
 	// status-bits (see 4.2.2.1)
 	
-	private static final int STATUS_RESERVED_MASK = 0b1111111110000;
-	private static final int STATUS_RESERVED_VALUE = 0b1111111110000;
+	private static final int STATUS_RESERVED_MASK = 0b0000111110000;
+	private static final int STATUS_RESERVED_VALUE = 0b0000111110000;
 	private static final int STATUS_EEPROM_WRITEACTIVE_BIT = 0b1000;
 	private static final int STATUS_WIPERLOCK1_BIT = 0b0100;
 	private static final int STATUS_WIPERLOCK0_BIT = 0b0010;

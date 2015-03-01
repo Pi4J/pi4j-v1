@@ -244,7 +244,7 @@ public abstract class PotentiometerImpl
 					newInitialValueForVolatileWipers,
 					DeviceController.VOLATILE_WIPER);
 			
-			currentValue = initialValueForVolatileWipers;
+			currentValue = newInitialValueForVolatileWipers;
 			
 		}
 		
