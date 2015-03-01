@@ -19,7 +19,7 @@ import com.pi4j.io.i2c.I2CFactory;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2013 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public class MCP4651 extends PotentiometerImpl {
 			System.out.println("WiperLock for A active: " + aStatus.isWiperLockActive());
 			final DeviceStatus bStatus = b.getDeviceStatus();
 			System.out.println("WiperLock for B active: " + bStatus.isWiperLockActive());
-			
+/*			
 			// for about 5 seconds
 			
 			for (int i = 0; i < MCP4651.maxValue(); ++i) {
@@ -199,7 +199,7 @@ public class MCP4651 extends PotentiometerImpl {
 					+ "/" + a.updateCacheFromDevice());
 			System.out.println("B: " + b.getCurrentValue()
 					+ "/" + b.updateCacheFromDevice());
-			
+*/			
 		} finally {
 			
 			try {

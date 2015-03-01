@@ -25,13 +25,13 @@ import com.pi4j.io.i2c.I2CDevice;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  MCP45xxMCP46xxPotentiometerTest.java  
+ * FILENAME      :  PotentiometerImplStaticTest.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2013 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,19 +209,19 @@ public class PotentiometerImplStaticTest {
 		
 		int address1 = PotentiometerImpl.buildI2CAddress(false, false, false);
 		assertEquals("'buildI2CAddress(false, false, false)' "
-				+ "does not return '0b01010000'", 0b01010000, address1);
+				+ "does not return '0b0101000'", 0b0101000, address1);
 
 		int address2 = PotentiometerImpl.buildI2CAddress(true, false, false);
 		assertEquals("'buildI2CAddress(true, false, false)' "
-				+ "does not return '0b01010010'", 0b01010010, address2);
+				+ "does not return '0b0101001'", 0b0101001, address2);
 		
 		int address3 = PotentiometerImpl.buildI2CAddress(true, true, false);
 		assertEquals("'buildI2CAddress(true, true, false)' "
-				+ "does not return '0b01010110'", 0b01010110, address3);
+				+ "does not return '0b0101011'", 0b0101011, address3);
 
 		int address4 = PotentiometerImpl.buildI2CAddress(true, true, true);
 		assertEquals("'buildI2CAddress(true, true, true)' "
-				+ "does not return '0b01011110'", 0b01011110, address4);
+				+ "does not return '0b0101111'", 0b0101111, address4);
 		
 	}
 	
