@@ -57,8 +57,9 @@ public class ObserveableComponentBase extends ComponentBase implements Observeab
 
     @Override
     public synchronized void removeAllListeners() {
-        for (int index = (listeners.size()-1); index >= 0; index --) {
-            ComponentListener listener = listeners.get(index);
+        List<ComponentListener> listeners_copy = new ArrayList<>(listeners);
+        for (int index = (listeners_copy.size()-1); index >= 0; index --) {
+            ComponentListener listener = listeners_copy.get(index);
             removeListener(listener);
         }
     }
