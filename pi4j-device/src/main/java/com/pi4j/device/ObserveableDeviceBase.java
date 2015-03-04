@@ -57,8 +57,9 @@ public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevi
 
     @Override
     public synchronized void removeAllListeners() {
-        for (int index = (listeners.size()-1); index >= 0; index --) {
-            DeviceListener listener = listeners.get(index);
+        List<DeviceListener> listeners_copy = new ArrayList<>(listeners);
+        for (int index = (listeners_copy.size()-1); index >= 0; index --) {
+            DeviceListener listener = listeners_copy.get(index);
             removeListener(listener);
         }
     }

@@ -267,45 +267,57 @@ public abstract class GpioProviderBase implements GpioProvider {
 
     @Override
     public void addListener(Pin pin, PinListener listener) {
-        // create new pin listener entry if one does not already exist
-        if (!listeners.containsKey(pin)) {
-            listeners.put(pin, new ArrayList<PinListener>());
-        }
-        
-        // add the listener instance to the listeners map entry 
-        List<PinListener> lsnrs = listeners.get(pin);
-        if (!lsnrs.contains(listener)) {
-            lsnrs.add(listener);
+        synchronized (listeners) {
+            // create new pin listener entry if one does not already exist
+            if (!listeners.containsKey(pin)) {
+                listeners.put(pin, new ArrayList<PinListener>());
+            }
+
+            // add the listener instance to the listeners map entry
+            List<PinListener> lsnrs = listeners.get(pin);
+            if (!lsnrs.contains(listener)) {
+                lsnrs.add(listener);
+            }
         }
     }
     
     @Override
     public void removeListener(Pin pin, PinListener listener) {
-        // lookup to pin entry in the listeners map
-        if (listeners.containsKey(pin)) {
-            // remote the listener instance from the listeners map entry if found 
-            List<PinListener> lsnrs = listeners.get(pin);
-            if (lsnrs.contains(listener)) {
-                lsnrs.remove(listener);
-            }
-            
-            // if the listener list is empty, then remove the listener pin from the map
-            if (lsnrs.isEmpty()) {
-                listeners.remove(pin);
+        synchronized (listeners) {
+            // lookup to pin entry in the listeners map
+            if (listeners.containsKey(pin)) {
+                // remote the listener instance from the listeners map entry if found
+                List<PinListener> lsnrs = listeners.get(pin);
+                if (lsnrs.contains(listener)) {
+                    lsnrs.remove(listener);
+                }
+
+                // if the listener list is empty, then remove the listener pin from the map
+                if (lsnrs.isEmpty()) {
+                    listeners.remove(pin);
+                }
             }
         }
     }    
     
     @Override
     public void removeAllListeners() {
-        // iterate over all listener pins in the map
-        for (Pin pin : listeners.keySet()) {
-            // iterate over all listener handler in the map entry
-            // and remove each listener handler instance
-            List<PinListener> lsnrs = listeners.get(pin);
-            for (int index = lsnrs.size() - 1; index >= 0; index--) {
-                PinListener listener = lsnrs.get(index);
-                removeListener(pin, listener);
+        synchronized (listeners) {
+            // iterate over all listener pins in the map
+            List<Pin> pins_copy = new ArrayList<>(listeners.keySet());
+            for (Pin pin : pins_copy) {
+                if(listeners.containsKey(pin)) {
+                    // iterate over all listener handler in the map entry
+                    // and remove each listener handler instance
+                    List<PinListener> lsnrs = listeners.get(pin);
+                    if (!lsnrs.isEmpty()) {
+                        List<PinListener> lsnrs_copy = new ArrayList<>(lsnrs);
+                        for (int index = lsnrs_copy.size() - 1; index >= 0; index--) {
+                            PinListener listener = lsnrs_copy.get(index);
+                            removeListener(pin, listener);
+                        }
+                    }
+                }
             }
         }
     }

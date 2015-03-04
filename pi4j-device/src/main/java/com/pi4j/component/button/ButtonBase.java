@@ -97,9 +97,9 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
 
     @Override
     public synchronized void removeListener(ButtonHoldListener ... listener) {
-        List<ComponentListener> copyOfListeners = new ArrayList<>(super.listeners);
+        List<ComponentListener> listeners_copy = new ArrayList<>(super.listeners);
         for(ButtonHoldListener bhl : listener) {
-            for (ComponentListener cl : copyOfListeners){
+            for (ComponentListener cl : listeners_copy){
                 if(cl instanceof ButtonHoldListenerWrapper){
                     if(((ButtonHoldListenerWrapper)cl).listener == bhl){
                         super.removeListener(cl);

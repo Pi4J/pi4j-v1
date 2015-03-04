@@ -467,8 +467,9 @@ public class GpioPinImpl implements GpioPin,
     }
     
     public synchronized void removeAllListeners() {
-        for (int index = (listeners.size()-1); index >= 0; index --) {
-            GpioPinListener listener = listeners.get(index);
+        List<GpioPinListener> listeners_copy = new ArrayList<>(listeners);
+        for (int index = (listeners_copy.size()-1); index >= 0; index --) {
+            GpioPinListener listener = listeners_copy.get(index);
             removeListener(listener);
         }
     }
@@ -516,8 +517,9 @@ public class GpioPinImpl implements GpioPin,
     }
 
     public synchronized void removeAllTriggers() {
-        for (int index = triggers.size() - 1; index >= 0; index--) {
-            GpioTrigger trigger = triggers.get(index);
+        List<GpioTrigger> triggers_copy = new ArrayList<>(triggers);
+        for (int index = triggers_copy.size() - 1; index >= 0; index--) {
+            GpioTrigger trigger = triggers_copy.get(index);
             removeTrigger(trigger);
         }
     }
