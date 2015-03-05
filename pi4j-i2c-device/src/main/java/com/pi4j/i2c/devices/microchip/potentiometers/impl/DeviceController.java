@@ -327,7 +327,8 @@ public class DeviceController {
 	 * <p>
 	 * Hint: This will only work using the &quot;High Volate Command&quot; (see 3.1).
 	 * 
-	 * @param enabled Whether to enable the wiper's lock
+	 * @param channel Which wiper
+	 * @param locked Whether to enable the wiper's lock
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
 	public void setWiperLock(final DeviceControllerChannel channel,
@@ -393,12 +394,12 @@ public class DeviceController {
 	private int read(final byte memAddr) throws IOException {
 		
 		// ask device for reading data - see FIGURE 7-5
-		byte cmd = (byte) ((memAddr << 4) | CMD_READ);
-		i2cDevice.write(cmd);
+		byte[] cmd = new byte[] { (byte) ((memAddr << 4) | CMD_READ) };
 		
 		// read two bytes
 		byte[] buf = new byte[2];
-		int read = i2cDevice.read(buf, 0, 2);
+		int read = i2cDevice.read(cmd, 0, cmd.length,
+				buf, 0, buf.length);
 		if (read != 2) {
 			throw new IOException("Expected to read two bytes but got: " + read);
 		}

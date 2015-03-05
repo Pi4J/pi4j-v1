@@ -67,6 +67,22 @@ public class DeviceControllerTest {
 		controller = new DeviceController(i2cDevice);
 		
 	}
+
+	private void testForWriteAndRead(final byte value) throws IOException {
+		
+		testForWriteAndRead(value, 1);
+		
+	}
+	
+	private void testForWriteAndRead(final byte value,
+			final int times) throws IOException {
+
+		byte[] arg = new byte[] { value };
+		
+		verify(i2cDevice, times(times)).read(eq(arg), eq(0), eq(1),
+				any(byte[].class), eq(0), eq(2));
+		
+	}
 	
 	@Test
 	public void testGetDeviceStatus() throws IOException {
@@ -85,11 +101,7 @@ public class DeviceControllerTest {
 		}
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1011100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1011100);
 
 		// test success
 		
@@ -103,11 +115,7 @@ public class DeviceControllerTest {
 		DeviceControllerDeviceStatus deviceStatus1 = controller.getDeviceStatus();
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1011100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1011100);
 
 		assertTrue("On calling 'getDeviceStatus' the method I2CDevice.read(...)"
 				+ "is called with a byte-array as first argument. The length of this "
@@ -134,11 +142,7 @@ public class DeviceControllerTest {
 		DeviceControllerDeviceStatus deviceStatus2 = controller.getDeviceStatus();
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1011100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1011100);
 
 		assertTrue("On calling 'getDeviceStatus' the method I2CDevice.read(...)"
 				+ "is called with a byte-array as first argument. The length of this "
@@ -176,11 +180,7 @@ public class DeviceControllerTest {
 		}
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1011100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1011100);
 		
 		assertTrue("On calling 'getDeviceStatus' the method I2CDevice.read(...)"
 				+ "is called with a byte-array as first argument. The length of this "
@@ -211,11 +211,7 @@ public class DeviceControllerTest {
 				+ "but got " + currentValue, 0, currentValue);
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b0001100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b0001100);
 
 		// test wiper 1 - volatile
 
@@ -230,11 +226,7 @@ public class DeviceControllerTest {
 				+ "but got " + currentValue, 128, currentValue);
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b0011100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b0011100);
 			
 		// test wiper 0 - non-volatile
 
@@ -249,11 +241,7 @@ public class DeviceControllerTest {
 				+ "but got " + currentValue, 257, currentValue);
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b0101100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b0101100);
 
 		// test wiper 1 - non-volatile
 
@@ -268,11 +256,7 @@ public class DeviceControllerTest {
 				+ "but got " + currentValue, 257, currentValue);
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b0111100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b0111100);
 		
 	}
 	
@@ -469,11 +453,7 @@ public class DeviceControllerTest {
 				DeviceControllerChannel.A);
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1001100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1001100);
 		
 		assertNotNull("Calling 'getTerminalConfiguration(Channel.A)' did return null!",
 				tconA);
@@ -493,11 +473,7 @@ public class DeviceControllerTest {
 				DeviceControllerChannel.B);
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice, times(2)).write((byte) 0b1001100);
-		// test for write was called only once
-		verify(i2cDevice, times(2)).write(anyByte());
-		// test for read was called
-		verify(i2cDevice, times(2)).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1001100, 2);
 		
 		assertNotNull("Calling 'getTerminalConfiguration(Channel.B)' did return null!",
 				tconB);
@@ -547,11 +523,7 @@ public class DeviceControllerTest {
 		
 		// reading current configuration:
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice).write((byte) 0b1001100);
-		// test for write was called only once
-		verify(i2cDevice).write(anyByte());
-		// test for read was called
-		verify(i2cDevice).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1001100);
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		// The first four bits of the second byte are the same four bits of
@@ -567,11 +539,7 @@ public class DeviceControllerTest {
 		
 		// reading current configuration:
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
-		verify(i2cDevice, times(2)).write((byte) 0b1001100);
-		// test for write was called only once
-		verify(i2cDevice, times(2)).write(anyByte());
-		// test for read was called
-		verify(i2cDevice, times(2)).read(any(byte[].class), anyInt(), anyInt());
+		testForWriteAndRead((byte) 0b1001100, 2);
 		
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		// The last four bits of the second byte are the same four bits of
@@ -679,19 +647,21 @@ public class DeviceControllerTest {
 		} else {
 			tmp = length;
 		}
-		when(i2cDevice.read(any(byte[].class), anyInt(), anyInt()))
+		when(i2cDevice.read(
+				any(byte[].class), anyInt(), anyInt(),
+				any(byte[].class), anyInt(), anyInt()))
 				.then(new Answer<Integer>() {
 					 @Override
 					public Integer answer(InvocationOnMock invocation)
 							throws Throwable {
 						
 						// save given length for checking
-						 tmp[0] = (int) invocation.getArguments()[2];
+						 tmp[0] = (int) invocation.getArguments()[5];
 						
 						if (tmp[0] >= 2) {
 							
-							byte[] buf = (byte[]) invocation.getArguments()[0];
-							int offset = (int) invocation.getArguments()[1];
+							byte[] buf = (byte[]) invocation.getArguments()[3];
+							int offset = (int) invocation.getArguments()[4];
 							
 							// 0b1111111110101 -> Status-bits (see 4.2.2.1)
 							buf[offset] = first;
