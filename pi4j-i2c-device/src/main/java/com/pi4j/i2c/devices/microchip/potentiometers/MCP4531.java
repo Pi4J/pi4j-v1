@@ -76,6 +76,15 @@ public class MCP4531 extends PotentiometerImpl {
 	@Override
 	public int getMaxValue() {
 		
+		return maxValue();
+		
+	}
+	
+	/**
+	 * @return The maximal value at which a wiper can be (128 for MCP4531)
+	 */
+	public static int maxValue() {
+		
 		return 128;
 		
 	}

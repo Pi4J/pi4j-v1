@@ -76,10 +76,19 @@ public class MCP4442 extends PotentiometerImpl {
 	@Override
 	public int getMaxValue() {
 		
-		return 128;
+		return maxValue();
 		
 	}
 	
+	/**
+	 * @return The maximal value at which a wiper can be (128 for MCP4442)
+	 */
+	public static int maxValue() {
+		
+		return 128;
+		
+	}
+
 	/**
 	 * @return Whether this device is a potentiometer or a rheostat (true for MCP4442)
 	 */

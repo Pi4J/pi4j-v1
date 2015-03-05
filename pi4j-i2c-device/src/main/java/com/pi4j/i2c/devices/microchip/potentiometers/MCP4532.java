@@ -50,7 +50,6 @@ public class MCP4532 extends PotentiometerImpl {
 	 * @param i2cBus The Pi4J-I2CBus to which the device is connected to
 	 * @param pinA0 Whether the device's address pin A0 is high (true) or low (false)
 	 * @param pinA1 Whether the device's address pin A1 (if available) is high (true) or low (false)
-	 * @param channel Which of the potentiometers provided by the device to control
 	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
@@ -77,6 +76,15 @@ public class MCP4532 extends PotentiometerImpl {
 	 */
 	@Override
 	public int getMaxValue() {
+		
+		return maxValue();
+		
+	}
+	
+	/**
+	 * @return The maximal value at which a wiper can be (128 for MCP4532)
+	 */
+	public static int maxValue() {
 		
 		return 128;
 		

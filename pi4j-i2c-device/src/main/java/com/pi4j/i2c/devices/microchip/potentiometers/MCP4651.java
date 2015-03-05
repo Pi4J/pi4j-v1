@@ -1,6 +1,7 @@
 package com.pi4j.i2c.devices.microchip.potentiometers;
 
 import java.io.IOException;
+import java.util.Random;
 
 import com.pi4j.i2c.devices.microchip.potentiometers.impl.Channel;
 import com.pi4j.i2c.devices.microchip.potentiometers.impl.DeviceStatus;
@@ -82,7 +83,7 @@ public class MCP4651 extends PotentiometerImpl {
 	@Override
 	public int getMaxValue() {
 		
-		return MCP4651.maxValue();
+		return maxValue();
 		
 	}
 
@@ -115,6 +116,19 @@ public class MCP4651 extends PotentiometerImpl {
 		
 	}
 	
+	/**
+	 * A MCP4651 is expected to be connected to I2C-bus 1 of Raspberry Pi.
+	 * All address-pins are assumed to be low (means address 0x28).
+	 * <p>
+	 * Both channels of the are initialized at mid-value (the same value
+	 * as hardware-preset). A is brought to max-value and B to min-value
+	 * in about 3 seconds. After that A and B are going up and down (26
+	 * steps per second for 5 seconds). At the end A and B are set at random
+	 * (2 times per second for 5 seconds).
+	 * 
+	 * @param args no parameters expected
+	 * @throws IOException If anything goes wrong
+	 */
 	public static void main(String[] args) throws IOException {
 		
 		// initialize bus
@@ -122,19 +136,25 @@ public class MCP4651 extends PotentiometerImpl {
 		try {
 			
 			final MCP4651 a = new MCP4651(
-					bus, false, false, false, Channel.A, 0);
+					bus, false, false, false, Channel.A, MCP4651.maxValue() / 2);
 			final MCP4651 b = new MCP4651(
-					bus, false, false, false, Channel.B, MCP4651.maxValue());
+					bus, false, false, false, Channel.B, MCP4651.maxValue() / 2);
 			
 			// Check device-status
 			final DeviceStatus aStatus = a.getDeviceStatus();
 			System.out.println("WiperLock for A active: " + aStatus.isWiperLockActive());
 			final DeviceStatus bStatus = b.getDeviceStatus();
 			System.out.println("WiperLock for B active: " + bStatus.isWiperLockActive());
-/*			
-			// for about 5 seconds
 			
-			for (int i = 0; i < MCP4651.maxValue(); ++i) {
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+			
+			// for about 3 seconds
+			
+			for (int i = 0; i < MCP4651.maxValue() / 2; ++i) {
 				
 				// increase a
 				a.increase();
@@ -144,7 +164,7 @@ public class MCP4651 extends PotentiometerImpl {
 				
 				// wait a little bit
 				try {
-					Thread.sleep(19); // assume 1 ms for I2C-communication
+					Thread.sleep(24); // assume 1 ms for I2C-communication
 				} catch (InterruptedException e) {
 					// never mind
 				}
@@ -157,11 +177,11 @@ public class MCP4651 extends PotentiometerImpl {
 			System.out.println("B: " + b.getCurrentValue()
 					+ "/" + b.updateCacheFromDevice());
 			
-			// for a minute (59 seconds at 26 steps and one second at 12 steps)
+			// 5 seconds at 26 steps
 			boolean aDirectionUp = false;
 			boolean bDirectionUp = true;
-			final int counter = 59 * 26 + 12;
-			for (int i = 0; i < counter; ++i) {
+			final int counter1 = 5 * 26;
+			for (int i = 0; i < counter1; ++i) {
 				
 				// change wipers
 				if (aDirectionUp) {
@@ -181,7 +201,7 @@ public class MCP4651 extends PotentiometerImpl {
 					aDirectionUp = !aDirectionUp;
 				}
 				if ((bDirectionUp && (b.getCurrentValue() == b.getMaxValue()))
-						|| (!aDirectionUp && (b.getCurrentValue() == 0))) {
+						|| (!bDirectionUp && (b.getCurrentValue() == 0))) {
 					bDirectionUp = !bDirectionUp;
 				}
 
@@ -194,12 +214,32 @@ public class MCP4651 extends PotentiometerImpl {
 				
 			}
 			
+			// 5 seconds at 2 steps
+			Random randomizer = new Random(System.currentTimeMillis());
+			int counter2 = 5 * 2;
+			for (int i = 0; i < counter2; ++i) {
+				
+				int nextA = randomizer.nextInt(MCP4651.maxValue() + 1);
+				a.setCurrentValue(nextA);
+				
+				int nextB = randomizer.nextInt(MCP4651.maxValue() + 1);
+				b.setCurrentValue(nextB);
+
+				// wait a little bit
+				try {
+					Thread.sleep(499); // assume 1 ms for I2C-communication
+				} catch (InterruptedException e) {
+					// never mind
+				}
+				
+			}
+			
 			// print current values
 			System.out.println("A: " + a.getCurrentValue()
 					+ "/" + a.updateCacheFromDevice());
 			System.out.println("B: " + b.getCurrentValue()
 					+ "/" + b.updateCacheFromDevice());
-*/			
+			
 		} finally {
 			
 			try {
