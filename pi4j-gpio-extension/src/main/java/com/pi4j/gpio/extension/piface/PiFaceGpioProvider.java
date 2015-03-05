@@ -56,7 +56,13 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
 
     public static final String NAME = "com.pi4j.gpio.extension.piface.PiFaceGpioProvider";
     public static final String DESCRIPTION = "Pi-Face GPIO Provider";
-    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
+
+    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000]
+    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010]
+    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100]
+    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110]
+
+    public static final byte DEFAULT_ADDRESS = ADDRESS_0;
 
     private static final byte REGISTER_IODIR_A = 0x00;
     private static final byte REGISTER_IODIR_B = 0x01;
@@ -66,7 +72,8 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     private static final byte REGISTER_DEFVAL_B = 0x07;
     private static final byte REGISTER_INTCON_A = 0x08;
     private static final byte REGISTER_INTCON_B = 0x09;
-    private static final byte REGISTER_IOCON = 0x0A;
+    private static final byte REGISTER_IOCON_A = 0x0A;
+    private static final byte REGISTER_IOCON_B = 0x0B;
     private static final byte REGISTER_GPPU_A = 0x0C;
     private static final byte REGISTER_GPPU_B = 0x0D;
     private static final byte REGISTER_INTF_A = 0x0E;
@@ -79,12 +86,22 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
     private static final int GPIO_A_OFFSET = 0;
     private static final int GPIO_B_OFFSET = 1000;
 
+    private static final byte IOCON_UNUSED    = (byte)0x01;
+    private static final byte IOCON_INTPOL    = (byte)0x02;
+    private static final byte IOCON_ODR       = (byte)0x04;
+    private static final byte IOCON_HAEN      = (byte)0x08;
+    private static final byte IOCON_DISSLW    = (byte)0x10;
+    private static final byte IOCON_SEQOP     = (byte)0x20;
+    private static final byte IOCON_MIRROR    = (byte)0x40;
+    private static final byte IOCON_BANK_MODE = (byte)0x80;
+
     private int currentStatesA = 0b00000000;
     private int currentStatesB = 0b11111111;
     private int currentDirectionA = 0b00000000;
     private int currentDirectionB = 0b11111111;
     private int currentPullupA = 0b00000000;
     private int currentPullupB = 0b11111111;
+
     private byte address = DEFAULT_ADDRESS;
 
     private GpioStateMonitor monitor = null;
@@ -142,7 +159,10 @@ public class PiFaceGpioProvider extends GpioProviderBase implements GpioProvider
         //     0 = Active-low.
         // bit 0 Unimplemented: Read as ‘0’.
         //
-        write(REGISTER_IOCON, (byte) 0x00001000);  // enable hardware address
+
+        // write IO configuration
+        write(REGISTER_IOCON_A, (byte)(IOCON_SEQOP|IOCON_HAEN));  // enable hardware address
+        write(REGISTER_IOCON_B, (byte)(IOCON_SEQOP|IOCON_HAEN));  // enable hardware address
 
         // read initial GPIO pin states
         currentStatesA = read(REGISTER_GPIO_A);

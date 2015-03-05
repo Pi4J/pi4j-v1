@@ -56,7 +56,12 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23S17GpioProvider";
     public static final String DESCRIPTION = "MCP23S17 GPIO Provider";
-    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
+
+    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000]
+    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010]
+    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100]
+    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110]
+    public static final byte DEFAULT_ADDRESS = ADDRESS_0;
 
     private static final byte REGISTER_IODIR_A = 0x00;
     private static final byte REGISTER_IODIR_B = 0x01;
@@ -66,7 +71,8 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     private static final byte REGISTER_DEFVAL_B = 0x07;
     private static final byte REGISTER_INTCON_A = 0x08;
     private static final byte REGISTER_INTCON_B = 0x09;
-    private static final byte REGISTER_IOCON  = 0x0A;
+    private static final byte REGISTER_IOCON_A = 0x0A;
+    private static final byte REGISTER_IOCON_B = 0x0B;
     private static final byte REGISTER_GPPU_A = 0x0C;
     private static final byte REGISTER_GPPU_B = 0x0D;
     private static final byte REGISTER_INTF_A = 0x0E;
@@ -78,6 +84,15 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
     private static final int GPIO_A_OFFSET = 0;
     private static final int GPIO_B_OFFSET = 1000;
+
+    private static final byte IOCON_UNUSED    = (byte)0x01;
+    private static final byte IOCON_INTPOL    = (byte)0x02;
+    private static final byte IOCON_ODR       = (byte)0x04;
+    private static final byte IOCON_HAEN      = (byte)0x08;
+    private static final byte IOCON_DISSLW    = (byte)0x10;
+    private static final byte IOCON_SEQOP     = (byte)0x20;
+    private static final byte IOCON_MIRROR    = (byte)0x40;
+    private static final byte IOCON_BANK_MODE = (byte)0x80;
 
     private int currentStatesA = 0;
     private int currentStatesB = 0;
@@ -149,8 +164,36 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         // set SPI chip address
         this.address = spiAddress;
 
+        // IOCON – I/O EXPANDER CONFIGURATION REGISTER
+        //
+        // bit 7 BANK: Controls how the registers are addressed
+        //     1 = The registers associated with each port are separated into different banks
+        //     0 = The registers are in the same bank (addresses are sequential)
+        // bit 6 MIRROR: INT Pins Mirror bit
+        //     1 = The INT pins are internally connected
+        //     0 = The INT pins are not connected. INTA is associated with PortA and INTB is associated with PortB
+        // bit 5 SEQOP: Sequential Operation mode bit.
+        //     1 = Sequential operation disabled, address pointer does not increment.
+        //     0 = Sequential operation enabled, address pointer increments.
+        // bit 4 DISSLW: Slew Rate control bit for SDA output.
+        //     1 = Slew rate disabled.
+        //     0 = Slew rate enabled.
+        // bit 3 HAEN: Hardware Address Enable bit (MCP23S17 only).
+        //     Address pins are always enabled on MCP23017.
+        //     1 = Enables the MCP23S17 address pins.
+        //     0 = Disables the MCP23S17 address pins.
+        // bit 2 ODR: This bit configures the INT pin as an open-drain output.
+        //     1 = Open-drain output (overrides the INTPOL bit).
+        //     0 = Active driver output (INTPOL bit sets the polarity).
+        // bit 1 INTPOL: This bit sets the polarity of the INT output pin.
+        //     1 = Active-high.
+        //     0 = Active-low.
+        // bit 0 Unimplemented: Read as ‘0’.
+        //
+
         // write IO configuration
-        write(REGISTER_IOCON, iocon);
+        write(REGISTER_IOCON_A, (byte)(IOCON_SEQOP|IOCON_HAEN));  // enable hardware address
+        write(REGISTER_IOCON_B, (byte)(IOCON_SEQOP|IOCON_HAEN));  // enable hardware address
 
         // read initial GPIO pin states
         // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
