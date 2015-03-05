@@ -123,7 +123,7 @@ public abstract class PotentiometerImpl
 	 * @param pinA2 Whether the device's address pin A2 (if available) is high (true) or low (false)
 	 * @param channel Which of the potentiometers provided by the device to control
 	 * @param nonVolatileMode The way non-volatile reads or writes are done
-	 * @param initialValueForVolatileWiper The value for devices which are not capable of non-volatile wipers
+	 * @param initialValueForVolatileWipers The value for devices which are not capable of non-volatile wipers
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
 	protected PotentiometerImpl(
@@ -151,7 +151,7 @@ public abstract class PotentiometerImpl
 	 * @param pinA2 Whether the device's address pin A2 (if available) is high (true) or low (false)
 	 * @param channel Which of the potentiometers provided by the device to control
 	 * @param nonVolatileMode The way non-volatile reads or writes are done
-	 * @param initialValueForVolatileWiper The value for devices which are not capable of non-volatile wipers
+	 * @param initialValueForVolatileWipers The value for devices which are not capable of non-volatile wipers
 	 * @param controllerFactory builds new controllers
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 * @see DefaultDeviceControllerFactory
@@ -222,7 +222,7 @@ public abstract class PotentiometerImpl
 	 * the non-volatile-value is loaded. For devices not capable the given value is set
 	 * in the device.
 	 * 
-	 * @param initialValueForVolatileWiper The initial value for devices not capable
+	 * @param initialValueForVolatileWipers The initial value for devices not capable
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
 	protected void initialize(final int initialValueForVolatileWipers) throws IOException {
@@ -232,7 +232,8 @@ public abstract class PotentiometerImpl
 			// the device's volatile-wiper will be set to the value stored
 			// in the non-volatile memory. so for those devices the wiper's
 			// current value has to be retrieved
-			currentValue = controller.getValue(channel.getDeviceControllerChannel(), false);
+			currentValue = controller.getValue(
+					channel.getDeviceControllerChannel(), false);
 			
 		} else {
 			
@@ -655,8 +656,8 @@ public abstract class PotentiometerImpl
 	 * this test does not take properties into account which
 	 * do not point to a specific device/channel.
 	 * 
-	 * @param The other object
-	 * @result Whether the other object equals to this object.
+	 * @param obj The other object
+	 * @return Whether the other object equals to this object.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
