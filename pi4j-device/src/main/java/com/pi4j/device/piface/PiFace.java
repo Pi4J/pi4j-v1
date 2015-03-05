@@ -36,7 +36,13 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 
 public interface PiFace extends Device {
     
-    public static final byte DEFAULT_ADDRESS = 0b01000000; // 0x40
+    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000]
+    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010]
+    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100]
+    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110]
+
+    public static final byte DEFAULT_ADDRESS = ADDRESS_0;
+
     
     /**
      * @return the inputPins
