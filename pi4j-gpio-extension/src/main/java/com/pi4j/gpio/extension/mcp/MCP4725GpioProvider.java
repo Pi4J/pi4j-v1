@@ -1,12 +1,12 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.io.IOException;
-
 import com.pi4j.io.gpio.GpioProviderBase;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
 
 /*
  * #%L
@@ -52,6 +52,7 @@ public class MCP4725GpioProvider extends GpioProviderBase {
 
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP4725GpioProvider";
     public static final String DESCRIPTION = "MCP4725 GPIO Provider";
+    private boolean i2cBusOwner = false;
     private final I2CBus bus;
     private final I2CDevice device;
 
@@ -68,7 +69,16 @@ public class MCP4725GpioProvider extends GpioProviderBase {
     private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
 
     public MCP4725GpioProvider(int busNumber, int address) throws IOException {
-        bus = I2CFactory.getInstance(busNumber);
+        // create I2C communications bus instance
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
+
+    public MCP4725GpioProvider(I2CBus bus, int address) throws IOException {
+
+        // set reference to I2C communications bus instance
+        this.bus = bus;
+
         device = bus.getDevice(address);
         resetOutput();
     }
@@ -116,7 +126,13 @@ public class MCP4725GpioProvider extends GpioProviderBase {
         super.shutdown();
         try {
             resetOutput();
-            bus.close();
+
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

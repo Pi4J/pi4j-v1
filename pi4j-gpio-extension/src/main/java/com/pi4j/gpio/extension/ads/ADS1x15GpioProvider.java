@@ -71,6 +71,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     public static final String NAME = "com.pi4j.gpio.extension.ads.ADS1x15GpioProvider";
     public static final String DESCRIPTION = "ADS1x15 GPIO Provider";
 
+    protected boolean i2cBusOwner = false;
     protected I2CBus bus;
     protected I2CDevice device;
     protected ADCMonitor monitor = null;
@@ -188,7 +189,14 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     public ADS1x15GpioProvider(int busNumber, int address) throws IOException {
 
         // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber);
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
+
+    public ADS1x15GpioProvider(I2CBus bus, int address) throws IOException {
+
+        // set reference to I2C communications bus instance
+        this.bus = bus;
 
         // create I2C device instance
         device = bus.getDevice(address);
@@ -225,6 +233,8 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         monitor = new ADS1x15GpioProvider.ADCMonitor(device);
         monitor.start();
     }
+
+
     
     public ProgrammableGainAmplifierValue getProgrammableGainAmplifier(Pin pin){
         return pga[pin.getAddress()];
@@ -418,8 +428,11 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
                 monitor = null;
             }
 
-            // close the I2C bus communication
-            bus.close();
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

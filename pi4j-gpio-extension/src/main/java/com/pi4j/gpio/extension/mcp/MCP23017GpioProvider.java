@@ -87,13 +87,21 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private int currentPullupA = 0;
     private int currentPullupB = 0;
 
+    private boolean i2cBusOwner = false;
     private final I2CBus bus;
     private final I2CDevice device;
     private GpioStateMonitor monitor = null;
 
     public MCP23017GpioProvider(int busNumber, int address) throws IOException {
         // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber);
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
+
+    public MCP23017GpioProvider(I2CBus bus, int address) throws IOException {
+
+        // set reference to I2C communications bus instance
+        this.bus = bus;
 
         // create I2C device instance
         device = bus.getDevice(address);
@@ -388,8 +396,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
                 monitor = null;
             }
 
-            // close the I2C bus communication
-            bus.close();
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

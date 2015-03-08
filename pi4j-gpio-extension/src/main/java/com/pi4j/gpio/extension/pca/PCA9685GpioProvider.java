@@ -39,6 +39,7 @@ import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.ValidationException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * <p>
@@ -78,11 +79,18 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     private static final int PCA9685A_LED0_ON_H = 0x07;
     private static final int PCA9685A_LED0_OFF_L = 0x08;
     private static final int PCA9685A_LED0_OFF_H = 0x09;
-    //
+
+    private boolean i2cBusOwner = false;
     private final I2CBus bus;
     private final I2CDevice device;
     private BigDecimal frequency;
     private int periodDurationMicros;
+
+    public PCA9685GpioProvider(int busNumber, int address) throws IOException {
+        // create I2C communications bus instance
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
 
     public PCA9685GpioProvider(I2CBus bus, int address) throws IOException {
         this(bus, address, DEFAULT_FREQUENCY, BigDecimal.ONE);
@@ -358,8 +366,11 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
         super.shutdown();
         reset();
         try {
-            // close the I2C bus communication
-            bus.close();
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -72,13 +72,21 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
     private int currentDirection = 0;
     private int currentPullup = 0;
 
+    private boolean i2cBusOwner = false;
     private I2CBus bus;
     private I2CDevice device;
     private GpioStateMonitor monitor = null;
 
     public MCP23008GpioProvider(int busNumber, int address) throws IOException {
         // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber);
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
+
+    public MCP23008GpioProvider(I2CBus bus, int address) throws IOException {
+
+        // set reference to I2C communications bus instance
+        this.bus = bus;
 
         // create I2C device instance
         device = bus.getDevice(address);
@@ -104,6 +112,7 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
         // set all default pin pull up resistors
         device.write(REGISTER_GPPU, (byte) currentPullup);
     }
+
 
     @Override
     public String getName() {
@@ -265,8 +274,11 @@ public class MCP23008GpioProvider extends GpioProviderBase implements GpioProvid
                 monitor = null;
             }
 
-            // close the I2C bus communication
-            bus.close();
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
