@@ -182,28 +182,28 @@ public class MicrochipPotentiometerMiscTest {
 	@Test
 	public void testDeviceControllerTerminalConfiguration() {
 		
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration tcon
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, false, true, false, true);
+		final DeviceControllerTerminalConfiguration tcon
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, false, true, false, true);
 		
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration copyOfTerminalConfiguration
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, false, true, false, true);
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration other1
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.B, false, true, false, true);
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration other2
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, true, true, false, true);
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration other3
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, false, false, false, true);
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration other4
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, false, true, true, true);
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration other5
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A, false, true, false, false);
+		final DeviceControllerTerminalConfiguration copyOfTerminalConfiguration
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, false, true, false, true);
+		final DeviceControllerTerminalConfiguration other1
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.B, false, true, false, true);
+		final DeviceControllerTerminalConfiguration other2
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, true, true, false, true);
+		final DeviceControllerTerminalConfiguration other3
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, false, false, false, true);
+		final DeviceControllerTerminalConfiguration other4
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, false, true, true, true);
+		final DeviceControllerTerminalConfiguration other5
+				= new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A, false, true, false, false);
 		
 		assertNotEquals("'tcon.equals(null)' returns true!",
 				tcon, null);

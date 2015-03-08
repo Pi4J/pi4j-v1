@@ -5,7 +5,7 @@ package com.pi4j.component.potentiometer.impl.microchip;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MicrochipPotentiometerDeviceControllerTerminalConfiguration.java  
+ * FILENAME      :  DeviceControllerTerminalConfiguration.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,16 +30,16 @@ package com.pi4j.component.potentiometer.impl.microchip;
 /**
  * The device's terminal-configuration for a certain channel (see 4.2.2.2)
  */
-class MicrochipPotentiometerDeviceControllerTerminalConfiguration {
+class DeviceControllerTerminalConfiguration {
 	
-	private MicrochipPotentiometerDeviceControllerChannel channel;
+	private DeviceControllerChannel channel;
 	private boolean channelEnabled;
 	private boolean pinAEnabled;
 	private boolean pinWEnabled;
 	private boolean pinBEnabled;
 	
-	public MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-            final MicrochipPotentiometerDeviceControllerChannel channel,
+	public DeviceControllerTerminalConfiguration(
+            final DeviceControllerChannel channel,
             final boolean channelEnabled,
             final boolean pinAEnabled,
             final boolean pinWEnabled,
@@ -51,7 +51,7 @@ class MicrochipPotentiometerDeviceControllerTerminalConfiguration {
 		this.pinBEnabled = pinBEnabled;
 	}
 
-	public MicrochipPotentiometerDeviceControllerChannel getChannel() {
+	public DeviceControllerChannel getChannel() {
 		return channel;
 	}
 	
@@ -95,7 +95,7 @@ class MicrochipPotentiometerDeviceControllerTerminalConfiguration {
 		if (!getClass().equals(obj.getClass())) {
 			return false;
 		}
-		MicrochipPotentiometerDeviceControllerTerminalConfiguration other = (MicrochipPotentiometerDeviceControllerTerminalConfiguration) obj;
+		DeviceControllerTerminalConfiguration other = (DeviceControllerTerminalConfiguration) obj;
 		if (channel != other.channel) {
 			return false;
 		}

@@ -1,8 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerDeviceStatus;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
@@ -14,7 +11,7 @@ import java.util.Random;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4651PotentiometerComponent.java  
+ * FILENAME      :  MCP4651.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -41,7 +38,7 @@ import java.util.Random;
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4651 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B
@@ -58,12 +55,12 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4651PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final boolean pinA1, final boolean pinA2,
-                                         final MicrochipPotentiometerChannel channel, final int initialValue)  throws IOException {
+	public MCP4651(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final boolean pinA2,
+                   final MicrochipPotentiometerChannel channel, final int initialValue)  throws IOException {
 		
 		super(i2cBus, pinA0, pinA1, pinA2,
-				channel, NonVolatileMode.VOLATILE_ONLY, initialValue);
+				channel, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
 		
 	}
 
@@ -115,7 +112,7 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 		return supportedChannels;
 		
 	}
-	
+
 	/**
 	 * A MCP4651 is expected to be connected to I2C-bus 1 of Raspberry Pi.
 	 * All address-pins are assumed to be low (means address 0x28).
@@ -125,64 +122,64 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * in about 3 seconds. After that A and B are going up and down (26
 	 * steps per second for 5 seconds). At the end A and B are set at random
 	 * (2 times per second for 5 seconds).
-	 * 
+	 *
 	 * @param args no parameters expected
 	 * @throws IOException If anything goes wrong
 	 */
 	public static void main(String[] args) throws IOException {
-		
+
 		// initialize bus
 		final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		try {
-			
-			final MCP4651PotentiometerComponent a = new MCP4651PotentiometerComponent(
-					bus, false, false, false, MicrochipPotentiometerChannel.A, MCP4651PotentiometerComponent.maxValue() / 2);
-			final MCP4651PotentiometerComponent b = new MCP4651PotentiometerComponent(
-					bus, false, false, false, MicrochipPotentiometerChannel.B, MCP4651PotentiometerComponent.maxValue() / 2);
-			
+
+			final MicrochipPotentiometer a = new MCP4651(
+					bus, false, false, false, MicrochipPotentiometerChannel.A, MCP4651.maxValue() / 2);
+			final MicrochipPotentiometer b = new MCP4651(
+					bus, false, false, false, MicrochipPotentiometerChannel.B, MCP4651.maxValue() / 2);
+
 			// Check device-status
 			final MicrochipPotentiometerDeviceStatus aStatus = a.getDeviceStatus();
 			System.out.println("WiperLock for A active: " + aStatus.isWiperLockActive());
 			final MicrochipPotentiometerDeviceStatus bStatus = b.getDeviceStatus();
 			System.out.println("WiperLock for B active: " + bStatus.isWiperLockActive());
-			
+
 			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
-			
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+
 			// for about 3 seconds
-			
-			for (int i = 0; i < MCP4651PotentiometerComponent.maxValue() / 2; ++i) {
-				
+
+			for (int i = 0; i < MCP4651.maxValue() / 2; ++i) {
+
 				// increase a
 				a.increase();
-				
+
 				// decrease b
 				b.decrease();
-				
+
 				// wait a little bit
 				try {
 					Thread.sleep(24); // assume 1 ms for I2C-communication
 				} catch (InterruptedException e) {
 					// never mind
 				}
-				
+
 			}
-			
+
 			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
-			
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+
 			// 5 seconds at 26 steps
 			boolean aDirectionUp = false;
 			boolean bDirectionUp = true;
 			final int counter1 = 5 * 26;
 			for (int i = 0; i < counter1; ++i) {
-				
+
 				// change wipers
 				if (aDirectionUp) {
 					a.increase(10);
@@ -194,7 +191,7 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 				} else {
 					b.decrease(10);
 				}
-				
+
 				// reverse direction
 				if ((aDirectionUp && (a.getCurrentValue() == a.getMaxValue()))
 						|| (!aDirectionUp && (a.getCurrentValue() == 0))) {
@@ -211,18 +208,18 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 				} catch (InterruptedException e) {
 					// never mind
 				}
-				
+
 			}
-			
+
 			// 5 seconds at 2 steps
 			Random randomizer = new Random(System.currentTimeMillis());
 			int counter2 = 5 * 2;
 			for (int i = 0; i < counter2; ++i) {
-				
-				int nextA = randomizer.nextInt(MCP4651PotentiometerComponent.maxValue() + 1);
+
+				int nextA = randomizer.nextInt(MCP4651.maxValue() + 1);
 				a.setCurrentValue(nextA);
-				
-				int nextB = randomizer.nextInt(MCP4651PotentiometerComponent.maxValue() + 1);
+
+				int nextB = randomizer.nextInt(MCP4651.maxValue() + 1);
 				b.setCurrentValue(nextB);
 
 				// wait a little bit
@@ -231,25 +228,25 @@ public class MCP4651PotentiometerComponent extends MicrochipPotentiometerBase {
 				} catch (InterruptedException e) {
 					// never mind
 				}
-				
+
 			}
-			
+
 			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
-			
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
+
 		} finally {
-			
+
 			try {
 				bus.close();
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

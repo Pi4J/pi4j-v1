@@ -1,7 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
 import com.pi4j.io.i2c.I2CBus;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4631PotentiometerComponent.java  
+ * FILENAME      :  MCP4631.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -38,7 +36,7 @@ import java.io.IOException;
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4631PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4631 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B
@@ -55,12 +53,12 @@ public class MCP4631PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4631PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final boolean pinA1, final boolean pinA2,
-                                         final MicrochipPotentiometerChannel channel, final int initialValue)  throws IOException {
+	public MCP4631(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final boolean pinA2,
+                   final MicrochipPotentiometerChannel channel, final int initialValue)  throws IOException {
 		
 		super(i2cBus, pinA0, pinA1, pinA2, channel,
-				NonVolatileMode.VOLATILE_ONLY, initialValue);
+                MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
 		
 	}
 

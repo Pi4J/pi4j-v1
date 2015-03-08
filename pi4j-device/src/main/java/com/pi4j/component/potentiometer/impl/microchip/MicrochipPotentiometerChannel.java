@@ -39,35 +39,35 @@ public enum MicrochipPotentiometerChannel {
 	/**
 	 * Pins P0A, P0W, P0B
 	 */
-	A(MicrochipPotentiometerDeviceControllerChannel.A),
+	A(DeviceControllerChannel.A),
 	
 	/**
 	 * Pins P1A, P1W, P1B
 	 */
-	B(MicrochipPotentiometerDeviceControllerChannel.B),
+	B(DeviceControllerChannel.B),
 
 	/**
 	 * Pins P2A, P2W, P2B
 	 */
-	C(MicrochipPotentiometerDeviceControllerChannel.C),
+	C(DeviceControllerChannel.C),
 
 	/**
 	 * Pins P3A, P3W, P3B
 	 */
-	D(MicrochipPotentiometerDeviceControllerChannel.D);
+	D(DeviceControllerChannel.D);
 	
 	/**
 	 * The controller's channel 
 	 */
-	private MicrochipPotentiometerDeviceControllerChannel deviceControllerChannel;
+	private DeviceControllerChannel deviceControllerChannel;
 	
-	private MicrochipPotentiometerChannel(final MicrochipPotentiometerDeviceControllerChannel deviceControllerChannel) {
+	private MicrochipPotentiometerChannel(final DeviceControllerChannel deviceControllerChannel) {
 		
 		this.deviceControllerChannel = deviceControllerChannel;
 		
 	}
 	
-	public MicrochipPotentiometerDeviceControllerChannel getDeviceControllerChannel() {
+	public DeviceControllerChannel getDeviceControllerChannel() {
 		return deviceControllerChannel;
 	}
 	

@@ -1,6 +1,5 @@
 package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase.NonVolatileMode;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import org.junit.Before;
@@ -72,7 +71,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		TestablePotentiometer(I2CBus i2cBus, boolean pinA0,
 				boolean pinA1, boolean pinA2, MicrochipPotentiometerChannel channel,
-				NonVolatileMode nonVolatileMode,
+                MicrochipPotentiometerNonVolatileMode nonVolatileMode,
 				MicrochipPotentiometerDeviceControllerFactory controllerFactory)
 				throws IOException {
 			
@@ -82,7 +81,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		}
 		
 		public TestablePotentiometer(I2CBus i2cBus,
-				MicrochipPotentiometerChannel channel, NonVolatileMode nonVolatileMode,
+				MicrochipPotentiometerChannel channel, MicrochipPotentiometerNonVolatileMode nonVolatileMode,
 				int initialValueForVolatileWipers)
 				throws IOException {
 			
@@ -141,7 +140,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		try {
 			new TestablePotentiometer(null,
 					false, false, false, MicrochipPotentiometerChannel.A,
-					NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+                    MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 			fail("Got no RuntimeException on constructing "
 					+ "a PotentiometerImpl using a null-I2CBus");
 		} catch (RuntimeException e) {
@@ -151,7 +150,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		try {
 			new TestablePotentiometer(i2cBus,
 					false, false, false, null,
-					NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+                    MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 			fail("Got no RuntimeException on constructing "
 					+ "a PotentiometerImpl using a null-Channel");
 		} catch (RuntimeException e) {
@@ -161,7 +160,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		try {
 			new TestablePotentiometer(i2cBus,
 					false, false, false, MicrochipPotentiometerChannel.C,
-					NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+                    MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 			fail("Got no RuntimeException on constructing "
 					+ "a PotentiometerImpl using a not supported channel");
 		} catch (RuntimeException e) {
@@ -180,7 +179,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		try {
 			new TestablePotentiometer(i2cBus,
-					false, false, false, MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, null);
+					false, false, false, MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, null);
 			fail("Got no RuntimeException on constructing "
 					+ "a PotentiometerImpl using a null-controllerFactory");
 		} catch (RuntimeException e) {
@@ -190,11 +189,11 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		// correct parameters
 		
 		new TestablePotentiometer(i2cBus,
-				false, false, false, MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY,
+				false, false, false, MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY,
 				controllerFactory);
 		
 		new TestablePotentiometer(i2cBus, MicrochipPotentiometerChannel.B,
-				NonVolatileMode.VOLATILE_ONLY, 127);
+                MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, 127);
 		
 	}
 	
@@ -224,7 +223,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		final TestablePotentiometer poti
 				= new TestablePotentiometer(i2cBus,
-					false, false, false, MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY,
+					false, false, false, MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY,
 					controllerFactory);
 		
 		reset(controller);
@@ -234,15 +233,15 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		// called with expected parameters
 		verify(controller).getValue(
-                MicrochipPotentiometerDeviceControllerChannel.A
+                DeviceControllerChannel.A
 				, false);
 		// only called with expected parameters
 		verify(controller, times(1)).getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class)
+				any(DeviceControllerChannel.class)
 				, anyBoolean());
 		// never called since non-volatile-wiper is true
 		verify(controller, times(0)).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class)
+				any(DeviceControllerChannel.class)
 				, anyInt(), anyBoolean());
 		
 		reset(controller);
@@ -252,15 +251,15 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		// called with expected parameters
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A
+                DeviceControllerChannel.A
 				, 120, false);
 		// only called with expected parameters
 		verify(controller, times(1)).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class)
+				any(DeviceControllerChannel.class)
 				, anyInt(), anyBoolean());
 		// never called since non-volatile-wiper is true
 		verify(controller, times(0)).getValue(
-                MicrochipPotentiometerDeviceControllerChannel.A
+                DeviceControllerChannel.A
 				, true);
 
 	}
@@ -271,7 +270,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		when(controller.toString()).thenReturn("ControllerMock");
 		
 		final String toString = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, controllerFactory).toString();
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory).toString();
 		
 		assertNotNull("result of 'toString()' is null!", toString);
 		assertEquals("Unexpected result from calling 'toString'!",
@@ -288,23 +287,23 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 	public void testEquals() throws IOException {
 		
 		final TestablePotentiometer poti = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 		final TestablePotentiometer copyOfPoti = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 
 		final TestablePotentiometer other1 = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.B, NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.B, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 		final TestablePotentiometer other2 = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.NONVOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY, controllerFactory);
 		final TestablePotentiometer other3 = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.NONVOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY, controllerFactory);
 		other3.setCurrentValue(127);
 		
 		controller = mock(MicrochipPotentiometerDeviceController.class);
 		when(controllerFactory.getController(any(I2CDevice.class)))
 				.thenReturn(controller);
 		final TestablePotentiometer other4 = new TestablePotentiometer(i2cBus, false, false, false,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, controllerFactory);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, controllerFactory);
 		
 		assertNotEquals("'poti.equals(null)' returns true!",
 				poti, null);

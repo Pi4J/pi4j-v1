@@ -1,7 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
 import com.pi4j.io.i2c.I2CBus;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4531PotentiometerComponent.java  
+ * FILENAME      :  MCP4461.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,14 +32,14 @@ import java.io.IOException;
  */
 
 /**
- * Pi4J-device for MCP4531.
+ * Pi4J-device for MCP4461.
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4531PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4461 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
-		MicrochipPotentiometerChannel.A
+		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B, MicrochipPotentiometerChannel.C, MicrochipPotentiometerChannel.D
 	};
 	
 	/**
@@ -52,26 +50,26 @@ public class MCP4531PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4531PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final int initialValue) throws IOException {
+	public MCP4461(final I2CBus i2cBus, final boolean pinA0,
+                   final int initialValue) throws IOException {
 		
 		super(i2cBus, pinA0, PIN_NOT_AVAILABLE, PIN_NOT_AVAILABLE,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, initialValue);
-		
-	}
-
-	/**
-	 * @return Whether device is capable of non volatile wipers (false for MCP4531)
-	 */
-	@Override
-	public boolean isCapableOfNonVolatileWiper() {
-		
-		return false;
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
 		
 	}
 	
 	/**
-	 * @return The maximal value at which a wiper can be (128 for MCP4531)
+	 * @return Whether device is capable of non volatile wipers (true for MCP4451)
+	 */
+	@Override
+	public boolean isCapableOfNonVolatileWiper() {
+		
+		return true;
+		
+	}
+	
+	/**
+	 * @return The maximal value at which a wiper can be (256 for MCP4461)
 	 */
 	@Override
 	public int getMaxValue() {
@@ -81,16 +79,16 @@ public class MCP4531PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return The maximal value at which a wiper can be (128 for MCP4531)
+	 * @return The maximal value at which a wiper can be (256 for MCP4461)
 	 */
 	public static int maxValue() {
 		
-		return 128;
+		return 256;
 		
 	}
 	
 	/**
-	 * @return Whether this device is a potentiometer or a rheostat (false for MCP4531)
+	 * @return Whether this device is a potentiometer or a rheostat (false for MCP4461)
 	 */
 	@Override
 	public boolean isRheostat() {
@@ -100,7 +98,7 @@ public class MCP4531PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return All channels supported by the underlying device (A only for MCP4531)
+	 * @return All channels supported by the underlying device (A, B, C and D for MCP4461)
 	 */
 	@Override
 	public MicrochipPotentiometerChannel[] getSupportedChannelsByDevice() {

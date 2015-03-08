@@ -1,7 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
 import com.pi4j.io.i2c.I2CBus;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4442PotentiometerComponent.java  
+ * FILENAME      :  MCP4542.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,14 +32,14 @@ import java.io.IOException;
  */
 
 /**
- * Pi4J-device for MCP4442.
+ * Pi4J-device for MCP4542.
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4542 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
-		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B, MicrochipPotentiometerChannel.C, MicrochipPotentiometerChannel.D
+		MicrochipPotentiometerChannel.A
 	};
 	
 	/**
@@ -49,19 +47,21 @@ public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * 
 	 * @param i2cBus The Pi4J-I2CBus to which the device is connected to
 	 * @param pinA0 Whether the device's address pin A0 is high (true) or low (false)
-	 * @param initialValue Initial value of wiper
+	 * @param pinA1 Whether the device's address pin A1 (if available) is high (true) or low (false)
+	 * @param nonVolatileMode The way non-volatile reads or writes are done
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4442PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final int initialValue) throws IOException {
+	public MCP4542(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final MicrochipPotentiometerNonVolatileMode nonVolatileMode)
+					throws IOException {
 		
-		super(i2cBus, pinA0, PIN_NOT_AVAILABLE, PIN_NOT_AVAILABLE,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, initialValue);
+		super(i2cBus, pinA0, pinA1, PIN_NOT_AVAILABLE,
+				MicrochipPotentiometerChannel.A, nonVolatileMode, INITIALVALUE_LOADED_FROM_EEPROM);
 		
 	}
 	
 	/**
-	 * @return Whether device is capable of non volatile wipers (true for MCP4442)
+	 * @return Whether device is capable of non volatile wipers (true for MCP4542)
 	 */
 	@Override
 	public boolean isCapableOfNonVolatileWiper() {
@@ -69,9 +69,19 @@ public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
 		return true;
 		
 	}
+
+	/**
+	 * @param nonVolatileMode The way non-volatile reads or writes are done
+	 */
+	@Override
+	public void setNonVolatileMode(final MicrochipPotentiometerNonVolatileMode nonVolatileMode) {
+		
+		super.setNonVolatileMode(nonVolatileMode);
+		
+	}
 	
 	/**
-	 * @return The maximal value at which a wiper can be (128 for MCP4442)
+	 * @return The maximal value at which a wiper can be (128 for MCP4542)
 	 */
 	@Override
 	public int getMaxValue() {
@@ -81,7 +91,7 @@ public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return The maximal value at which a wiper can be (128 for MCP4442)
+	 * @return The maximal value at which a wiper can be (128 for MCP4542)
 	 */
 	public static int maxValue() {
 		
@@ -90,7 +100,7 @@ public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 
 	/**
-	 * @return Whether this device is a potentiometer or a rheostat (true for MCP4442)
+	 * @return Whether this device is a potentiometer or a rheostat (true for MCP4542)
 	 */
 	@Override
 	public boolean isRheostat() {
@@ -100,7 +110,7 @@ public class MCP4442PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return All channels supported by the underlying device (A, B, C and D for MCP4442)
+	 * @return All channels supported by the underlying device (A only for MCP4542)
 	 */
 	@Override
 	public MicrochipPotentiometerChannel[] getSupportedChannelsByDevice() {

@@ -1,7 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
 import com.pi4j.io.i2c.I2CBus;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4532PotentiometerComponent.java  
+ * FILENAME      :  MCP4532.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -38,7 +36,7 @@ import java.io.IOException;
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4532PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4532 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A
@@ -53,11 +51,11 @@ public class MCP4532PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4532PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final boolean pinA1, final int initialValue) throws IOException {
+	public MCP4532(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final int initialValue) throws IOException {
 		
 		super(i2cBus, pinA0, pinA1, PIN_NOT_AVAILABLE,
-				MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY, initialValue);
+				MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
 		
 	}
 	

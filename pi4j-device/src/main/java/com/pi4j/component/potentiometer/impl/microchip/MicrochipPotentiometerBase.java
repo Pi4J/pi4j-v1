@@ -1,7 +1,7 @@
 package com.pi4j.component.potentiometer.impl.microchip;
 
 import com.pi4j.component.ComponentBase;
-import com.pi4j.component.potentiometer.DigitalPotentiometer;
+import com.pi4j.component.potentiometer.Potentiometer;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -37,34 +37,12 @@ import java.io.IOException;
 /**
  * Abstract Pi4J-device for MCP45XX and MCP46XX ICs.
  * 
- * @see com.pi4j.component.potentiometer.impl.MCP4561PotentiometerComponent
- * @see com.pi4j.component.potentiometer.impl.MCP4651PotentiometerComponent
+ * @see MCP4561
+ * @see MCP4651
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 public abstract class MicrochipPotentiometerBase
-		extends ComponentBase implements DigitalPotentiometer {
-	
-	/**
-	 * The way non-volatile reads or writes are done
-	 */
-	public static enum NonVolatileMode {
-		
-		/**
-		 * read and write to volatile-wiper
-		 */
-		VOLATILE_ONLY,
-		
-		/**
-		 * read and write to non-volatile-wiper
-		 */
-		NONVOLATILE_ONLY,
-		
-		/**
-		 * read and write to both volatile- and non-volatile-wipers
-		 */
-		VOLATILE_AND_NONVOLATILE
-		
-	};
+		extends ComponentBase implements MicrochipPotentiometer, Potentiometer {
 	
 	/**
 	 * An action which may be run for the volatile-wiper,
@@ -107,7 +85,7 @@ public abstract class MicrochipPotentiometerBase
 	/**
 	 * Whether to use the volatile or the non-volatile wiper
 	 */
-	protected NonVolatileMode nonVolatileMode;
+	protected MicrochipPotentiometerNonVolatileMode nonVolatileMode;
 	
 	/**
 	 * The wiper's current-value (volatile)
@@ -132,7 +110,7 @@ public abstract class MicrochipPotentiometerBase
             final boolean pinA1,
             final boolean pinA2,
             final MicrochipPotentiometerChannel channel,
-            final NonVolatileMode nonVolatileMode,
+            final MicrochipPotentiometerNonVolatileMode nonVolatileMode,
             final int initialValueForVolatileWipers)
 			throws IOException {
 		
@@ -162,7 +140,7 @@ public abstract class MicrochipPotentiometerBase
             final boolean pinA1,
             final boolean pinA2,
             final MicrochipPotentiometerChannel channel,
-            final NonVolatileMode nonVolatileMode,
+            final MicrochipPotentiometerNonVolatileMode nonVolatileMode,
             final int initialValueForVolatileWipers,
             final MicrochipPotentiometerDeviceControllerFactory controllerFactory)
 			throws IOException {
@@ -254,6 +232,7 @@ public abstract class MicrochipPotentiometerBase
 	/**
 	 * @return The channel this potentiometer is configured for
 	 */
+    @Override
 	public MicrochipPotentiometerChannel getChannel() {
 		return channel;
 	}
@@ -261,11 +240,13 @@ public abstract class MicrochipPotentiometerBase
 	/**
 	 * @return Whether device is capable of non volatile wipers
 	 */
+    @Override
 	public abstract boolean isCapableOfNonVolatileWiper();
 	
 	/**
 	 * @return All channels supported by the underlying device
 	 */
+    @Override
 	public abstract MicrochipPotentiometerChannel[] getSupportedChannelsByDevice();
 	
 	/**
@@ -304,7 +285,8 @@ public abstract class MicrochipPotentiometerBase
 	/**
 	 * @return The way non-volatile reads or writes are done
 	 */
-	public NonVolatileMode getNonVolatileMode() {
+    @Override
+	public MicrochipPotentiometerNonVolatileMode getNonVolatileMode() {
 		
 		return nonVolatileMode;
 		
@@ -317,17 +299,17 @@ public abstract class MicrochipPotentiometerBase
 	 * 
 	 * @param nonVolatileMode The way non-volatile reads or writes are done
 	 */
-	protected void setNonVolatileMode(final NonVolatileMode nonVolatileMode) {
+	protected void setNonVolatileMode(final MicrochipPotentiometerNonVolatileMode nonVolatileMode) {
 		
 		if (nonVolatileMode == null) {
 			throw new RuntimeException("Setting a null-NonVolatileMode is not valid!");
 		}
 		
 		if (!isCapableOfNonVolatileWiper()
-				&& (nonVolatileMode != NonVolatileMode.VOLATILE_ONLY)) {
+				&& (nonVolatileMode != MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY)) {
 			throw new RuntimeException("This device is not capable of non-volatile wipers."
 					+ " Using another NonVolatileMode than '"
-					+ NonVolatileMode.VOLATILE_ONLY + "' is not valid!");
+					+ MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY + "' is not valid!");
 		}
 		
 		this.nonVolatileMode = nonVolatileMode;
@@ -340,6 +322,7 @@ public abstract class MicrochipPotentiometerBase
 	 * @return The wiper's current value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public int updateCacheFromDevice() throws IOException {
 		
 		currentValue = controller.getValue(channel.getDeviceControllerChannel(), false);
@@ -429,7 +412,7 @@ public abstract class MicrochipPotentiometerBase
 		});
 		
 		// set currentValue only if volatile-wiper is affected
-		if (nonVolatileMode == NonVolatileMode.NONVOLATILE_ONLY) {
+		if (nonVolatileMode == MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY) {
 			return;
 		}
 		
@@ -465,7 +448,7 @@ public abstract class MicrochipPotentiometerBase
 		if (steps < 0) {
 			throw new RuntimeException("Only positive values for parameter 'steps' allowed!");
 		}
-		if (getNonVolatileMode() != NonVolatileMode.VOLATILE_ONLY) {
+		if (getNonVolatileMode() != MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY) {
 			throw new RuntimeException("'decrease' is only valid for NonVolatileMode.VOLATILE_ONLY!");
 		}
 
@@ -527,7 +510,7 @@ public abstract class MicrochipPotentiometerBase
 		if (steps < 0) {
 			throw new RuntimeException("only positive values for parameter 'steps' allowed!");
 		}
-		if (getNonVolatileMode() != NonVolatileMode.VOLATILE_ONLY) {
+		if (getNonVolatileMode() != MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY) {
 			throw new RuntimeException("'increase' is only valid for NonVolatileMode.VOLATILE_ONLY!");
 		}
 
@@ -564,9 +547,10 @@ public abstract class MicrochipPotentiometerBase
 	 * @return The device- and wiper-status
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public MicrochipPotentiometerDeviceStatus getDeviceStatus() throws IOException {
 		
-		MicrochipPotentiometerDeviceControllerDeviceStatus deviceStatus
+		DeviceControllerDeviceStatus deviceStatus
 				= controller.getDeviceStatus();
 		
 		boolean wiperLockActive
@@ -585,9 +569,10 @@ public abstract class MicrochipPotentiometerBase
 	 * @return The current terminal-configuration
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public MicrochipPotentiometerTerminalConfiguration getTerminalConfiguration() throws IOException {
 		
-		MicrochipPotentiometerDeviceControllerTerminalConfiguration tcon
+		DeviceControllerTerminalConfiguration tcon
 				= controller.getTerminalConfiguration(channel.getDeviceControllerChannel());
 		
 		return new MicrochipPotentiometerTerminalConfiguration(channel,
@@ -600,6 +585,7 @@ public abstract class MicrochipPotentiometerBase
 	 * @param terminalConfiguration The new terminal-configuration
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public void setTerminalConfiguration(
 			final MicrochipPotentiometerTerminalConfiguration terminalConfiguration) throws IOException {
 		
@@ -611,8 +597,8 @@ public abstract class MicrochipPotentiometerBase
 					+ "other than the potentiometer's channel is not valid!");
 		}
 		
-		MicrochipPotentiometerDeviceControllerTerminalConfiguration tcon
-				= new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
+		DeviceControllerTerminalConfiguration tcon
+				= new DeviceControllerTerminalConfiguration(
 				channel.getDeviceControllerChannel(),
 				terminalConfiguration.isChannelEnabled(),
 				terminalConfiguration.isPinAEnabled(),
@@ -629,6 +615,7 @@ public abstract class MicrochipPotentiometerBase
 	 * @param enabled wiper-lock for the poti's channel has to be enabled
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public void setWiperLock(final boolean enabled) throws IOException {
 		
 		controller.setWiperLock(channel.getDeviceControllerChannel(), enabled);
@@ -643,6 +630,7 @@ public abstract class MicrochipPotentiometerBase
 	 * @param enabled write-protection has to be enabled
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
+    @Override
 	public void setWriteProtection(final boolean enabled) throws IOException {
 		
 		controller.setWriteProtection(enabled);
@@ -734,6 +722,7 @@ public abstract class MicrochipPotentiometerBase
 	 * @param channel A certain channel
 	 * @return Whether the given channel is supported by the underlying device
 	 */
+    @Override
 	public boolean isChannelSupportedByDevice(final MicrochipPotentiometerChannel channel) {
 		
 		if (channel == null) {

@@ -1,8 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerDeviceStatus;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
@@ -14,7 +11,7 @@ import java.util.Random;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4641PotentiometerComponent.java  
+ * FILENAME      :  MCP4641.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -41,7 +38,7 @@ import java.util.Random;
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4641 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B
@@ -58,9 +55,9 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param nonVolatileMode The way non-volatile reads or writes are done
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4641PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final boolean pinA1, final boolean pinA2,
-                                         final MicrochipPotentiometerChannel channel, final NonVolatileMode nonVolatileMode)
+	public MCP4641(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final boolean pinA2,
+                   final MicrochipPotentiometerChannel channel, final MicrochipPotentiometerNonVolatileMode nonVolatileMode)
 			throws IOException {
 		
 		super(i2cBus, pinA0, pinA1, pinA2, channel,
@@ -82,7 +79,7 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param nonVolatileMode The way non-volatile reads or writes are done
 	 */
 	@Override
-	public void setNonVolatileMode(final NonVolatileMode nonVolatileMode) {
+	public void setNonVolatileMode(final MicrochipPotentiometerNonVolatileMode nonVolatileMode) {
 		
 		super.setNonVolatileMode(nonVolatileMode);
 		
@@ -151,10 +148,10 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 		final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		try {
 			
-			final MCP4641PotentiometerComponent a = new MCP4641PotentiometerComponent(
-					bus, false, false, false, MicrochipPotentiometerChannel.A, NonVolatileMode.VOLATILE_ONLY);
-			final MCP4641PotentiometerComponent b = new MCP4641PotentiometerComponent(
-					bus, false, false, false, MicrochipPotentiometerChannel.B, NonVolatileMode.VOLATILE_ONLY);
+			final MicrochipPotentiometer a = new MCP4641(
+					bus, false, false, false, MicrochipPotentiometerChannel.A, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+			final MicrochipPotentiometer b = new MCP4641(
+					bus, false, false, false, MicrochipPotentiometerChannel.B, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
 			
 			// Check device-status
 			final MicrochipPotentiometerDeviceStatus aStatus = a.getDeviceStatus();
@@ -162,15 +159,15 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 			final MicrochipPotentiometerDeviceStatus bStatus = b.getDeviceStatus();
 			System.out.println("WiperLock for B active: " + bStatus.isWiperLockActive());
 			
-//			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
 			
 			// for about 3 seconds
 			
-			for (int i = 0; i < MCP4641PotentiometerComponent.maxValue() / 2; ++i) {
+			for (int i = 0; i < MCP4641.maxValue() / 2; ++i) {
 				
 				// increase a
 				a.increase();
@@ -187,11 +184,11 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 				
 			}
 			
-//			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
 			
 			// 5 seconds at 26 steps
 			boolean aDirectionUp = false;
@@ -235,10 +232,10 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 			int counter2 = 5 * 2;
 			for (int i = 0; i < counter2; ++i) {
 				
-				int nextA = randomizer.nextInt(MCP4641PotentiometerComponent.maxValue() + 1);
+				int nextA = randomizer.nextInt(MCP4641.maxValue() + 1);
 				a.setCurrentValue(nextA);
 				
-				int nextB = randomizer.nextInt(MCP4641PotentiometerComponent.maxValue() + 1);
+				int nextB = randomizer.nextInt(MCP4641.maxValue() + 1);
 				b.setCurrentValue(nextB);
 
 				// wait a little bit
@@ -250,17 +247,17 @@ public class MCP4641PotentiometerComponent extends MicrochipPotentiometerBase {
 				
 			}
 			
-//			// print current values
-//			System.out.println("A: " + a.getCurrentValue()
-//					+ "/" + a.updateCacheFromDevice());
-//			System.out.println("B: " + b.getCurrentValue()
-//					+ "/" + b.updateCacheFromDevice());
+			// print current values
+			System.out.println("A: " + a.getCurrentValue()
+					+ "/" + a.updateCacheFromDevice());
+			System.out.println("B: " + b.getCurrentValue()
+					+ "/" + b.updateCacheFromDevice());
 			
 			// set non-volatile wipers to random values
-			a.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
-			int nextA = randomizer.nextInt(MCP4641PotentiometerComponent.maxValue() + 1);
+            ((MCP4641)a).setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
+			int nextA = randomizer.nextInt(MCP4641.maxValue() + 1);
 			a.setCurrentValue(nextA);
-			int nextB = randomizer.nextInt(MCP4641PotentiometerComponent.maxValue() + 1);
+			int nextB = randomizer.nextInt(MCP4641.maxValue() + 1);
 			b.setCurrentValue(nextB);
 			
 		} finally {
