@@ -1,4 +1,4 @@
-package com.pi4j.component.potentiometer.microchip;
+package com.pi4j.component.potentiometer.microchip.impl;
 
 /*
  * #%L
@@ -27,8 +27,9 @@ package com.pi4j.component.potentiometer.microchip;
  * #L%
  */
 
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerChannel;
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerTerminalConfiguration;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerChannel;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerDeviceStatus;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerTerminalConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -60,7 +61,7 @@ public class MicrochipPotentiometerMiscTest {
 		
 		try {
 			
-			new MicrochipPotentiometerDeviceStatus(false, true, null, true);
+			new MicrochipPotentiometerDeviceStatusImpl(false, true, null, true);
 			fail("Got no RuntimeException on constructing "
 					+ "a DeviceStatus using a null-wiperLockChannel");
 			
@@ -68,7 +69,7 @@ public class MicrochipPotentiometerMiscTest {
 			// expected
 		}
 		
-		final MicrochipPotentiometerDeviceStatus deviceStatus = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus deviceStatus = new MicrochipPotentiometerDeviceStatusImpl(
 				false, true, MicrochipPotentiometerChannel.A, true);
 		
 		// toString()
@@ -85,15 +86,15 @@ public class MicrochipPotentiometerMiscTest {
 		
 		// equals(...)
 
-		final MicrochipPotentiometerDeviceStatus copyOfDeviceStatus = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus copyOfDeviceStatus = new MicrochipPotentiometerDeviceStatusImpl(
 				false, true, MicrochipPotentiometerChannel.A, true);
-		final MicrochipPotentiometerDeviceStatus other1 = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus other1 = new MicrochipPotentiometerDeviceStatusImpl(
 				true, true, MicrochipPotentiometerChannel.A, true);
-		final MicrochipPotentiometerDeviceStatus other2 = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus other2 = new MicrochipPotentiometerDeviceStatusImpl(
 				false, false, MicrochipPotentiometerChannel.A, true);
-		final MicrochipPotentiometerDeviceStatus other3 = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus other3 = new MicrochipPotentiometerDeviceStatusImpl(
 				false, true, MicrochipPotentiometerChannel.B, true);
-		final MicrochipPotentiometerDeviceStatus other4 = new MicrochipPotentiometerDeviceStatus(
+		final MicrochipPotentiometerDeviceStatus other4 = new MicrochipPotentiometerDeviceStatusImpl(
 				false, true, MicrochipPotentiometerChannel.A, false);
 		
 		assertNotEquals("'deviceStatus.equals(null)' returns true!",

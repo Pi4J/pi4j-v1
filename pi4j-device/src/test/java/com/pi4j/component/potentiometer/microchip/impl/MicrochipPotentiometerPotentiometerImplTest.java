@@ -1,6 +1,9 @@
-package com.pi4j.component.potentiometer.microchip;
+package com.pi4j.component.potentiometer.microchip.impl;
 
-import com.pi4j.component.potentiometer.microchip.impl.*;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerChannel;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerDeviceStatus;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerNonVolatileMode;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerTerminalConfiguration;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import org.junit.Before;

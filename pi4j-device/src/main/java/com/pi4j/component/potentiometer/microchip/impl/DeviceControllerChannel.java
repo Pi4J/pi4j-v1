@@ -30,7 +30,7 @@ package com.pi4j.component.potentiometer.microchip.impl;
 /**
  * The wiper - used for devices knowing more than one wiper.
  */
-enum DeviceControllerChannel {
+public enum DeviceControllerChannel {
 	
 	A(MicrochipPotentiometerDeviceController.MEMADDR_WIPER0, MicrochipPotentiometerDeviceController.MEMADDR_WIPER0_NV,
 			MicrochipPotentiometerDeviceController.MEMADDR_TCON01, MicrochipPotentiometerDeviceController.TCON_RH02HW,
