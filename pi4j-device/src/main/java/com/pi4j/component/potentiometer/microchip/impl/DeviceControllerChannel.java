@@ -27,10 +27,12 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * #L%
  */
 
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerChannel;
+
 /**
  * The wiper - used for devices knowing more than one wiper.
  */
-public enum DeviceControllerChannel {
+enum DeviceControllerChannel {
 	
 	A(MicrochipPotentiometerDeviceController.MEMADDR_WIPER0, MicrochipPotentiometerDeviceController.MEMADDR_WIPER0_NV,
 			MicrochipPotentiometerDeviceController.MEMADDR_TCON01, MicrochipPotentiometerDeviceController.TCON_RH02HW,
@@ -93,5 +95,28 @@ public enum DeviceControllerChannel {
 	int getWiperConnectControlBit() {
 		return wiperConnectControlBit;
 	}
-	
+
+
+    static DeviceControllerChannel valueOf(final MicrochipPotentiometerChannel channel) {
+
+        if (channel == null) {
+            return null;
+        }
+
+        for (final DeviceControllerChannel dcChannel : values()) {
+
+            if (dcChannel.name().equals(channel.name())) {
+                return dcChannel;
+            }
+
+        }
+
+        throw new RuntimeException(
+                "There is no pendant for the given "
+                        + channel
+                        + "'! Maybe there was another channel introduced for new "
+                        + "devices but only to MicrochipPotentiometerChannel but "
+                        + "in DeviceControllerChannel it is still missing.");
+
+    }
 }

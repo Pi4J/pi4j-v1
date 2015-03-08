@@ -28,8 +28,6 @@ package com.pi4j.component.potentiometer.microchip;
  * #L%
  */
 
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerChannel;
-
 /**
  * A channel an instance of MCP45XX_MCP46XX_Potentiometer can be configured for.
  * 
@@ -41,38 +39,23 @@ public enum MicrochipPotentiometerChannel {
 	/**
 	 * Pins P0A, P0W, P0B
 	 */
-	A(DeviceControllerChannel.A),
+	A,
 	
 	/**
 	 * Pins P1A, P1W, P1B
 	 */
-	B(DeviceControllerChannel.B),
+	B,
 
 	/**
 	 * Pins P2A, P2W, P2B
 	 */
-	C(DeviceControllerChannel.C),
+	C,
 
 	/**
 	 * Pins P3A, P3W, P3B
 	 */
-	D(DeviceControllerChannel.D);
-	
-	/**
-	 * The controller's channel 
-	 */
-	private DeviceControllerChannel deviceControllerChannel;
-	
-	private MicrochipPotentiometerChannel(final DeviceControllerChannel deviceControllerChannel) {
-		
-		this.deviceControllerChannel = deviceControllerChannel;
-		
-	}
-	
-	public DeviceControllerChannel getDeviceControllerChannel() {
-		return deviceControllerChannel;
-	}
-	
+	D;
+
 	@Override
 	public String toString() {
 
@@ -81,5 +64,4 @@ public enum MicrochipPotentiometerChannel {
 		return result.toString();
 
 	}
-	
 }
