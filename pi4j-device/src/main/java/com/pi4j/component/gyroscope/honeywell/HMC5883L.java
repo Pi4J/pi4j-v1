@@ -1,4 +1,4 @@
-package com.pi4j.component.gyroscope.impl.honeywell;
+package com.pi4j.component.gyroscope.honeywell;
 
 /*
  * #%L
