@@ -1,4 +1,4 @@
-package com.pi4j.component.gyroscope.impl.analogdevices;
+package com.pi4j.component.gyroscope.analogdevices;
 /*
  * #%L
  * **********************************************************************
