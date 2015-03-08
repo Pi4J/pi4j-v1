@@ -1,11 +1,11 @@
-package com.pi4j.i2c.devices;
+package com.pi4j.component.gyroscope.impl.analogdevices;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  HMC5883L.java  
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  ADXL345.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,8 +27,6 @@ package com.pi4j.i2c.devices;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.pi4j.component.gyroscope.AxisGyroscope;
 import com.pi4j.component.gyroscope.Gyroscope;
 import com.pi4j.component.gyroscope.MultiAxisGyro;
@@ -36,9 +34,11 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 
-public class HMC5883L implements MultiAxisGyro {
+import java.io.IOException;
+
+public class ADXL345 implements MultiAxisGyro {
     
-    public final static int HMC5883L_ADDRESS = 0x1E;
+    public final static int ADXL345_ADDRESS = 0x53;
 
     private I2CDevice device;
 
@@ -56,96 +56,12 @@ public class HMC5883L implements MultiAxisGyro {
     private static final int CALIBRATION_READS = 50;
     private static final int CALIBRATION_SKIPS = 5;
     
-    public static final int OUTPUT_RATE_0_75_Hz = 0;
-    public static final int OUTPUT_RATE_1_5_Hz = 1;
-    public static final int OUTPUT_RATE_3_Hz = 2;
-    public static final int OUTPUT_RATE_7_5_Hz = 3;
-    public static final int OUTPUT_RATE_15_Hz = 4;
-    public static final int OUTPUT_RATE_30_Hz = 5;
-    public static final int OUTPUT_RATE_75_Hz = 6;
-    
-    public static final int SAMPLES_AVERAGE_1 = 0;
-    public static final int SAMPLES_AVERAGE_2 = 1;
-    public static final int SAMPLES_AVERAGE_4 = 2;
-    public static final int SAMPLES_AVERAGE_8 = 3;
-    
-    public static final int NORMAL_MEASUREMENT_MODE = 0;
-    public static final int POSITIVE_BIAS_MEASUREMENT_MODE = 1;
-    public static final int NEGATIVE_BIAS_MEASUREMENT_MODE = 2;
-    
-    public static final int GAIN_0_88_Ga = 0;
-    public static final int GAIN_1_3_Ga = 1;
-    public static final int GAIN_1_9_Ga = 2;
-    public static final int GAIN_2_5_Ga = 3;
-    public static final int GAIN_4_0_Ga = 4;
-    public static final int GAIN_4_7_Ga = 5;
-    public static final int GAIN_5_6_Ga = 6;
-    public static final int GAIN_8_1_Ga = 7;
-    
-    public static final int CONINIOUS_MODE = 0;
-    public static final int SINGLE_SAMPLE_MODE = 1;
-    public static final int IDLE_MODE = 2;
-    
-    private int outputRate = OUTPUT_RATE_15_Hz;
-    private int samplesAverage = SAMPLES_AVERAGE_8;
-    private int measurementMode = NORMAL_MEASUREMENT_MODE;
-    private int gain = GAIN_1_3_Ga;
-    private int mode = CONINIOUS_MODE;
 
-    public HMC5883L(I2CBus bus) throws IOException {
-        device = bus.getDevice(HMC5883L_ADDRESS);
+    public ADXL345(I2CBus bus) throws IOException {
+        device = bus.getDevice(ADXL345_ADDRESS);
     }
         
     
-    public int getOutputRate() {
-        return outputRate;
-    }
-
-
-    public void setOutputRate(int outputRate) {
-        this.outputRate = outputRate;
-    }
-
-
-    public int getSamplesAverage() {
-        return samplesAverage;
-    }
-
-
-    public void setSamplesAverage(int samplesAverage) {
-        this.samplesAverage = samplesAverage;
-    }
-
-
-    public int getMeasurementMode() {
-        return measurementMode;
-    }
-
-
-    public void setMeasurementMode(int measurementMode) {
-        this.measurementMode = measurementMode;
-    }
-
-
-    public int getGain() {
-        return gain;
-    }
-
-
-    public void setGain(int gain) {
-        this.gain = gain;
-    }
-
-
-    public int getMode() {
-        return mode;
-    }
-
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
 
     public Gyroscope init(Gyroscope triggeringAxis, int triggeringMode) throws IOException {
         enable();
@@ -158,26 +74,12 @@ public class HMC5883L implements MultiAxisGyro {
     
     @Override
     public void enable() throws IOException {
-//        byte[] init = new byte[3];
-//        
-//        init[0] = (byte)((samplesAverage << 5) + (outputRate << 2) + measurementMode);
-//        init[1] = (byte)((gain << 5));
-//        init[2] = (byte)(mode);
-//
-//        device.write(0, init, 0, 3);
-        device.write(2, (byte)0);
+        device.write(0x31, (byte)0x0B);
     }
 
 
     @Override
     public void disable() throws IOException {
-        byte[] init = new byte[3];
-        
-        init[0] = (byte)((samplesAverage << 5) + (outputRate << 2) + measurementMode);
-        init[1] = (byte)((gain << 5));
-        init[2] = (byte)(IDLE_MODE);
-
-        device.write(0, init, 0, 3);
     }
 
 
@@ -188,8 +90,13 @@ public class HMC5883L implements MultiAxisGyro {
         lastRead = now;
 
         byte[] data = new byte[6];
+        device.write(0x2D, (byte)0x08);
 
-        int r = device.read(3, data, 0, 6);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ignore) { }
+        
+        int r = device.read(0x32, data, 0, 6);
         if (r != 6) {
             throw new IOException("Couldn't read compass data; r=" + r);
         }
@@ -255,18 +162,15 @@ public class HMC5883L implements MultiAxisGyro {
         aY.setOffset((int)(totalY / CALIBRATION_READS));
         aZ.setOffset((int)(totalZ / CALIBRATION_READS));
 
-//        aX.setOffset((maxX + minX) / 2);
-//        aY.setOffset((maxY + minY) / 2);
-//        aZ.setOffset((maxZ + minZ) / 2);
     }
 
 
     public static void main(String[] args) throws Exception {
-        I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_0);
+        I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
 
-        HMC5883L hmc5883l = new HMC5883L(bus);
+        ADXL345 adxl345 = new ADXL345(bus);
 
-        hmc5883l.init(hmc5883l.X, Gyroscope.GET_RAW_VALUE_TRIGGER_READ);
+        adxl345.init(adxl345.X, Gyroscope.GET_RAW_VALUE_TRIGGER_READ);
 
         long now = System.currentTimeMillis();
         
@@ -274,11 +178,13 @@ public class HMC5883L implements MultiAxisGyro {
         
         while (System.currentTimeMillis() - now < 10000) {
             
+            adxl345.readGyro();
+            
             String sm = toString(measurement, 3);
             
-            String sx = toString(hmc5883l.X.getRawValue(), 7);
-            String sy = toString(hmc5883l.Y.getRawValue(), 7);
-            String sz = toString(hmc5883l.Z.getRawValue(), 7);
+            String sx = toString(adxl345.X.getRawValue(), 7);
+            String sy = toString(adxl345.Y.getRawValue(), 7);
+            String sz = toString(adxl345.Z.getRawValue(), 7);
             
             System.out.print(sm + sx + sy + sz);
             for (int i = 0; i < 24; i++) { System.out.print((char)8); }
