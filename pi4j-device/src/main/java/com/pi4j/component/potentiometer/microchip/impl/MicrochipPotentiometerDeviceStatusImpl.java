@@ -6,7 +6,7 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MicrochipPotentiometerDeviceStatus.java  
+ * FILENAME      :  MicrochipPotentiometerDeviceStatusImpl.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -127,7 +127,7 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
 	@Override
 	public String toString() {
 		
-		final StringBuffer result = new StringBuffer(getClass().getName());
+		final StringBuffer result = new StringBuffer(MicrochipPotentiometerDeviceStatus.class.getName());
 		result.append("{\n");
 		result.append("  eepromWriteActive='").append(eepromWriteActive);
 		result.append("',\n  eepromWriteProtected='").append(eepromWriteProtected);

@@ -1,9 +1,7 @@
-package com.pi4j.component.potentiometer.microchip;
+package com.pi4j.component.potentiometer.microchip.impl;
 
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerChannel;
-import com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerDeviceController;
-import com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerDeviceControllerFactory;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerChannel;
+import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerNonVolatileMode;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import org.junit.Before;
@@ -278,7 +276,7 @@ public class MicrochipPotentiometerPotentiometerImplStaticTest {
 		
 		assertNotNull("result of 'toString()' is null!", toString);
 		assertEquals("Unexpected result from calling 'toString'!",
-				"com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerPotentiometerImplStaticTest$TestablePotentiometer{\n"
+				"com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerPotentiometerImplStaticTest$TestablePotentiometer{\n"
 				+ "  channel='com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerChannel.A',\n"
 				+ "  controller='ControllerMock',\n"
 				+ "  nonVolatileMode='VOLATILE_ONLY',\n"

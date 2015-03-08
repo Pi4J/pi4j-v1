@@ -1,9 +1,5 @@
-package com.pi4j.component.potentiometer.microchip;
+package com.pi4j.component.potentiometer.microchip.impl;
 
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerChannel;
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerDeviceStatus;
-import com.pi4j.component.potentiometer.microchip.impl.DeviceControllerTerminalConfiguration;
-import com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerDeviceController;
 import com.pi4j.io.i2c.I2CDevice;
 import org.junit.Before;
 import org.junit.Test;
