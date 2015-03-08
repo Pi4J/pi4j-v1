@@ -1,10 +1,10 @@
-package com.pi4j.i2c.devices;
+package com.pi4j.component.gyroscope.impl.analogdevices;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  TestADXL345.java  
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  ADXL345Test.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,7 +30,7 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 
 
-public class TestADXL345 {
+public class ADXL345Test {
 
     public static void main(String[] args) throws Exception {
     
