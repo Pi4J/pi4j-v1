@@ -211,7 +211,7 @@ public abstract class MicrochipPotentiometerBase
 			// in the non-volatile memory. so for those devices the wiper's
 			// current value has to be retrieved
 			currentValue = controller.getValue(
-					channel.getDeviceControllerChannel(), false);
+                    DeviceControllerChannel.valueOf(channel), false);
 			
 		} else {
 			
@@ -219,7 +219,7 @@ public abstract class MicrochipPotentiometerBase
 			final int newInitialValueForVolatileWipers
 					= getValueAccordingBoundaries(initialValueForVolatileWipers);
 			
-			controller.setValue(channel.getDeviceControllerChannel(),
+			controller.setValue(DeviceControllerChannel.valueOf(channel),
 					newInitialValueForVolatileWipers,
 					MicrochipPotentiometerDeviceController.VOLATILE_WIPER);
 			
@@ -325,7 +325,7 @@ public abstract class MicrochipPotentiometerBase
     @Override
 	public int updateCacheFromDevice() throws IOException {
 		
-		currentValue = controller.getValue(channel.getDeviceControllerChannel(), false);
+		currentValue = controller.getValue(DeviceControllerChannel.valueOf(channel), false);
 		return currentValue;
 		
 	}
@@ -344,7 +344,7 @@ public abstract class MicrochipPotentiometerBase
 			throw new RuntimeException("This device is not capable of non-volatile wipers!");
 		}
 		
-		return controller.getValue(channel.getDeviceControllerChannel(), true);
+		return controller.getValue(DeviceControllerChannel.valueOf(channel), true);
 		
 	}
 	
@@ -404,7 +404,7 @@ public abstract class MicrochipPotentiometerBase
 			@Override
 			public void run(final boolean nonVolatile) throws IOException {
 				
-				controller.setValue(channel.getDeviceControllerChannel(), newValue,
+				controller.setValue(DeviceControllerChannel.valueOf(channel), newValue,
 						nonVolatile);
 				
 			}
@@ -473,7 +473,7 @@ public abstract class MicrochipPotentiometerBase
 		// for a small number of steps use 'decrease'-method
 		else {
 			
-			controller.decrease(channel.getDeviceControllerChannel(), actualSteps);
+			controller.decrease(DeviceControllerChannel.valueOf(channel), actualSteps);
 			
 			currentValue = newValue;
 			
@@ -535,7 +535,7 @@ public abstract class MicrochipPotentiometerBase
 		// for a small number of step simply repeat 'increase'-commands
 		else {
 			
-			controller.increase(channel.getDeviceControllerChannel(), actualSteps);
+			controller.increase(DeviceControllerChannel.valueOf(channel), actualSteps);
 			
 			currentValue = newValue;
 			
@@ -573,7 +573,7 @@ public abstract class MicrochipPotentiometerBase
 	public MicrochipPotentiometerTerminalConfiguration getTerminalConfiguration() throws IOException {
 		
 		DeviceControllerTerminalConfiguration tcon
-				= controller.getTerminalConfiguration(channel.getDeviceControllerChannel());
+				= controller.getTerminalConfiguration(DeviceControllerChannel.valueOf(channel));
 		
 		return new MicrochipPotentiometerTerminalConfiguration(channel,
 				tcon.isChannelEnabled(), tcon.isPinAEnabled(),
@@ -599,7 +599,7 @@ public abstract class MicrochipPotentiometerBase
 		
 		DeviceControllerTerminalConfiguration tcon
 				= new DeviceControllerTerminalConfiguration(
-				channel.getDeviceControllerChannel(),
+                DeviceControllerChannel.valueOf(channel),
 				terminalConfiguration.isChannelEnabled(),
 				terminalConfiguration.isPinAEnabled(),
 				terminalConfiguration.isPinWEnabled(),
@@ -618,7 +618,7 @@ public abstract class MicrochipPotentiometerBase
     @Override
 	public void setWiperLock(final boolean enabled) throws IOException {
 		
-		controller.setWiperLock(channel.getDeviceControllerChannel(), enabled);
+		controller.setWiperLock(DeviceControllerChannel.valueOf(channel), enabled);
 		
 	}
 	
