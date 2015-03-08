@@ -28,9 +28,10 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
-import java.io.IOException;
-
 import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.i2c.I2CBus;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -80,6 +81,16 @@ public class ADS1115GpioProvider extends ADS1x15GpioProvider implements GpioProv
     public ADS1115GpioProvider(int busNumber, int address) throws IOException {
         // call super constructor in abstract class
         super(busNumber, address);
+
+        // define specific chip configuration properties
+        this.allPins = ADS1115Pin.ALL;
+        this.conversionDelay = ADS1115_CONVERSIONDELAY;
+        this.bitShift = 0; // no bit shifting required for the ADS1115
+    }
+
+    public ADS1115GpioProvider(I2CBus bus, int address) throws IOException {
+        // call super constructor in abstract class
+        super(bus, address);
 
         // define specific chip configuration properties
         this.allPins = ADS1115Pin.ALL;

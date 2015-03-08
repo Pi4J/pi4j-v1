@@ -28,22 +28,15 @@ package com.pi4j.gpio.extension.pcf;
  */
 
 
-import java.io.IOException;
-import java.util.BitSet;
-
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.gpio.exception.InvalidPinException;
-import com.pi4j.io.gpio.exception.InvalidPinModeException;
-import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
+import java.util.BitSet;
 
 /**
  * <p>
@@ -86,15 +79,22 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     
     public static final int PCF8574_MAX_IO_PINS = 8;
 
+    private boolean i2cBusOwner = false;
     private I2CBus bus;
     private I2CDevice device;
     private GpioStateMonitor monitor = null;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
 
     public PCF8574GpioProvider(int busNumber, int address) throws IOException {
-
         // create I2C communications bus instance
-        bus = I2CFactory.getInstance(busNumber);
+        this(I2CFactory.getInstance(busNumber), address);
+        i2cBusOwner = true;
+    }
+
+    public PCF8574GpioProvider(I2CBus bus, int address) throws IOException {
+
+        // set reference to I2C communications bus instance
+        this.bus = bus;
 
         // create I2C device instance
         device = bus.getDevice(address);
@@ -178,8 +178,11 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                 monitor = null;
             }
 
-            // close the I2C bus communication
-            bus.close();
+            // if we are the owner of the I2C bus, then close it
+            if(i2cBusOwner) {
+                // close the I2C bus communication
+                bus.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
