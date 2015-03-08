@@ -9,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  DigitalPotentiometer.java  
+ * FILENAME      :  Potentiometer.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,9 +32,9 @@ import java.io.IOException;
  */
 
 /**
- * A digital potentiometer device
+ * A digital potentiometer component
  */
-public interface DigitalPotentiometer extends Component {
+public interface Potentiometer extends Component {
 
 	/**
 	 * @return The maximum wiper-value supported by the device

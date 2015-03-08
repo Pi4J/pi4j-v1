@@ -116,7 +116,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @return The device's status
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MicrochipPotentiometerDeviceControllerDeviceStatus getDeviceStatus() throws IOException {
+	public DeviceControllerDeviceStatus getDeviceStatus() throws IOException {
 
 		// get status from device
 		int deviceStatus = read(MEMADDR_STATUS);
@@ -140,7 +140,7 @@ public class MicrochipPotentiometerDeviceController {
 		boolean wiperLock1
 				= (deviceStatus & STATUS_WIPERLOCK1_BIT) > 0;
 		
-		return new MicrochipPotentiometerDeviceControllerDeviceStatus(
+		return new DeviceControllerDeviceStatus(
 				eepromWriteActive, eepromWriteProtection,
 				wiperLock0, wiperLock1);
 		
@@ -153,7 +153,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @param steps The number of steps
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void increase(final MicrochipPotentiometerDeviceControllerChannel channel, final int steps)
+	public void increase(final DeviceControllerChannel channel, final int steps)
 			throws IOException {
 		
 		if (channel == null) {
@@ -176,7 +176,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @param steps The number of steps
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void decrease(final MicrochipPotentiometerDeviceControllerChannel channel, final int steps)
+	public void decrease(final DeviceControllerChannel channel, final int steps)
 			throws IOException {
 
 		if (channel == null) {
@@ -200,7 +200,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @return The wiper's value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public int getValue(final MicrochipPotentiometerDeviceControllerChannel channel, final boolean nonVolatile)
+	public int getValue(final DeviceControllerChannel channel, final boolean nonVolatile)
 			throws IOException {
 		
 		if (channel == null) {
@@ -229,7 +229,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @param nonVolatile volatile or non-volatile value
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void setValue(final MicrochipPotentiometerDeviceControllerChannel channel, final int value,
+	public void setValue(final DeviceControllerChannel channel, final int value,
 			final boolean nonVolatile) throws IOException {
 		
 		if (channel == null) {
@@ -260,8 +260,8 @@ public class MicrochipPotentiometerDeviceController {
 	 * @return The current terminal-configuration
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MicrochipPotentiometerDeviceControllerTerminalConfiguration getTerminalConfiguration(
-			final MicrochipPotentiometerDeviceControllerChannel channel) throws IOException {
+	public DeviceControllerTerminalConfiguration getTerminalConfiguration(
+			final DeviceControllerChannel channel) throws IOException {
 		
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
@@ -278,7 +278,7 @@ public class MicrochipPotentiometerDeviceController {
 		boolean pinWEnabled = (tcon & channel.getWiperConnectControlBit()) > 0;
 		boolean pinBEnabled = (tcon & channel.getTerminalBConnectControlBit()) > 0;
 		
-		return new MicrochipPotentiometerDeviceControllerTerminalConfiguration(channel, channelEnabled,
+		return new DeviceControllerTerminalConfiguration(channel, channelEnabled,
 				pinAEnabled, pinWEnabled, pinBEnabled);
 		
 	}
@@ -289,13 +289,13 @@ public class MicrochipPotentiometerDeviceController {
 	 * @param config A terminal-configuration for a certain channel.
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void setTerminalConfiguration(final MicrochipPotentiometerDeviceControllerTerminalConfiguration config)
+	public void setTerminalConfiguration(final DeviceControllerTerminalConfiguration config)
 			throws IOException {
 		
 		if (config == null) {
 			throw new RuntimeException("null-config is not allowed!");
 		}
-		final MicrochipPotentiometerDeviceControllerChannel channel = config.getChannel();
+		final DeviceControllerChannel channel = config.getChannel();
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
 					+ "knowing just one wiper Channel.A is mandatory for "
@@ -331,7 +331,7 @@ public class MicrochipPotentiometerDeviceController {
 	 * @param locked Whether to enable the wiper's lock
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public void setWiperLock(final MicrochipPotentiometerDeviceControllerChannel channel,
+	public void setWiperLock(final DeviceControllerChannel channel,
 			final boolean locked) throws IOException {
 		
 		if (channel == null) {

@@ -5,7 +5,7 @@ package com.pi4j.component.potentiometer.impl.microchip;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MicrochipPotentiometerDeviceControllerDeviceStatus.java  
+ * FILENAME      :  DeviceControllerDeviceStatus.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,15 +30,15 @@ package com.pi4j.component.potentiometer.impl.microchip;
 /**
  * The device's status
  */
-class MicrochipPotentiometerDeviceControllerDeviceStatus {
+class DeviceControllerDeviceStatus {
 	
 	private boolean eepromWriteActive;
 	private boolean eepromWriteProtected;
 	private boolean channelALocked;
 	private boolean channelBLocked;
 	
-	public MicrochipPotentiometerDeviceControllerDeviceStatus(boolean eepromWriteActive, boolean eepromWriteProtected,
-                                                       boolean channelALocked, boolean channelBLocked) {
+	public DeviceControllerDeviceStatus(boolean eepromWriteActive, boolean eepromWriteProtected,
+                                        boolean channelALocked, boolean channelBLocked) {
 		this.eepromWriteActive = eepromWriteActive;
 		this.eepromWriteProtected = eepromWriteProtected;
 		this.channelALocked = channelALocked;

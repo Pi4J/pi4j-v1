@@ -1,7 +1,5 @@
-package com.pi4j.component.potentiometer.impl;
+package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase;
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerChannel;
 import com.pi4j.io.i2c.I2CBus;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  MCP4661PotentiometerComponent.java  
+ * FILENAME      :  MCP4652.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,11 +32,11 @@ import java.io.IOException;
  */
 
 /**
- * Pi4J-device for MCP4661.
+ * Pi4J-device for MCP4652.
  * 
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
-public class MCP4661PotentiometerComponent extends MicrochipPotentiometerBase {
+public class MCP4652 extends MicrochipPotentiometerBase {
 
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B
@@ -50,43 +48,31 @@ public class MCP4661PotentiometerComponent extends MicrochipPotentiometerBase {
 	 * @param i2cBus The Pi4J-I2CBus to which the device is connected to
 	 * @param pinA0 Whether the device's address pin A0 is high (true) or low (false)
 	 * @param pinA1 Whether the device's address pin A1 (if available) is high (true) or low (false)
-	 * @param pinA2 Whether the device's address pin A2 (if available) is high (true) or low (false)
 	 * @param channel Which of the potentiometers provided by the device to control
-	 * @param nonVolatileMode The way non-volatile reads or writes are done
+	 * @param initialValue Initial value of wiper
 	 * @throws IOException Thrown if communication fails or device returned a malformed result
 	 */
-	public MCP4661PotentiometerComponent(final I2CBus i2cBus, final boolean pinA0,
-                                         final boolean pinA1, final boolean pinA2,
-                                         final MicrochipPotentiometerChannel channel, final NonVolatileMode nonVolatileMode)
-			throws IOException {
+	public MCP4652(final I2CBus i2cBus, final boolean pinA0,
+                   final boolean pinA1, final MicrochipPotentiometerChannel channel,
+                   final int initialValue)  throws IOException {
 		
-		super(i2cBus, pinA0, pinA1, pinA2, channel,
-				nonVolatileMode, INITIALVALUE_LOADED_FROM_EEPROM);
+		super(i2cBus, pinA0, pinA1, PIN_NOT_AVAILABLE,
+				channel, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
 		
 	}
 
 	/**
-	 * @return Whether device is capable of non volatile wipers (true for MCP4661)
+	 * @return Whether device is capable of non volatile wipers (false for MCP4652)
 	 */
 	@Override
 	public boolean isCapableOfNonVolatileWiper() {
 		
-		return true;
+		return false;
 		
 	}
 	
 	/**
-	 * @param nonVolatileMode The way non-volatile reads or writes are done
-	 */
-	@Override
-	public void setNonVolatileMode(final NonVolatileMode nonVolatileMode) {
-		
-		super.setNonVolatileMode(nonVolatileMode);
-		
-	}
-	
-	/**
-	 * @return The maximal value at which a wiper can be (256 for MCP4661)
+	 * @return The maximal value at which a wiper can be (256 for MCP4652)
 	 */
 	@Override
 	public int getMaxValue() {
@@ -96,7 +82,7 @@ public class MCP4661PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return The maximal value at which a wiper can be (256 for MCP4661)
+	 * @return The maximal value at which a wiper can be (256 for MCP4652)
 	 */
 	public static int maxValue() {
 		
@@ -105,17 +91,17 @@ public class MCP4661PotentiometerComponent extends MicrochipPotentiometerBase {
 	}
 	
 	/**
-	 * @return Whether this device is a potentiometer or a rheostat (false for MCP4661)
+	 * @return Whether this device is a potentiometer or a rheostat (true for MCP4652)
 	 */
 	@Override
 	public boolean isRheostat() {
 		
-		return false;
+		return true;
 		
 	}
 	
 	/**
-	 * @return All channels supported by the underlying device (A, B for MCP4661)
+	 * @return All channels supported by the underlying device (A, B for MCP4652)
 	 */
 	@Override
 	public MicrochipPotentiometerChannel[] getSupportedChannelsByDevice() {

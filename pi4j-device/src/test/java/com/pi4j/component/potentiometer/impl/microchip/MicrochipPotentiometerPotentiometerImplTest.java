@@ -1,6 +1,5 @@
 package com.pi4j.component.potentiometer.impl.microchip;
 
-import com.pi4j.component.potentiometer.impl.microchip.MicrochipPotentiometerBase.NonVolatileMode;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import org.junit.Before;
@@ -78,7 +77,7 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 				boolean capableOfNonVolatileWiper, int initialValue)
 				throws IOException {
 			super(i2cBus, false, false, false, channel,
-					NonVolatileMode.VOLATILE_ONLY, initialValue, controllerFactory);
+					MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue, controllerFactory);
 			this.capableOfNonVolatileWiper = capableOfNonVolatileWiper;
 		}
 		
@@ -131,8 +130,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// prepare controller-status mock
 
-        MicrochipPotentiometerDeviceControllerDeviceStatus deviceStatusMock
-				= mock(MicrochipPotentiometerDeviceControllerDeviceStatus.class);
+        DeviceControllerDeviceStatus deviceStatusMock
+				= mock(DeviceControllerDeviceStatus.class);
 		when(deviceStatusMock.isEepromWriteActive()).thenReturn(WRITE_ACTIVE);
 		when(deviceStatusMock.isEepromWriteProtected()).thenReturn(WRITE_PROTECTED);
 		when(deviceStatusMock.isChannelALocked()).thenReturn(WIPER0_LOCKED);
@@ -205,7 +204,7 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 	}
 	
 	@Test
-	public void testNonVolatileMode() {
+	public void testMicrochipPotentiometerNonVolatileMode() {
 		
 		// null-test
 		
@@ -222,7 +221,7 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		try {
 			
-			potiB.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
+			potiB.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY);
 			fail("Got no RuntimeException on calling 'setNonVolatileMode(NONVOLATILE_ONLY)'!");
 			
 		} catch (RuntimeException e) {
@@ -230,7 +229,7 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		}
 		try {
 			
-			potiB.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
+			potiB.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
 			fail("Got no RuntimeException on calling 'setNonVolatileMode(VOLATILE_AND_NONVOLATILE)'!");
 			
 		} catch (RuntimeException e) {
@@ -239,33 +238,33 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// supported modes
 
-		potiA.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
-		NonVolatileMode nonVolatileMode1 = potiA.getNonVolatileMode();
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY);
+		MicrochipPotentiometerNonVolatileMode nonVolatileMode1 = potiA.getNonVolatileMode();
 		
 		assertEquals("After calling 'setNonVolatileMode(NONVOLATILE_ONLY)' the method "
 				+ "'getNonVolatileMode()' does not return NONVOLATILE_ONLY!",
-				NonVolatileMode.NONVOLATILE_ONLY, nonVolatileMode1);
+				MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY, nonVolatileMode1);
 			
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		NonVolatileMode nonVolatileMode2 = potiA.getNonVolatileMode();
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+		MicrochipPotentiometerNonVolatileMode nonVolatileMode2 = potiA.getNonVolatileMode();
 		
 		assertEquals("After calling 'setNonVolatileMode(VOLATILE_ONLY)' the method "
 				+ "'getNonVolatileMode()' does not return VOLATILE_ONLY!",
-				NonVolatileMode.VOLATILE_ONLY, nonVolatileMode2);
+				MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, nonVolatileMode2);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
-		NonVolatileMode nonVolatileMode3 = potiA.getNonVolatileMode();
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
+		MicrochipPotentiometerNonVolatileMode nonVolatileMode3 = potiA.getNonVolatileMode();
 		
 		assertEquals("After calling 'setNonVolatileMode(VOLATILE_AND_NONVOLATILE)' the method "
 				+ "'getNonVolatileMode()' does not return VOLATILE_AND_NONVOLATILE!",
-				NonVolatileMode.VOLATILE_AND_NONVOLATILE, nonVolatileMode3);
+				MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE, nonVolatileMode3);
 			
-		potiB.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		NonVolatileMode nonVolatileMode4 = potiB.getNonVolatileMode();
+		potiB.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+		MicrochipPotentiometerNonVolatileMode nonVolatileMode4 = potiB.getNonVolatileMode();
 		
 		assertEquals("After calling 'setNonVolatileMode(VOLATILE_ONLY)' the method "
 				+ "'getNonVolatileMode()' does not return VOLATILE_ONLY!",
-				NonVolatileMode.VOLATILE_ONLY, nonVolatileMode4);
+				MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, nonVolatileMode4);
 			
 	}
 	
@@ -276,16 +275,16 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		reset(controller);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
 		potiA.setCurrentValue(50);
 		
 		// controller 'setValue' used to set value '50' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				50, false);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -296,20 +295,20 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		reset(controller);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
-		potiA.setCurrentValue(60);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY);
+        potiA.setCurrentValue(60);
 		
 		// controller 'setValue' used to set '60' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				60, true);
 		// controller 'setValue' only used one time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue2 = potiA.getCurrentValue();
-		assertEquals("Expected to get 50, since NonVolatileMode is NONVOLATILE_ONLY, "
+		assertEquals("Expected to get 50, since MicrochipPotentiometerNonVolatileMode is NONVOLATILE_ONLY, "
 				+ "on calling 'getCurrentValue()'!",
 				50, currentValue2);
 		
@@ -317,20 +316,20 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		reset(controller);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
-		potiA.setCurrentValue(70);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
+        potiA.setCurrentValue(70);
 		
 		// controller 'setValue' used to set '70' on channel 'A' for non-volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				70, true);
 		// controller 'setValue' used to set '70' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				70, false);
 		// controller 'setValue' used two times
 		verify(controller, times(2)).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -341,16 +340,16 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		reset(controller);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		potiA.setCurrentValue(-50);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+        potiA.setCurrentValue(-50);
 		
 		// controller 'setValue' used to set '0' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				0, false);
 		// controller 'setValue' used one time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -361,16 +360,16 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		reset(controller);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		potiA.setCurrentValue(400);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+        potiA.setCurrentValue(400);
 		
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		
 		int currentValue5 = potiA.getCurrentValue();
@@ -384,26 +383,26 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// wrong parameters
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
-		try {
-			
-			potiA.increase();
-			
-		} catch (RuntimeException e) {
-			// expected because only VOLATILE_ONLY is supported
-		}
-		potiA.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
-		try {
-			
-			potiA.increase();
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
+        try {
+
+            potiA.increase();
 			
 		} catch (RuntimeException e) {
 			// expected because only VOLATILE_ONLY is supported
 		}
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		try {
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY);
+        try {
+
+            potiA.increase();
 			
-			potiA.increase(-10);
+		} catch (RuntimeException e) {
+			// expected because only VOLATILE_ONLY is supported
+		}
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+        try {
+
+            potiA.increase(-10);
 			
 		} catch (RuntimeException e) {
 			// expected because only positive values are allowed
@@ -411,8 +410,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// success
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		potiA.setCurrentValue(240);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+        potiA.setCurrentValue(240);
 
 		reset(controller);
 		
@@ -420,10 +419,10 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// controller 'increase' used with '1' step on channel 'A' for volatile-wiper
 		verify(controller).increase(
-                MicrochipPotentiometerDeviceControllerChannel.A, 1);
+                DeviceControllerChannel.A, 1);
 		// controller 'increase' used one time
 		verify(controller).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -436,10 +435,10 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// controller 'increase' used with '2' steps on channel 'A' for volatile-wiper
 		verify(controller).increase(
-                MicrochipPotentiometerDeviceControllerChannel.A, 2);
+                DeviceControllerChannel.A, 2);
 		// controller 'increase' used on time
 		verify(controller).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -453,15 +452,15 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		// controller 'setValue' used to set '253' on channel 'A' for volatile-wiper
 		// instead of increase because for more than 5 steps using 'setValue' is "cheaper"
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				253, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 
 		reset(controller);
@@ -471,15 +470,15 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		// controller 'setValue' used to set '256' on channel 'A' for volatile-wiper
 		// instead of increase because this hits the upper boundary
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				256, false);
 		// controller 'setValue' used on time
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		// controller 'increase' is not used
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -491,10 +490,10 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.increase();
 		
 		verify(controller, times(0)).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -510,26 +509,26 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		potiA.setCurrentValue(10);
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_AND_NONVOLATILE);
-		try {
-			
-			potiA.decrease();
-			
-		} catch (RuntimeException e) {
-			// expected because only VOLATILE_ONLY is supported
-		}
-		potiA.setNonVolatileMode(NonVolatileMode.NONVOLATILE_ONLY);
-		try {
-			
-			potiA.decrease(10);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_AND_NONVOLATILE);
+        try {
+
+            potiA.decrease();
 			
 		} catch (RuntimeException e) {
 			// expected because only VOLATILE_ONLY is supported
 		}
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
-		try {
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.NONVOLATILE_ONLY);
+        try {
+
+            potiA.decrease(10);
 			
-			potiA.decrease(-10);
+		} catch (RuntimeException e) {
+			// expected because only VOLATILE_ONLY is supported
+		}
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
+        try {
+
+            potiA.decrease(-10);
 			
 		} catch (RuntimeException e) {
 			// expected because only positive values are allowed
@@ -537,16 +536,16 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// success
 		
-		potiA.setNonVolatileMode(NonVolatileMode.VOLATILE_ONLY);
+		potiA.setNonVolatileMode(MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY);
 
-		reset(controller);
+        reset(controller);
 		
 		potiA.decrease();
 		
 		verify(controller).decrease(
-                MicrochipPotentiometerDeviceControllerChannel.A, 1);
+                DeviceControllerChannel.A, 1);
 		verify(controller).decrease(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue1 = potiA.getCurrentValue();
@@ -558,9 +557,9 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.decrease(2);
 		
 		verify(controller).decrease(
-                MicrochipPotentiometerDeviceControllerChannel.A, 2);
+                DeviceControllerChannel.A, 2);
 		verify(controller).decrease(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue2 = potiA.getCurrentValue();
@@ -572,13 +571,13 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.decrease(6);
 		
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				1, false);
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue3 = potiA.getCurrentValue();
@@ -590,13 +589,13 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.decrease(20);
 		
 		verify(controller).setValue(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+                DeviceControllerChannel.A,
 				0, false);
 		verify(controller).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue4 = potiA.getCurrentValue();
@@ -608,10 +607,10 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.decrease();
 		
 		verify(controller, times(0)).setValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt(), anyBoolean());
 		verify(controller, times(0)).increase(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyInt());
 		
 		int currentValue5 = potiA.getCurrentValue();
@@ -631,18 +630,18 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		reset(controller);
 		
 		when(controller.getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				eq(true))).thenReturn(70);
 		
 		int currentValue2 = potiA.updateCacheFromDevice();
 		
 		verify(controller).getValue(
-                MicrochipPotentiometerDeviceControllerChannel.A, false);
+                DeviceControllerChannel.A, false);
 		verify(controller).getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get updated value by method 'updateCacheFromDevice()'",
@@ -668,22 +667,22 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		}
 		
 		verify(controller, times(0)).getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		when(controller.getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				eq(false))).thenReturn(40);
 		when(controller.getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				eq(true))).thenReturn(70);
 		
 		int nonVolatileValue = potiA.getNonVolatileValue();
 
 		verify(controller).getValue(
-				MicrochipPotentiometerDeviceControllerChannel.A, true);
+				DeviceControllerChannel.A, true);
 		verify(controller).getValue(
-				any(MicrochipPotentiometerDeviceControllerChannel.class),
+				any(DeviceControllerChannel.class),
 				anyBoolean());
 		
 		assertEquals("Did not get non-volatile-value on calling 'getNonVolatileValue()'",
@@ -696,12 +695,12 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		// channel A poti
 		
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration mockedTconA =
-				new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-						MicrochipPotentiometerDeviceControllerChannel.A,
+		final DeviceControllerTerminalConfiguration mockedTconA =
+				new DeviceControllerTerminalConfiguration(
+						DeviceControllerChannel.A,
 						true, false, true, false);
 		when(controller.getTerminalConfiguration(
-				eq(MicrochipPotentiometerDeviceControllerChannel.A))).thenReturn(mockedTconA);
+				eq(DeviceControllerChannel.A))).thenReturn(mockedTconA);
 		
 		MicrochipPotentiometerTerminalConfiguration tconA = potiA.getTerminalConfiguration();
 		
@@ -727,12 +726,12 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 
 		// channel B poti
 		
-		final MicrochipPotentiometerDeviceControllerTerminalConfiguration mockedTconB =
-				new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-						MicrochipPotentiometerDeviceControllerChannel.B,
+		final DeviceControllerTerminalConfiguration mockedTconB =
+				new DeviceControllerTerminalConfiguration(
+						DeviceControllerChannel.B,
 						false, true, false, true);
 		when(controller.getTerminalConfiguration(
-				eq(MicrochipPotentiometerDeviceControllerChannel.B))).thenReturn(mockedTconB);
+				eq(DeviceControllerChannel.B))).thenReturn(mockedTconB);
 		
 		MicrochipPotentiometerTerminalConfiguration tconB = potiB.getTerminalConfiguration();
 		
@@ -786,9 +785,9 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		potiA.setTerminalConfiguration(new MicrochipPotentiometerTerminalConfiguration(
 				MicrochipPotentiometerChannel.A, true, false, true, false));
 		
-		verify(controller).setTerminalConfiguration(new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-				MicrochipPotentiometerDeviceControllerChannel.A, true, false, true, false));
-		verify(controller).setTerminalConfiguration(any(MicrochipPotentiometerDeviceControllerTerminalConfiguration.class));
+		verify(controller).setTerminalConfiguration(new DeviceControllerTerminalConfiguration(
+				DeviceControllerChannel.A, true, false, true, false));
+		verify(controller).setTerminalConfiguration(any(DeviceControllerTerminalConfiguration.class));
 		
 		
 	}
@@ -821,8 +820,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		potiA.setWiperLock(true);
 		
-		verify(controller).setWiperLock(MicrochipPotentiometerDeviceControllerChannel.A, true);
-		verify(controller).setWiperLock(any(MicrochipPotentiometerDeviceControllerChannel.class), anyBoolean());
+		verify(controller).setWiperLock(DeviceControllerChannel.A, true);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
 		
 		// disable lock for poti A
 		
@@ -830,8 +829,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		potiA.setWiperLock(false);
 		
-		verify(controller).setWiperLock(MicrochipPotentiometerDeviceControllerChannel.A, false);
-		verify(controller).setWiperLock(any(MicrochipPotentiometerDeviceControllerChannel.class), anyBoolean());
+		verify(controller).setWiperLock(DeviceControllerChannel.A, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
 		
 		// disable lock for poti B
 		
@@ -839,8 +838,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		potiB.setWiperLock(false);
 		
-		verify(controller).setWiperLock(MicrochipPotentiometerDeviceControllerChannel.B, false);
-		verify(controller).setWiperLock(any(MicrochipPotentiometerDeviceControllerChannel.class), anyBoolean());
+		verify(controller).setWiperLock(DeviceControllerChannel.B, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
 		
 		// disable lock for poti B
 		
@@ -848,8 +847,8 @@ public class MicrochipPotentiometerPotentiometerImplTest {
 		
 		potiB.setWiperLock(false);
 		
-		verify(controller).setWiperLock(MicrochipPotentiometerDeviceControllerChannel.B, false);
-		verify(controller).setWiperLock(any(MicrochipPotentiometerDeviceControllerChannel.class), anyBoolean());
+		verify(controller).setWiperLock(DeviceControllerChannel.B, false);
+		verify(controller).setWiperLock(any(DeviceControllerChannel.class), anyBoolean());
 		
 	}
 	

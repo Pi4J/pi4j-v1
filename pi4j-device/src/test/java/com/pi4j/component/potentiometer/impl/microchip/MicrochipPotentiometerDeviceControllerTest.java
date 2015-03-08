@@ -109,7 +109,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b1111111110101 -> Status-bits (see 4.2.2.1)
 		mockReadResult(i2cDevice, (byte) 0b00011111, (byte) 0b11110101, length);
 
-        MicrochipPotentiometerDeviceControllerDeviceStatus deviceStatus1 = controller.getDeviceStatus();
+        DeviceControllerDeviceStatus deviceStatus1 = controller.getDeviceStatus();
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		testForWriteAndRead((byte) 0b1011100);
@@ -136,7 +136,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b1111111111010 -> Status-bits (see 4.2.2.1)
 		mockReadResult(i2cDevice, (byte) 0b00011111, (byte) 0b11111010, length);
 
-        MicrochipPotentiometerDeviceControllerDeviceStatus deviceStatus2 = controller.getDeviceStatus();
+        DeviceControllerDeviceStatus deviceStatus2 = controller.getDeviceStatus();
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		testForWriteAndRead((byte) 0b1011100);
@@ -202,7 +202,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0000000000000000 -> 0
 		mockReadResult(i2cDevice, (byte) 0b00000000, (byte) 0b00000000, (int[]) null);
 		
-		int currentValue = controller.getValue(MicrochipPotentiometerDeviceControllerChannel.A, false);
+		int currentValue = controller.getValue(DeviceControllerChannel.A, false);
 		
 		assertEquals("Expected result of 'getCurrentValue(...)' as 0 "
 				+ "but got " + currentValue, 0, currentValue);
@@ -217,7 +217,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0000000010000000 -> 128
 		mockReadResult(i2cDevice, (byte) 0b00000000, (byte) 0b10000000, (int[]) null);
 
-		currentValue = controller.getValue(MicrochipPotentiometerDeviceControllerChannel.B, false);
+		currentValue = controller.getValue(DeviceControllerChannel.B, false);
 
 		assertEquals("Expected result of 'getCurrentValue(...)' as 128 "
 				+ "but got " + currentValue, 128, currentValue);
@@ -232,7 +232,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0000000100000001 -> 257
 		mockReadResult(i2cDevice, (byte) 0b00000001, (byte) 0b00000001, (int[]) null);
 		
-		currentValue = controller.getValue(MicrochipPotentiometerDeviceControllerChannel.A, true);
+		currentValue = controller.getValue(DeviceControllerChannel.A, true);
 		
 		assertEquals("Expected result of 'getCurrentValue(...)' as 257 "
 				+ "but got " + currentValue, 257, currentValue);
@@ -247,7 +247,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0000000100000001 -> 257
 		mockReadResult(i2cDevice, (byte) 0b00000001, (byte) 0b00000001, (int[]) null);
 		
-		currentValue = controller.getValue(MicrochipPotentiometerDeviceControllerChannel.B, true);
+		currentValue = controller.getValue(DeviceControllerChannel.B, true);
 		
 		assertEquals("Expected result of 'getCurrentValue(...)' as 257 "
 				+ "but got " + currentValue, 257, currentValue);
@@ -270,7 +270,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		}
 		try {
 
-			controller.setValue(MicrochipPotentiometerDeviceControllerChannel.A, -1, true);
+			controller.setValue(DeviceControllerChannel.A, -1, true);
 			fail("Got no RuntimeException on calling 'setValue(...)' using a negative value!");
 			
 		} catch (RuntimeException e) {
@@ -279,7 +279,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		// test wiper 0 - volatile
 		
-		controller.setValue(MicrochipPotentiometerDeviceControllerChannel.A, 0, false);
+		controller.setValue(DeviceControllerChannel.A, 0, false);
 		
 		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0000000, (byte) 0b00000000 }, 0, 2);
@@ -290,7 +290,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 
 		reset(i2cDevice);
 		
-		controller.setValue(MicrochipPotentiometerDeviceControllerChannel.B, 1, false);
+		controller.setValue(DeviceControllerChannel.B, 1, false);
 		
 		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0010000, (byte) 0b00000001 }, 0, 2);
@@ -301,7 +301,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 
 		reset(i2cDevice);
 		
-		controller.setValue(MicrochipPotentiometerDeviceControllerChannel.A, 255, true);
+		controller.setValue(DeviceControllerChannel.A, 255, true);
 		
 		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0100000, (byte) 0b11111111 }, 0, 2);
@@ -312,7 +312,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 
 		reset(i2cDevice);
 		
-		controller.setValue(MicrochipPotentiometerDeviceControllerChannel.B, 256, true);
+		controller.setValue(DeviceControllerChannel.B, 256, true);
 		
 		// test for proper write-argument -> see FIGURE 7-2 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0110001, (byte) 0b00000000 }, 0, 2);
@@ -335,7 +335,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		// zero-step increase
 		
-		controller.increase(MicrochipPotentiometerDeviceControllerChannel.A, 0);
+		controller.increase(DeviceControllerChannel.A, 0);
 		
 		// 'write' called zero times
 		verify(i2cDevice, times(0)).write(any(byte[].class), anyInt(), anyInt());
@@ -344,7 +344,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.increase(MicrochipPotentiometerDeviceControllerChannel.A, 1);
+		controller.increase(DeviceControllerChannel.A, 1);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0000100 }, 0, 1);
@@ -355,7 +355,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.increase(MicrochipPotentiometerDeviceControllerChannel.B, 3);
+		controller.increase(DeviceControllerChannel.B, 3);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0010100,
@@ -367,7 +367,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.increase(MicrochipPotentiometerDeviceControllerChannel.A, -1);
+		controller.increase(DeviceControllerChannel.A, -1);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0001000 }, 0, 1);
@@ -390,7 +390,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		// zero-step decrease
 		
-		controller.increase(MicrochipPotentiometerDeviceControllerChannel.A, 0);
+		controller.increase(DeviceControllerChannel.A, 0);
 		
 		// 'write' called zero times
 		verify(i2cDevice, times(0)).write(any(byte[].class), anyInt(), anyInt());
@@ -399,7 +399,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.decrease(MicrochipPotentiometerDeviceControllerChannel.A, 1);
+		controller.decrease(DeviceControllerChannel.A, 1);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0001000 }, 0, 1);
@@ -410,7 +410,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.decrease(MicrochipPotentiometerDeviceControllerChannel.B, 3);
+		controller.decrease(DeviceControllerChannel.B, 3);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0011000,
@@ -422,7 +422,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.decrease(MicrochipPotentiometerDeviceControllerChannel.A, -1);
+		controller.decrease(DeviceControllerChannel.A, -1);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0000100 }, 0, 1);
@@ -446,8 +446,8 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0111000011 -> TCON-bits (see 4.2.2.2)
 		mockReadResult(i2cDevice, (byte) 0, (byte) 0b11000011, null);
 
-        MicrochipPotentiometerDeviceControllerTerminalConfiguration tconA = controller.getTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A);
+        DeviceControllerTerminalConfiguration tconA = controller.getTerminalConfiguration(
+                DeviceControllerChannel.A);
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		testForWriteAndRead((byte) 0b1001100);
@@ -456,7 +456,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 				tconA);
 		assertEquals("Result of 'getTerminalConfiguration(Channel.A)' did not return '"
 				+ "Channel.A' on calling 'getChannel()'!",
-                MicrochipPotentiometerDeviceControllerChannel.A, tconA.getChannel());
+                DeviceControllerChannel.A, tconA.getChannel());
 		assertEquals("According to mocked read-result the channel should be disabled!",
 				false, tconA.isChannelEnabled());
 		assertEquals("According to mocked read-result the pin A should be disabled!",
@@ -466,8 +466,8 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		assertEquals("According to mocked read-result the pin B should be enabled!",
 				true, tconA.isPinBEnabled());
 
-        MicrochipPotentiometerDeviceControllerTerminalConfiguration tconB = controller.getTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.B);
+        DeviceControllerTerminalConfiguration tconB = controller.getTerminalConfiguration(
+                DeviceControllerChannel.B);
 
 		// test for proper write-argument -> see FIGURE 7-5 and TABLE 4-1
 		testForWriteAndRead((byte) 0b1001100, 2);
@@ -476,7 +476,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 				tconB);
 		assertEquals("Result of 'getTerminalConfiguration(Channel.B)' did not return '"
 				+ "Channel.A' on calling 'getChannel()'!",
-                MicrochipPotentiometerDeviceControllerChannel.B, tconB.getChannel());
+                DeviceControllerChannel.B, tconB.getChannel());
 		assertEquals("According to mocked read-result the channel should be enabled!",
 				true, tconB.isChannelEnabled());
 		assertEquals("According to mocked read-result the pin A should be enabled!",
@@ -501,7 +501,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		}
 		try {
 			
-			controller.setTerminalConfiguration(new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
+			controller.setTerminalConfiguration(new DeviceControllerTerminalConfiguration(
 					null, false, false, false, false));
 			fail("Got no RuntimeException on calling 'setTerminalConfiguration(tcon)' "
 					+ " where tcon.getChannel() is null!");
@@ -513,8 +513,8 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// 0b0101010101 -> TCON-bits (see 4.2.2.2)
 		mockReadResult(i2cDevice, (byte) 0, (byte) 0b0101010101, null);
 
-        MicrochipPotentiometerDeviceControllerTerminalConfiguration tconA = new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.A,
+        DeviceControllerTerminalConfiguration tconA = new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.A,
 				true, true, true, false);
 		controller.setTerminalConfiguration(tconA);
 		
@@ -529,8 +529,8 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		// bits have to be according to 'tconA'.
 		verify(i2cDevice).write(new byte[] { (byte) 0b1000000, (byte) 0b01011110 }, 0, 2);
 
-        MicrochipPotentiometerDeviceControllerTerminalConfiguration tconB = new MicrochipPotentiometerDeviceControllerTerminalConfiguration(
-                MicrochipPotentiometerDeviceControllerChannel.B,
+        DeviceControllerTerminalConfiguration tconB = new DeviceControllerTerminalConfiguration(
+                DeviceControllerChannel.B,
 				false, false, false, true);
 		controller.setTerminalConfiguration(tconB);
 		
@@ -561,7 +561,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 	
 		// channel.A -> lock
 		
-		controller.setWiperLock(MicrochipPotentiometerDeviceControllerChannel.A, true);
+		controller.setWiperLock(DeviceControllerChannel.A, true);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0100100 }, 0, 1);
@@ -572,7 +572,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.setWiperLock(MicrochipPotentiometerDeviceControllerChannel.A, false);
+		controller.setWiperLock(DeviceControllerChannel.A, false);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0101000 }, 0, 1);
@@ -583,7 +583,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.setWiperLock(MicrochipPotentiometerDeviceControllerChannel.B, true);
+		controller.setWiperLock(DeviceControllerChannel.B, true);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0110100 }, 0, 1);
@@ -594,7 +594,7 @@ public class MicrochipPotentiometerDeviceControllerTest {
 		
 		reset(i2cDevice);
 		
-		controller.setWiperLock(MicrochipPotentiometerDeviceControllerChannel.B, false);
+		controller.setWiperLock(DeviceControllerChannel.B, false);
 		
 		// test for proper write-argument -> see FIGURE 7-7 and TABLE 4-1
 		verify(i2cDevice).write(new byte[] { (byte) 0b0111000 }, 0, 1);
