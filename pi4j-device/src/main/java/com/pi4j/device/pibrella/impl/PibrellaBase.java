@@ -1,4 +1,4 @@
-package com.pi4j.device.pibrella;
+package com.pi4j.device.pibrella.impl;
 
 /*
  * #%L
@@ -30,9 +30,11 @@ package com.pi4j.device.pibrella;
 
 import com.pi4j.component.button.Button;
 import com.pi4j.component.button.impl.GpioButtonComponent;
+import com.pi4j.component.buzzer.Buzzer;
 import com.pi4j.component.light.LED;
 import com.pi4j.component.light.impl.GpioLEDComponent;
 import com.pi4j.device.DeviceBase;
+import com.pi4j.device.pibrella.*;
 import com.pi4j.io.gpio.*;
 
 public abstract class PibrellaBase extends DeviceBase implements Pibrella {
@@ -75,6 +77,7 @@ public abstract class PibrellaBase extends DeviceBase implements Pibrella {
         gpio.setShutdownOptions(true, inputPins);
         gpio.setShutdownOptions(true, PinState.LOW, pwmOutput);
         gpio.setShutdownOptions(true, PinState.LOW, outputPins);
+        pwmOutput.setShutdownOptions(true);
 
         // setup de-bouncing on the button input
         inputPins[4].setDebounce(20);
@@ -88,7 +91,8 @@ public abstract class PibrellaBase extends DeviceBase implements Pibrella {
                                   new GpioLEDComponent(outputPins[6])};
 
         // create buzzer components
-        buzzer = new Buzzer(pwmOutput);
+        buzzer = new PibrellaBuzzerImpl(pwmOutput);
+        buzzer.stop();
     }
 
     /**

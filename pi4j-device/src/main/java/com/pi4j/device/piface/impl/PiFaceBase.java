@@ -1,4 +1,4 @@
-package com.pi4j.device.piface;
+package com.pi4j.device.piface.impl;
 
 /*
  * #%L
@@ -35,6 +35,10 @@ import com.pi4j.component.relay.impl.GpioRelayComponent;
 import com.pi4j.component.switches.Switch;
 import com.pi4j.component.switches.impl.GpioSwitchComponent;
 import com.pi4j.device.DeviceBase;
+import com.pi4j.device.piface.PiFace;
+import com.pi4j.device.piface.PiFaceLed;
+import com.pi4j.device.piface.PiFaceRelay;
+import com.pi4j.device.piface.PiFaceSwitch;
 import com.pi4j.gpio.extension.piface.PiFaceGpioProvider;
 import com.pi4j.gpio.extension.piface.PiFacePin;
 import com.pi4j.io.gpio.*;

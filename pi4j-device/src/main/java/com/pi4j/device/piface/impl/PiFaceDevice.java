@@ -28,7 +28,6 @@ package com.pi4j.device.piface.impl;
  */
 
 import com.pi4j.device.piface.PiFace;
-import com.pi4j.device.piface.PiFaceBase;
 import com.pi4j.io.spi.SpiChannel;
 
 import java.io.IOException;

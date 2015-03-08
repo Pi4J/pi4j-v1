@@ -1,11 +1,11 @@
-package com.pi4j.device.pibrella.impl;
+package com.pi4j.component.buzzer;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PibrellaDevice.java  
+ * FILENAME      :  Buzzer.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,8 +27,27 @@ package com.pi4j.device.pibrella.impl;
  * #L%
  */
 
-public class PibrellaDevice extends PibrellaBase {
+public interface Buzzer {
 
-    // default constructor
-    public PibrellaDevice()  { super(); }
+    public static int STOP_FREQUENCY = 0;
+
+    /**
+     * start the buzzer at a specific frequency
+     *
+     * @param frequency
+     */
+    public void buzz(int frequency);
+
+    /**
+     * start the buzzer at a specific frequency for a specified duration in milliseconds
+     *
+     * @param frequency
+     * @param duration number of milliseconds
+     */
+    public void buzz(int frequency, int duration);
+
+    /**
+     * stop the buzzer
+     */
+    public void stop();
 }

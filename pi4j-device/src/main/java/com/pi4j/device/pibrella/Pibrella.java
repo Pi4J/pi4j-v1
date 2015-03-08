@@ -28,6 +28,7 @@ package com.pi4j.device.pibrella;
  */
 
 import com.pi4j.component.button.Button;
+import com.pi4j.component.buzzer.Buzzer;
 import com.pi4j.component.light.LED;
 import com.pi4j.device.Device;
 import com.pi4j.io.gpio.GpioController;
