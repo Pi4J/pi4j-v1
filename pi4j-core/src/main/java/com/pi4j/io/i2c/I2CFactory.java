@@ -36,8 +36,15 @@ import java.io.IOException;
  *         href="http://www.savagehomeautomation.com">http://www
  *         .savagehomeautomation.com</a>)
  */
-public class I2CFactory
-{
+public class I2CFactory {
+	
+	public static class UnsupportedBusNumberException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		public UnsupportedBusNumberException() {
+			super();
+		}
+	}
 
 	volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberry();
 
@@ -54,7 +61,8 @@ public class I2CFactory
 	 * 
 	 * @throws IOException
 	 */
-	public static I2CBus getInstance(int busNumber) throws IOException
+	public static I2CBus getInstance(int busNumber)
+			throws UnsupportedBusNumberException, IOException
 	{
 		return provider.getBus(busNumber);
 	}
@@ -67,4 +75,5 @@ public class I2CFactory
 	{
 		provider = factoryProvider;
 	}
+	
 }

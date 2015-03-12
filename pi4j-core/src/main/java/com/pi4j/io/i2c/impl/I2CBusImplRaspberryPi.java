@@ -1,11 +1,11 @@
-package com.pi4j.io.i2c;
+package com.pi4j.io.i2c.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactoryProviderBanana.java  
+ * FILENAME      :  I2CBusImplBananaPi.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -30,28 +30,41 @@ package com.pi4j.io.i2c;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-import com.pi4j.io.i2c.impl.I2CBusImpl;
-import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
+/**
+ * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
+ * particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only 
+ * one file per bus for all devices. Device implementations use this class file handle.
+ * 
+ * @author Daniel Sendula
+ *
+ */
+public class I2CBusImplRaspberryPi extends I2CBusImpl {
 
-public class I2CFactoryProviderBanana implements I2CFactoryProvider
-{
-
-	public I2CBus getBus(int busNumber) throws UnsupportedBusNumberException, IOException {
+	public static I2CBusImplRaspberryPi getBus(int busNumber,
+    		long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
+    				throws UnsupportedBusNumberException, IOException {
 		
-		return getBus(busNumber,
-				I2CBusImpl.DEFAULT_LOCKAQUIRE_TIMEOUT, I2CBusImpl.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
+		return (I2CBusImplRaspberryPi)
+				I2CBusImpl.getBus(I2CBusImplRaspberryPi.class,
+				busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
 		
 	}
 	
-	public I2CBus getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
+	protected I2CBusImplRaspberryPi(final int busNumber,
+    		final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException {
+		super(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+	}
+	
+	@Override
+	protected String getFilenameForBusnumber(int busNumber)
+			throws UnsupportedBusNumberException {
 		
-		try {
-			return I2CBusImplBananaPi.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
-		} catch (com.pi4j.io.i2c.impl.I2CBusImpl.UnsupportedBusNumberException e) {
+		if ((busNumber < 0) || (busNumber > 1)) {
 			throw new UnsupportedBusNumberException();
 		}
+
+		return "/dev/i2c-" + busNumber;
 		
 	}
 	

@@ -32,76 +32,181 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.jni.I2C;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
  * particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only 
  * one file per bus for all devices. Device implementations use this class file handle.
  * 
- * @author Daniel Sendula
+ * Hint: For concurrency-locking the methods lock() and unlock() are provided. This requires
+ * that there is exactly one I2CBus-instance per bus-number what is guaranteed by the I2CFactory class.  
+ * The locking is done by I2CDeviceImpl by using those methods. The reason for this is to
+ * enable other locking-strategies than the simple "lock before and release after access"-strategy.  
+ * 
+ * @author Daniel Sendula refactored by <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  *
  */
-public class I2CBusImpl implements I2CBus {
+public abstract class I2CBusImpl implements I2CBus {
 
-    /** Singleton instance of bus 0 */
-    private static I2CBus bus0 = null;
+	public static class UnsupportedBusNumberException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		public UnsupportedBusNumberException() {
+			super();
+		}
+	}
 
-    /** Singleton instance of bus 1 */
-    private static I2CBus bus1 = null;
+    private static final Logger logger = Logger.getLogger(I2CBusImpl.class.getCanonicalName());
+    
+    public static final long DEFAULT_LOCKAQUIRE_TIMEOUT = 1000;
+    
+    public static final TimeUnit DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS = TimeUnit.MILLISECONDS;
+    
+    /** Singletons */
+    private static Map<Integer, I2CBus> busSingletons = new HashMap<>();
     
     /** to lock the creation/destruction of the bus singletons */
-    private final static Lock lock = new ReentrantLock( true );
-
+    protected final static Lock singletonPerBusLock = new ReentrantLock( true );
+    
     /** 
      * Factory method that returns bus implementation.
      * 
      * @param busNumber bus number
+     * @param lockAquireTimeout maximal amount of time to wait for an i2c operation to get exclusive access to the bus
+     * @param lockAquireTimeoutUnit units of lockAquireTimeout
      * @return appropriate bus implementation
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
-    public static I2CBus getBus(int busNumber) throws IOException {
-        I2CBus bus;
-        lock.lock();
-        if (busNumber == 0) {
-            bus = bus0;
-            if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-0");
-                bus0 = bus;
-            }
-        } else if (busNumber == 1) {
-            bus = bus1;
-            if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-1");
-                bus1 = bus;
-            }
-        } else {
-            throw new IOException("Unknown bus number " + busNumber);
+    protected static I2CBus getBus(Class<? extends I2CBusImpl> implClass, int busNumber,
+    		long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
+    				throws UnsupportedBusNumberException, IOException {
+    	
+        final I2CBus bus;
+        
+        InterruptedException lockException = null;
+        boolean locked = false;
+        try {
+	        if (singletonPerBusLock.tryLock()
+	        		|| singletonPerBusLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
+	        	singletonPerBusLock.lock();
+	        	locked = true;
+	        }
+        } catch (InterruptedException e) {
+        	lockException = e;
         }
-        lock.unlock();
+        if (! locked) {
+        	throw new RuntimeException("Could not abtain lock to build new bus!", lockException);
+        }
+        
+        try {
+
+        	final I2CBus i2cBus = busSingletons.get(busNumber);
+        	
+        	if (i2cBus == null) {
+        		
+        		final Constructor<? extends I2CBusImpl> constructor;
+				try {
+					constructor = implClass.getConstructor(int.class,
+							long.class, TimeUnit.class);
+				} catch (NoSuchMethodException | SecurityException e) {
+					throw new RuntimeException(
+							"Could not get constructor for class '"
+							+ implClass.getCanonicalName()
+							+ "' having the arguments (int, long, TimeUnit) "
+							+ "for building a new bus-instance!", e);
+				}
+        		
+        		try {
+					bus = constructor.newInstance(
+							busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+				} catch (InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException e) {
+					throw new RuntimeException(
+							"Could not invoke constructor '"
+							+ constructor
+							+ "' to build a new bus-instance!", e);
+				}
+        		
+        		busSingletons.put(busNumber, bus);
+        		
+        	} else {
+        		bus = i2cBus;
+        	}
+        	
+        } finally {
+        	
+        	try {
+        		singletonPerBusLock.unlock();
+        	} catch (Throwable e) {
+        		logger.log(Level.WARNING,
+        				"Unlocking 'singletonPerBusLock' throws an exception", e);
+        	}
+        	
+        }
+        
         return bus;
+        
     }
 
     /** File handle for this i2c bus */
-    protected int fd;
+    protected int fd = -1;
     
     /** File name of this i2c bus */
     protected String filename;
     
+    /** Used to identifiy the i2c bus within Pi4J **/
+    protected int busNumber;
+    
+    protected long lockAquireTimeout;
+    
+    protected TimeUnit lockAquireTimeoutUnit;
+    
+    private final ReentrantLock accessLock = new ReentrantLock( true );
+    /**
+     * @param busNumber used to identifiy the i2c bus within Pi4J
+     * @result filename file name of device to be opened.
+     */
+    protected abstract String getFilenameForBusnumber(
+    		final int busNumber) throws UnsupportedBusNumberException;
+    
     /**
      * Constructor of i2c bus implementation.
      * 
-     * @param filename file name of device to be opened.
-     * 
+     * @param busNumber used to identifiy the i2c bus within Pi4J
      * @throws IOException thrown in case that file cannot be opened
      */
-    public I2CBusImpl(String filename) throws IOException {
-        this.filename = filename;
+    protected I2CBusImpl(final int busNumber,
+    		final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit)
+    				throws UnsupportedBusNumberException, IOException {
+    	
+        this.filename = getFilenameForBusnumber(busNumber);
+        this.busNumber = busNumber;
+        
+        if (lockAquireTimeout < 0) {
+        	this.lockAquireTimeout = DEFAULT_LOCKAQUIRE_TIMEOUT;
+        } else {
+        	this.lockAquireTimeout = lockAquireTimeout;
+        }
+        if (lockAquireTimeoutUnit == null) {
+        	this.lockAquireTimeoutUnit = DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS;
+        } else {
+        	this.lockAquireTimeoutUnit = lockAquireTimeoutUnit;
+        }
+        
         fd = I2C.i2cOpen(filename);
         if (fd < 0) {
             throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
         }
+        
     }
 
     /**
@@ -115,7 +220,85 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public I2CDevice getDevice(int address) throws IOException {
+    	
         return new I2CDeviceImpl(this, address);
+        
+    }
+    
+    public void lock() throws InterruptedException {
+
+    	try {
+    		testWhetherBusHasAlreadyBeenClosed();
+    	} catch (IOException e) {
+    		throw new RuntimeException(e);
+    	}
+    	
+    	if (accessLock.isHeldByCurrentThread()) {
+    		throw new RuntimeException("Already locked!");
+    	}
+    	
+    	boolean locked = false;
+    	try {
+    		
+	    	logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
+	    	
+	    	// "or" means barging on a fair lock
+    		
+	    	if (accessLock.tryLock()
+	    			|| accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
+	    		
+				locked = true;
+	    		logger.log(Level.FINER, "I2CBusImpl-{0} locked", busNumber);
+	    		
+	    	} else {
+	    		
+	    		logger.log(Level.FINER,
+	    				"Could not aquire lock for I2CBusImpl-{0} after {1} ms",
+	    				new Object[] { busNumber, lockAquireTimeoutUnit.toMillis(lockAquireTimeout) });
+	    		
+	    	}
+	    	
+    	} catch (InterruptedException e) {
+    		
+    		logger.log(Level.FINER, "Failed locking I2CBusImpl-"
+    				+ busNumber, e);
+    		throw e;
+    		
+    	}
+    	
+    	if (!locked) {
+    		throw new InterruptedException("Could not abtain an access-lock!");
+    	}
+    	
+    }
+    
+    public void unlock() {
+
+    	try {
+    		testWhetherBusHasAlreadyBeenClosed();
+    	} catch (IOException e) {
+    		throw new RuntimeException(e);
+    	}
+    	
+    	if (!accessLock.isHeldByCurrentThread()) {
+    		throw new RuntimeException("Not locked by current thread!");
+    	}
+    	
+    	try {
+    		
+        	logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
+
+        	accessLock.unlock();
+    	
+    		logger.log(Level.FINER, "I2CBusImpl-{0} unlocked", busNumber);
+    		
+    	} catch (Throwable e) {
+    		
+    		logger.log(Level.FINER, "Failed unlocking I2CBusImpl-"
+    				+ busNumber, e);
+    		
+    	}
+
     }
 
     /**
@@ -125,28 +308,172 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public void close() throws IOException {
-        lock.lock();
-        I2C.i2cClose(fd);
-        /* after closing the fd, we must "forget" the singleton bus instance, otherwise further request to this bus will
-         * always fail
-         */
-        if (this == bus0) {
-            bus0 = null;
-        } else if (this == bus1) {
-            bus1 = null;
+    	
+        singletonPerBusLock.lock();
+        try {
+        	
+	        I2C.i2cClose(fd);
+	        fd = -1;
+	        
+        } finally {
+        	
+	        /* after closing the fd, we must "forget" the singleton bus instance, otherwise further request to this bus will
+	         * always fail
+	         */
+        	try {
+        		busSingletons.remove(busNumber);
+        	} catch (Throwable e) {
+        		logger.log(Level.WARNING,
+        				"Error on removing bus '"
+        				+ busNumber
+        				+ "' from the pool of busses!", e);
+        	}
+        	
+        	try {
+        		singletonPerBusLock.unlock();
+        	} catch (Throwable e) {
+        		logger.log(Level.WARNING,
+        				"Unlocking 'singletonPerBusLock' throws an exception", e);
+        	}
+        	
         }
-        lock.unlock();
+        
     }
+    
+    public int readByteDirect(final I2CDeviceImpl device) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
 
-	@Override
-	public String getFileName()
-	{
-		return filename;
-	}
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
 
+    	return I2C.i2cReadByteDirect(fd, device.getAddress());
+    	
+    }
+    
+    public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset,
+    		final byte[] buffer) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer);
+    	
+    }
+    
+    public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
+
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cReadByte(fd, device.getAddress(), localAddress);
+
+    }
+    
+    public int readBytes(final I2CDeviceImpl device, final int localAddress,
+    		final int size, final int offset, final byte[] buffer) throws IOException {
+
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cReadBytes(fd, device.getAddress(), localAddress,
+    			size, offset, buffer);
+
+    }
+    
+    public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cWriteByteDirect(data, device.getAddress(), data);
+    	
+    }
+    
+    public int writeBytesDirect(final I2CDeviceImpl device, final int size,
+    		final int offset, final byte[] buffer) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer);
+    	
+    }
+    
+    public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data);
+    	
+    }
+    
+    public int writeBytes(final I2CDeviceImpl device, final int localAddress,
+    		final int size, final int offset, final byte[] buffer) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+
+    	return I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
+
+    }
+    
+    public int writeAndReadBytesDirect(final I2CDeviceImpl device,
+    		final int writeSize, final int writeOffset, final byte[] writeBuffer,
+    		final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
+
+    	if (device == null) {
+    		throw new NullPointerException("Parameter 'device' is mandatory!");
+    	}
+    	
+    	return I2C.i2cWriteAndReadBytes(fd, device.getAddress(),
+    			writeSize, writeOffset, writeBuffer,
+    			readSize, readOffset, readBuffer);
+    	
+    }
+    
+    private void testWhetherBusHasAlreadyBeenClosed() throws IOException {
+    	
+    	if (fd == -1) {
+    		throw new IOException(toString()
+    				+ " has already been closed! A new bus has to be aquired.");
+    	}
+    	
+    }
+    
 	@Override
-	public int getFileDescriptor()
-	{
-		return fd;
+	public int getBusNumber() {
+		return busNumber;
 	}
+	
+	@Override
+	public String toString() {
+		return "I2CBus '" + busNumber + "' ('" + filename + "')";
+	}
+	
 }

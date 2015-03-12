@@ -41,6 +41,7 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
@@ -63,7 +64,7 @@ import com.pi4j.io.i2c.I2CBus;
  */
 public class MCP23017GpioExample {
     
-    public static void main(String args[]) throws InterruptedException, IOException {
+    public static void main(String args[]) throws InterruptedException, UnsupportedBusNumberException, IOException {
         
         System.out.println("<--Pi4J--> MCP23017 GPIO Example ... started.");
         

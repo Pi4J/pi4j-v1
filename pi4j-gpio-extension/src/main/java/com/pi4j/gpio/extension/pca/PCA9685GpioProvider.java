@@ -40,6 +40,7 @@ import com.pi4j.io.gpio.exception.ValidationException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
@@ -86,7 +87,7 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     private BigDecimal frequency;
     private int periodDurationMicros;
 
-    public PCA9685GpioProvider(int busNumber, int address) throws IOException {
+    public PCA9685GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);
         i2cBusOwner = true;

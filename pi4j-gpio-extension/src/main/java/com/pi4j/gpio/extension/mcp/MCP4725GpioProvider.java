@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 import java.io.IOException;
 
@@ -68,7 +69,7 @@ public class MCP4725GpioProvider extends GpioProviderBase {
     private static final int MCP4725_REG_WRITEDAC = 0x40; // Writes data to the DAC
     private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
 
-    public MCP4725GpioProvider(int busNumber, int address) throws IOException {
+    public MCP4725GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);
         i2cBusOwner = true;

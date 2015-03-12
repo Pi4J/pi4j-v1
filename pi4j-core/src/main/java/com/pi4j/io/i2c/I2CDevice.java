@@ -37,6 +37,11 @@ import java.io.IOException;
  */
 public interface I2CDevice {
 
+	/**
+	 * @return The address for which this instance is constructed for.
+	 */
+	int getAddress();
+	
     /**
      * This method writes one byte directly to i2c device.
      * 

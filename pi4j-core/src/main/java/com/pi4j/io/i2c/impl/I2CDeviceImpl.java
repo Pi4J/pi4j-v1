@@ -27,13 +27,9 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.jni.I2C;
-
 import java.io.IOException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
+import com.pi4j.io.i2c.I2CDevice;
 
 /**
  * Implementation of i2c device. This class only holds reference to i2c bus (so it can use its handle) and
@@ -45,12 +41,20 @@ import java.util.concurrent.locks.ReentrantLock;
 public class I2CDeviceImpl implements I2CDevice {
 
     /** Reference to i2c bus */
-    private I2CBus bus;
+    private I2CBusImpl bus;
     
     /** I2c device address */
     private int deviceAddress;
-
-    private final static Lock lock = new ReentrantLock( true );
+    
+	/**
+	 * @return The address for which this instance is constructed for.
+	 */
+    @Override
+    public int getAddress() {
+    	
+    	return deviceAddress;
+    	
+    }
     
     /**
      * Constructor.
@@ -58,7 +62,7 @@ public class I2CDeviceImpl implements I2CDevice {
      * @param bus i2c bus
      * @param address i2c device address
      */
-    public I2CDeviceImpl(I2CBus bus, int address) {
+    public I2CDeviceImpl(I2CBusImpl bus, int address) {
         this.bus = bus;
         this.deviceAddress = address;
     }
@@ -72,15 +76,24 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(byte data) throws IOException {
-        lock.lock();
+    	
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cWriteByteDirect(bus.getFileDescriptor(), deviceAddress, data);
+        	
+            int ret = bus.writeByteDirect(this, data);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
             }
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -94,15 +107,24 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(byte[] buffer, int offset, int size) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cWriteBytesDirect(bus.getFileDescriptor(), deviceAddress, size, offset, buffer);
+        	
+            int ret = bus.writeBytesDirect(this, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
             }
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -115,15 +137,24 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(int address, byte data) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cWriteByte(bus.getFileDescriptor(), deviceAddress, address, data);
+
+        	int ret = bus.writeByte(this, address, data);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
             }
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -138,15 +169,24 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(int address, byte[] buffer, int offset, int size) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cWriteBytes(bus.getFileDescriptor(), deviceAddress, address, size, offset, buffer);
+        	
+            int ret = bus.writeBytes(this, address, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
             }
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -159,16 +199,25 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read() throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cReadByteDirect(bus.getFileDescriptor(), deviceAddress);
+        	
+            int ret = bus.readByteDirect(this);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
             return ret;
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -188,17 +237,26 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(byte[] buffer, int offset, int size) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
+        	
             // It doesn't work for some reason.
-            int ret = I2C.i2cReadBytesDirect(bus.getFileDescriptor(), deviceAddress, size, offset, buffer);
+            int ret = bus.readBytesDirect(this, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
             return ret;
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -212,16 +270,25 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(int address) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cReadByte(bus.getFileDescriptor(), deviceAddress, address);
+        	
+            int ret = bus.readByte(this, address);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
             }
             return ret;
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -242,17 +309,26 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(int address, byte[] buffer, int offset, int size) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
+        	
             // It doesn't work for some reason.
-            int ret = I2C.i2cReadBytes(bus.getFileDescriptor(), deviceAddress, address, size, offset, buffer);
+            int ret = bus.readBytes(this, address, size, offset, buffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
             }
             return ret;
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -271,16 +347,26 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException {
-        lock.lock();
+
+    	try {
+    		bus.lock();
+    	} catch (InterruptedException e) {
+    		throw new IOException(e);
+    	}
+    	
         try {
-            int ret = I2C.i2cWriteAndReadBytes(bus.getFileDescriptor(), deviceAddress, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
+        	
+            int ret = bus.writeAndReadBytesDirect(this, writeSize, writeOffset, 
+            		writeBuffer, readSize, readOffset, readBuffer);
             if (ret < 0) {
                 throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
             }
             return ret;
+            
         } finally {
-            lock.unlock();
+            bus.unlock();
         }
+        
     }
 
     /**
@@ -289,7 +375,8 @@ public class I2CDeviceImpl implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription() {
-        return bus.getFileName() + " at address 0x" + Integer.toHexString(deviceAddress);
+        return "I2CDevice on "
+        		+ bus + " at address 0x" + Integer.toHexString(deviceAddress);
     }
     
     /**
@@ -300,7 +387,8 @@ public class I2CDeviceImpl implements I2CDevice {
      * @return string with all details
      */
     protected String makeDescription(int address) {
-        return bus.getFileName() + " at address 0x" + Integer.toHexString(deviceAddress) 
+        return "I2CDevice on "
+        		+ bus + " at address 0x" + Integer.toHexString(deviceAddress) 
                 + " to address 0x" + Integer.toHexString(address);
     }
     

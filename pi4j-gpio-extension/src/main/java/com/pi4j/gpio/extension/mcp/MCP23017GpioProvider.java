@@ -8,6 +8,7 @@ import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 import java.io.IOException;
 
@@ -92,7 +93,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private final I2CDevice device;
     private GpioStateMonitor monitor = null;
 
-    public MCP23017GpioProvider(int busNumber, int address) throws IOException {
+    public MCP23017GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);
         i2cBusOwner = true;
