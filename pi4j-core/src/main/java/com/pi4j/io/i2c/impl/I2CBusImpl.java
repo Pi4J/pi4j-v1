@@ -29,6 +29,7 @@ package com.pi4j.io.i2c.impl;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.jni.I2C;
 
 import java.io.IOException;
@@ -66,10 +67,6 @@ public abstract class I2CBusImpl implements I2CBus {
 	}
 
     private static final Logger logger = Logger.getLogger(I2CBusImpl.class.getCanonicalName());
-    
-    public static final long DEFAULT_LOCKAQUIRE_TIMEOUT = 1000;
-    
-    public static final TimeUnit DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS = TimeUnit.MILLISECONDS;
     
     /** Singletons */
     private static Map<Integer, I2CBus> busSingletons = new HashMap<>();
@@ -192,12 +189,12 @@ public abstract class I2CBusImpl implements I2CBus {
         this.busNumber = busNumber;
         
         if (lockAquireTimeout < 0) {
-        	this.lockAquireTimeout = DEFAULT_LOCKAQUIRE_TIMEOUT;
+        	this.lockAquireTimeout = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT;
         } else {
         	this.lockAquireTimeout = lockAquireTimeout;
         }
         if (lockAquireTimeoutUnit == null) {
-        	this.lockAquireTimeoutUnit = DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS;
+        	this.lockAquireTimeoutUnit = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS;
         } else {
         	this.lockAquireTimeoutUnit = lockAquireTimeoutUnit;
         }
@@ -225,82 +222,71 @@ public abstract class I2CBusImpl implements I2CBus {
         
     }
     
-    public void lock() throws InterruptedException {
-
-    	try {
-    		testWhetherBusHasAlreadyBeenClosed();
-    	} catch (IOException e) {
-    		throw new RuntimeException(e);
+    @Override
+    public void runActionOnExclusivLockedBus(final Runnable action) throws Exception,
+    		RuntimeException {
+    	
+    	if (action == null) {
+    		throw new Exception("Parameter 'action' is mandatory!");
     	}
     	
-    	if (accessLock.isHeldByCurrentThread()) {
-    		throw new RuntimeException("Already locked!");
-    	}
+		testWhetherBusHasAlreadyBeenClosed();
     	
-    	boolean locked = false;
+		boolean locked = false;
     	try {
     		
-	    	logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
+	    	lock();
+	    	locked = true;
 	    	
-	    	// "or" means barging on a fair lock
-    		
-	    	if (accessLock.tryLock()
-	    			|| accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
-	    		
-				locked = true;
-	    		logger.log(Level.FINER, "I2CBusImpl-{0} locked", busNumber);
-	    		
-	    	} else {
-	    		
-	    		logger.log(Level.FINER,
-	    				"Could not aquire lock for I2CBusImpl-{0} after {1} ms",
-	    				new Object[] { busNumber, lockAquireTimeoutUnit.toMillis(lockAquireTimeout) });
-	    		
+	    	try {
+	    		action.run();
+	    	} catch (IOExceptionWrapperException e) {
+	    		throw e.getIoException();
 	    	}
 	    	
     	} catch (InterruptedException e) {
     		
     		logger.log(Level.FINER, "Failed locking I2CBusImpl-"
     				+ busNumber, e);
-    		throw e;
+    		throw new Exception("Could not abtain an access-lock!", e);
+    		
+    	} finally {
+    		
+    		if (locked) {
+	    		try {
+	    			unlock();
+	    		} catch (Throwable e) {
+	    			logger.log(Level.WARNING, "Could not unlock access-lock!", e);
+	    		}
+    		}
     		
     	}
     	
-    	if (!locked) {
-    		throw new InterruptedException("Could not abtain an access-lock!");
-    	}
-    	
     }
+
+	private void unlock() {
+		
+		logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
+		
+		accessLock.unlock();
+		
+		logger.log(Level.FINER, "I2CBusImpl-{0} unlocked", busNumber);
+		
+	}
+
+	private void lock() throws InterruptedException {
+		
+		logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
+		
+		// "or" means barging on a fair lock
+		if (accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
+			logger.log(Level.FINER, "I2CBusImpl-{0} locked", busNumber);
+		} else {
+			throw new InterruptedException("timeout for lock acquisition elapsed");
+		}
+		
+	}
     
-    public void unlock() {
-
-    	try {
-    		testWhetherBusHasAlreadyBeenClosed();
-    	} catch (IOException e) {
-    		throw new RuntimeException(e);
-    	}
-    	
-    	if (!accessLock.isHeldByCurrentThread()) {
-    		throw new RuntimeException("Not locked by current thread!");
-    	}
-    	
-    	try {
-    		
-        	logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
-
-        	accessLock.unlock();
-    	
-    		logger.log(Level.FINER, "I2CBusImpl-{0} unlocked", busNumber);
-    		
-    	} catch (Throwable e) {
-    		
-    		logger.log(Level.FINER, "Failed unlocking I2CBusImpl-"
-    				+ busNumber, e);
-    		
-    	}
-
-    }
-
     /**
      * Closes this i2c bus
      * 

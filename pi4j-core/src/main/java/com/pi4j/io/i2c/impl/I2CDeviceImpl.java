@@ -75,24 +75,36 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
     @Override
-    public void write(byte data) throws IOException {
+    public void write(final byte data) throws IOException {
     	
+    	final I2CDeviceImpl currentDevice = this;
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.writeByteDirect(currentDevice, data);
+			            if (ret < 0) {
+			                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+			            }
+			            
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+    	} catch (IOException e) {
+    		throw e;
+    	} catch (RuntimeException e) {
+    		throw e;
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
     	}
-    	
-        try {
-        	
-            int ret = bus.writeByteDirect(this, data);
-            if (ret < 0) {
-                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
-            }
-            
-        } finally {
-            bus.unlock();
-        }
         
     }
 
@@ -106,24 +118,36 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
     @Override
-    public void write(byte[] buffer, int offset, int size) throws IOException {
+    public void write(final byte[] buffer, final int offset, final int size) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            int ret = bus.writeBytesDirect(this, size, offset, buffer);
-            if (ret < 0) {
-                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
-            }
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.writeBytesDirect(currentDevice, size, offset, buffer);
+			            if (ret < 0) {
+			                throw new IOException("Error writing to " + makeDescription() + ". Got " + ret + ".");
+			            }
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+    	} catch (IOException e) {
+    		throw e;
+    	} catch (RuntimeException e) {
+    		throw e;
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
+    	}
         
     }
 
@@ -136,24 +160,36 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
     @Override
-    public void write(int address, byte data) throws IOException {
+    public void write(final int address, final byte data) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			        	int ret = bus.writeByte(currentDevice, address, data);
+			            if (ret < 0) {
+			                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+			            }
+			            
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+    	} catch (IOException e) {
+    		throw e;
+    	} catch (RuntimeException e) {
+    		throw e;
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
     	}
-    	
-        try {
-
-        	int ret = bus.writeByte(this, address, data);
-            if (ret < 0) {
-                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
-            }
-            
-        } finally {
-            bus.unlock();
-        }
         
     }
 
@@ -168,24 +204,36 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be written to the i2c device or i2c bus
      */
     @Override
-    public void write(int address, byte[] buffer, int offset, int size) throws IOException {
+    public void write(final int address, final byte[] buffer, final int offset, final int size) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            int ret = bus.writeBytes(this, address, size, offset, buffer);
-            if (ret < 0) {
-                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
-            }
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.writeBytes(currentDevice, address, size, offset, buffer);
+			            if (ret < 0) {
+			                throw new IOException("Error writing to " + makeDescription(address) + ". Got " + ret + ".");
+			            }
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+    	} catch (IOException e) {
+    		throw e;
+    	} catch (RuntimeException e) {
+    		throw e;
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
+    	}
         
     }
 
@@ -200,23 +248,38 @@ public class I2CDeviceImpl implements I2CDevice {
     @Override
     public int read() throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
+    	final int[] result = new int[1];
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            int ret = bus.readByteDirect(this);
-            if (ret < 0) {
-                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
-            }
-            return ret;
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.readByteDirect(currentDevice);
+			            if (ret < 0) {
+			                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+			            }
+			            result[0] = ret;
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+	    	return result[0];
+	    	
+    	} catch (IOException e) {
+    		throw e;
+    	} catch (RuntimeException e) {
+    		throw e;
+    	} catch (Exception e) {
+    		throw new RuntimeException(e);
+    	}
         
     }
 
@@ -236,26 +299,41 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override
-    public int read(byte[] buffer, int offset, int size) throws IOException {
+    public int read(final byte[] buffer, final int offset, final int size) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
+    	final int[] result = new int[1];
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            // It doesn't work for some reason.
-            int ret = bus.readBytesDirect(this, size, offset, buffer);
-            if (ret < 0) {
-                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
-            }
-            return ret;
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            // It doesn't work for some reason.
+			            int ret = bus.readBytesDirect(currentDevice, size, offset, buffer);
+			            if (ret < 0) {
+			                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+			            }
+			            result[0] = ret;
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+	    	return result[0];
+	    	
+		} catch (IOException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
         
     }
 
@@ -269,25 +347,40 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override
-    public int read(int address) throws IOException {
+    public int read(final int address) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
+    	final int[] result = new int[1];
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            int ret = bus.readByte(this, address);
-            if (ret < 0) {
-                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
-            }
-            return ret;
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.readByte(currentDevice, address);
+			            if (ret < 0) {
+			                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+			            }
+			            result[0] = ret;
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+	    	return result[0];
+	    	
+		} catch (IOException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
         
     }
 
@@ -308,26 +401,41 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override
-    public int read(int address, byte[] buffer, int offset, int size) throws IOException {
+    public int read(final int address, final byte[] buffer, final int offset, final int size) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
+    	final int[] result = new int[1];
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            // It doesn't work for some reason.
-            int ret = bus.readBytes(this, address, size, offset, buffer);
-            if (ret < 0) {
-                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
-            }
-            return ret;
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            // It doesn't work for some reason.
+			            int ret = bus.readBytes(currentDevice, address, size, offset, buffer);
+			            if (ret < 0) {
+			                throw new IOException("Error reading from " + makeDescription(address) + ". Got " + ret + ".");
+			            }
+		            	result[0] = ret;
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+			
+	    	return result[0];
+	    	
+		} catch (IOException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
         
     }
 
@@ -346,26 +454,43 @@ public class I2CDeviceImpl implements I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     @Override
-    public int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException {
+    public int read(final byte[] writeBuffer, final int writeOffset,
+    		final int writeSize, final byte[] readBuffer, final int readOffset,
+    		final int readSize) throws IOException {
 
+    	final I2CDeviceImpl currentDevice = this;
+    	final int[] result = new int[1];
     	try {
-    		bus.lock();
-    	} catch (InterruptedException e) {
-    		throw new IOException(e);
-    	}
-    	
-        try {
-        	
-            int ret = bus.writeAndReadBytesDirect(this, writeSize, writeOffset, 
-            		writeBuffer, readSize, readOffset, readBuffer);
-            if (ret < 0) {
-                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
-            }
-            return ret;
+    		
+	    	bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+	
+					try {
+						
+			            int ret = bus.writeAndReadBytesDirect(currentDevice, writeSize, writeOffset, 
+			            		writeBuffer, readSize, readOffset, readBuffer);
+			            if (ret < 0) {
+			                throw new IOException("Error reading from " + makeDescription() + ". Got " + ret + ".");
+			            }
+		            	result[0] = ret;
             
-        } finally {
-            bus.unlock();
-        }
+					} catch (IOException e) {
+						throw new IOExceptionWrapperException(e);
+					}
+					
+				}
+			});
+	    	
+	    	return result[0];
+	    	
+		} catch (IOException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
         
     }
 

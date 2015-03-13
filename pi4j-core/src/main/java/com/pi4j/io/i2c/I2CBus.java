@@ -60,4 +60,19 @@ public interface I2CBus {
      */
     void close() throws IOException;
     
+    /**
+     * Sometimes communication to an i2c device must not be disturbed by
+     * communication to another i2c device. This method can be used to run
+     * a custom sequence of writes/reads.
+     * <p>
+     * The timeout used for the acquisition of the lock may be defined
+     * one getting the I2CBus from I2CFactory. 
+     * 
+     * @param action The action to be run
+     * @throws RuntimeException thrown by the custom code
+     * @throws Exception thrown if execution of custom code failed due to I2CBus-implementation
+     * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
+     */
+    void runActionOnExclusivLockedBus(Runnable action) throws Exception, RuntimeException;
+    
 }

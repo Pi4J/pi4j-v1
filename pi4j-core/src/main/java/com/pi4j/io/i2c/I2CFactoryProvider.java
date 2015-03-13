@@ -34,8 +34,6 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 public interface I2CFactoryProvider
 {
-	I2CBus getBus(int busNumber) throws UnsupportedBusNumberException, IOException;
-	
 	I2CBus getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException;
 }

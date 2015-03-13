@@ -25,6 +25,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.impl.I2CBusImpl;
 import com.pi4j.io.i2c.impl.I2CDeviceImpl;
 import com.pi4j.jni.I2C;
@@ -153,20 +154,6 @@ public class I2CBusImplTest {
 			fail("calling 'writeAndReadBytesDirect(...)' on a closed bus should throw "
 					+ "an IOException but did not!");
 		} catch (IOException e) {
-			// expected
-		}
-		try {
-			bus.lock();
-			fail("calling 'lock(...)' on a closed bus should throw "
-					+ "an RuntimeException but did not!");
-		} catch (RuntimeException e) {
-			// expected
-		}
-		try {
-			bus.unlock();
-			fail("calling 'unlock(...)' on a closed bus should throw "
-					+ "an RuntimeException but did not!");
-		} catch (RuntimeException e) {
 			// expected
 		}
 		
@@ -321,69 +308,133 @@ public class I2CBusImplTest {
 	@Test
 	public void testConcurrency() throws Exception {
 		
-		// test locking
+		long DEFAULT_TIMEOUT = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS.toMillis(
+				I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT);
 		
-		bus.lock();
+		// test simple locking
 		
-		try {
-			bus.lock();
-			fail("calling 'lock()' on the same thread for the second time did "
-					+ "not throw a RuntimeException!");
-		} catch (RuntimeException e) {
-			// expected
-		}
+		final boolean[] run1 = new boolean[] { false };
+		long before1 = System.currentTimeMillis();
+		bus.runActionOnExclusivLockedBus(new Runnable() {
+			@Override
+			public void run() {
+				run1[0] = true;
+			}
+		});
+		long time1 = System.currentTimeMillis() - before1;
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "was not run!", run1[0]);
+		assertTrue("It seems that the bus was locked because running the Runnable "
+				+ "took more time than expected!", time1 < DEFAULT_TIMEOUT);
 		
-		final boolean[] lockDidNotBlock = new boolean[] { false };
-		long now = System.currentTimeMillis();
+		// test second attempt
+		
+		final boolean[] run2 = new boolean[] { false };
+		long before2 = System.currentTimeMillis();
+		bus.runActionOnExclusivLockedBus(new Runnable() {
+			@Override
+			public void run() {
+				run2[0] = true;
+			}
+		});
+		long time2 = System.currentTimeMillis() - before2;
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "was not run!", run2[0]);
+		assertTrue("It seems that the bus was locked because running the Runnable "
+				+ "took more time than expected!", time2 < DEFAULT_TIMEOUT);
+		
+		// test lock-unlock and lock by another thread
+		
+		final boolean[] run3 = new boolean[] { false };
 		Thread testThread1 = new Thread() {
 			public void run() {
 				try {
-					bus.lock();
-					lockDidNotBlock[0] = true;
-				} catch (InterruptedException e) {
+					bus.runActionOnExclusivLockedBus(new Runnable() {
+						@Override
+						public void run() {
+							run3[0] = true;
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// never mind
+							}
+						}
+					});
+				} catch (Throwable e) {
 					// expected
 				}
 			};
 		};
 		testThread1.start();
+		
+		Thread.sleep(10);
+		final boolean[] run4 = new boolean[] { false };
+		long before3 = System.currentTimeMillis();
+		bus.runActionOnExclusivLockedBus(new Runnable() {
+			@Override
+			public void run() {
+				run4[0] = true;
+			}
+		});
+		long time3 = System.currentTimeMillis() - before3;
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "was not run!", run4[0]);
+		assertTrue("It seems that the bus was not locked because running the Runnable "
+				+ "took less time than expected (" + time3 + "ms)!", time3 > 10);
+		
 		testThread1.join();
-		long diff = System.currentTimeMillis() - now;
-		
-		assertTrue("second attempt of calling 'lock()' did not throw an InterruptedException",
-				!lockDidNotBlock[0]);
-		assertTrue("second attempt of calling 'lock()' did return before "
-				+ "configured timeout of 1 second!", diff > 100);
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "on a separat thread was not run!", run3[0]);
 
-		// test unlocking
+		// test lock-unlock and lock by another thread - getting no lock in time
 		
-		final boolean[] unlockDidNotThrow = new boolean[] { false };
-		Thread testThread2 = new Thread() {
+		final boolean[] run7 = new boolean[] { false };
+		Thread testThread3 = new Thread() {
 			public void run() {
 				try {
-					bus.unlock();
-					unlockDidNotThrow[0] = true;
-				} catch (RuntimeException e) {
+					bus.runActionOnExclusivLockedBus(new Runnable() {
+						@Override
+						public void run() {
+							run7[0] = true;
+							try {
+								Thread.sleep(200);
+							} catch (InterruptedException e) {
+								// never mind
+							}
+						}
+					});
+				} catch (Throwable e) {
 					// expected
 				}
 			};
 		};
-		testThread2.start();
-		testThread2.join();
-
-		assertTrue("calling 'unlock()' on a different thread did not throw a RuntimeException",
-				!unlockDidNotThrow[0]);
-
-		bus.unlock();
+		testThread3.start();
 		
+		Thread.sleep(10);
+		long before5 = System.currentTimeMillis();
+		final boolean[] run8 = new boolean[] { false };
 		try {
-			bus.unlock();
-			fail("calling 'unlock()' on the same thread for the second time did "
-					+ "not throw a RuntimeException!");
-		} catch (RuntimeException e) {
+			bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+					run8[0] = true;
+				}
+			});
+			run8[0] = true;
+		} catch (Exception e) {
 			// expected
 		}
+		long time5 = System.currentTimeMillis() - before5;
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "was run but shouldn't!", !run8[0]);
+		assertTrue("It seems that the bus was not locked because running the Runnable "
+				+ "took less time than expected (" + time5 + "ms)!", time5 > 10);
 		
-		// test lock-unlock and lock by another thread
+		testThread3.join();
+		assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+				+ "on a separat thread was not run!", run7[0]);
+
+		// test lock-unlock and lock by another thread using random delays
 		
 		final Random rnd = new Random();
 
@@ -395,44 +446,47 @@ public class I2CBusImplTest {
 					+ i + "/50");
 			}
 			
-			bus.lock();
-			
-			final boolean[] lockDidThrow = new boolean[] { false, false };
-			Thread testThread3 = new Thread() {
+			final boolean[] run5 = new boolean[] { false };
+			Thread testThread2 = new Thread() {
 				public void run() {
 					try {
-						bus.lock();
-					} catch (Exception e) {
-						lockDidThrow[0] = true;
-						e.printStackTrace();
-					}
-					try {
-						Thread.sleep(rnd.nextInt(10));
-					} catch (Exception e) {
-						// never mind
-					}
-					try {
-						bus.unlock();
-					} catch (Exception e) {
-						lockDidThrow[1] = true;
-						e.printStackTrace();
+						bus.runActionOnExclusivLockedBus(new Runnable() {
+							@Override
+							public void run() {
+								run5[0] = true;
+								try {
+									long tts = rnd.nextInt(50) + 20;
+									Thread.sleep(tts);
+								} catch (InterruptedException e) {
+									// never mind
+								}
+							}
+						});
+					} catch (Throwable e) {
+						// expected
 					}
 				};
 			};
-			testThread3.start();
+			testThread2.start();
 			
-			Thread.sleep(rnd.nextInt(90));
+			Thread.sleep(10);
+			final boolean[] run6 = new boolean[] { false };
+			long before4 = System.currentTimeMillis();
+			bus.runActionOnExclusivLockedBus(new Runnable() {
+				@Override
+				public void run() {
+					run6[0] = true;
+				}
+			});
+			long time4 = System.currentTimeMillis() - before4;
+			assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+					+ "was not run!", run6[0]);
+			assertTrue("It seems that the bus was not locked because running the Runnable "
+					+ "took less time than expected (" + time4 + "ms)!", time4 > 10);
 			
-			bus.unlock();
-			
-			testThread3.join();
-			
-			assertTrue("calling 'lock()' on a different thread did throw an exception "
-					+ "although the lock was released by the main-thread!",
-					!lockDidThrow[0]);
-			assertTrue("calling 'unlock()' on a different thread did throw an exception "
-					+ "although the lock was owned by the other thread!",
-					!lockDidThrow[1]);
+			testThread2.join();
+			assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' "
+					+ "on a separat thread was not run!", run5[0]);
 			
 		}
 		

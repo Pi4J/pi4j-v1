@@ -31,18 +31,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-import com.pi4j.io.i2c.impl.I2CBusImpl;
 import com.pi4j.io.i2c.impl.I2CBusImplRaspberryPi;
 
 public class I2CFactoryProviderRaspberry implements I2CFactoryProvider
 {
-	
-	public I2CBus getBus(int busNumber) throws UnsupportedBusNumberException, IOException {
-		
-		return getBus(busNumber,
-				I2CBusImpl.DEFAULT_LOCKAQUIRE_TIMEOUT, I2CBusImpl.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
-		
-	}
 	
 	public I2CBus getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException {
