@@ -47,7 +47,7 @@ Copyright (C) 2012-2015 Pi4J
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
   *  Now requires Java 8 runtime.
   
-## IN DEVEOPMENT
+## RELEASE CANDIDATE
 
 2015-03-15 :: 1.0-RC (Release Candidate)
 
