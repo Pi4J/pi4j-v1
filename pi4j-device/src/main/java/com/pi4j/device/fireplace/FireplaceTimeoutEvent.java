@@ -1,11 +1,11 @@
-package com.pi4j.component.button;
+package com.pi4j.device.fireplace;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ButtonStateChangeEvent.java  
+ * FILENAME      :  FireplaceTimeoutEvent.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,35 +28,21 @@ package com.pi4j.component.button;
  */
 
 
-public class ButtonStateChangeEvent extends ButtonEvent {
+import java.util.EventObject;
 
-    protected final ButtonState oldState;
-    protected final ButtonState newState;
+public class FireplaceTimeoutEvent extends EventObject {
 
-    public ButtonStateChangeEvent(Button buttonComponent, ButtonState oldState, ButtonState newState) {
-        super(buttonComponent);
-        this.oldState = oldState;
-        this.newState = newState;
+    public boolean handled = false;
+
+    public FireplaceTimeoutEvent(Fireplace fireplaceComponent) {
+        super(fireplaceComponent);
     }
 
-    public ButtonState getOldState() {
-        return oldState;
+    public void setHandled(boolean handled){
+        this.handled = handled;
     }
 
-    public ButtonState getNewState() {
-        return newState;
+    public boolean isHandled(){
+        return this.handled;
     }
-
-    @Override
-    public boolean isPressed(){
-        return newState == ButtonState.PRESSED;
-    }
-
-    @Override
-    public boolean isReleased(){
-        return newState == ButtonState.RELEASED;
-    }
-
-    @Override
-    public boolean isState(ButtonState state){ return getNewState() == state; }
 }

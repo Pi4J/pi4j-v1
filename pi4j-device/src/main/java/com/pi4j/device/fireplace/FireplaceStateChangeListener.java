@@ -1,11 +1,11 @@
-package com.pi4j.component.button;
+package com.pi4j.device.fireplace;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ButtonStateChangeEvent.java  
+ * FILENAME      :  FireplaceStateChangeListener.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,35 +28,8 @@ package com.pi4j.component.button;
  */
 
 
-public class ButtonStateChangeEvent extends ButtonEvent {
+import com.pi4j.device.DeviceListener;
 
-    protected final ButtonState oldState;
-    protected final ButtonState newState;
-
-    public ButtonStateChangeEvent(Button buttonComponent, ButtonState oldState, ButtonState newState) {
-        super(buttonComponent);
-        this.oldState = oldState;
-        this.newState = newState;
-    }
-
-    public ButtonState getOldState() {
-        return oldState;
-    }
-
-    public ButtonState getNewState() {
-        return newState;
-    }
-
-    @Override
-    public boolean isPressed(){
-        return newState == ButtonState.PRESSED;
-    }
-
-    @Override
-    public boolean isReleased(){
-        return newState == ButtonState.RELEASED;
-    }
-
-    @Override
-    public boolean isState(ButtonState state){ return getNewState() == state; }
+public interface FireplaceStateChangeListener extends DeviceListener {
+    void onStateChange(FireplaceStateChangeEvent event);
 }

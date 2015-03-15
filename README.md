@@ -46,25 +46,19 @@ Copyright (C) 2012-2015 Pi4J
   *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
   *  Now requires Java 8 runtime.
-
   
 ## IN DEVEOPMENT
 
-2015-03-05 :: 1.0-SNAPSHOT
+2015-03-15 :: 1.0-RC (Release Candidate)
 
   *  Added support for RaspberryPi v2 Model B
-  *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
-  *  Added new Serial JNI implementation to support more advanced serial configuration/operations  
-  *  Overhauled wiringPi serial JNI methods to better support raw data operations
-  *  Added a Java-friendly SPI interface
-  *  Added support for short arrays in WiringPi SPI interface
-  *  Fixed a number of MCP23S17 and PiFace defects
   *  Added support for RaspberryPi Model A+
   *  Added support for RaspberryPi Model B+
   *  Added support for RaspberryPi Compute Module
   *  Added support for debounce logic on digital input pin events
   *  Added support for Button component interface
   *  Added support for Pibrella device
+  *  Added support for a Java-friendly SPI interface
   *  Added support for SPI modes
   *  Added support for building pi4j-native project directly on the Pi (using maven)
   *  Added easy install/uninstall scripts (get.pi4j.com)

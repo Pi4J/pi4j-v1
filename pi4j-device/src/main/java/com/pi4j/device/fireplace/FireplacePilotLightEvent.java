@@ -1,11 +1,11 @@
-package com.pi4j.component.button;
+package com.pi4j.device.fireplace;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  ButtonStateChangeEvent.java  
+ * FILENAME      :  FireplacePilotLightEvent.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -28,35 +28,25 @@ package com.pi4j.component.button;
  */
 
 
-public class ButtonStateChangeEvent extends ButtonEvent {
+import java.util.EventObject;
 
-    protected final ButtonState oldState;
-    protected final ButtonState newState;
+public class FireplacePilotLightEvent extends EventObject {
 
-    public ButtonStateChangeEvent(Button buttonComponent, ButtonState oldState, ButtonState newState) {
-        super(buttonComponent);
-        this.oldState = oldState;
-        this.newState = newState;
+    protected final boolean isPilotLightOn;
+
+    public FireplacePilotLightEvent(Fireplace fireplaceComponent, boolean isPilotLightOn) {
+        super(fireplaceComponent);
+        this.isPilotLightOn = isPilotLightOn;
     }
 
-    public ButtonState getOldState() {
-        return oldState;
+    public Fireplace getFireplace() {
+        return (Fireplace)getSource();
     }
-
-    public ButtonState getNewState() {
-        return newState;
+    
+    public boolean isPilotLightOn() {
+        return isPilotLightOn;
     }
-
-    @Override
-    public boolean isPressed(){
-        return newState == ButtonState.PRESSED;
+    public boolean isPilotLightOff() {
+        return !isPilotLightOn;
     }
-
-    @Override
-    public boolean isReleased(){
-        return newState == ButtonState.RELEASED;
-    }
-
-    @Override
-    public boolean isState(ButtonState state){ return getNewState() == state; }
 }
