@@ -20,11 +20,11 @@ Welcome to Pi4J!
   The RELEASE CANDIDATE for Version 1.0 is now available.  Please report any defects/bugs that you find in
   the release candidate builds via {{{https://github.com/Pi4J/pi4j/issues}GitHub}}.  No new features or enhancements
   will be added to the release candidate version, only bug fixes.  Further enhancements and features will now be
-  contributed in the 1.1-SNAPSHOT builds.  (The release candidate codebase is now maintained in the '1.0-RC' branch.)\
+  contributed in the 1.1-SNAPSHOT builds.  (The release candidate codebase is now maintained in the 'master' branch.)\
 
   The 1.1-SNAPSHOT build includes a completely overhauled Serial communication implementation and API.
   Thus please note that to add these enhancements some APIs required breaking changes where they may no longer be
-  backwards compatible with prior versions.  (This codebase is now maintained in the 'develop' branch.)
+  backwards compatible with prior versions.  (This development codebase is now maintained in the 'develop' branch.)
 
 * Project Status
   
