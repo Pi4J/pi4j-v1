@@ -139,6 +139,7 @@
         <ant-contrib.version>20020829</ant-contrib.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
+        <powermock.version>1.5.2</powermock.version>
 
         <!-- PLUGIN VERSIONS -->
         <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
@@ -208,6 +209,18 @@
                 <artifactId>mockito-all</artifactId>
                 <version>${mockito.version}</version>
                 <scope>test</scope>
+            </dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+            	<version>${powermock.version}</version>
+            	<scope>test</scope>
+			</dependency>
+            <dependency>
+            	<groupId>org.powermock</groupId>
+            	<artifactId>powermock-api-mockito</artifactId>
+            	<version>${powermock.version}</version>
+            	<scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

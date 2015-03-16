@@ -45,8 +45,10 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
     				throws UnsupportedBusNumberException, IOException {
 		
 		return (I2CBusImplBananaPi)
-				I2CBusImpl.getBus(I2CBusImplBananaPi.class,
-				busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+				I2CBusImpl.getBus(
+						new I2CBusImplBananaPi(
+								busNumber, lockAquireTimeout, lockAquireTimeoutUnit),
+								busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
 		
 	}
 	

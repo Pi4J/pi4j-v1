@@ -27,14 +27,7 @@ package com.pi4j.io.i2c.impl;
  * #L%
  */
 
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.jni.I2C;
-
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +35,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.jni.I2C;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
@@ -77,13 +75,14 @@ public abstract class I2CBusImpl implements I2CBus {
     /** 
      * Factory method that returns bus implementation.
      * 
+     * @param newInstanceCandidate if no bus has been created yet, this instance is used
      * @param busNumber bus number
      * @param lockAquireTimeout maximal amount of time to wait for an i2c operation to get exclusive access to the bus
      * @param lockAquireTimeoutUnit units of lockAquireTimeout
      * @return appropriate bus implementation
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
-    protected static I2CBus getBus(Class<? extends I2CBusImpl> implClass, int busNumber,
+    protected static I2CBus getBus(I2CBusImpl newInstanceCandidate, int busNumber,
     		long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
     				throws UnsupportedBusNumberException, IOException {
     	
@@ -110,29 +109,7 @@ public abstract class I2CBusImpl implements I2CBus {
         	
         	if (i2cBus == null) {
         		
-        		final Constructor<? extends I2CBusImpl> constructor;
-				try {
-					constructor = implClass.getConstructor(int.class,
-							long.class, TimeUnit.class);
-				} catch (NoSuchMethodException | SecurityException e) {
-					throw new RuntimeException(
-							"Could not get constructor for class '"
-							+ implClass.getCanonicalName()
-							+ "' having the arguments (int, long, TimeUnit) "
-							+ "for building a new bus-instance!", e);
-				}
-        		
-        		try {
-					bus = constructor.newInstance(
-							busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
-				} catch (InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException e) {
-					throw new RuntimeException(
-							"Could not invoke constructor '"
-							+ constructor
-							+ "' to build a new bus-instance!", e);
-				}
-        		
+        		bus = newInstanceCandidate;
         		busSingletons.put(busNumber, bus);
         		
         	} else {
@@ -294,6 +271,8 @@ public abstract class I2CBusImpl implements I2CBus {
      */
     @Override
     public void close() throws IOException {
+    	
+    	testWhetherBusHasAlreadyBeenClosed();
     	
         singletonPerBusLock.lock();
         try {

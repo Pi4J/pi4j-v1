@@ -45,6 +45,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -94,6 +95,15 @@ public class I2CBusImplTest {
 	}
 	
 	private I2CBusImpl bus;
+
+	@BeforeClass
+	public static void warn() {
+		
+		System.out.println("The message 'Unable to load [libpi4j.so] using path: [/lib/libpi4j.so]' "
+				+ "including stacktrace to 'java.lang.UnsatisfiedLinkError' may be ignored safely! "
+				+ "This happens during initialization of mocking native classes (com.pi4j.jni.I2C).");
+	
+	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -108,6 +118,8 @@ public class I2CBusImplTest {
 	
 	@Test
 	public void testBasics() throws Exception {
+		
+		I2CFactory.getInstance(1);
 		
 		// test that I2C.i2cOpen was called during setup
 		

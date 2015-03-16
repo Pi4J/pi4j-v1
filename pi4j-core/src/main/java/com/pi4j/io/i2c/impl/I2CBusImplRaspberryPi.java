@@ -45,8 +45,10 @@ public class I2CBusImplRaspberryPi extends I2CBusImpl {
     				throws UnsupportedBusNumberException, IOException {
 		
 		return (I2CBusImplRaspberryPi)
-				I2CBusImpl.getBus(I2CBusImplRaspberryPi.class,
-				busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+				I2CBusImpl.getBus(
+						new I2CBusImplRaspberryPi(
+								busNumber, lockAquireTimeout, lockAquireTimeoutUnit),
+								busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
 		
 	}
 	
