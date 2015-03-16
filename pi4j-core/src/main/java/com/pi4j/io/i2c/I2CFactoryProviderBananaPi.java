@@ -5,7 +5,7 @@ package com.pi4j.io.i2c;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactoryProviderRaspberry.java  
+ * FILENAME      :  I2CFactoryProviderBananaPi.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -31,16 +31,16 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-import com.pi4j.io.i2c.impl.I2CBusImplRaspberryPi;
+import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
 
-public class I2CFactoryProviderRaspberry implements I2CFactoryProvider
+public class I2CFactoryProviderBananaPi implements I2CFactoryProvider
 {
-	
+
 	public I2CBus getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException {
 		
 		try {
-			return I2CBusImplRaspberryPi.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+			return I2CBusImplBananaPi.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
 		} catch (com.pi4j.io.i2c.impl.I2CBusImpl.UnsupportedBusNumberException e) {
 			throw new UnsupportedBusNumberException();
 		}

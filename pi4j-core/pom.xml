@@ -65,6 +65,14 @@
 		</resources>
 
 		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-noverify</argLine> <!-- needed for running PowerMock for com.pi4j.jni.I2C -->
+				</configuration>
+			</plugin>
 
 			<!-- JAVA COMPILER -->
 			<plugin>
