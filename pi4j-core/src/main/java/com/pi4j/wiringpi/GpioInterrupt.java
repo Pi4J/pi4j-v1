@@ -116,15 +116,18 @@ public class GpioInterrupt {
     @SuppressWarnings("unchecked")
     private static void pinStateChangeCallback(int pin, boolean state) {
 
-        Vector<GpioInterruptListener> dataCopy;
-        dataCopy = (Vector<GpioInterruptListener>) listeners.clone();
+        Vector<GpioInterruptListener> listenersClone;
+        listenersClone = (Vector<GpioInterruptListener>) listeners.clone();
 
-        for (int i = 0; i < dataCopy.size(); i++) {
-            GpioInterruptEvent event = new GpioInterruptEvent(listeners, pin, state);
-            (dataCopy.elementAt(i)).pinStateChange(event);
+        for (int i = 0; i < listenersClone.size(); i++) {
+            GpioInterruptListener listener = listenersClone.elementAt(i);
+            if(listener != null) {
+                GpioInterruptEvent event = new GpioInterruptEvent(listener, pin, state);
+                listener.pinStateChange(event);
+            }
         }
 
-        // System.out.println("GPIO PIN [" + pin + "] = " + state);
+        //System.out.println("GPIO PIN [" + pin + "] = " + state);
     }
 
     /**

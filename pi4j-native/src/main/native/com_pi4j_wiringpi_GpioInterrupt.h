@@ -33,7 +33,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /*
  * Class:     com_pi4j_wiringpi_GpioInterrupt
  * Method:    enablePinStateChangeCallback
@@ -49,6 +48,20 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_enablePinStateChange
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChangeCallback
   (JNIEnv *, jclass, jint);
+
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioInterrupt
+ * Method:    GpioInterrupt_JNI_OnLoad
+ */
+jint GpioInterrupt_JNI_OnLoad(JavaVM *jvm);
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioInterrupt
+ * Method:    GpioInterrupt_JNI_OnUnload
+ */
+void GpioInterrupt_JNI_OnUnload(JavaVM *jvm);
+
 
 #ifdef __cplusplus
 }

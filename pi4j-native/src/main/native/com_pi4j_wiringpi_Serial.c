@@ -36,11 +36,13 @@
  * Signature: (Ljava/lang/String;I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialOpen
-  (JNIEnv *env, jobject obj, jstring device, jint baud)
+  (JNIEnv *env, jclass obj, jstring device, jint baud)
 {
 	char devchararr[256];
 	int len = (*env)->GetStringLength(env, device);
 	(*env)->GetStringUTFRegion(env, device, 0, len, devchararr);
+
+    // return file descriptor
 	return serialOpen(devchararr, baud);
 }
 
@@ -50,8 +52,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialOpen
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialClose
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
+    serialFlush(fd);
 	serialClose(fd);
 }
 
@@ -61,7 +64,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialClose
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialFlush
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	serialFlush(fd);
 }
@@ -72,9 +75,36 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialFlush
  * Signature: (IC)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutchar
-  (JNIEnv *env, jobject obj, jint fd, jchar data)
+  (JNIEnv *env, jclass obj, jint fd, jchar data)
 {
 	serialPutchar(fd, data);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialPutByte
+ * Signature: (IB)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutByte
+  (JNIEnv *env, jobject obj, jint fd, jbyte data)
+{
+	serialPutchar(fd, (unsigned char) data);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialPutBytes
+ * Signature: (I[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutBytes
+(JNIEnv *env, jclass obj, jint fd, jbyteArray data, jint length)
+{
+    int i;
+    jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
+    for (i = 0; i < length; i++) {
+	    serialPutchar(fd, (unsigned char) body[i]);
+    }
+	(*env)->ReleaseByteArrayElements(env, data, body, 0);
 }
 
 /*
@@ -83,7 +113,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutchar
  * Signature: (ILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
-  (JNIEnv *env, jobject obj, jint fd, jstring data)
+  (JNIEnv *env, jclass obj, jint fd, jstring data)
 {
 	char datachararr[2048];
 	int len = (*env)->GetStringUTFLength(env, data);
@@ -97,7 +127,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	return serialDataAvail(fd);
 }
@@ -108,7 +138,73 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialGetchar
-  (JNIEnv *env, jobject obj, jint fd)
+  (JNIEnv *env, jclass obj, jint fd)
 {
 	return serialGetchar(fd);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetByte
+ * Signature: (I)B
+ */
+JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
+  (JNIEnv *env, jclass obj, jint fd)
+{
+    int result = serialGetchar(fd);
+    if(result >= 0){
+	    return (unsigned char) serialGetchar(fd);
+	}
+	else{
+	    return NULL;
+	}
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetBytes
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetBytes
+  (JNIEnv *env, jclass obj, jint fd, jint length)
+{
+    int num_available;
+    num_available = serialDataAvail(fd);
+
+    // reduce length if it exceeds the number available
+    if(length > num_available){
+        length = num_available;
+    }
+
+    jbyte result[length];
+    int i;
+    for (i = 0; i < length; i++) {
+        result[i] = (unsigned char)serialGetchar(fd);
+    }
+
+    jbyteArray javaResult = (*env)->NewByteArray(env, length);
+    (*env)->SetByteArrayRegion(env, javaResult, 0, length, result);
+    return javaResult;
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetAvailableBytes
+ * Signature: (I)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetAvailableBytes
+  (JNIEnv *env, jclass obj, jint fd)
+{
+    int length;
+    length = serialDataAvail(fd);
+    jbyte result[length];
+
+    int i;
+    for (i = 0; i < length; i++) {
+        result[i] = (unsigned char)serialGetchar(fd);
+    }
+
+    jbyteArray javaResult = (*env)->NewByteArray(env, length);
+    (*env)->SetByteArrayRegion(env, javaResult, 0, length, result);
+    return javaResult;
 }

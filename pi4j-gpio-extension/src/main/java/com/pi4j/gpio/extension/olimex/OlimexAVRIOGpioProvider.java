@@ -10,8 +10,10 @@ import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
-import com.pi4j.io.serial.SerialDataListener;
+import com.pi4j.io.serial.SerialDataEventListener;
 import com.pi4j.io.serial.SerialFactory;
+
+import java.io.IOException;
 
 /*
  * #%L
@@ -52,7 +54,7 @@ import com.pi4j.io.serial.SerialFactory;
  * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
  * </p>
  * 
- * @see https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
+ * @link http://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * @author Robert Savage
  * 
  */
@@ -64,7 +66,7 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     private int currentStates = 0;
     private SerialCommandQueueProcessingThread queue;
 
-    public OlimexAVRIOGpioProvider(String serialDevice) {
+    public OlimexAVRIOGpioProvider(String serialDevice) throws IOException {
         // create serial communications instance
         com = SerialFactory.createInstance();
         
@@ -152,69 +154,79 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         }
 
         // close the serial port communication
-        com.close();
-        
+        try {
+            com.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // shutdown any serial data monitoring threads
-        com.shutdown();
-    }      
+        SerialFactory.shutdown();
+    }
     
     /**
      * This class implements the serial data listener interface with the callback method for event
      * notifications when data is received on the serial port.
      * 
-     * @see SerialDataListener
+     * @see com.pi4j.io.serial.SerialDataEventListener
      * @author Robert Savage
      */
-    class SerialExampleListener implements SerialDataListener {
+    class SerialExampleListener implements SerialDataEventListener {
         private StringBuilder buffer = new StringBuilder();
         
         public void dataReceived(SerialDataEvent event) {
-           String data = event.getData();
-           
-           // append received data into buffer
-           if (data != null && !data.isEmpty()) {
-               buffer.append(data);
-           }
-           
-           int start = buffer.indexOf("$");
-           int stop = buffer.indexOf("\n");
-           
-           while (stop >= 0) {
-               // process data buffer
-               if(start >= 0 && stop > start) {
-                   // get command
-                   String command = buffer.substring(start, stop+1);
-                   buffer.delete(start, stop+1).toString();
-    
-                   // remove terminating characters
-                   command = command.replace("$", "");
-                   command = command.replace("\n", "");
-                   command = command.replace("\r", "");
-                   
-                   // print out the data received to the console
-                   //System.out.println("<<< COM RX >>> " + command);
-                   
-                   int value = Integer.parseInt(command, 16);
-                   
-                   // process each INPUT pin for changes; 
-                   // dispatch change events if needed
-                   for (Pin pin : OlimexAVRIOPin.INPUTS) {
-                       evaluatePinForChange(pin, value);
-                   }
-                   
-                   // update the current value tracking variable
-                   currentStates = value;
-               } else if (stop >= 0) {
-                   // invalid data command; purge
-                   buffer.delete(0, stop+1);
-                   
-                   //System.out.println("PURGE >>> " + removed);
-               }
-               
-               // seek to next command in buffer
-               start = buffer.indexOf("$");
-               stop = buffer.indexOf("\n");               
-           }
+
+            try {
+                String data = event.getAsciiString();
+
+                // append received data into buffer
+                if (data != null && !data.isEmpty()) {
+                    buffer.append(data);
+                }
+
+                int start = buffer.indexOf("$");
+                int stop = buffer.indexOf("\n");
+
+                while (stop >= 0) {
+                    // process data buffer
+                    if (start >= 0 && stop > start) {
+                        // get command
+                        String command = buffer.substring(start, stop + 1);
+                        buffer.delete(start, stop + 1).toString();
+
+                        // remove terminating characters
+                        command = command.replace("$", "");
+                        command = command.replace("\n", "");
+                        command = command.replace("\r", "");
+
+                        // print out the data received to the console
+                        //System.out.println("<<< COM RX >>> " + command);
+
+                        int value = Integer.parseInt(command, 16);
+
+                        // process each INPUT pin for changes;
+                        // dispatch change events if needed
+                        for (Pin pin : OlimexAVRIOPin.INPUTS) {
+                            evaluatePinForChange(pin, value);
+                        }
+
+                        // update the current value tracking variable
+                        currentStates = value;
+                    } else if (stop >= 0) {
+                        // invalid data command; purge
+                        buffer.delete(0, stop + 1);
+
+                        //System.out.println("PURGE >>> " + removed);
+                    }
+
+                    // seek to next command in buffer
+                    start = buffer.indexOf("$");
+                    stop = buffer.indexOf("\n");
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         
         

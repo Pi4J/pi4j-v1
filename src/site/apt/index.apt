@@ -7,20 +7,35 @@
 
 Welcome to Pi4J!
 
-  This project is intended to provide a friendly object-oriented I/O API and implementation libraries for Java Programmers to access the full I/O capabilities of the Raspberry Pi platform.
-  This project abstracts the low-level native integration and interrupt monitoring to enable Java programmers to focus on
-  implementing their application business logic.
+  This project is intended to provide a friendly object-oriented I/O API and implementation libraries for Java
+  Programmers to access the full I/O capabilities of the Raspberry Pi platform.
+  This project abstracts the low-level native integration and interrupt monitoring to enable Java programmers to focus
+  on implementing their application business logic.
+
+* News / Announcements
+
+  [2015-03-15]
+
+
+  The RELEASE CANDIDATE for Version 1.0 is now available.  Please report any defects/bugs that you find in
+  the release candidate builds via {{{https://github.com/Pi4J/pi4j/issues}GitHub}}.  No new features or enhancements
+  will be added to the release candidate version, only bug fixes.  Further enhancements and features will now be
+  contributed in the 1.1-SNAPSHOT builds.  (The release candidate codebase is now maintained in the 'master' branch.)\
+
+  The 1.1-SNAPSHOT build includes a completely overhauled Serial communication implementation and API.
+  Thus please note that to add these enhancements some APIs required breaking changes where they may no longer be
+  backwards compatible with prior versions.  (This development codebase is now maintained in the 'develop' branch.)
 
 * Project Status
   
-  Please note that this project is continually under development but has been stable for well over a year.  Please use a
-  non-SNAPSHOT build if you are looking for a stable release.  The functionality is reasonably stable but improvements
-  and bug fixes are continually committed into the 'develop' branch in the Pi4J GitHub repository.
+  Please note that this project is continually under development but has been very stable for well over a year.  The
+  functionality is very stable but improvements and bug fixes are continually committed into the 'develop' branch in
+  the Pi4J GitHub repository.
   
   You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
   or ugly.  <(Well maybe keep the ugly feedback to a minimum.)>
   
-  Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.     
+  Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.
 
 * Supported Hardware
 

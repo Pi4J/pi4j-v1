@@ -49,8 +49,8 @@ public class WiringPiSerialExample {
             // display data received to console
             int dataavail = Serial.serialDataAvail(fd);            
             while(dataavail > 0) {
-                int data = Serial.serialGetchar(fd);
-                System.out.print((char)data);                
+                byte data = Serial.serialGetByte(fd);
+                System.out.print(data);
                 dataavail = Serial.serialDataAvail(fd);
             }
             

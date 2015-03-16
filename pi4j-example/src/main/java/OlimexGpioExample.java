@@ -44,6 +44,8 @@ import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
 import com.pi4j.io.serial.Serial;
 
+import java.io.IOException;
+
 /**
  * <p>
  * This example code demonstrates how to setup a custom GpioProvider
@@ -61,12 +63,12 @@ import com.pi4j.io.serial.Serial;
  * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
  * </p>
  * 
- * @see https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
+ * @link https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * @author Robert Savage
  */
 public class OlimexGpioExample {
     
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, IOException {
 
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
         

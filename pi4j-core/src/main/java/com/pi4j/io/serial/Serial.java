@@ -28,6 +28,10 @@ package com.pi4j.io.serial;
  */
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * <p>This interface provides a set of functions for 'Serial' communication.</p>
  * 
@@ -45,14 +49,14 @@ package com.pi4j.io.serial;
  * 
  * @see com.pi4j.io.serial.SerialFactory
  * @see com.pi4j.io.serial.SerialDataEvent
- * @see com.pi4j.io.serial.SerialDataListener
+ * @see SerialDataEventListener
  * 
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public interface Serial {
+public interface Serial extends SerialDataReader, SerialDataWriter {
 
     /**
      * The default hardware COM port provided via the Raspberry Pi GPIO header.
@@ -60,26 +64,132 @@ public interface Serial {
      * @see #open(String, int)
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
-    public static final int DEFAULT_MONITOR_INTERVAL = 100; // milliseconds
+    public static final String FIRST_USB_COM_PORT = "/dev/ttyUSB0";
+    public static final String SECOND_USB_COM_PORT = "/dev/ttyUSB1";
+
 
     /**
-     * This method is call to open a serial port for communication.
-     * 
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
      * @see #DEFAULT_COM_PORT
-     * 
-     * @param device The device address of the serial port to access. You can use constant
-     *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
-     *            GPIO header.
-     * @param baudRate The baud rate to use with the serial port.
-     *            
-     * @throws SerialPortException Exception thrown on any error.
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port. (Custom baud rate are not supported)
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     *
+     * @throws IOException thrown on any error.
      */
-    public void open(String device, int baudRate) throws SerialPortException;
+    public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl)
+            throws IOException;
+
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     *
+     * This method will use the following default serial configuration parameters:
+     *  - DATA BITS    = 8
+     *  - PARITY       = NONE
+     *  - STOP BITS    = 1
+     *  - FLOW CONTROL = NONE
+     *
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     *
+     * @throws IOException thrown on any error.
+     */
+    public void open(String device, int baud) throws IOException;
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param device
+     *          The device address of the serial port to access. You can use constant
+     *          'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
+     *          GPIO header.
+     * @param baud
+     *          The baud rate to use with the serial port.
+     * @param dataBits
+     *          The data bits to use for serial communication. (5,6,7,8)
+     * @param parity
+     *          The parity setting to use for serial communication. (None, Event, Odd, Mark, Space)
+     * @param stopBits
+     *          The stop bits to use for serial communication. (1,2)
+     * @param flowControl
+     *          The flow control option to use for serial communication. (none, hardware, software)
+     *
+     * @throws IOException thrown on any error.
+     */
+    public void open(String device, Baud baud, DataBits dataBits, Parity parity, StopBits stopBits,
+                     FlowControl flowControl) throws IOException;
+
+    /**
+     * <p>
+     * This opens and initializes the serial port/device and sets the communication parameters.
+     * It sets the port into raw mode (character at a time and no translations).
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
+     * </p>
+     *
+     * @see #DEFAULT_COM_PORT
+     *
+     * @param serialConfig
+     *          A serial configuration object that contains the device, baud rate, data bits, parity,
+     *          stop bits, and flow control settings.
+     *
+     * @throws IOException thrown on any error.
+     */
+    public void open(SerialConfig serialConfig) throws IOException;
 
     /**
      * This method is called to close a currently open open serial port.
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void close() throws IllegalStateException;
+    public void close() throws IllegalStateException, IOException;
 
     /**
      * This method is called to determine if the serial port is already open.
@@ -96,97 +206,177 @@ public interface Serial {
      * @return a value of 'true' is returned if the serial port is already in the closed state.
      */
     public boolean isClosed();
-    
-    /**
-     * This method is called to immediately flush the serial data transmit buffer and force any
-     * pending data to be sent to the serial port immediately.
-     */
-    public void flush() throws IllegalStateException;
 
     /**
-     * <p>This method will read the next character available from the serial port receive buffer.</p>
      * <p>
-     * <b>NOTE: If a serial data listener has been implemented and registered with this class, then
-     * this method should not be called directly. A background thread will be running to collect
-     * received data from the serial port receive buffer and the received data will be available on
-     * via the event.</b>
+     *     Forces the transmission of any remaining data in the serial port transmit buffer.
+     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
-     * 
-     * @return next available character in the serial data buffer
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public char read() throws IllegalStateException;
+    public void flush() throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a single character of data to the serial port transmit
-     * buffer.
-     * 
-     * @param data A single character to be transmitted.
+     * <p>
+     *     Discards any data in the serial receive (input) buffer.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(char data) throws IllegalStateException;
+    public void discardInput() throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a character array of data to the serial port transmit buffer.
-     * 
-     * @param data  A character array of data to be transmitted.
+     * <p>
+     *     Discards any data in the serial transmit (output) buffer.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(char data[]) throws IllegalStateException;
+    public void discardOutput() throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a single byte of data to the serial port transmit buffer.
-     * 
-     * @param data  A single byte to be transmitted.
+     * <p>
+     *     Discards any data in  both the serial receive and transmit buffers.
+     *     Please note that this does not force the transmission of data, it discards it!
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(byte data) throws IllegalStateException;
+    public void discardAll() throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a byte array of data to the serial port transmit buffer.
-     * 
-     * @param data A byte array of data to be transmitted.
+     * <p>
+     *     Send a BREAK signal to connected device.
+     * </p>
+     *
+     * @param duration
+     *          The length of time (milliseconds) to send the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(byte data[]) throws IllegalStateException;
+    public void sendBreak(int duration) throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a string of data to the serial port transmit buffer.
-     * 
-     * @param data  A string of data to be transmitted.
+     * <p>
+     *     Send a BREAK signal to connected device for at least 0.25 seconds, and not more than 0.5 seconds
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(String data) throws IllegalStateException;
+    public void sendBreak() throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a string of data with trailing CR + LF characters to the
-     * serial port transmit buffer.
-     * 
-     * @param data  A string of data to be transmitted.
+     * <p>
+     *     Send a constant BREAK signal to connected device. (Turn break on/off)
+     *     When enabled this will send a steady stream of zero bits.
+     *     When enabled, no (other) data transmitting is possible.
+     * </p>
+     *
+     * @param enabled
+     *          The enable or disable state to control the BREAK signal
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void writeln(String data) throws IllegalStateException;
+    public void setBreak(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a string of formatted data to the serial port transmit
-     * buffer.
-     * 
-     * @param data  A string of formatted data to be transmitted.
-     * @param args  A series of arguments that can be included for the format string variable
-     *            replacements.
+     * <p>
+     *     Control the RTS (request-to-send) pin state.
+     *     When enabled this will set the RTS pin to the HIGH state.
+     * </p>
+     *
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void write(String data, String... args) throws IllegalStateException;
+    public void setRTS(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * This method is called to submit a string of formatted data with trailing CR + LF characters
-     * to the serial port transmit buffer.
-     * 
-     * @param data  A string of formatted data to be transmitted.
-     * @param args  A series of arguments that can be included for the format string variable
-     *            replacements.
+     * <p>
+     *     Control the DTR (data-terminal-ready) pin state.
+     *     When enabled this will set the DTR pin to the HIGH state.
+     * </p>
+     *
+     * @param enabled
+     *          The enable or disable state to control the RTS pin state.
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public void writeln(String data, String... args) throws IllegalStateException;
+    public void setDTR(boolean enabled) throws IllegalStateException, IOException;
 
     /**
-     * This method is called to determine if and how many bytes are available on the serial received
-     * data buffer.
-     * 
-     * @return The number of available bytes pending in the serial received buffer is returned.
+     * <p>
+     *     Get the RTS (request-to-send) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
      */
-    public int availableBytes() throws IllegalStateException;
+    public boolean getRTS() throws IllegalStateException, IOException;
+
+    /**
+     * <p>
+     *     Get the DTR (data-terminal-ready) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
+     */
+    public boolean getDTR() throws IllegalStateException, IOException;
+
+    /**
+     * <p>
+     *     Get the CTS (clean-to-send) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
+     */
+    public boolean getCTS() throws IllegalStateException, IOException;
+
+    /**
+     * <p>
+     *     Get the DSR (data-set-ready) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
+     */
+    public boolean getDSR() throws IllegalStateException, IOException;
+
+    /**
+     * <p>
+     *     Get the RI (ring-indicator) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
+     */
+    public boolean getRI() throws IllegalStateException, IOException;
+
+    /**
+     * <p>
+     *     Get the CD (carrier-detect) pin state.
+     * </p>
+     *
+     * @throws IllegalStateException thrown if the serial port is not already open.
+     * @throws IOException thrown on any error.
+     */
+    public boolean getCD() throws IllegalStateException, IOException;
+
+
+    // ----------------------------------------
+    // EVENT OPERATIONS
+    // ----------------------------------------
 
     /**
      * <p>
@@ -194,47 +384,75 @@ public interface Serial {
      * events.
      * </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener  A class instance that implements the SerialListener interface.
      */
-    public void addListener(SerialDataListener... listener);
+    public void addListener(SerialDataEventListener... listener);
 
     /**
      * <p> Java consumer code can call this method to unregister itself as a listener for serial data
      * events. </p>
      * 
-     * @see com.pi4j.io.serial.SerialDataListener
+     * @see SerialDataEventListener
      * @see com.pi4j.io.serial.SerialDataEvent
      * 
      * @param listener A class instance that implements the SerialListener interface.
      */
-    public void removeListener(SerialDataListener... listener);
-        
-    /**
-     * This method returns TRUE if the serial interface has been shutdown.
-     * 
-     * @return shutdown state
-     */
-    public boolean isShutdown();
-    
-    
-    /**
-     * This method can be called to forcefully shutdown all serial data monitoring threads.
-     */
-    public void shutdown();
+    public void removeListener(SerialDataEventListener... listener);
+
+
+    // ----------------------------------------
+    // FILE OPERATIONS
+    // ----------------------------------------
 
     /**
-     * This method returns the serial data receive monitor delay interval in milliseconds.
-     * @return interval milliseconds
+     * This method returns the serial device file descriptor
+     * @return fileDescriptor file descriptor
      */
-    public int getMonitorInterval();
+    public int getFileDescriptor();
 
     /**
-     * This method set the serial data receive monitor delay interval in milliseconds.
+     * This method returns the input data stream for the serial port's receive buffer
+     * @return InputStream input stream
+     */
+    public InputStream getInputStream();
+
+    /**
+     * This method returns the output data stream for the serial port's transmit buffer
+     * @return OutputStream output stream
+     */
+    public OutputStream getOutputStream();
+
+    /**
+     * This method returns the buffering state for data received from the serial device/port.
+     * @return 'true' if buffering is enabled; else 'false'
+     */
+    public boolean isBufferingDataReceived();
+
+    /**
+     * <p>
+     *     This method controls the buffering state for data received from the serial device/port.
+     * </p>
+     * <p>
+     *   If the buffering state is enabled, then all data bytes received from the serial port will
+     *   get copied into a data receive buffer.  You can use the 'getInputStream()' or and of the 'read()'
+     *   methods to access this data.  The data will also be available via the 'SerialDataEvent' event.
+     *   It is important to know that if you are using data buffering, the data will continue to grow
+     *   in memory until your program consume it from the data reader/stream.
+     * </p>
+     * <p>
+     *   If the buffering state is disabled, then all data bytes received from the serial port will NOT
+     *   get copied into the data receive buffer, but will be included in the 'SerialDataEvent' event's
+     *   data payload.  If you program does not care about or use data received from the serial port,
+     *   then you should disable the data buffering state to prevent memory waste/leak.
+     * </p>
      *
-     * @param interval number of milliseconds
+     * @param enabled
+     *   Sets the buffering behavior state.
+     *
      */
-    public void setMonitorInterval(int interval);
+    public void setBufferingDataReceived(boolean enabled);
+
 }

@@ -46,4 +46,17 @@ public class ButtonStateChangeEvent extends ButtonEvent {
     public ButtonState getNewState() {
         return newState;
     }
+
+    @Override
+    public boolean isPressed(){
+        return newState == ButtonState.PRESSED;
+    }
+
+    @Override
+    public boolean isReleased(){
+        return newState == ButtonState.RELEASED;
+    }
+
+    @Override
+    public boolean isState(ButtonState state){ return getNewState() == state; }
 }
