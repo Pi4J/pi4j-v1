@@ -29,14 +29,41 @@ package com.pi4j.io.i2c;
 
 import java.io.IOException;
 
+import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
+
 /**
  * This is abstraction of i2c bus. This interface allows bus to return i2c device.
  * 
- * @author Daniel Sendula
+ * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  */
 public interface I2CBus {
 
-	
+	/**
+	 * Base-class for parameter 'action' of method 'runActionOnExclusivLockedBus'.
+	 *  
+	 * @param <T> The result-type
+	 * @see I2CBus#runActionOnExclusivLockedBus(I2CRunnable)
+	 * @see IOExceptionWrapperException
+	 */
+	static abstract class I2CRunnable<T> implements Runnable {
+		
+		/**
+		 * May be used as generic-type if there should be a void-result
+		 */
+		public static final class Void extends Object { };
+		
+		/**
+		 * The value which has to be returned by 'runActionOnExclusivLockedBus'.
+		 * Set this property within the 'run'-method.
+		 */
+		protected T result;
+		
+		public T getResult() {
+			return result;
+		}
+		
+	}
+
     public static final int BUS_0 = 0;
     public static final int BUS_1 = 1;
     public static final int BUS_2 = 2;
@@ -51,6 +78,9 @@ public interface I2CBus {
      */
     I2CDevice getDevice(int address) throws IOException;
     
+    /**
+     * @return The bus' number
+     */
     int getBusNumber();
     
     /**
@@ -66,13 +96,18 @@ public interface I2CBus {
      * a custom sequence of writes/reads.
      * <p>
      * The timeout used for the acquisition of the lock may be defined
-     * one getting the I2CBus from I2CFactory. 
-     * 
+     * one getting the I2CBus from I2CFactory.
+	 * <p>
+	 * The 'run'-method of 'action' may throw an 'IOExceptionWrapperException'
+	 * to wrap IOExceptions. The wrapped IOException is unwrapped by this method
+	 * and rethrown as IOException.
+     *  
+     * @param <T> The result-type of the method
      * @param action The action to be run
      * @throws RuntimeException thrown by the custom code
-     * @throws Exception thrown if execution of custom code failed due to I2CBus-implementation
+     * @throws IOException see method description above
      * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
      */
-    void runActionOnExclusivLockedBus(Runnable action) throws Exception, RuntimeException;
+    <T> T runActionOnExclusivLockedBus(I2CRunnable<T> action) throws IOException;
     
 }

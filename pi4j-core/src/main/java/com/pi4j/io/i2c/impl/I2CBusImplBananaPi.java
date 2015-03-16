@@ -50,7 +50,7 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
 		
 	}
 	
-	protected I2CBusImplBananaPi(final int busNumber,
+	private I2CBusImplBananaPi(final int busNumber,
     		final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException {
 		super(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);

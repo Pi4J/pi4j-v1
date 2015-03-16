@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * The locking is done by I2CDeviceImpl by using those methods. The reason for this is to
  * enable other locking-strategies than the simple "lock before and release after access"-strategy.  
  * 
- * @author Daniel Sendula refactored by <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
+ * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  *
  */
 public abstract class I2CBusImpl implements I2CBus {
@@ -223,11 +223,11 @@ public abstract class I2CBusImpl implements I2CBus {
     }
     
     @Override
-    public void runActionOnExclusivLockedBus(final Runnable action) throws Exception,
-    		RuntimeException {
+    public <T> T runActionOnExclusivLockedBus(final I2CRunnable<T> action)
+    		throws IOException {
     	
     	if (action == null) {
-    		throw new Exception("Parameter 'action' is mandatory!");
+    		throw new RuntimeException("Parameter 'action' is mandatory!");
     	}
     	
 		testWhetherBusHasAlreadyBeenClosed();
@@ -238,18 +238,16 @@ public abstract class I2CBusImpl implements I2CBus {
 	    	lock();
 	    	locked = true;
 	    	
-	    	try {
-	    		action.run();
-	    	} catch (IOExceptionWrapperException e) {
-	    		throw e.getIoException();
-	    	}
-	    	
+    		action.run();
+	    
     	} catch (InterruptedException e) {
     		
     		logger.log(Level.FINER, "Failed locking I2CBusImpl-"
     				+ busNumber, e);
-    		throw new Exception("Could not abtain an access-lock!", e);
+    		throw new RuntimeException("Could not abtain an access-lock!", e);
     		
+    	} catch (IOExceptionWrapperException e) { // unwrap IOExceptionWrapperException
+    		throw e.getIOException();
     	} finally {
     		
     		if (locked) {
@@ -261,6 +259,8 @@ public abstract class I2CBusImpl implements I2CBus {
     		}
     		
     	}
+    	
+    	return action.getResult();
     	
     }
 

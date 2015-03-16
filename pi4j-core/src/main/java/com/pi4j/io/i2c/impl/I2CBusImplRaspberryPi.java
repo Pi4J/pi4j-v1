@@ -50,7 +50,7 @@ public class I2CBusImplRaspberryPi extends I2CBusImpl {
 		
 	}
 	
-	protected I2CBusImplRaspberryPi(final int busNumber,
+	private I2CBusImplRaspberryPi(final int busNumber,
     		final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit)
 			throws UnsupportedBusNumberException, IOException {
 		super(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
