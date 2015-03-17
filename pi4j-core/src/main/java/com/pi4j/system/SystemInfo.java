@@ -287,41 +287,58 @@ public class SystemInfo {
 
     public static BoardType getBoardType() throws IOException, InterruptedException
     {
-        // The following info obtained from:
-        // http://www.raspberrypi.org/archives/1929
-        // http://raspberryalphaomega.org.uk/?p=428
-        // http://www.raspberrypi.org/phpBB3/viewtopic.php?p=281039#p281039
-        // http://elinux.org/RPi_HardwareHistory
-        switch(getRevision())
-        {
-        case "0002":  // Model B Revision 1
-        case "0003":  // Model B Revision 1 + Fuses mod and D14 removed
-            return BoardType.ModelB_Rev1;
-        case "0004":  // Model B Revision 2 256MB (Sony)
-        case "0005":  // Model B Revision 2 256MB (Qisda)
-        case "0006":  // Model B Revision 2 256MB (Egoman)
-            return BoardType.ModelB_Rev2;
-        case "0007":  // Model A 256MB (Egoman)
-        case "0008":  // Model A 256MB (Sony)
-        case "0009":  // Model A 256MB (Qisda)
-            return BoardType.ModelA_Rev1;
-        case "000d":  // Model B Revision 2 512MB (Egoman)
-        case "000e":  // Model B Revision 2 512MB (Sony)
-        case "000f":  // Model B Revision 2 512MB (Qisda)
-            return BoardType.ModelB_Rev2;
-        case "0010":  // Model B Plus 512MB (Sony)
-        {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
-            if(getHardware().equalsIgnoreCase("BCM2709"))
-                return BoardType.Model2B_Rev1;
-            else
-                return BoardType.ModelB_Plus_Rev1;
+        String revision = getRevision();
+        long irevision = Long.parseLong(revision, 16);
+        long scheme = (irevision >> 23) & 0x1;
+        long ram = (irevision >> 20) & 0x7;
+        long manufacturer = (irevision >> 16) & 0xF;
+        long processor = (irevision >> 12) & 0xF;
+        long type = (irevision >> 4) & 0xFF;
+        long rev = irevision & 0xF;
+
+        // determine board type based on revision scheme
+        if (scheme == 0) {
+            // The following info obtained from:
+            // http://www.raspberrypi.org/archives/1929
+            // http://raspberryalphaomega.org.uk/?p=428
+            // http://www.raspberrypi.org/phpBB3/viewtopic.php?p=281039#p281039
+            // http://elinux.org/RPi_HardwareHistory
+            switch (revision) {
+                case "0002":  // Model B Revision 1
+                case "0003":  // Model B Revision 1 + Fuses mod and D14 removed
+                    return BoardType.ModelB_Rev1;
+                case "0004":  // Model B Revision 2 256MB (Sony)
+                case "0005":  // Model B Revision 2 256MB (Qisda)
+                case "0006":  // Model B Revision 2 256MB (Egoman)
+                    return BoardType.ModelB_Rev2;
+                case "0007":  // Model A 256MB (Egoman)
+                case "0008":  // Model A 256MB (Sony)
+                case "0009":  // Model A 256MB (Qisda)
+                    return BoardType.ModelA_Rev1;
+                case "000d":  // Model B Revision 2 512MB (Egoman)
+                case "000e":  // Model B Revision 2 512MB (Sony)
+                case "000f":  // Model B Revision 2 512MB (Qisda)
+                    return BoardType.ModelB_Rev2;
+                case "0010":  // Model B Plus 512MB (Sony)
+                {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
+                    if (getHardware().equalsIgnoreCase("BCM2709"))
+                        return BoardType.Model2B_Rev1;
+                    else
+                        return BoardType.ModelB_Plus_Rev1;
+                }
+                case "0011":  // Compute Module 512MB (Sony)
+                    return BoardType.Compute_Module_Rev1;
+                case "0012":  // Model A Plus 512MB (Sony)
+                    return BoardType.ModelA_Plus_Rev1;
+                default:
+                    return BoardType.UNKNOWN;
+            }
         }
-        case "0011":  // Compute Module 512MB (Sony)
-            return BoardType.Compute_Module_Rev1;
-        case "0012":  // Model A Plus 512MB (Sony)
-            return BoardType.ModelA_Plus_Rev1;
-        default:
-            return BoardType.UNKNOWN;
+        else if (type == 4) {
+            return SystemInfo.BoardType.Model2B_Rev1;
+        }
+        else {
+            return SystemInfo.BoardType.UNKNOWN;
         }
     }
 
