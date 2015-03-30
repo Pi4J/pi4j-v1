@@ -36,5 +36,6 @@ public interface ExecutorServiceFactory
 {
     public ScheduledExecutorService getScheduledExecutorService();
     public ExecutorService newSingleThreadExecutorService();
+    public ExecutorService newSingleThreadExecutorService(String threadNamePattern);
     public void shutdown();
 }
