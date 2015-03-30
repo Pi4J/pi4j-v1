@@ -34,69 +34,87 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
-    
+
     public static int MAX_THREADS_IN_POOL = 25;
-    private static List<ExecutorService> singleThreadExecutorServices  = new ArrayList<>();
+    private static List<ExecutorService> singleThreadExecutorServices = new ArrayList<>();
     private static ScheduledExecutorService scheduledExecutorService = null;
     private static ScheduledExecutorServiceWrapper executorServiceWrapper = null;
-    
+
     /**
      * return an instance to the thread factory used to create new executor services
      */
-    private ThreadFactory getThreadFactory(){
-        return Executors.defaultThreadFactory();
+    private ThreadFactory getThreadFactory(final String nameFormat) {
+        final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+        return new ThreadFactory() {
+            final AtomicLong count = (nameFormat != null) ? new AtomicLong(0) : null;
+
+            @Override
+            public Thread newThread(Runnable runnable) {
+                Thread thread = defaultThreadFactory.newThread(runnable);
+                if (nameFormat != null) {
+                    thread.setName(String.format(nameFormat, count.getAndIncrement()));
+                }
+                return thread;
+            }
+        };
     }
-    
+
     /**
      * return an instance to the scheduled executor service (wrapper)
      */
-    public ScheduledExecutorService getScheduledExecutorService(){
-        if(scheduledExecutorService == null){
-            scheduledExecutorService = Executors.newScheduledThreadPool(MAX_THREADS_IN_POOL, getThreadFactory());
+    public ScheduledExecutorService getScheduledExecutorService() {
+        if (scheduledExecutorService == null) {
+            scheduledExecutorService = Executors.newScheduledThreadPool(MAX_THREADS_IN_POOL, getThreadFactory("pi4j-scheduled-executor-%d"));
             executorServiceWrapper = new ScheduledExecutorServiceWrapper(scheduledExecutorService);
         }
-        
+
         // we return the protected wrapper to prevent any consumers from 
         // being able to shutdown the scheduled executor service
         return executorServiceWrapper;
     }
-    
+
     /**
      * return a new instance of a single thread executor service
      */
-    public ExecutorService newSingleThreadExecutorService(){
-        
-        // create new single thread executor
-        ExecutorService singleThreadExecutorService = Executors.newSingleThreadExecutor(getThreadFactory());
+    public ExecutorService newSingleThreadExecutorService() {
+
+      return newSingleThreadExecutorService("pi4j-single-executor");
+    }
+
+    @Override
+    public ExecutorService newSingleThreadExecutorService(String threadNamePattern) {
+          // create new single thread executor
+        ExecutorService singleThreadExecutorService = Executors.newSingleThreadExecutor(getThreadFactory("pi4j-single-executor-%d"));
 
         // add new instance to managed collection
         singleThreadExecutorServices.add(singleThreadExecutorService);
-        
+
         // return the new instance
         return singleThreadExecutorService;
     }
-    
+
     /**
      * shutdown executor threads
      */
-    public void shutdown(){
-        
+    public void shutdown() {
+
         // shutdown each single thread executor in the managed collection
-        for(ExecutorService singleThreadExecutorService : singleThreadExecutorServices){
-            if(singleThreadExecutorService != null){
-                if(!singleThreadExecutorService.isShutdown()){
+        for (ExecutorService singleThreadExecutorService : singleThreadExecutorServices) {
+            if (singleThreadExecutorService != null) {
+                if (!singleThreadExecutorService.isShutdown()) {
                     // this is a forceful shutdown; 
                     // don't wait for the active tasks to complete
                     singleThreadExecutorService.shutdownNow();
                 }
             }
         }
-        
+
         // shutdown scheduled executor instance 
-        if(scheduledExecutorService != null){
-            if(!scheduledExecutorService.isShutdown()){
+        if (scheduledExecutorService != null) {
+            if (!scheduledExecutorService.isShutdown()) {
                 // this is a forceful shutdown; 
                 // don't wait for the scheduled tasks to complete
                 scheduledExecutorService.shutdownNow();
