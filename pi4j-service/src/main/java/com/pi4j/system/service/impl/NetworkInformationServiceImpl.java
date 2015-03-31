@@ -32,32 +32,44 @@ import java.io.IOException;
 import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.service.NetworkInformationService;
 
+@SuppressWarnings("PackageAccessibility")
 public class NetworkInformationServiceImpl implements NetworkInformationService
 {
     public NetworkInformationServiceImpl()
     {
     }
     
+    @Override
     public String getHostname() throws IOException, InterruptedException
     {
         return NetworkInfo.getHostname();
     }
+
+    @Override
     public String getFQDN() throws IOException, InterruptedException
     {
         return NetworkInfo.getFQDN();
     }
+
+    @Override
     public String[] getIPAddresses() throws IOException, InterruptedException
     {
         return NetworkInfo.getIPAddresses();
     }
+
+    @Override
     public String getIPAddress() throws IOException, InterruptedException
     {
         return NetworkInfo.getIPAddress();
     }
+
+    @Override
     public String[] getFQDNs() throws IOException, InterruptedException
     {
         return NetworkInfo.getFQDNs();
     }
+
+    @Override
     public String[] getNameservers() throws IOException, InterruptedException
     {
         return NetworkInfo.getNameservers();

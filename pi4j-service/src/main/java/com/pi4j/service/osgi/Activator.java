@@ -27,9 +27,6 @@ package com.pi4j.service.osgi;
  * #L%
  */
 
-
-import java.util.Properties;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -42,19 +39,17 @@ import com.pi4j.system.service.impl.SystemInformationServiceImpl;
 
 public class Activator implements BundleActivator
 {
+    @Override
     public void start(BundleContext bundleContext) throws Exception
     {
-        // create OSGi bundle properties
-        Properties props = new Properties();
-        props.put("Language", "English");
-
         // create a new GPIO service instance
         // and register services with OSGi
-        bundleContext.registerService(GpioService.class.getName(), new GpioServiceImpl(), props);
-        bundleContext.registerService(SystemInformationService.class.getName(), new SystemInformationServiceImpl(), props);
-        bundleContext.registerService(NetworkInformationService.class.getName(), new NetworkInformationServiceImpl(), props);        
+        bundleContext.registerService(GpioService.class.getName(), new GpioServiceImpl(), null);
+        bundleContext.registerService(SystemInformationService.class.getName(), new SystemInformationServiceImpl(), null);
+        bundleContext.registerService(NetworkInformationService.class.getName(), new NetworkInformationServiceImpl(), null);        
     }
 
+    @Override
     public void stop(BundleContext bundleContext) throws Exception
     {        
     }
