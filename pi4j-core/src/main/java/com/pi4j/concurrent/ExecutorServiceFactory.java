@@ -35,7 +35,9 @@ import java.util.concurrent.ScheduledExecutorService;
 public interface ExecutorServiceFactory
 {
     public ScheduledExecutorService getScheduledExecutorService();
+    public ExecutorService getGpioEventExecutorService();
+
+    @Deprecated
     public ExecutorService newSingleThreadExecutorService();
-    public ExecutorService newSingleThreadExecutorService(String threadNamePattern);
     public void shutdown();
 }

@@ -42,7 +42,7 @@ public class GpioEventDebounceTaskImpl implements Runnable {
     private static ExecutorService executor;
 
     public GpioEventDebounceTaskImpl(GpioPinDigitalInput pin, PinState state) {
-        executor = GpioFactory.getExecutorServiceFactory().newSingleThreadExecutorService("pi4j-debounce-pin" + pin.getName() + "-state-" + state.getName());
+        executor = GpioFactory.getExecutorServiceFactory().getGpioEventExecutorService();
         this.originalPinState = state;
         this.pin = pin;
     }
