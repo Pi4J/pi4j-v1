@@ -51,7 +51,7 @@ public class GpioEventMonitorExecutorImpl implements PinListener {
     
     public GpioEventMonitorExecutorImpl(GpioPinInput pin) {
         this.pin = pin;        
-        executor = GpioFactory.getExecutorServiceFactory().newSingleThreadExecutorService();
+        executor = GpioFactory.getExecutorServiceFactory().getGpioEventExecutorService();
         scheduledExecutor = GpioFactory.getExecutorServiceFactory().getScheduledExecutorService();
     }
     

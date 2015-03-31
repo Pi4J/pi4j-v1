@@ -28,12 +28,14 @@ package com.pi4j.concurrent;
  */
 
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.*;
 
 @SuppressWarnings("unused")
-public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService {
+/**
+ * Extend the {@link ShutdownDisabledExecutorWrapper} to the also wrap the additional methods of the {@link ScheduledExecutorService}
+ * but still allow us to prevent others from shutting down the executor directly.
+ */
+public class ScheduledExecutorServiceWrapper extends ShutdownDisabledExecutorWrapper implements ScheduledExecutorService {
 
     private ScheduledExecutorService service;
     
@@ -42,74 +44,8 @@ public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService
      * @param service executor service
      */
     public ScheduledExecutorServiceWrapper(ScheduledExecutorService service) {
+        super(service);
         this.service = service;
-    }
-    
-    @Override
-    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return service.awaitTermination(timeout, unit);
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return service.invokeAll(tasks);
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) 
-            throws InterruptedException {
-        return service.invokeAll(tasks, timeout, unit);
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        return service.invokeAny(tasks);
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
-        return service.invokeAny(tasks, timeout, unit);
-    }
-
-    @Override
-    public boolean isShutdown() {
-        return service.isShutdown();
-    }
-
-    @Override
-    public boolean isTerminated() {
-        return service.isShutdown();
-    }
-
-    @Override
-    public void shutdown() {
-        throw new UnsupportedOperationException("This scheduled executor service can only be shutdown by Pi4J.");
-    }
-
-    @Override
-    public List<Runnable> shutdownNow() {
-        throw new UnsupportedOperationException("This scheduled executor service can only be shutdown by Pi4J.");
-    }
-
-    @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        return service.submit(task);
-    }
-
-    @Override
-    public Future<?> submit(Runnable task) {
-        return service.submit(task);
-    }
-
-    @Override
-    public <T> Future<T> submit(Runnable task, T result) {
-        return service.submit(task, result);
-    }
-
-    @Override
-    public void execute(Runnable command) {
-        service.execute(command);        
     }
 
     @Override
@@ -123,14 +59,12 @@ public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService
     }
 
     @Override
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period,
-            TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
         return service.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
     @Override
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,
-            long delay, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return service.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 }
