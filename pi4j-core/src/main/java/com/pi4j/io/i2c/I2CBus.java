@@ -84,13 +84,6 @@ public interface I2CBus {
     int getBusNumber();
     
     /**
-     * Opens the bus.
-     * 
-     * @throws IOException Thrown if the bus is already open.
-     */
-    void open() throws IOException;
-    
-    /**
      * Closes this bus. This usually means closing underlying file.
      * 
      * @throws IOException thrown in case there are problems closing this i2c bus.

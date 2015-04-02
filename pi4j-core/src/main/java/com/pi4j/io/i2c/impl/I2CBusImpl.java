@@ -87,11 +87,9 @@ public abstract class I2CBusImpl implements I2CBus {
         InterruptedException lockException = null;
         boolean locked = false;
         try {
-	        if (singletonPerBusLock.tryLock()
-	        		|| singletonPerBusLock.tryLock(
-	        				newInstanceCandidate.lockAquireTimeout,
-	        				newInstanceCandidate.lockAquireTimeoutUnit)) {
-	        	singletonPerBusLock.lock();
+	        if (singletonPerBusLock.tryLock(
+    				newInstanceCandidate.lockAquireTimeout,
+    				newInstanceCandidate.lockAquireTimeoutUnit)) {
 	        	locked = true;
 	        }
         } catch (InterruptedException e) {
@@ -108,6 +106,7 @@ public abstract class I2CBusImpl implements I2CBus {
         	
         	if (i2cBus == null) {
         		
+        		newInstanceCandidate.open();
         		bus = newInstanceCandidate;
         		busSingletons.put(newInstanceCandidate.busNumber, bus);
         		
@@ -125,8 +124,6 @@ public abstract class I2CBusImpl implements I2CBus {
         	}
         	
         }
-        
-        bus.open();
         
         return bus;
         
@@ -260,7 +257,11 @@ public abstract class I2CBusImpl implements I2CBus {
 		
 	}
 	
-	@Override
+    /**
+     * Opens the bus.
+     * 
+     * @throws IOException thrown in case there are problems opening the i2c bus.
+     */
 	public void open() throws IOException {
 		
     	if (fd != -1) {
@@ -285,7 +286,21 @@ public abstract class I2CBusImpl implements I2CBus {
     	
     	testWhetherBusHasAlreadyBeenClosed();
     	
-        singletonPerBusLock.lock();
+        InterruptedException lockException = null;
+        boolean locked = false;
+        try {
+	        if (singletonPerBusLock.tryLock(
+    				this.lockAquireTimeout,
+    				this.lockAquireTimeoutUnit)) {
+	        	locked = true;
+	        }
+        } catch (InterruptedException e) {
+        	lockException = e;
+        }
+        if (! locked) {
+        	throw new RuntimeException("Could not abtain lock to close the bus!", lockException);
+        }
+
         try {
         	
 	        I2C.i2cClose(fd);
