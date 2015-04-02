@@ -76,14 +76,10 @@ public abstract class I2CBusImpl implements I2CBus {
      * Factory method that returns bus implementation.
      * 
      * @param newInstanceCandidate if no bus has been created yet, this instance is used
-     * @param busNumber bus number
-     * @param lockAquireTimeout maximal amount of time to wait for an i2c operation to get exclusive access to the bus
-     * @param lockAquireTimeoutUnit units of lockAquireTimeout
      * @return appropriate bus implementation
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
-    protected static I2CBus getBus(I2CBusImpl newInstanceCandidate, int busNumber,
-    		long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
+    protected static I2CBus getBus(I2CBusImpl newInstanceCandidate)
     				throws UnsupportedBusNumberException, IOException {
     	
         final I2CBus bus;
@@ -92,7 +88,9 @@ public abstract class I2CBusImpl implements I2CBus {
         boolean locked = false;
         try {
 	        if (singletonPerBusLock.tryLock()
-	        		|| singletonPerBusLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
+	        		|| singletonPerBusLock.tryLock(
+	        				newInstanceCandidate.lockAquireTimeout,
+	        				newInstanceCandidate.lockAquireTimeoutUnit)) {
 	        	singletonPerBusLock.lock();
 	        	locked = true;
 	        }
@@ -105,12 +103,13 @@ public abstract class I2CBusImpl implements I2CBus {
         
         try {
 
-        	final I2CBus i2cBus = busSingletons.get(busNumber);
+        	final I2CBus i2cBus = busSingletons.get(
+        			newInstanceCandidate.busNumber);
         	
         	if (i2cBus == null) {
         		
         		bus = newInstanceCandidate;
-        		busSingletons.put(busNumber, bus);
+        		busSingletons.put(newInstanceCandidate.busNumber, bus);
         		
         	} else {
         		bus = i2cBus;
@@ -126,6 +125,8 @@ public abstract class I2CBusImpl implements I2CBus {
         	}
         	
         }
+        
+        bus.open();
         
         return bus;
         
@@ -174,11 +175,6 @@ public abstract class I2CBusImpl implements I2CBus {
         	this.lockAquireTimeoutUnit = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS;
         } else {
         	this.lockAquireTimeoutUnit = lockAquireTimeoutUnit;
-        }
-        
-        fd = I2C.i2cOpen(filename);
-        if (fd < 0) {
-            throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
         }
         
     }
@@ -261,6 +257,21 @@ public abstract class I2CBusImpl implements I2CBus {
 		} else {
 			throw new InterruptedException("timeout for lock acquisition elapsed");
 		}
+		
+	}
+	
+	@Override
+	public void open() throws IOException {
+		
+    	if (fd != -1) {
+    		return;
+    	}
+		
+        fd = I2C.i2cOpen(filename);
+        if (fd < 0) {
+            throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
+        }
+        
 		
 	}
     
