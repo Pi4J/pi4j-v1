@@ -76,7 +76,7 @@ public class SerialExample {
             serial.open(Serial.DEFAULT_COM_PORT, 38400);
             
             // continuous loop to keep the program running until the user terminates the program
-            for (;;) {
+            while(true) {
                 try {
                     // write a formatted string to the serial transmit buffer
                     serial.write("CURRENT TIME: %s", new Date().toString());
