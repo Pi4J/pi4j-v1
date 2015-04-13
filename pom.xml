@@ -512,6 +512,9 @@
                                 <canUpdateCopyright>true</canUpdateCopyright>
                                 <canUpdateDescription>true</canUpdateDescription>
                                 <canUpdateLicense>true</canUpdateLicense>
+                                <excludes>
+                                    <exclude>*.sh</exclude> <!-- exclude shell scripts -->
+                                </excludes>
                                 <roots>
                                     <root>src/main/native</root>
                                     <root>src/main/java</root>
