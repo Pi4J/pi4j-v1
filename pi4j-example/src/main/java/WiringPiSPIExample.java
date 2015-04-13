@@ -69,7 +69,7 @@ public class WiringPiSPIExample {
         byte INPUT_PULLUPS = GPPUB;        
 
         // setup SPI for communication
-        int fd = Spi.wiringPiSPISetup(0, 10000000);;
+        int fd = Spi.wiringPiSPISetup(0, 10000000);
         if (fd <= -1) {
             System.out.println(" ==>> SPI SETUP FAILED");
             return;
