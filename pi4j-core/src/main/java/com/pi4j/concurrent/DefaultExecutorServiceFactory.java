@@ -50,22 +50,28 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     private static class ScheduledExecutorServiceHolder {
         static final ScheduledExecutorService heldExecutor = Executors.newScheduledThreadPool(MAX_THREADS_IN_POOL, getThreadFactory("pi4j-scheduled-executor-%d"));
     }
-    private static ScheduledExecutorService getInternalScheduledExecutor() {
+    private static ScheduledExecutorService getInternalScheduledExecutorService() {
         return ScheduledExecutorServiceHolder.heldExecutor;
     }
     private static class ScheduledExecutorServiceWrapperHolder {
-        static final ScheduledExecutorServiceWrapper heldWrapper = new ScheduledExecutorServiceWrapper(getInternalScheduledExecutor());
+        static final ScheduledExecutorServiceWrapper heldWrapper = new ScheduledExecutorServiceWrapper(getInternalScheduledExecutorService());
+    }
+    private static ScheduledExecutorServiceWrapper getScheduledExecutorServiceWrapper() {
+        return ScheduledExecutorServiceWrapperHolder.heldWrapper;
     }
 
     // follow a similar lazy initialization pattern for the gpio events
-    private static ScheduledExecutorServiceWrapper getServiceWrapper() {
-        return ScheduledExecutorServiceWrapperHolder.heldWrapper;
-    }
-    private static class GpioEventServiceHolder {
-        static final ExecutorService cachedExecutor = new ShutdownDisabledExecutorWrapper(Executors.newCachedThreadPool(getThreadFactory("pi4j-gpio-event-executor-%d")));
+    private static class GpioEventExecutorServiceHolder {
+        static final ExecutorService heldExecutor = Executors.newCachedThreadPool(getThreadFactory("pi4j-gpio-event-executor-%d"));
     }
     private static ExecutorService getInternalGpioExecutorService() {
-        return GpioEventServiceHolder.cachedExecutor;
+        return GpioEventExecutorServiceHolder.heldExecutor;
+    }
+    private static class GpioEventExecutorServiceWrapperHolder {
+        static final ExecutorService heldWrapper = new ShutdownDisabledExecutorWrapper(getInternalGpioExecutorService());
+    }
+    private static ExecutorService getGpioEventExecutorServiceWrapper() {
+        return GpioEventExecutorServiceWrapperHolder.heldWrapper;
     }
 
     /**
@@ -87,21 +93,20 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
         };
     }
 
-
-
-
     /**
      * return an instance to the scheduled executor service (wrapper)
      */
     public ScheduledExecutorService getScheduledExecutorService() {
         // we return the protected wrapper to prevent any consumers from 
         // being able to shutdown the scheduled executor service
-        return getServiceWrapper();
+        return getScheduledExecutorServiceWrapper();
     }
 
     @Override
     public ExecutorService getGpioEventExecutorService() {
-        return getInternalGpioExecutorService();
+        // we return the protected wrapper to prevent any consumers from
+        // being able to shutdown the scheduled executor service
+        return getGpioEventExecutorServiceWrapper();
     }
 
     /**
@@ -112,7 +117,15 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
      */
     @Override
     public ExecutorService newSingleThreadExecutorService() {
-       return Executors.newSingleThreadExecutor(getThreadFactory("pi4j-single-executor-%d"));
+
+        // create new single thread executor service
+        ExecutorService singleThreadExecutorService = Executors.newSingleThreadExecutor(getThreadFactory("pi4j-single-executor-%d"));
+
+        // add new instance to managed collection
+        singleThreadExecutorServices.add(singleThreadExecutorService);
+
+        // return new executor service
+        return singleThreadExecutorService;
     }
 
     /**
@@ -125,7 +138,7 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
         }
 
         // shutdown scheduled executor instance
-        shutdownExecutor(getInternalScheduledExecutor());
+        shutdownExecutor(getInternalScheduledExecutorService());
         shutdownExecutor(getInternalGpioExecutorService());
 
     }
