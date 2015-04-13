@@ -21,17 +21,12 @@ Download
 
      * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.zip}pi4j-1.1-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
-  <<RELEASE CANDIDATES>>
-
-     * {{{http://get.pi4j.com/download/pi4j-1.0-RC.deb}pi4j-1.0-RC.deb}} <<<Debian Installer Package>>>
-
-     * {{{http://get.pi4j.com/download/pi4j-1.0-RC.zip}pi4j-1.0-RC.zip}} <<<Compressed ZIP Archive>>>
-
   <<RELEASE BUILDS>>
 
-    * {{{http://get.pi4j.com/download/pi4j-0.0.5.deb}pi4j-0.0.5.deb}} <<<Debian Installer Package>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.0.deb}pi4j-1.0.deb}} <<<Debian Installer Package>>>
 
-    * {{{http://get.pi4j.com/download/pi4j-0.0.5.zip}pi4j-0.0.5.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.0.zip}pi4j-1.0.zip}} <<<Compressed ZIP Archive>>>
+
 
 * Maven Repository
 
