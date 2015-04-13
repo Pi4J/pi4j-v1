@@ -359,12 +359,12 @@
                     <!-- ENSURE ALL LINE ENDINGS ARE <LF> ONLY FOR TEXT BASED FILES -->
                     <execution>
                         <id>ant-fix-line-endings</id>
-                        <phase>process-sources</phase>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <tasks>
                                 <fixcrlf srcdir="${project.build.directory}/distro-contents"
                                          eol="unix"
-                                         includes="**/*.java,**/*.txt,**/*.md,**/*.build" />
+                                         excludes="**/*.jar" />
                             </tasks>
                         </configuration>
                         <goals>
