@@ -15,18 +15,17 @@ Download
 
   You can download the compiled Pi4J library JARs directly here:
 
-  <<LATEST SNAPSHOT BUILDS>>
-
-     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.deb}pi4j-1.1-SNAPSHOT.deb}} <<<Debian Installer Package>>>
-
-     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.zip}pi4j-1.1-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
-
   <<RELEASE BUILDS>>
 
      * {{{http://get.pi4j.com/download/pi4j-1.0.deb}pi4j-1.0.deb}} <<<Debian Installer Package>>>
 
      * {{{http://get.pi4j.com/download/pi4j-1.0.zip}pi4j-1.0.zip}} <<<Compressed ZIP Archive>>>
 
+  <<LATEST SNAPSHOT BUILDS>>
+
+     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.deb}pi4j-1.1-SNAPSHOT.deb}} <<<Debian Installer Package>>>
+
+     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.zip}pi4j-1.1-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
