@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Raspberry Pi pin definitions.
+ * Raspberry Pi pin definitions for (default) WiringPi pin numbering scheme.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)

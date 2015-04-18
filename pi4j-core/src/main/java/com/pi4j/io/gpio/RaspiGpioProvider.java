@@ -44,11 +44,23 @@ import com.pi4j.wiringpi.GpioUtil;
 public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider, GpioInterruptListener {
     
     public static final String NAME = "RaspberryPi GPIO Provider";
-    
+
     public RaspiGpioProvider() {
         // set wiringPi interface for internal use
-        // we will use the WiringPi pin number scheme with the wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
+        // we will use the (default) WiringPi pin number scheme with the wiringPi library
+        this(RaspiPinNumberingScheme.DEFAULT_PIN_NUMBERING);
+    }
+
+    public RaspiGpioProvider(RaspiPinNumberingScheme pinNumberingScheme) {
+        // set wiringPi interface for internal use
+        if(pinNumberingScheme == RaspiPinNumberingScheme.DEFAULT_PIN_NUMBERING) {
+            // we will use the WiringPi pin number scheme with the wiringPi library
+            com.pi4j.wiringpi.Gpio.wiringPiSetup();
+        }
+        else if(pinNumberingScheme == RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING) {
+            // we will use the raw/direct Broadcom GPIO pin number scheme with the wiringPi library
+            com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
+        }
     }
     
     @Override
