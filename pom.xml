@@ -152,7 +152,7 @@
         <maven-scm-plugin.version>1.9.1</maven-scm-plugin.version>
         <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
         <native-maven-plugin.version>1.0-alpha-8</native-maven-plugin.version>
-        <license-maven-plugin.version>1.7</license-maven-plugin.version>
+        <license-maven-plugin.version>1.8</license-maven-plugin.version>
         <build-helper-maven-plugin.version>1.9</build-helper-maven-plugin.version>
         <site-maven-plugin.version>0.11</site-maven-plugin.version>
         <jdeb.version>1.4</jdeb.version>
@@ -507,7 +507,7 @@
                             </goals>
                             <phase>process-sources</phase>
                             <configuration>
-                                <licenseName>apache_v2</licenseName>
+                                <licenseName>lgpl_v3</licenseName>
                                 <descriptionTemplate>${basedir}/../src/license/template.ftl</descriptionTemplate>
                                 <canUpdateCopyright>true</canUpdateCopyright>
                                 <canUpdateDescription>true</canUpdateDescription>
@@ -663,7 +663,7 @@
 						</goals>
 						<phase>process-sources</phase>
 						<configuration>
-							<licenseName>apache_v2</licenseName>
+							<licenseName>lgpl_v3</licenseName>
 						</configuration>
 					</execution>
 					<execution>
