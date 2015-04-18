@@ -21,11 +21,11 @@ Copyright (C) 2012-2015 Pi4J
 
 ## LICENSE
  
- Licensed under the Apache License, Version 2.0 (the "License");
+ Licensed under the GNU LGPLv3 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+ http://www.gnu.org/licenses/lgpl.txt
   
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,10 +47,11 @@ Copyright (C) 2012-2015 Pi4J
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
   *  Now requires Java 8 runtime.
   
-## RELEASE CANDIDATE
+## RELEASES
 
-2015-03-15 :: 1.0-RC (Release Candidate)
+2015-04-18 :: 1.0
 
+  *  Released under GNU LGPLv3 license.
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
   *  Added support for RaspberryPi Model B+
@@ -58,7 +59,6 @@ Copyright (C) 2012-2015 Pi4J
   *  Added support for debounce logic on digital input pin events
   *  Added support for Button component interface
   *  Added support for Pibrella device
-  *  Added support for a Java-friendly SPI interface
   *  Added support for SPI modes
   *  Added support for building pi4j-native project directly on the Pi (using maven)
   *  Added easy install/uninstall scripts (get.pi4j.com)
@@ -70,8 +70,6 @@ Copyright (C) 2012-2015 Pi4J
   *  Cleaned up build
   *  Enhancements Added: https://github.com/Pi4J/pi4j/issues?q=label%3Aenhancement+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
   *  Bugs/Defects Fixed: https://github.com/Pi4J/pi4j/issues?q=label%3Abug+is%3Aclosed+milestone%3A%22RELEASE+1.0%22+
-
-## RELEASES
 
 2013-03-17 :: 0.0.5
 

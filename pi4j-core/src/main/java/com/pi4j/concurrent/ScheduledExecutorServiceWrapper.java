@@ -13,27 +13,31 @@ package com.pi4j.concurrent;
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.*;
 
 @SuppressWarnings("unused")
-public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService {
+/**
+ * Extend the {@link ShutdownDisabledExecutorWrapper} to the also wrap the additional methods of the {@link ScheduledExecutorService}
+ * but still allow us to prevent others from shutting down the executor directly.
+ */
+public class ScheduledExecutorServiceWrapper extends ShutdownDisabledExecutorWrapper implements ScheduledExecutorService {
 
     private ScheduledExecutorService service;
     
@@ -42,74 +46,8 @@ public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService
      * @param service executor service
      */
     public ScheduledExecutorServiceWrapper(ScheduledExecutorService service) {
+        super(service);
         this.service = service;
-    }
-    
-    @Override
-    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return service.awaitTermination(timeout, unit);
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return service.invokeAll(tasks);
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) 
-            throws InterruptedException {
-        return service.invokeAll(tasks, timeout, unit);
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        return service.invokeAny(tasks);
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
-        return service.invokeAny(tasks, timeout, unit);
-    }
-
-    @Override
-    public boolean isShutdown() {
-        return service.isShutdown();
-    }
-
-    @Override
-    public boolean isTerminated() {
-        return service.isShutdown();
-    }
-
-    @Override
-    public void shutdown() {
-        throw new UnsupportedOperationException("This scheduled executor service can only be shutdown by Pi4J.");
-    }
-
-    @Override
-    public List<Runnable> shutdownNow() {
-        throw new UnsupportedOperationException("This scheduled executor service can only be shutdown by Pi4J.");
-    }
-
-    @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        return service.submit(task);
-    }
-
-    @Override
-    public Future<?> submit(Runnable task) {
-        return service.submit(task);
-    }
-
-    @Override
-    public <T> Future<T> submit(Runnable task, T result) {
-        return service.submit(task, result);
-    }
-
-    @Override
-    public void execute(Runnable command) {
-        service.execute(command);        
     }
 
     @Override
@@ -123,14 +61,12 @@ public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService
     }
 
     @Override
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period,
-            TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
         return service.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
     @Override
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,
-            long delay, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         return service.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 }
