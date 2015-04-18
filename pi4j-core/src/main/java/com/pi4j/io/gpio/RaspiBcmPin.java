@@ -74,10 +74,10 @@ public class RaspiBcmPin {
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27");       // <P1:13>
 
     // the following GPIO pins are only available on the Raspbery Pi Model A, B (revision 2.0), B+
-    public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28");      // <P5:03> requires B rev2 or newer model (P5 header)
-    public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29");      // <P1:04> requires B rev2 or newer model (P5 header)
-    public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");      // <P1:05> requires B rev2 or newer model (P5 header)
-    public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");     // <P1:06> requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28");       // <P5:03> requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29");       // <P1:04> requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");       // <P1:05> requires B rev2 or newer model (P5 header)
+    public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");       // <P1:06> requires B rev2 or newer model (P5 header)
 
 
     private static Pin createDigitalPin(int address, String name) {
