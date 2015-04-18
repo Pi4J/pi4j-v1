@@ -31,6 +31,7 @@ package com.pi4j.component.servo.impl;
 
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.pi4j.component.servo.ServoDriver;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
@@ -84,6 +85,6 @@ public class PCA9685GpioServoDriver implements ServoDriver {
     }
     
     protected void updateResolution() {
-        resolution = new BigDecimal(4096).divide(getProvider().getFrequency()).intValue();
+        resolution = new BigDecimal(4096).divide(getProvider().getFrequency(), MathContext.DECIMAL32).intValue();
     }
 }
