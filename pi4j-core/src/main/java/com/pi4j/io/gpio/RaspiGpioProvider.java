@@ -53,13 +53,20 @@ public class RaspiGpioProvider extends GpioProviderBase implements GpioProvider,
 
     public RaspiGpioProvider(RaspiPinNumberingScheme pinNumberingScheme) {
         // set wiringPi interface for internal use
-        if(pinNumberingScheme == RaspiPinNumberingScheme.DEFAULT_PIN_NUMBERING) {
-            // we will use the WiringPi pin number scheme with the wiringPi library
-            com.pi4j.wiringpi.Gpio.wiringPiSetup();
-        }
-        else if(pinNumberingScheme == RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING) {
-            // we will use the raw/direct Broadcom GPIO pin number scheme with the wiringPi library
-            com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
+        switch(pinNumberingScheme){
+            case BROADCOM_PIN_NUMBERING: {
+                // we will use the raw/direct Broadcom GPIO pin number scheme with the wiringPi library
+                com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
+                break;
+            }
+            case DEFAULT_PIN_NUMBERING: {
+                // we will use the WiringPi pin number scheme with the wiringPi library
+                com.pi4j.wiringpi.Gpio.wiringPiSetup();
+                break;
+            }
+            default: {
+                throw new RuntimeException("Unsupported pin numbering scheme: " + pinNumberingScheme.name());
+            }
         }
     }
     
