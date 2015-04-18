@@ -40,8 +40,9 @@ Copyright (C) 2012-2015 Pi4J
 
 ## RELEASES
 
-2015-04-12 :: 1.0
+2015-04-18 :: 1.0
 
+  *  Released under GNU LGPLv3 license.
   *  Added support for RaspberryPi v2 Model B
   *  Added support for RaspberryPi Model A+
   *  Added support for RaspberryPi Model B+
