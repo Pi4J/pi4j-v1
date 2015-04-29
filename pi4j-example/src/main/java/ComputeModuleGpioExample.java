@@ -111,9 +111,7 @@ public class ComputeModuleGpioExample {
         System.out.println(" ... complete the any GPIO circuit (00 - 45) and see the listener feedback here in the console.");
 
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+        while(true);
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
