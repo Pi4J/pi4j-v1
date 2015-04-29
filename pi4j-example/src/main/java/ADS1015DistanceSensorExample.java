@@ -130,19 +130,21 @@ public class ADS1015DistanceSensorExample {
                 double voltage = gpioProvider.getProgrammableGainAmplifier(distanceSensorPin).getVoltage() * (percent/100);
 
                 // display output
-                System.out.print("\r DISTANCE=" + df.format(distance) + "cm : VOLTS=" + df.format(voltage) + "  | PERCENT=" + pdf.format(percent) + "% | RAW=" + value + "       ");
+                System.out.println("\r DISTANCE=" + df.format(distance) + "cm : VOLTS=" + df.format(voltage) + "  | PERCENT=" + pdf.format(percent) + "% | RAW=" + value);
             }
         });
         
         // keep program running for 10 minutes 
-        for (int count = 0; count < 600; count++) {
-            Thread.sleep(1000);
-        }
+        //for (int count = 0; count < 600; count++) {
+        //    Thread.sleep(1000);
+        //}
+        
+        Thread.sleep(600000); 
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
-        System.out.print("");
+        System.out.println("Exiting ADS1015DistanceSensorExample");
     }
 }
 
