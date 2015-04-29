@@ -123,9 +123,9 @@ public class OlimexGpioExample {
         
         // keep program running until user aborts (CTRL-C)
         // or we reach 60 seconds
-        for (int seconds = 0; seconds < 60; seconds++) {
-            Thread.sleep(1000);
-        }
+        
+        Thread.sleep(60000);
+        
         
         System.out.println(" ... exiting program.");
         
