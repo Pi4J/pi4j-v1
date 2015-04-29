@@ -135,9 +135,9 @@ public class ADS1115DistanceSensorExample {
         });
         
         // keep program running for 10 minutes 
-        for (int count = 0; count < 600; count++) {
-            Thread.sleep(1000);
-        }
+        //for (int count = 0; count < 600; count++) {
+            Thread.sleep(600000);
+        //}
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
