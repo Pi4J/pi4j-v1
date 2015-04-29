@@ -68,9 +68,7 @@ public class BlinkTriggerGpioExample {
         myButton.addTrigger(new GpioBlinkStopStateTrigger(PinState.LOW, myLed));
 
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+        while(true);
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
