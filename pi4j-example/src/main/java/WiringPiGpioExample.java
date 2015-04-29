@@ -72,7 +72,7 @@ public class WiringPiGpioExample {
         }
         
         dataPtr = 0;
-        for (;;) {
+        while (true) {
             l = data[dataPtr++]; // LED
             s = data[dataPtr++]; // State
             d = data[dataPtr++]; // Duration (10ths)
