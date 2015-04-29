@@ -83,8 +83,6 @@ public class WiringPiGpioInterruptExample {
         GpioInterrupt.enablePinStateChangeCallback(7);
 
         // continuously loop to prevent program from exiting
-        for (;;) {
-            Thread.sleep(5000);
-        }
+        while(true);
     }
 }
