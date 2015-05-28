@@ -44,7 +44,7 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     
     @Override
     public void clear() {
-	for(int i=0; i<getColumnCount(); i++) {
+	for(int i=0; i<getRowCount(); i++) {
 		clear(i,0,getColumnCount());
 	}
     }
