@@ -54,10 +54,10 @@ public class MCP3008Pin {
     public static final Pin CH1 = createAnalogInputPin(1, "ANALOG INPUT 1");
     public static final Pin CH2 = createAnalogInputPin(2, "ANALOG INPUT 2");
     public static final Pin CH3 = createAnalogInputPin(3, "ANALOG INPUT 3");
-    public static final Pin CH4 = createAnalogInputPin(3, "ANALOG INPUT 4");
-    public static final Pin CH5 = createAnalogInputPin(3, "ANALOG INPUT 5");
-    public static final Pin CH6 = createAnalogInputPin(3, "ANALOG INPUT 6");
-    public static final Pin CH7 = createAnalogInputPin(3, "ANALOG INPUT 7");
+    public static final Pin CH4 = createAnalogInputPin(4, "ANALOG INPUT 4");
+    public static final Pin CH5 = createAnalogInputPin(5, "ANALOG INPUT 5");
+    public static final Pin CH6 = createAnalogInputPin(6, "ANALOG INPUT 6");
+    public static final Pin CH7 = createAnalogInputPin(7, "ANALOG INPUT 7");
 
     public static Pin[] ALL = { MCP3008Pin.CH0,
                                 MCP3008Pin.CH1,
