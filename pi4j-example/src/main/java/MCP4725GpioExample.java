@@ -47,7 +47,7 @@ import com.pi4j.io.i2c.I2CBus;
  * </p>
  * 
  * <p>
- * The MCP4725 is connected via SPI connection to the Raspberry Pi and provides 1 GPIO analog output pin.
+ * The MCP4725 is connected via I2C connection to the Raspberry Pi and provides 1 GPIO analog output pin.
  * </p>
  * 
  * @author Christian Wehrli
