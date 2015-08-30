@@ -87,9 +87,7 @@ public class BlinkGpioExample {
         System.out.println(" ... PRESS <CTRL-C> TO STOP THE PROGRAM.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+        while(true);
         
         // stop all GPIO activity/threads
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

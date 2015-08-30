@@ -126,12 +126,12 @@ public class ADS1015GpioExample {
         myInputs[3].addListener(listener);
         
         // keep program running for 10 minutes 
-        for (int count = 0; count < 600; count++) {
+        //for (int count = 0; count < 600; count++) {
 
             // display output
             //System.out.print("\r ANALOG VALUE (FOR INPUT A0) : VOLTS=" + df.format(voltage) + "  | PERCENT=" + pdf.format(percent) + "% | RAW=" + value + "       ");
-            Thread.sleep(1000);
-        }
+            Thread.sleep(600000);
+        //}
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

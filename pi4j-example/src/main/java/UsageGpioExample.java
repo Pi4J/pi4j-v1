@@ -62,7 +62,7 @@ import com.pi4j.io.gpio.event.PinEventType;
 @SuppressWarnings("unused")
 public class UsageGpioExample {
     
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         
         // START SNIPPET: usage-create-controller-snippet
         // create gpio controller instance
@@ -128,9 +128,7 @@ public class UsageGpioExample {
         // END SNIPPET: usage-trigger-snippet
 
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+        while(true);
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

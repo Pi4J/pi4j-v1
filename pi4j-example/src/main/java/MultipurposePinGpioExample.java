@@ -66,7 +66,7 @@ public class MultipurposePinGpioExample {
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
+        while (true) {
             Thread.sleep(5000);
 
             // here we want to control the multi-purpose GPIO pin

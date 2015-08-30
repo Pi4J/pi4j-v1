@@ -52,7 +52,7 @@ import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
  */
 public class TriggerGpioExample {
     
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         
         System.out.println("<--Pi4J--> GPIO Trigger Example ... started.");
 
@@ -94,9 +94,7 @@ public class TriggerGpioExample {
         }));
 
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+        while (true);
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
