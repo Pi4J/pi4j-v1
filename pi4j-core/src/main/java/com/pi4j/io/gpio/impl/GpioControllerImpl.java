@@ -114,7 +114,7 @@ public class GpioControllerImpl implements GpioController {
         }
         for (GpioPin p : pin) {
             // ensure the requested pin has been provisioned
-            if (!pins.contains(pin)) {
+            if (!pins.contains(p)) {
                 throw new GpioPinNotProvisionedException(p.getPin());
             }
             if (!p.isExported()) {
@@ -171,7 +171,7 @@ public class GpioControllerImpl implements GpioController {
         }
         for (GpioPin p : pin) {
             // ensure the requested pin has been provisioned
-            if (!pins.contains(pin)) {
+            if (!pins.contains(p)) {
                 throw new GpioPinNotProvisionedException(p.getPin());
             }
             // set pin mode
@@ -229,7 +229,7 @@ public class GpioControllerImpl implements GpioController {
         }
         // ensure the requested pin has been provisioned
         for (GpioPinDigitalOutput p : pin) {
-            if (!pins.contains(pin)) {
+            if (!pins.contains(p)) {
                 throw new GpioPinNotProvisionedException(p.getPin());
             }
             // set pin state high
