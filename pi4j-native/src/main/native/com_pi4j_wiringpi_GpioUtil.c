@@ -80,6 +80,44 @@ static void changeOwner (char *file)
   }
 }
 
+int getExistingPinDirection(int edgePin)
+{
+	FILE *fd ;
+	char fName [128] ;
+	char data[RDBUF_LEN];
+
+	// construct the gpio direction file path
+	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+
+	// open the gpio direction file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		return -1;
+	}
+
+	// read the data from the file into the data buffer
+	if(fgets(data, RDBUF_LEN, fd) == NULL)
+	{
+		return -2;
+	}
+
+	// close the gpio direction file
+	fclose (fd) ;
+
+	// determine direction mode
+	if (strncasecmp(data, "in", 2) == 0)
+	{
+		return DIRECTION_IN;
+	}
+	else if (strncasecmp(data, "out", 3) == 0)
+	{
+		return DIRECTION_OUT;
+	}
+	else
+	{
+		return -3;
+	}
+}
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -353,7 +391,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 		char errstr[255];
 		sprintf (errstr, "Unsupported DIRECTION [%d] for GPIO pin [%d]\n", direction, pin) ;
 		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return;
+		return JNI_FALSE;
 	}
 
 	// close the direction file
@@ -362,7 +400,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 	// success
 	return (jboolean)1;
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -401,44 +438,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 	return direction;
 }
 
-int getExistingPinDirection(int edgePin)
-{
-	FILE *fd ;
-	char fName [128] ;
-	char data[RDBUF_LEN];
-
-	// construct the gpio direction file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
-
-	// open the gpio direction file
-	if ((fd = fopen (fName, "r")) == NULL)
-	{
-		return -1;
-	}
-
-	// read the data from the file into the data buffer
-	if(fgets(data, RDBUF_LEN, fd) == NULL)
-	{
-		return -2;
-	}
-
-	// close the gpio direction file
-	fclose (fd) ;
-
-	// determine direction mode
-	if (strncasecmp(data, "in", 2) == 0)
-	{
-		return DIRECTION_IN;
-	}
-	else if (strncasecmp(data, "out", 3) == 0)
-	{
-		return DIRECTION_OUT;
-	}
-	else
-	{
-		return -3;
-	}
-}
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
