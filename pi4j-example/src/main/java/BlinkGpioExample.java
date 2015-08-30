@@ -87,7 +87,7 @@ public class BlinkGpioExample {
         System.out.println(" ... PRESS <CTRL-C> TO STOP THE PROGRAM.");
         
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
+        while(true) {
             Thread.sleep(500);
         }
         

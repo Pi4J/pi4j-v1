@@ -44,8 +44,9 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     
     @Override
     public void clear() {
-        clear(0,0,getColumnCount());
-        clear(1,0,getColumnCount());
+	for(int i=0; i<getRowCount(); i++) {
+		clear(i,0,getColumnCount());
+	}
     }
     
     @Override
@@ -57,10 +58,11 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     @Override
     public void clear(int row, int column, int length){
         StringBuilder sb = new StringBuilder(getColumnCount());
-        for(int index = 0; index < getRowCount(); index++)
+        int maxLen = getColumnCount() - column; //Maximum length you can write spaces
+        for(int index = 0; (index < length && index < maxLen); index++) {
             sb.append(" ");
-        for(int index = 0; index < getRowCount(); index++)
-            write(index, 0, sb.toString());
+        }
+        write(row, column, sb.toString());
     }
     
     @Override
