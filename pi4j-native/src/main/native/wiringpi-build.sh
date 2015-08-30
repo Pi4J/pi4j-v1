@@ -31,6 +31,7 @@
 # ----------------------------------
 # clone wiringPi from github
 # ----------------------------------
+rm -rf wiringPi
 git clone git://git.drogon.net/wiringPi
 cd wiringPi
 
