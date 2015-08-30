@@ -1,2 +1,2 @@
 #!/bin/bash
-deb-s3 upload --arch=armhf --sign=team@pi4j.com --codename=wheezy --component=rpi --bucket=repository.pi4j.com pi4j-1.0.deb
+deb-s3 upload --arch=armhf --sign=team@pi4j.com --codename=wheezy --component=rpi --bucket=repository.pi4j.com pi4j-1.0.1-SNAPSHOT.deb

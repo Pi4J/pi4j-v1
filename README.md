@@ -40,6 +40,16 @@ Copyright (C) 2012-2015 Pi4J
 
 ## RELEASES
 
+2015-08-30 :: 1.0.1-SNAPSHOT
+
+  *  Minor updates.
+  *  Update ListenGpioExample.java; simplified infinite loop statement.
+  *  Update BlinkGpioExample.java; simplified infinite loop statement.
+  *  Fixes clear methods of LCDBase.java.
+  *  Update MCP3008Pin.java; incorrect pin number assignments.
+  *  Fix pins.contains() calls that received the vararg array "pin" instead of a "p" instance variable.
+
+
 2015-04-18 :: 1.0
 
   *  Released under GNU LGPLv3 license.
