@@ -40,8 +40,12 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-03-11 :: 1.1-SNAPSHOT
+2015-08-30 :: 1.1-SNAPSHOT
 
+  *  Added cross-compiler support in Maven build
+  *  Added cross-compiler shell script
+  *  Cleanup for WiringPi native build
+  *  Cleanup for Pi4J native build
   *  Added new Serial JNI implementation to support more advanced serial configuration/operations
   *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
