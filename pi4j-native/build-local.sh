@@ -1,3 +1,4 @@
+#!/bin/bash
 ###
 # #%L
 # **********************************************************************
@@ -34,6 +35,7 @@ echo "-------------------------------------------"
 # ----------------------------------
 # COPY SOURCES TO TARGET FOLDER
 # ----------------------------------
+mkdir -p target/native
 cp -R src/main/native target
 cd target/native
 
@@ -47,14 +49,13 @@ echo "-------------------------------------------"
 echo " -- BUILDING LATEST WIRINGPI"
 echo "-------------------------------------------"
 sudo chmod +x wiringpi-build.sh
-./wiringpi-build.sh
-
+./wiringpi-build.sh $@
 
 echo "-------------------------------------------"
 echo " -- COMPILING LIBPI4J.SO JNI NATIVE LIBRARY"
 echo "-------------------------------------------"
 make clean
-make all
+make all $@
 
 echo "-------------------------------------------"
 echo " -- COPYING FINAL LIBPI4J.SO TO TARGET"
