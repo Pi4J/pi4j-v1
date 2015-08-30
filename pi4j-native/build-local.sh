@@ -41,7 +41,7 @@ cd target/native
 
 ARCHITECTURE=$(uname -m)
 echo "PLATFORM ARCH: $ARCHITECTURE"
-if [[ $ARCHITECTURE = "armv7l" || $ARCHITECTURE = "armv6l" ]]; then
+if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
    echo "-------------------------------------------"
    echo " -- INSTALLING PREREQUISITES ON PI"
    echo "-------------------------------------------"
