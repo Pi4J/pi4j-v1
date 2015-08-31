@@ -40,8 +40,9 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-08-30 :: 1.1-SNAPSHOT
+2015-08-31 :: 1.1-SNAPSHOT
 
+  *  Added Gpio.pinModeAlt() method to the WiringPi wrappers to set pins to any ALT mode.
   *  Added cross-compiler support in Maven build
   *  Added cross-compiler shell script
   *  Cleanup for WiringPi native build

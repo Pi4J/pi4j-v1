@@ -160,6 +160,18 @@ public class Gpio {
 
 
     /**
+     * GPIO constant to define pin ALT modes
+     *
+     * @see #pinModeAlt(int,int)
+     */
+    public static final int ALT0 = 4;
+    public static final int ALT1 = 5;
+    public static final int ALT2 = 6;
+    public static final int ALT3 = 7;
+    public static final int ALT4 = 3;
+    public static final int ALT5 = 2;
+
+    /**
      * GPIO constants to define interrupt levels
      *
      * @see #wiringPiISR(int,int,com.pi4j.wiringpi.GpioInterruptCallback)
@@ -292,6 +304,32 @@ public class Gpio {
      *            </ul>
      */
     public static native void pinMode(int pin, int mode);
+
+
+    /**
+     * <p>Core Functions</p>
+     *
+     * <p>
+     * This method is an undocumented method in the WiringPi library that allows
+     * you to configure any PIN to any MODE.
+     * </p>
+     *
+     * @param pin pin number
+     * @param mode  Pin mode/direction to apply to the selected pin.</br>The following constants are
+     *            provided for use with this parameter:
+     *            <ul>
+     *            <li>INPUT</li>
+     *            <li>OUTPUT</li>
+     *            <li>ALT0</li>
+     *            <li>ALT1</li>
+     *            <li>ALT2</li>
+     *            <li>ALT3</li>
+     *            <li>ALT4</li>
+     *            <li>ALT5</li>
+     *            </ul>
+     */
+    public static native void pinModeAlt(int pin, int mode);
+
 
 
     /**
