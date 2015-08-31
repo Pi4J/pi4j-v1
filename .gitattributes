@@ -1,4 +1,16 @@
+text            eol=lf
 *.java          text
 *.txt           text
 *.sh            eol=lf
 build           eol=lf
+install         eol=lf
+uninstall       eol=lf
+pi4j            eol=lf
+pi4j.list       eol=lf
+pi4j.gpg        eol=lf
+control         eol=lf
+postinst        eol=lf
+postrm          eol=lf
+preinst         eol=lf
+prerm           eol=lf
+
