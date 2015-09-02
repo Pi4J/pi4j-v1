@@ -18,6 +18,7 @@ LIBS    =  -L/usr/local/lib /usr/local/lib/libwiringPi.a /usr/local/lib/libwirin
 
 SRC	=   com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
+	    com_pi4j_jni_WDT.c            \
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_I2C.c       \
@@ -34,6 +35,7 @@ SRC	=   com_pi4j_jni_I2C.c            \
 
 OBJ	=   com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
+	    com_pi4j_jni_WDT.o         \
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
         com_pi4j_wiringpi_I2C.o       \
@@ -83,6 +85,7 @@ uninstall:
 
 
 # DO NOT DELETE
+com_pi4j_jni_WDT.o: com_pi4j_jni_WDT.h
 com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h  

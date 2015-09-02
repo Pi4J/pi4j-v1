@@ -78,6 +78,7 @@
 
 									<!-- trigger javah execution -->
 									<javahClassNames>
+                                                                                <javahClassName>com.pi4j.jni.WDT</javahClassName>
 										<javahClassName>com.pi4j.jni.I2C</javahClassName>
 										<javahClassName>com.pi4j.jni.Serial</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
