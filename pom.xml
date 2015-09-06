@@ -266,7 +266,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>				
+					</plugin>
 				</plugins>
 			</build>
 			<repositories>
@@ -373,7 +373,7 @@
                         <target>${jdk.target.version}</target>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <verbose>true</verbose>
+                        <verbose>false</verbose>
                     </configuration>
                 </plugin>
 
@@ -738,7 +738,7 @@
                     <reportSet>
                         <id>non-aggregate</id>
                         <configuration>
-                            <verbose>true</verbose>
+                            <verbose>false</verbose>
                             <linksource>true</linksource>
                             <name>JavaDocs</name>
                             <description>JavaDoc API documentation</description>
