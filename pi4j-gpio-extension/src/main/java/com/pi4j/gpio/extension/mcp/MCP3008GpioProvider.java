@@ -72,10 +72,10 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
     protected int monitorInterval = 100;
 
     // the threshold used to determine if a significant value warrants an event to be raised
-    protected double[] threshold = { 500, 500, 500, 500 };
+    protected double[] threshold = { 500, 500, 500, 500, 500, 500 };
 
     // this cache value is used to track last known pin values for raising event
-    protected double[] cachedValue = { 0, 0, 0, 0 };
+    protected double[] cachedValue = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	/**
 	 * Create new instance of this MCP3008 provider.
@@ -90,7 +90,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
         // start monitoring thread
         monitor = new MCP3008GpioProvider.ADCMonitor();
-        monitor.start();
+        //monitor.start();
     }
 
     /**
@@ -108,7 +108,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
         // start monitoring thread
         monitor = new MCP3008GpioProvider.ADCMonitor();
-        monitor.start();
+        //monitor.start();
     }
 
     /**
@@ -126,7 +126,7 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
         // start monitoring thread
         monitor = new MCP3008GpioProvider.ADCMonitor();
-        monitor.start();
+        //monitor.start();
     }
 
     /**
