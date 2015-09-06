@@ -29,10 +29,7 @@ package com.pi4j.gpio.extension.mcp;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CDevice;
@@ -40,6 +37,7 @@ import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
 import com.pi4j.io.spi.SpiMode;
+import com.pi4j.wiringpi.Spi;
 import sun.security.provider.ConfigFile;
 
 import java.io.IOException;
@@ -54,13 +52,23 @@ import java.io.IOException;
  * <p>
  * The MCP3008 is connected via SPI connection to the Raspberry Pi and provides 8 GPIO pins that can be used for analog input pins. The
  * values returned are in the range 0-1023 (max 10 bit value).
+ *
+ * Note: This implementation currently only supports single-ended inputs.
  * </p>
  *
  * @author pojd
  */
 public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvider {
 
-	public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3008GpioProvider";
+    public static final int INPUT_COUNT = 8;
+	public static final int MAX_VALUE = 1023; // 10-bit ADC can produce values from 0 to 1023
+    public static final int MIN_VALUE = 0;    // 10-bit ADC can produce values from 0 to 1023
+    public static final int MIN_MONITOR_INTERVAL = 50; // milliseconds
+
+    // default amount the input value has to change before publishing a value change event
+    public static final int DEFAULT_THRESHOLD = 5;
+
+    public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3008GpioProvider";
 	public static final String DESCRIPTION = "MCP3008 GPIO Provider";
 	public static final int INVALID_VALUE = -1;
 
@@ -68,17 +76,19 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
     protected ADCMonitor monitor = null;
     protected int conversionDelay = 0;
 
-    // this value defines the sleep time between value reads by the event monitoring thread
+    // this value defines the sleep time between value reads by the event monitoring thread (in milliseconds)
     protected int monitorInterval = 100;
 
     // the threshold used to determine if a significant value warrants an event to be raised
-    protected double[] threshold = { 500, 500, 500, 500, 500, 500 };
+    protected double[] threshold = { DEFAULT_THRESHOLD, DEFAULT_THRESHOLD, DEFAULT_THRESHOLD,
+                                     DEFAULT_THRESHOLD, DEFAULT_THRESHOLD, DEFAULT_THRESHOLD,
+                                     DEFAULT_THRESHOLD, DEFAULT_THRESHOLD};
 
     // this cache value is used to track last known pin values for raising event
     protected double[] cachedValue = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	/**
-	 * Create new instance of this MCP3008 provider.
+	 * Create new instance of this MCP3008 provider with background monitoring and pin notification events enabled.
 	 *
 	 * @param channel
 	 *            spi channel the MCP3008 is connected to
@@ -86,15 +96,11 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
 	public MCP3008GpioProvider(SpiChannel channel) throws IOException {
-		this.device = SpiFactory.getInstance(channel);
-
-        // start monitoring thread
-        monitor = new MCP3008GpioProvider.ADCMonitor();
-        //monitor.start();
+        this(channel, SpiDevice.DEFAULT_SPI_SPEED, SpiDevice.DEFAULT_SPI_MODE, true);
     }
 
     /**
-     * Create new instance of this MCP3008 provider.
+     * Create new instance of this MCP3008 provider with background monitoring and pin notification events enabled.
      *
      * @param channel
      *            spi channel the MCP3008 is connected to
@@ -104,15 +110,11 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
      *             if an error occurs during initialization of the SpiDevice
      */
     public MCP3008GpioProvider(SpiChannel channel, int speed) throws IOException {
-        this.device = SpiFactory.getInstance(channel, speed);
-
-        // start monitoring thread
-        monitor = new MCP3008GpioProvider.ADCMonitor();
-        //monitor.start();
+        this(channel, speed, SpiDevice.DEFAULT_SPI_MODE, true);
     }
 
     /**
-     * Create new instance of this MCP3008 provider.
+     * Create new instance of this MCP3008 provider with background monitoring and pin notification events enabled.
      *
      * @param channel
      *            spi channel the MCP3008 is connected to
@@ -122,15 +124,11 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
      *             if an error occurs during initialization of the SpiDevice
      */
     public MCP3008GpioProvider(SpiChannel channel, SpiMode mode) throws IOException {
-        this.device = SpiFactory.getInstance(channel, mode);
-
-        // start monitoring thread
-        monitor = new MCP3008GpioProvider.ADCMonitor();
-        //monitor.start();
+        this(channel, SpiDevice.DEFAULT_SPI_SPEED, mode, true);
     }
 
     /**
-     * Create new instance of this MCP3008 provider.
+     * Create new instance of this MCP3008 provider with background monitoring and pin notification events enabled.
      *
      * @param channel
      *            spi channel the MCP3008 is connected to
@@ -142,11 +140,35 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
      *             if an error occurs during initialization of the SpiDevice
      */
     public MCP3008GpioProvider(SpiChannel channel, int speed, SpiMode mode) throws IOException {
-        this.device = SpiFactory.getInstance(channel, speed);
+        this(channel, speed, mode, true);
+    }
+
+    /**
+     * Create new instance of this MCP3008 provider.  Optionally enable or disable background monitoring
+     * and pin notification events.
+     *
+     * @param channel
+     *            spi channel the MCP3008 is connected to
+     * @param speed
+     *            spi speed to communicate with MCP3008
+     * @param mode
+     *            spi mode to communicate with MCP3008
+     * @param enableBackgroundMonitoring
+     *            if enabled, then a background thread will be created
+     *            to constantly acquire the ADC input values and publish
+     *            pin change listeners if the value change is beyond the
+     *            configured threshold.
+     * @throws IOException
+     *             if an error occurs during initialization of the SpiDevice
+     */
+    public MCP3008GpioProvider(SpiChannel channel, int speed, SpiMode mode, boolean enableBackgroundMonitoring) throws IOException {
+        this.device = SpiFactory.getInstance(channel, speed, mode);
 
         // start monitoring thread
-        monitor = new MCP3008GpioProvider.ADCMonitor();
-        monitor.start();
+        if(enableBackgroundMonitoring) {
+            monitor = new MCP3008GpioProvider.ADCMonitor();
+            monitor.start();
+        }
     }
 
     // ------------------------------------------------------------------------------------------
@@ -157,53 +179,42 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 		return NAME;
 	}
 
+    /**
+     * Get the requested analog input pin's conversion value.
+     *
+     * If you have the background monitoring thread enabled, then
+     * this function will return the last cached value.  If you have the
+     * background monitoring thread disabled, then this function will
+     * will perform an immediate data acquisition directly to the ADC chip
+     * to get the requested pin's input conversion value. (via getImmediateValue())
+     *
+     * @param pin to get conversion values for
+     * @return analog input pin conversion value (10-bit: 0 to 1023)
+     */
 	@Override
 	public double getValue(Pin pin) {
-		// do not return, only let parent handle whether this pin is OK
-		super.getValue(pin);
-        try {
-            return getImmediateValue(pin);
-        } catch (IOException e) {
-            return INVALID_VALUE;
+        // if we are not actively monitoring the ADC input values,
+        // then interrogate the ADC chip and return the acquired input conversion value
+        if(monitor == null) {
+            // do not return, only let parent handle whether this pin is OK
+            super.getValue(pin);
+            try {
+                return getImmediateValue(pin);
+            } catch (IOException e) {
+                return INVALID_VALUE;
+            }
+        }
+        else{
+            // if we are actively monitoring the ADC input values,
+            // the simply return the last cached input value
+            return super.getValue(pin);
         }
     }
 
-    // ------------------------------------------------------------------------------------------
-    // internal methods
-    // ------------------------------------------------------------------------------------------
-	private short toCommand(short channel) {
-		short command = (short) ((channel + 8) << 4);
-		return command;
-	}
-
-
-	private boolean isInitiated() {
-		return device != null;
-	}
-
-
-	private int readAnalog(short channelCommand) {
-		// send 3 bytes command - "1", channel command and some extra byte 0
-		// http://hertaville.com/2013/07/24/interfacing-an-spi-adc-mcp3008-chip-to-the-raspberry-pi-using-c
-		short[] data = new short[] { 1, channelCommand, 0 };
-		short[] result;
-		try {
-			result = device.write(data);
-		} catch (IOException e) {
-			return INVALID_VALUE;
-		}
-
-		// now take 8 and 9 bit from second byte (& with 0b11 and shift) and the whole last byte to form the value
-		int analogValue = ((result[1] & 3) << 8) + result[2];
-		return analogValue;
-	}
-
-    public double getImmediateValue(Pin pin) throws IOException {
-        double value = isInitiated() ? readAnalog(toCommand((short) pin.getAddress())) : INVALID_VALUE;
-        getPinCache(pin).setAnalogValue(value);
-        return value;
-    }
-
+    /**
+     * This method is used by the framework to shutdown the
+     * background monitoring thread if needed when the program exits.
+     */
     @Override
     public void shutdown() {
 
@@ -225,6 +236,156 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Get the event threshold value for a given analog input pin.
+     *
+     * The event threshold value determines how much change in the
+     * analog input pin's conversion value must occur before the
+     * framework issues an analog input pin change event.  A threshold
+     * is necessary to prevent a significant number of analog input
+     * change events from getting propagated and dispatched for input
+     * values that may have an expected range of drift.
+     *
+     * see the DEFAULT_THRESHOLD constant for the default threshold value.
+     *
+     * @param pin analog input pin
+     * @return event threshold value for requested analog input pin
+     */
+    public double getEventThreshold(Pin pin){
+        return threshold[pin.getAddress()];
+    }
+
+    /**
+     * Get the event threshold value for a given analog input pin.
+     *
+     * The event threshold value determines how much change in the
+     * analog input pin's conversion value must occur before the
+     * framework issues an analog input pin change event.  A threshold
+     * is necessary to prevent a significant number of analog input
+     * change events from getting propagated and dispatched for input
+     * values that may have an expected range of drift.
+     *
+     * see the DEFAULT_THRESHOLD constant for the default threshold value.
+     *
+     * @param pin analog input pin
+     * @return event threshold value for requested analog input pin
+     */
+    public double getEventThreshold(GpioPin pin){
+        return getEventThreshold(pin.getPin());
+    }
+
+    /**
+     * Set the event threshold value for a given analog input pin.
+     *
+     * The event threshold value determines how much change in the
+     * analog input pin's conversion value must occur before the
+     * framework issues an analog input pin change event.  A threshold
+     * is necessary to prevent a significant number of analog input
+     * change events from getting propagated and dispatched for input
+     * values that may have an expected range of drift.
+     *
+     * see the DEFAULT_THRESHOLD constant for the default threshold value.
+     *
+     * @param threshold value between 0 and 1023.
+     * @param pin analog input pin (vararg, one or more inputs can be defined.)
+     */
+    public void setEventThreshold(double threshold, Pin...pin){
+        for(Pin p : pin){
+            this.threshold[p.getAddress()] = threshold;
+        }
+    }
+
+    /**
+     * Set the event threshold value for a given analog input pin.
+     *
+     * The event threshold value determines how much change in the
+     * analog input pin's conversion value must occur before the
+     * framework issues an analog input pin change event.  A threshold
+     * is necessary to prevent a significant number of analog input
+     * change events from getting propagated and dispatched for input
+     * values that may have an expected range of drift.
+     *
+     * see the DEFAULT_THRESHOLD constant for the default threshold value.
+     *
+     * @param threshold value between 0 and 1023.
+     * @param pin analog input pin (vararg, one or more inputs can be defined.)
+     */
+    public void setEventThreshold(double threshold, GpioPin...pin){
+        for(GpioPin p : pin){
+            setEventThreshold(threshold, p.getPin());
+        }
+    }
+
+    /**
+     * Get the background monitoring thread's rate of data acquisition. (in milliseconds)
+     *
+     * The default interval is 100 milliseconds.
+     * The minimum supported interval is 50 milliseconds.
+     *
+     * @return monitoring interval in milliseconds
+     */
+    public int getMonitorInterval(){
+        return monitorInterval;
+    }
+
+    /**
+     * Change the background monitoring thread's rate of data acquisition. (in milliseconds)
+     *
+     * The default interval is 100 milliseconds.
+     * The minimum supported interval is 50 milliseconds.
+     *
+     * @param monitorInterval
+     */
+    public void setMonitorInterval(int monitorInterval){
+        this.monitorInterval = monitorInterval;
+
+        // enforce a minimum interval threshold.
+        if(monitorInterval < MIN_MONITOR_INTERVAL)
+            monitorInterval = MIN_MONITOR_INTERVAL;
+    }
+
+    /**
+     * This method will perform an immediate data acquisition directly to the ADC chip to get the
+     * requested pin's input conversion value.
+     *
+     * @param pin requested input pin to acquire conversion value
+     * @return conversion value for requested analog input pin
+     * @throws IOException
+     */
+    public double getImmediateValue(Pin pin) throws IOException {
+        double value = isInitiated() ? readAnalog(toCommand((short) pin.getAddress())) : INVALID_VALUE;
+        getPinCache(pin).setAnalogValue(value);
+        return value;
+    }
+
+    // ------------------------------------------------------------------------------------------
+    // internal methods
+    // ------------------------------------------------------------------------------------------
+	private short toCommand(short channel) {
+		short command = (short) ((channel + 8) << 4);
+		return command;
+	}
+
+	private boolean isInitiated() {
+		return device != null;
+	}
+
+	private int readAnalog(short channelCommand) {
+		// send 3 bytes command - "1", channel command and some extra byte 0
+		// http://hertaville.com/2013/07/24/interfacing-an-spi-adc-mcp3008-chip-to-the-raspberry-pi-using-c
+		short[] data = new short[] { 1, channelCommand, 0 };
+		short[] result;
+		try {
+			result = device.write(data);
+		} catch (IOException e) {
+			return INVALID_VALUE;
+		}
+
+		// now take 8 and 9 bit from second byte (& with 0b11 and shift) and the whole last byte to form the value
+		int analogValue = ((result[1] & 3) << 8) + result[2];
+		return analogValue;
+	}
 
     /**
      * This class/thread is used to to actively monitor ADC input changes
@@ -258,6 +419,9 @@ public class MCP3008GpioProvider extends GpioProviderBase implements GpioProvide
 
                                 // get actual value from ADC chip
                                 double newValue = getImmediateValue(pin);
+
+                                // no need to continue if we received an invalid value from the ADC chip.
+                                if(newValue <= INVALID_VALUE){ break; }
 
                                 // check to see if the pin value exceeds the event threshold
                                 if(Math.abs(oldValue - newValue) > threshold[pin.getAddress()]){
