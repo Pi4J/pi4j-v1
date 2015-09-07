@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
 
 public class MCP3008GpioProviderTestCase {
 
-	private MCP3008GpioProvider mcpP3008Provider;
+	private MCP3008GpioProviderOld mcpP3008Provider;
 
 	@Mocked
 	private SpiDevice spiDevice;
@@ -66,7 +66,7 @@ public class MCP3008GpioProviderTestCase {
 			}
 		};
 
-		mcpP3008Provider = new MCP3008GpioProvider(spiChannel);
+		mcpP3008Provider = new MCP3008GpioProviderOld(spiChannel);
 	}
 
 	@Test
@@ -103,6 +103,6 @@ public class MCP3008GpioProviderTestCase {
 //				result = new IOException("Some fake error");
 //			}
 //		};
-//		new MCP3008GpioProvider(spiChannel);
+//		new MCP3008GpioProviderOld(spiChannel);
 //	}
 }
