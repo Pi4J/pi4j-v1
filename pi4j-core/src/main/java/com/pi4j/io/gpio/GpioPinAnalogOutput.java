@@ -40,8 +40,4 @@ public interface GpioPinAnalogOutput extends GpioPinAnalog, GpioPinOutput {
 
     void setValue(double value);
     void setValue(Number value);
-    void setStartupValue(Number value);
-    Number getStartupValue();
-    void setShutdownValue(Number value);
-    Number getShutdownValue();
 }

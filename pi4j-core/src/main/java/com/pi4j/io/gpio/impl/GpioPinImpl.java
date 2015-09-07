@@ -5,9 +5,9 @@ package com.pi4j.io.gpio.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinImpl.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  GpioPinImpl.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,17 +39,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
-public class GpioPinImpl implements GpioPin, 
-                                    GpioPinDigitalInput, 
-                                    GpioPinDigitalOutput, 
+public class GpioPinImpl implements GpioPin,
+                                    GpioPinDigitalInput,
+                                    GpioPinDigitalOutput,
                                     GpioPinDigitalMultipurpose,
-                                    GpioPinAnalogInput, 
+                                    GpioPinAnalogInput,
                                     GpioPinAnalogOutput,
                                     GpioPinPwmOutput,
                                     GpioPinInput,
                                     GpioPinOutput
 {
- 
+
     @SuppressWarnings("unused")
     private String name = null;
     private Object tag = null;
@@ -79,7 +79,7 @@ public class GpioPinImpl implements GpioPin,
     public GpioProvider getProvider() {
         return this.provider;
     }
-    
+
     @Override
     public void setName(String name) {
         this.name = name;
@@ -92,7 +92,7 @@ public class GpioPinImpl implements GpioPin,
         }
         return name;
     }
-    
+
     @Override
     public void setTag(Object tag) {
         this.tag = tag;
@@ -128,7 +128,7 @@ public class GpioPinImpl implements GpioPin,
     public String getProperty(String key) {
         return getProperty(key, null);
     }
-    
+
     @Override
     public Map<String, String> getProperties() {
         return properties;
@@ -239,7 +239,7 @@ public class GpioPinImpl implements GpioPin,
         // NOTE: a value of 0 milliseconds will stop the blinking
         return GpioScheduledExecutorImpl.blink(this, delay, duration, blinkState);
     }
-    
+
     @Override
     public Future<?> pulse(long duration) {
         return pulse(duration, false);
@@ -277,19 +277,19 @@ public class GpioPinImpl implements GpioPin,
 
     @Override
     public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
-        
+
         // validate duration argument
         if(duration <= 0)
             throw new IllegalArgumentException("Pulse duration must be greater than 0 milliseconds.");
-        
-        // if this is a blocking pulse, then execute the pulse 
-        // and sleep the caller's thread to block the operation 
+
+        // if this is a blocking pulse, then execute the pulse
+        // and sleep the caller's thread to block the operation
         // until the pulse is complete
         if(blocking) {
             // start the pulse state
             setState(pulseState);
-            
-            // block the current thread for the pulse duration 
+
+            // block the current thread for the pulse duration
             try {
                 Thread.sleep(duration);
             }
@@ -308,18 +308,18 @@ public class GpioPinImpl implements GpioPin,
                     e.printStackTrace();
                 }
             }
-            
+
             // we are done; no future is returned for blocking pulses
             return null;
         }
-        else {            
-            // if this is not a blocking call, then setup the pulse 
+        else {
+            // if this is not a blocking call, then setup the pulse
             // instruction to be completed in a background worker
-            // thread pool using a scheduled executor 
+            // thread pool using a scheduled executor
             return GpioScheduledExecutorImpl.pulse(this, duration, pulseState, callback);
         }
     }
-    
+
     @Override
     public void setState(PinState state) {
         provider.setState(pin, state);
@@ -379,25 +379,28 @@ public class GpioPinImpl implements GpioPin,
     public void setValue(double value) {
         provider.setValue(pin, value);
     }
-    
+
+    @Override
+    public void setValue(Number value) { setValue(value.doubleValue()); }
+
     @Override
     public double getValue() {
         return provider.getValue(pin);
-    }    
+    }
 
     @Override
     public void setPwm(int value) {
         provider.setPwm(pin, value);
     }
-    
+
     @Override
     public int getPwm() {
         return provider.getPwm(pin);
-    }  
-    
+    }
+
     private synchronized void updateInterruptListener() {
         if (listeners.size() > 0 || triggers.size() > 0) {
-            if (monitor == null) { 
+            if (monitor == null) {
                 // create new monitor and register for event callbacks
                 monitor = new GpioEventMonitorExecutorImpl(this);
                 provider.addListener(pin, monitor);
@@ -414,7 +417,7 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     * 
+     *
      * @param listener gpio pin listener interface
      */
     public synchronized void addListener(GpioPinListener... listener) {
@@ -432,7 +435,7 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     * 
+     *
      */
     public synchronized Collection<GpioPinListener> getListeners() {
         return listeners;
@@ -451,7 +454,7 @@ public class GpioPinImpl implements GpioPin,
 
         return true;
     }
-    
+
     public synchronized void removeListener(GpioPinListener... listener) {
         if (listener == null || listener.length == 0) {
             throw new IllegalArgumentException("Missing listener argument.");
@@ -459,7 +462,7 @@ public class GpioPinImpl implements GpioPin,
         for (GpioPinListener lsnr : listener) {
             listeners.remove(lsnr);
         }
-        
+
         updateInterruptListener();
     }
 
@@ -468,7 +471,7 @@ public class GpioPinImpl implements GpioPin,
             removeListener(listener);
         }
     }
-    
+
     public synchronized void removeAllListeners() {
         List<GpioPinListener> listeners_copy = new ArrayList<>(listeners);
         for (int index = (listeners_copy.size()-1); index >= 0; index --) {
@@ -478,7 +481,7 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     * 
+     *
      */
     public synchronized Collection<GpioTrigger> getTriggers() {
         return triggers;
@@ -499,7 +502,7 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     * 
+     *
      * @param trigger GPIO trigger interface
      */
     public synchronized void removeTrigger(GpioTrigger... trigger) {
@@ -509,7 +512,7 @@ public class GpioPinImpl implements GpioPin,
         for (GpioTrigger trgr : trigger) {
             triggers.remove(trgr);
         }
-        
+
         updateInterruptListener();
     }
 
