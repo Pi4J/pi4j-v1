@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.mcp;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP300xGpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP300xGpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.mcp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -109,6 +109,31 @@ public abstract class MCP300xGpioProvider extends AdcGpioProviderBase implements
             }
         }
         return INVALID_VALUE;
+    }
+
+
+
+    /**
+     * Get the minimum supported analog value for the ADC implementation.
+     *
+     * @return Returns the minimum supported analog value.
+     */
+    @Override
+    public double getMinSupportedValue(){
+        return MIN_VALUE;
+    }
+
+    /**
+     * Get the maximum supported analog value for the ADC implementation.
+     *
+     * (For example, a 10 bit ADC's maximum value is 1023 and
+     *  a 12-bit ADC's maximum value is 4095.
+     *
+     * @return Returns the maximum supported analog value.
+     */
+    @Override
+    public double getMaxSupportedValue(){
+        return MAX_VALUE;
     }
 
     // ------------------------------------------------------------------------------------------

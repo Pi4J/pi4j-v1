@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  AdcGpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  AdcGpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,29 +17,26 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.pi4j.gpio.extension.mcp.MCP3008Pin;
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.PinListener;
-
 import java.io.IOException;
 
 /**
  *
  * <p>
  * This interface defines the required interfaces for an ADC GPIO provider.
+ * (analog to digital converter chip)
  * </p>
  *
  * @author Robert Savage
@@ -174,5 +171,31 @@ public interface AdcGpioProvider extends GpioProvider {
      * @throws IOException
      */
     double getImmediateValue(Pin pin) throws IOException;
+
+
+    /**
+     * Get the minimum supported analog value for the ADC implementation.
+     *
+     * @return Returns the minimum supported analog value.
+     */
+    double getMinSupportedValue();
+
+    /**
+     * Get the maximum supported analog value for the ADC implementation.
+     *
+     * (For example, a 10 bit ADC's maximum value is 1023 and
+     *  a 12-bit ADC's maximum value is 4095.
+     *
+     * @return Returns the maximum supported analog value.
+     */
+    double getMaxSupportedValue();
+
+
+    /**
+     * Get the current value in a percentage of the available range instead of a raw value.
+     *
+     * @return percentage value between 0 and 100.
+     */
+    float getPercentValue(Pin pin);
 
 }

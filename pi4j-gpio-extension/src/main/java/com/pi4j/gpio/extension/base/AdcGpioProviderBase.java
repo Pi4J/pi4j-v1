@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  AdcGpioProviderBase.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  AdcGpioProviderBase.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -118,6 +118,19 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
             // the simply return the last cached input value
             return super.getValue(pin);
         }
+    }
+
+    /**
+     * Get the current value in a percentage of the available range instead of a raw value.
+     *
+     * @return percentage value between 0 and 100.
+     */
+    public float getPercentValue(Pin pin){
+        double value = getValue(pin);
+        if(value > INVALID_VALUE) {
+            return (float) (value / (getMaxSupportedValue() - getMinSupportedValue())) * 100f;
+        }
+        return INVALID_VALUE;
     }
 
     /**
