@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  AdcGpioProvider.java
- *
- * This file is part of the Pi4J project. More information about
+ * FILENAME      :  DacGpioProvider.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -57,7 +57,16 @@ public interface DacGpioProvider extends GpioProvider {
      *
      * @return percentage value between 0 and 100.
      */
-    void setPercentValue(Pin pin, float percent);
+    void setPercentValue(Pin pin, Number percent);
+
+
+    /**
+     * Set the requested analog output pin's conversion value.
+     *
+     * @param pin to get conversion values for
+     * @param value analog output pin conversion value
+     */
+    void setValue(Pin pin, Number value);
 
     /**
      * Get the minimum supported analog value for the ADC implementation.
@@ -83,7 +92,7 @@ public interface DacGpioProvider extends GpioProvider {
      * @param value the shutdown value to apply to the given pin(s)
      * @param pin analog output pin (vararg: one or more pins)
      */
-    void setShutdownValue(Double value, Pin ... pin);
+    void setShutdownValue(Number value, Pin ... pin);
 
     /**
      * Get the shutdown/terminate value that the DAC should apply to the given GPIO pin
@@ -92,5 +101,5 @@ public interface DacGpioProvider extends GpioProvider {
      * @param pin analog output pin
      * @return return the shutdown value if one has been defined, else NULL.
      */
-    Double getShutdownValue(Pin pin);
+    Number getShutdownValue(Pin pin);
 }

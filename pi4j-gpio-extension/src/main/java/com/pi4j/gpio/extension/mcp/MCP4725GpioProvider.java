@@ -14,9 +14,9 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP4725GpioProvider.java
- *
- * This file is part of the Pi4J project. More information about
+ * FILENAME      :  MCP4725GpioProvider.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -26,12 +26,12 @@ import java.io.IOException;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -85,12 +85,10 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     // =======================================================================
 
     /**
-     * This is a default constructor.  If you use this constructor the
+     * This is the default constructor.  If you use this constructor the
      * MCP4725 will be considered the I2C bus owner and will close the
      * bus communication anytime the class is destroyed and on program
      * shutdown.
-     *
-     * (No startup value applied when using this constructor)
      *
      * @param busNumber
      *     the I2C bus number used to communicate with the MCP4725
@@ -106,33 +104,10 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     }
 
     /**
-     * This is a default constructor.  If you use this constructor the
-     * MCP4725 will be considered the I2C bus owner and will close the
-     * bus communication anytime the class is destroyed and on program
-     * shutdown.
-     *
-     * @param busNumber
-     *     the I2C bus number used to communicate with the MCP4725
-     * @param address
-     *     the address of the MCP4725 on the I2C bus.
-     * @param startupValue
-     *     if not null, then this value will be sent to the DAC's output pin immediately on class startup.
-     *
-     * @throws IOException
-     */
-    public MCP4725GpioProvider(int busNumber, int address, Double startupValue) throws IOException {
-        // create I2C communications bus instance
-        this(I2CFactory.getInstance(busNumber), address, startupValue);
-        i2cBusOwner = true;
-    }
-
-    /**
      * This is an alternate constructor that can be used to create the
      * MCP4725 instance but not be considered the I2C bus owner and the
      * class will not close the bus communication when the class is destroyed
      * or on program shutdown.
-     *
-     * (No startup value applied when using this constructor)
      *
      * @param bus
      *     an existing I2C bus instance defined in the user's code to communicate with the MCP4725
@@ -142,36 +117,12 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
      * @throws IOException
      */
     public MCP4725GpioProvider(I2CBus bus, int address) throws IOException {
-        this(bus, address, null);
-    }
-
-    /**
-     * This is an alternate constructor that can be used to create the
-     * MCP4725 instance but not be considered the I2C bus owner and the
-     * class will not close the bus communication when the class is destroyed
-     * or on program shutdown.
-     *
-     * @param bus
-     *     an existing I2C bus instance defined in the user's code to communicate with the MCP4725
-     * @param address
-     *     the address of the MCP4725 on the I2C bus.
-     * @param startupValue
-     *     if not null, then this value will be sent to the DAC's output pin immediately on class startup.
-     *
-     * @throws IOException
-     */
-    public MCP4725GpioProvider(I2CBus bus, int address, Double startupValue) throws IOException {
         // seed parent class with all the valid pins for the MCP4725 DAC (only 1 pin).
         super(MCP4725Pin.ALL);
 
         // set reference to I2C communications bus instance and get I2C device
         this.bus = bus;
         device = bus.getDevice(address);
-
-        // apply any startup value if defined
-        if(startupValue != null){
-            setValue(MCP4725Pin.OUTPUT, startupValue);
-        }
     }
 
     /**
@@ -185,10 +136,10 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
 
         // validate range
         if(value <= getMinSupportedValue()){
-            setValue(pin, getMinSupportedValue());
+            value =  getMinSupportedValue();
         }
         else if(value >= getMaxSupportedValue()){
-            setValue(pin, getMaxSupportedValue());
+            value = getMaxSupportedValue();
         }
 
         // the DAC only supports integer values between 0..4095

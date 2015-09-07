@@ -51,7 +51,7 @@ import com.pi4j.io.i2c.I2CBus;
  * The MCP4725 is connected via I2C connection to the Raspberry Pi and provides 1 GPIO analog output pin.
  * </p>
  *
- * @author Christian Wehrli
+ * @author Christian Wehrli, Robert Savage
  */
 public class MCP4725GpioExample {
 
@@ -63,37 +63,37 @@ public class MCP4725GpioExample {
         // create gpio provider
         final DacGpioProvider gpioProvider = new MCP4725GpioProvider(
                 I2CBus.BUS_1,                          // I2C BUS 1 on newer Raspberry Pi's
-                MCP4725GpioProvider.MCP4725_ADDRESS_1, // default address
-                (double)MCP4725GpioProvider.MAX_VALUE  // startup/initialization value to apply (optional)
+                MCP4725GpioProvider.MCP4725_ADDRESS_1  // default address
         );
 
         // create output pin
         final GpioPinAnalogOutput output = gpio.provisionAnalogOutputPin(gpioProvider, MCP4725Pin.OUTPUT);
 
+        // set a startup value for the output pin
+        output.setValue(0);
+
         // set a shutdown value for the output pin
-        gpioProvider.setShutdownValue(0d, output.getPin());
+        gpioProvider.setShutdownValue(MCP4725GpioProvider.MAX_VALUE, output.getPin());
 
-//        // generate sinus wave on output pin
-//        for (int i = 0; i < 360; i++) {
-//            double y = Math.sin(Math.toRadians(i));
-//
-//            y = y / 2 + 0.5;
-//
-//            gpioProvider.setPercentValue(y, (int)Math.round(output));
-//
-//            // rollover
-//            if (i == 359) { i = 0; }
-//        }
+        // generate sinus wave on output pin
+        for (int i = 0; i < 360; i++) {
+            double y = Math.sin(Math.toRadians(i));
+            y = (y / 2 + 0.5) * 100;
 
-        // generate sine wave on output pin
-        for(int i = 0; i < 10000; i++) {
-            for (double value = gpioProvider.getMinSupportedValue(); value < gpioProvider.getMaxSupportedValue(); value++) {
-                output.setValue(value);
-            }
-            for (double value = gpioProvider.getMaxSupportedValue(); value > gpioProvider.getMinSupportedValue(); value--) {
-                output.setValue(value);
-            }
+            // assign a percentage value instead of raw value
+            gpioProvider.setPercentValue(output.getPin(), y);
+
+            // rollover
+            if (i == 359) { i = 0; }
         }
+
+        // generate a square wave on output pin
+//        for(int i = 0; i < 100000; i++) {
+//            output.setValue(gpioProvider.getMaxSupportedValue());
+//            Thread.sleep(2);
+//            output.setValue(gpioProvider.getMinSupportedValue());
+//            Thread.sleep(2);
+//        }
 
         // When your program is finished, make sure to stop all GPIO activity/threads by shutting
         // down the GPIO controller (this method will forcefully shutdown all GPIO monitoring threads

@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  DacGpioProviderBase.java
- *
- * This file is part of the Pi4J project. More information about
+ * FILENAME      :  DacGpioProviderBase.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -84,20 +84,30 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
      * @param pin
      * @param percent percentage value between 0 and 100.
      */
-    public void setPercentValue(Pin pin, float percent){
+    public void setPercentValue(Pin pin, Number percent){
         // validate range
-        if(percent <= 0){
+        if(percent.doubleValue() <= 0){
             setValue(pin, getMinSupportedValue());
         }
-        else if(percent >= 100){
+        else if(percent.doubleValue() >= 100){
             setValue(pin, getMaxSupportedValue());
         }
         else{
-            double value = (getMaxSupportedValue() - getMinSupportedValue()) * (percent/100f);
+            double value = (getMaxSupportedValue() - getMinSupportedValue()) * (percent.doubleValue()/100f);
             setValue(pin, value);
         }
     }
 
+    /**
+     * Set the requested analog output pin's conversion value.
+     *
+     * @param pin to get conversion values for
+     * @param value analog output pin conversion value
+     */
+    @Override
+    public void setValue(Pin pin, Number value) {
+        super.setValue(pin, value.doubleValue());
+    }
 
     /**
      * This method is used by the framework to shutdown the
@@ -116,7 +126,7 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
         try {
             // iterate over all pins and apply shutdown values if configured for the pin instance
             for(Pin pin : allPins){
-                Double value = getShutdownValue(pin);
+                Double value = getShutdownValue(pin).doubleValue();
                 if(value != null){
                     setValue(pin, value);
                 }
@@ -133,9 +143,9 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
      * @param value the shutdown value to apply to the given pin(s)
      * @param pin analog output pin (vararg: one or more pins)
      */
-    public void setShutdownValue(Double value, Pin ... pin){
+    public void setShutdownValue(Number value, Pin ... pin){
         for(Pin p : pin){
-            shutdownValues[p.getAddress()] = value;
+            shutdownValues[p.getAddress()] = value.doubleValue();
         }
     }
 
@@ -146,7 +156,7 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
      * @param pin analog output pin
      * @return return the shutdown value if one has been defined, else NULL.
      */
-    public Double getShutdownValue(Pin pin){
+    public Number getShutdownValue(Pin pin){
         return shutdownValues[pin.getAddress()];
     }
 }
