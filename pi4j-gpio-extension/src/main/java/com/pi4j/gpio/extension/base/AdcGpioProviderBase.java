@@ -319,11 +319,6 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
     private class ADCMonitor extends Thread {
 
         private boolean shuttingDown = false;
-        protected Pin[] allPins = null;
-
-        public ADCMonitor() {
-            allPins = MCP3008Pin.ALL;
-        }
 
         public void shutdown() {
             shuttingDown = true;
