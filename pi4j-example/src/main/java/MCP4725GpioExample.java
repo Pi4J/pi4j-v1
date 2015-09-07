@@ -61,19 +61,19 @@ public class MCP4725GpioExample {
         final GpioController gpio = GpioFactory.getInstance();
 
         // create gpio provider
-        final DacGpioProvider gpioProvider = new MCP4725GpioProvider(
+        final DacGpioProvider provider = new MCP4725GpioProvider(
                 I2CBus.BUS_1,                          // I2C BUS 1 on newer Raspberry Pi's
                 MCP4725GpioProvider.MCP4725_ADDRESS_1  // default address
         );
 
         // create output pin
-        final GpioPinAnalogOutput output = gpio.provisionAnalogOutputPin(gpioProvider, MCP4725Pin.OUTPUT);
+        final GpioPinAnalogOutput output = gpio.provisionAnalogOutputPin(provider, MCP4725Pin.OUTPUT);
 
         // set a startup value for the output pin
         output.setValue(0);
 
         // set a shutdown value for the output pin
-        gpioProvider.setShutdownValue(MCP4725GpioProvider.MAX_VALUE, output.getPin());
+        provider.setShutdownValue(MCP4725GpioProvider.MAX_VALUE, output);
 
         // generate sinus wave on output pin
         for (int i = 0; i < 360; i++) {
@@ -81,7 +81,8 @@ public class MCP4725GpioExample {
             y = (y / 2 + 0.5) * 100;
 
             // assign a percentage value instead of raw value
-            gpioProvider.setPercentValue(output.getPin(), y);
+            // (we have to use a helper method within the provider instead of directly on the pin instance)
+            provider.setPercentValue(output, y);
 
             // rollover
             if (i == 359) { i = 0; }

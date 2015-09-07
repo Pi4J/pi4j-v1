@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  DacGpioProviderBase.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  DacGpioProviderBase.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,22 +17,19 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 
@@ -99,6 +96,17 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
     }
 
     /**
+     * Set the current analog value as a percentage of the available range instead of a raw value.
+     * Thr framework will automatically convert the percentage to a scaled number in the ADC's value range.
+     *
+     * @return percentage value between 0 and 100.
+     */
+    @Override
+    public void setPercentValue(GpioPinAnalogOutput pin, Number percent){
+        setPercentValue(pin.getPin(), percent);
+    }
+
+    /**
      * Set the requested analog output pin's conversion value.
      *
      * @param pin to get conversion values for
@@ -158,5 +166,30 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
      */
     public Number getShutdownValue(Pin pin){
         return shutdownValues[pin.getAddress()];
+    }
+
+
+    /**
+     * Set the shutdown/terminate value that the DAC should apply to the given GPIO pin
+     * when the class is destroyed/terminated.
+     *
+     * @param value the shutdown value to apply to the given pin(s)
+     * @param pin analog output pin (vararg: one or more pins)
+     */
+    public void setShutdownValue(Number value, GpioPinAnalogOutput ... pin){
+        for(GpioPinAnalogOutput p : pin) {
+            setShutdownValue(value, p.getPin());
+        }
+    }
+
+    /**
+     * Get the shutdown/terminate value that the DAC should apply to the given GPIO pin
+     * when the class is destroyed/terminated.
+     *
+     * @param pin analog output pin
+     * @return return the shutdown value if one has been defined, else NULL.
+     */
+    public Number getShutdownValue(GpioPinAnalogOutput pin){
+        return getShutdownValue(pin.getPin());
     }
 }

@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  MCP3004GpioExampleNonMonitored.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP3004GpioExampleNonMonitored.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -63,7 +63,7 @@ public class MCP3004GpioExampleNonMonitored {
 
         // Create custom MCP3004 analog gpio provider
         // we must specify which chip select (CS) that that ADC chip is physically connected to.
-        final AdcGpioProvider gpioProvider = new MCP3004GpioProvider(SpiChannel.CS0,
+        final AdcGpioProvider provider = new MCP3004GpioProvider(SpiChannel.CS0,
                 SpiDevice.DEFAULT_SPI_SPEED,
                 SpiDevice.DEFAULT_SPI_MODE,
                 false);   // <<-- the 'false' value here disable the base background monitoring thread
@@ -84,10 +84,10 @@ public class MCP3004GpioExampleNonMonitored {
         // Provision gpio analog input pins for all channels of the MCP3004.
         // (you don't have to define them all if you only use a subset in your project)
         final GpioPinAnalogInput inputs[] = {
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH0, "MyAnalogInput-CH0"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH1, "MyAnalogInput-CH1"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH2, "MyAnalogInput-CH2"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH3, "MyAnalogInput-CH3")
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH0, "MyAnalogInput-CH0"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH1, "MyAnalogInput-CH1"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH2, "MyAnalogInput-CH2"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH3, "MyAnalogInput-CH3")
         };
 
         // Keep this sample program running for 10 minutes

@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  MCP3004GpioExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP3004GpioExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -63,15 +63,15 @@ public class MCP3004GpioExample {
 
         // Create custom MCP3004 analog gpio provider
         // we must specify which chip select (CS) that that ADC chip is physically connected to.
-        final AdcGpioProvider gpioProvider = new MCP3004GpioProvider(SpiChannel.CS0);
+        final AdcGpioProvider provider = new MCP3004GpioProvider(SpiChannel.CS0);
 
         // Provision gpio analog input pins for all channels of the MCP3004.
         // (you don't have to define them all if you only use a subset in your project)
         final GpioPinAnalogInput inputs[] = {
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH0, "MyAnalogInput-CH0"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH1, "MyAnalogInput-CH1"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH2, "MyAnalogInput-CH2"),
-                gpio.provisionAnalogInputPin(gpioProvider, MCP3004Pin.CH3, "MyAnalogInput-CH3")
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH0, "MyAnalogInput-CH0"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH1, "MyAnalogInput-CH1"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH2, "MyAnalogInput-CH2"),
+                gpio.provisionAnalogInputPin(provider, MCP3004Pin.CH3, "MyAnalogInput-CH3")
         };
 
 
@@ -79,7 +79,7 @@ public class MCP3004GpioExample {
         // a 'GpioPinAnalogValueChangeEvent' is raised.  This is used to prevent unnecessary
         // event dispatching for an analog input that may have an acceptable or expected
         // range of value drift.
-        gpioProvider.setEventThreshold(100, inputs); // all inputs; alternatively you can set thresholds on each input discretely
+        provider.setEventThreshold(100, inputs); // all inputs; alternatively you can set thresholds on each input discretely
 
         // Set the background monitoring interval timer for the underlying framework to
         // interrogate the ADC chip for input conversion values.  The acceptable monitoring
@@ -88,7 +88,7 @@ public class MCP3004GpioExample {
         // on a regular basis.  The higher this value the slower your application will get
         // analog input value change events/notifications.  Try to find a reasonable balance
         // for your project needs.
-        gpioProvider.setMonitorInterval(250); // milliseconds
+        provider.setMonitorInterval(250); // milliseconds
 
         // Print current analog input conversion values from each input channel
         for(GpioPinAnalogInput input : inputs){
