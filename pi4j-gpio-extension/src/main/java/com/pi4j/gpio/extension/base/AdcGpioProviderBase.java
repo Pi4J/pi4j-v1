@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.base;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  AdcGpioProviderBase.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  AdcGpioProviderBase.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -134,6 +134,28 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
     }
 
     /**
+     * Get the current value in a percentage of the available range instead of a raw value.
+     *
+     * @return percentage value between 0 and 100.
+     */
+    public float getPercentValue(GpioPinAnalogInput pin){
+        return getPercentValue(pin.getPin());
+    }
+
+    /**
+     * This method will perform an immediate data acquisition directly to the ADC chip to get the
+     * requested pin's input conversion value.
+     *
+     * @param pin requested input pin to acquire conversion value
+     * @return conversion value for requested analog input pin
+     * @throws IOException
+     */
+    @Override
+    public double getImmediateValue(GpioPinAnalogInput pin) throws IOException{
+        return getImmediateValue(pin.getPin());
+    }
+
+    /**
      * This method is used by the framework to shutdown the
      * background monitoring thread if needed when the program exits.
      */
@@ -195,7 +217,7 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
      * @return event threshold value for requested analog input pin
      */
     @Override
-    public double getEventThreshold(GpioPin pin){
+    public double getEventThreshold(GpioPinAnalogInput pin){
         return getEventThreshold(pin.getPin());
     }
 
@@ -237,7 +259,7 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
      * @param pin analog input pin (vararg, one or more inputs can be defined.)
      */
     @Override
-    public void setEventThreshold(double threshold, GpioPin...pin){
+    public void setEventThreshold(double threshold, GpioPinAnalogInput...pin){
         for(GpioPin p : pin){
             setEventThreshold(threshold, p.getPin());
         }
