@@ -27,6 +27,7 @@
  * #L%
  */
 #include <jni.h>
+#include <stdlib.h>
 #include <wiringPiSPI.h>
 #include "com_pi4j_wiringpi_Spi.h"
 
@@ -51,13 +52,28 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIGetFd
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang_String_2I
   (JNIEnv *env, jclass class, jint channel, jstring data, jint length)
 {
-	char buffer[2048];
-	int len = (*env)->GetStringUTFLength(env, data);
-	(*env)->GetStringUTFRegion(env, data, 0, len, buffer);
-	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+	char *buffer;
+
+    // get the number of total possible bytes in the UTF string
+	int bufferSize = (*env)->GetStringUTFLength(env, data);
+
+	// dynamically allocate buffer size
+    buffer = malloc(bufferSize);
+
+	// copy UTF string bytes to buffer
+	(*env)->GetStringUTFRegion(env, data, 0, length, buffer);
+
+	// SPI transfer (read/write) the data buffer
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, bufferSize);
+
+	// create a return string from the data buffer returned after SPI transfer (read/write)
 	jstring returnString = (*env)->NewStringUTF(env, buffer);
     data = returnString;
 
+    // free allocated buffer memory
+    free(buffer);
+
+    // return success/failure
 	return result;
 }
 
@@ -70,7 +86,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 (JNIEnv *env, jclass class, jint channel, jbyteArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes from the data array argument into a native unsigned character buffer
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
@@ -86,6 +105,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	}
 	(*env)->ReleaseByteArrayElements(env, data, body, 0);
 
+    // free allocated buffer memory
+    free(buffer);
+
 	return result;
 }
 
@@ -98,7 +120,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 (JNIEnv *env, jclass class, jint channel, jshortArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes (short values) from the data array argument into a native unsigned character buffer
 	jshort *body = (*env)->GetShortArrayElements(env, data, 0);
@@ -114,6 +139,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 		body[i] = buffer[i];
 	}
 	(*env)->ReleaseShortArrayElements(env, data, body, 0);
+
+    // free allocated buffer memory
+    free(buffer);
 
 	return result;
 }
