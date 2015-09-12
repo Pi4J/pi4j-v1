@@ -55,7 +55,6 @@ public abstract class GpioProviderBase implements GpioProvider {
     public abstract String getName();
 
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<>();
-    //protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<>();
 
     protected GpioProviderPinCache[] cache = new GpioProviderPinCache[100]; // support up to pin address 100
 
