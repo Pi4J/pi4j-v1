@@ -109,6 +109,14 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinMode
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pinAltMode
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinAltMode
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
  * Method:    pullUpDnControl
  * Signature: (II)V
  */

@@ -49,7 +49,7 @@ import com.pi4j.io.i2c.I2CFactory;
  * ...and especially about the board here:<br>
  * <a href="http://www.adafruit.com/products/815">Adafruit 16-Channel 12-bit PWM/Servo Driver</a>
  * </p>
- * 
+ *
  * @author Christian Wehrli
  * @see PCA9685GpioProvider
  */
@@ -74,11 +74,11 @@ public class PCA9685GpioExample {
         BigDecimal frequencyCorrectionFactor = new BigDecimal("1.0578");
         // Create custom PCA9685 GPIO provider
         I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-        final PCA9685GpioProvider gpioProvider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
+        final PCA9685GpioProvider provider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
         // Define outputs in use for this example
-        GpioPinPwmOutput[] myOutputs = provisionPwmOutputs(gpioProvider);
+        GpioPinPwmOutput[] myOutputs = provisionPwmOutputs(provider);
         // Reset outputs
-        gpioProvider.reset();
+        provider.reset();
         //
         // Set various PWM patterns for outputs 0..9
         final int offset = 400;
@@ -87,22 +87,22 @@ public class PCA9685GpioExample {
             Pin pin = PCA9685Pin.ALL[i];
             int onPosition = checkForOverflow(offset * i);
             int offPosition = checkForOverflow(pulseDuration * (i + 1));
-            gpioProvider.setPwm(pin, onPosition, offPosition);
+            provider.setPwm(pin, onPosition, offPosition);
         }
         // Set full ON
-        gpioProvider.setAlwaysOn(PCA9685Pin.PWM_10);
+        provider.setAlwaysOn(PCA9685Pin.PWM_10);
         // Set full OFF
-        gpioProvider.setAlwaysOff(PCA9685Pin.PWM_11);
-        // Set 0.9ms pulse (R/C Servo minimum position) 
-        gpioProvider.setPwm(PCA9685Pin.PWM_12, SERVO_DURATION_MIN);
-        // Set 1.5ms pulse (R/C Servo neutral position) 
-        gpioProvider.setPwm(PCA9685Pin.PWM_13, SERVO_DURATION_NEUTRAL);
-        // Set 2.1ms pulse (R/C Servo maximum position) 
-        gpioProvider.setPwm(PCA9685Pin.PWM_14, SERVO_DURATION_MAX);
+        provider.setAlwaysOff(PCA9685Pin.PWM_11);
+        // Set 0.9ms pulse (R/C Servo minimum position)
+        provider.setPwm(PCA9685Pin.PWM_12, SERVO_DURATION_MIN);
+        // Set 1.5ms pulse (R/C Servo neutral position)
+        provider.setPwm(PCA9685Pin.PWM_13, SERVO_DURATION_NEUTRAL);
+        // Set 2.1ms pulse (R/C Servo maximum position)
+        provider.setPwm(PCA9685Pin.PWM_14, SERVO_DURATION_MAX);
         //
         // Show PWM values for outputs 0..14
         for (GpioPinPwmOutput output : myOutputs) {
-            int[] onOffValues = gpioProvider.getPwmOnOffValues(output.getPin());
+            int[] onOffValues = provider.getPwmOnOffValues(output.getPin());
             System.out.println(output.getPin().getName() + " (" + output.getName() + "): ON value [" + onOffValues[0] + "], OFF value [" + onOffValues[1] + "]");
         }
         System.out.println("Press <Enter> to terminate...");

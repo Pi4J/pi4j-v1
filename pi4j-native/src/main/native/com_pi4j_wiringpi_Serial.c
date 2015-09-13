@@ -158,7 +158,7 @@ JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
 	    return (unsigned char) serialGetchar(fd);
 	}
 	else{
-	    return NULL;
+	    return (unsigned char)0;
 	}
 }
 

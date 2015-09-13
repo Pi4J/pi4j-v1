@@ -1,3 +1,4 @@
+#!/bin/bash
 ###
 # #%L
 # **********************************************************************
@@ -34,27 +35,32 @@ echo "-------------------------------------------"
 # ----------------------------------
 # COPY SOURCES TO TARGET FOLDER
 # ----------------------------------
+mkdir -p target/native
 cp -R src/main/native target
 cd target/native
 
-echo "-------------------------------------------"
-echo " -- INSTALLING PREREQUISITES"
-echo "-------------------------------------------"
-sudo chmod +x install-prerequisites.sh
-./install-prerequisites.sh
+ARCHITECTURE=$(uname -m)
+echo "PLATFORM ARCH: $ARCHITECTURE"
+if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
+   echo "-------------------------------------------"
+   echo " -- INSTALLING PREREQUISITES ON PI"
+   echo "-------------------------------------------"
+
+   chmod +x install-prerequisites.sh
+   ./install-prerequisites.sh
+fi
 
 echo "-------------------------------------------"
 echo " -- BUILDING LATEST WIRINGPI"
 echo "-------------------------------------------"
-sudo chmod +x wiringpi-build.sh
-./wiringpi-build.sh
-
+chmod +x wiringpi-build.sh
+./wiringpi-build.sh $@
 
 echo "-------------------------------------------"
 echo " -- COMPILING LIBPI4J.SO JNI NATIVE LIBRARY"
 echo "-------------------------------------------"
 make clean
-make all
+make all $@
 
 echo "-------------------------------------------"
 echo " -- COPYING FINAL LIBPI4J.SO TO TARGET"

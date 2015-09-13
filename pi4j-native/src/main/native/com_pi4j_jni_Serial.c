@@ -551,7 +551,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setBreak
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setRTS
   (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
 {
-  int status;
+  int status = 0;
   int ret;
 
   status |= TIOCM_RTS;
@@ -583,7 +583,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setRTS
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setDTR
   (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
 {
-  int status;
+  int status = 0;
   int ret;
 
   status |= TIOCM_DTR;
@@ -616,7 +616,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRTS
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -628,11 +627,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRTS
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_RTS)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_RTS) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 /*
@@ -644,7 +641,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDTR
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -656,11 +652,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDTR
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_DTR)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_DTR) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 /*
@@ -672,7 +666,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCTS
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -684,11 +677,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCTS
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_CTS)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_CTS) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 /*
@@ -700,7 +691,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDSR
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -712,11 +702,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getDSR
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_DSR)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_DSR) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 /*
@@ -728,7 +716,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRI
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -740,11 +727,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getRI
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_RI)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_RI) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 /*
@@ -756,7 +741,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCD
   (JNIEnv *env, jclass obj, jint fd)
 {
   int status;
-  int ret;
 
   // attempt to get status
   if (ioctl(fd, TIOCMGET, &status) == -1)
@@ -768,11 +752,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_jni_Serial_getCD
     throwIOException(env, err_message);
   }
   else {
-    if (status & TIOCM_CD)
-      return JNI_TRUE;
-    else
-      return JNI_FALSE;
+    return (status & TIOCM_CD) ? JNI_TRUE : JNI_FALSE;
   }
+  return JNI_FALSE;
 }
 
 

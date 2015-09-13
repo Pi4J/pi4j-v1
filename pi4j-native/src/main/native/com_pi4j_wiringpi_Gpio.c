@@ -91,7 +91,18 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupPhys
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinMode
 (JNIEnv *env, jclass obj, jint pin, jint mode)
 {
-	return pinMode(pin, mode);
+	pinMode(pin, mode);
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pinModeAlt
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinModeAlt
+(JNIEnv *env, jclass obj, jint pin, jint mode)
+{
+	pinModeAlt(pin, mode);
 }
 
 /*

@@ -36,6 +36,20 @@
             </properties>
         </profile>
 
+		<!-- SPECIAL PROFILE TO SUPPORT CROSS-COMPILER BUILDS -->
+		<profile>
+			<id>cross-compile</id>
+			<activation>
+				<property>
+					<name>env.RPI_CROSS_COMPILE</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<pi4j-native-ant-build-target>build-libpi4j.so-cross-compile</pi4j-native-ant-build-target>
+			</properties>
+		</profile>
+
 		<!-- This profile is used to dynamically rebuild the native library .H 
 			header files from the defined JNI jar classes. This profile should only be 
 			used when changes have been made to the JNI Java wrapper classes and new 

@@ -8,10 +8,14 @@ TARGET=libpi4j.so
 #DEBUG	= -g -O0
 DEBUG	= -O3
 CC	= gcc
-INCLUDE	= -I/usr/lib/jvm/jdk-7-oracle-armhf/include -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux -I/usr/local/include -I/usr/local/include/linux
-CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
+INCLUDE	= -I. -IwiringPi/wiringPi -IwiringPi/devLib \
+          -I/$(JAVA_HOME)/include -I/$(JAVA_HOME)/include/linux \
+          -I/usr/lib/jvm/jdk-7-oracle-armhf/include -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux \
+          -I/usr/local/include -I/usr/local/include/linux
 
-LIBS    =  -L/usr/local/lib /usr/local/lib/libwiringPi.a /usr/local/lib/libwiringPiDev.a
+CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
+
+LIBS    =  -L. -LwiringPi/wiringPi -LwiringPi/devLib -L/usr/local/lib -lwiringPi -lwiringPiDev
 
 # Should not alter anything below this line
 ###############################################################################
@@ -62,7 +66,7 @@ $(TARGET):	$(OBJ)
 	@size   $(TARGET)
 
 .c.o:
-	@echo [COMPILE] "$(CC) -c $(CFLAGS)" $<
+	@echo [COMPILE] $<
 	@$(CC) -c $(CFLAGS) $< -o $@
 
 clean:

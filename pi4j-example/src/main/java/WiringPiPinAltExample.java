@@ -1,17 +1,9 @@
-package com.pi4j.gpio.extension.mcp;
-
-import java.util.EnumSet;
-
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.impl.PinImpl;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP4725Pin.java  
+ * PROJECT       :  Pi4J :: Java Examples
+ * FILENAME      :  WiringPiPinAltExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -34,29 +26,35 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+import com.pi4j.wiringpi.Gpio;
 
-/**
- * <p>
- * This GPIO provider implements the MCP4725 12-Bit Digital-to-Analog Converter as native Pi4J GPIO pins.
- * More information about the board can be found here:
- * http://http://www.adafruit.com/product/935
- * </p>
- *
- * <p>
- * The MCP4725 is connected via SPI connection to the Raspberry Pi and provides 1 GPIO analog output pin.
- * </p>
- *
- * @author Christian Wehrli
- * @version 1.0, Feb 11, 2014
- *
- */
-public class MCP4725Pin {
 
-    public static final Pin OUTPUT = createAnalogOutputPin(0, "ANALOG OUTPUT");
+public class WiringPiPinAltExample {
 
-    public static Pin[] ALL = { MCP4725Pin.OUTPUT };
+    public static void main(String args[]) throws InterruptedException {
+        int pin;
+        int dataPtr;
+        int l, s, d;
 
-    private static Pin createAnalogOutputPin(int address, String name) {
-        return new PinImpl(MCP4725GpioProvider.NAME, address, name, EnumSet.of(PinMode.ANALOG_OUTPUT));
+        System.out.println("<--Pi4J--> GPIO ALT MODE test program");
+
+        // setup wiringPi
+        if (Gpio.wiringPiSetup() == -1) {
+            System.out.println(" ==>> GPIO SETUP FAILED");
+            return;
+        }
+
+        // NOTE, this example does not really do anything visible, its just an usage example of settings ALT pin modes
+
+        // iterate through all the available pin modes
+        Gpio.pinMode (7, Gpio.INPUT);
+        Gpio.pinMode (7, Gpio.OUTPUT);
+        Gpio.pinMode (7, Gpio.ALT0);
+        Gpio.pinMode (7, Gpio.ALT1);
+        Gpio.pinMode (7, Gpio.ALT2);
+        Gpio.pinMode (7, Gpio.ALT3);
+        Gpio.pinMode (7, Gpio.ALT4);
+        Gpio.pinMode (7, Gpio.ALT5);
     }
 }
+

@@ -1,3 +1,4 @@
+#!/bin/bash
 ###
 # #%L
 # **********************************************************************
@@ -30,6 +31,7 @@
 # ----------------------------------
 # clone wiringPi from github
 # ----------------------------------
+rm -rf wiringPi
 git clone git://git.drogon.net/wiringPi
 cd wiringPi
 
@@ -37,29 +39,33 @@ cd wiringPi
 # uninstall any previous copies
 # ----------------------------------
 cd wiringPi
-sudo make uninstall
+#sudo -E make uninstall
 
 # ----------------------------------
 # build latest wiringPi 
 # ----------------------------------
-echo "wiringPi Build script"
-echo "====================="
 echo
-echo "Compiling WiringPi STATIC library"
-make static
-sudo make install
-sudo make install-static
+echo "============================"
+echo "wiringPi Build script"
+echo "============================"
+echo
+echo "Compiling wiringPi STATIC library"
+make clean
+make static -j5 $@
 
 # ----------------------------------
 # build latest wiringPi devLib
 # ----------------------------------
-cd ../devLib
-sudo make uninstall
-
+echo
+echo "============================"
 echo "wiringPi devLib Build script"
 echo "============================"
 echo
-echo "Compiling WiringPi devLib STATIC library"
-make static
-sudo make install
-sudo make install-static
+echo "Copying wiringPi header files and static lib"
+cd ../devLib
+cp ../wiringPi/*.h .
+cp ../wiringPi/*.a .
+echo "Compiling wiringPi devLib STATIC library"
+make clean
+make static -j5 $@
+echo
