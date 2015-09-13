@@ -88,7 +88,10 @@ public class W1Master {
                 return !name.contains("w1_bus_master");
             }
         });
-        return Arrays.asList(slaveDevices);
+        if (slaveDevices != null) {
+            return Arrays.asList(slaveDevices);
+        }
+        return Collections.emptyList();
     }
 
     /**
