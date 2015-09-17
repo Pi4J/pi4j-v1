@@ -11,7 +11,7 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP3004Pin.java  
+ * FILENAME      :  MCP3204Pin.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -38,28 +38,27 @@ import com.pi4j.io.gpio.impl.PinImpl;
 /**
  *
  * <p>
- * This GPIO provider implements the MCP3004 SPI GPIO expansion board as native Pi4J GPIO pins. It is a 10-bit ADC
- * providing 4 input channels. More information about the board can be found here: *
- * http://ww1.microchip.com/downloads/en/DeviceDoc/21295d.pdf
+ * This GPIO provider implements the MCP3204 SPI GPIO expansion board as native Pi4J GPIO pins. It is a 12-bit ADC
+ * providing 4 input channels.
  * </p>
  *
  * <p>
- * The MCP3004 is connected via SPI connection to the Raspberry Pi and provides 8 GPIO pins that can be used for analog
+ * The MCP3208 is connected via SPI connection to the Raspberry Pi and provides 8 GPIO pins that can be used for analog
  * input pins.
  * </p>
  *
- * @author pojd
+ * @author pojd, Hendrik Motza
  */
-public class MCP3004Pin {
+public class MCP3204Pin {
 
 	public static final Pin CH0 = createAnalogInputPin(0, "ANALOG INPUT 0");
 	public static final Pin CH1 = createAnalogInputPin(1, "ANALOG INPUT 1");
 	public static final Pin CH2 = createAnalogInputPin(2, "ANALOG INPUT 2");
 	public static final Pin CH3 = createAnalogInputPin(3, "ANALOG INPUT 3");
 
-	public static Pin[] ALL = { MCP3004Pin.CH0, MCP3004Pin.CH1, MCP3004Pin.CH2, MCP3004Pin.CH3 };
+	public static Pin[] ALL = { MCP3204Pin.CH0, MCP3204Pin.CH1, MCP3204Pin.CH2, MCP3204Pin.CH3 };
 
 	private static Pin createAnalogInputPin(final int channel, final String name) {
-		return new PinImpl(MCP3004GpioProvider.NAME, channel, name, EnumSet.of(PinMode.ANALOG_INPUT));
+		return new PinImpl(MCP3204GpioProvider.NAME, channel, name, EnumSet.of(PinMode.ANALOG_INPUT));
 	}
 }
