@@ -31,14 +31,19 @@ package com.pi4j.io.w1;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * @author Peter Schuebl
  */
 public class W1DummyDeviceType implements W1DeviceType {
+
+    public static final int FAMILY_ID = 0xFE;
+
     @Override
     public int getDeviceFamilyCode() {
-        return 0xFE;
+        return FAMILY_ID;
     }
 
     @Override
@@ -49,6 +54,19 @@ public class W1DummyDeviceType implements W1DeviceType {
     @Override
     public W1DummyDevice create(final File deviceDir) {
         return new W1DummyDevice(deviceDir);
+    }
+
+    static class W1DummyDevice extends W1BaseDevice {
+
+        @Override
+        public int getFamilyId() {
+            return FAMILY_ID;
+        }
+
+        public W1DummyDevice(final File deviceDir) {
+            super(deviceDir);
+        }
+
     }
 
 }

@@ -42,13 +42,30 @@ public interface W1Device {
      * Returns the name (id/serial number) of the device e.g. 28-00000698ebb1.
      * @return the unique device name.
      */
-    String getName();
-
     String getId();
 
     /**
-     * Gets the gurrent Value = content of w1_slave file
+     * Returns a human readable name.
+     * @return the human readable name, defaults to ID
+     */
+    String getName();
+
+    /**
+     * Returns the type/family of the device.
+     * @return device type, never null.
+     */
+    int getFamilyId();
+
+    /**
+     * Gets the current Value = content of w1_slave file
      * @return
      */
     String getValue() throws IOException;
+
+    /**
+     * W1Device should be considered equal based on their ID
+     */
+    boolean equals(Object obj);
+
+    int hashCode();
 }

@@ -26,14 +26,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import com.pi4j.component.temperature.impl.TmpDS18B20;
-import com.pi4j.component.temperature.impl.TmpDS18B20DeviceType;
-import com.pi4j.io.w1.W1Device;
+
+import com.pi4j.component.temperature.TemperatureSensor;
 import com.pi4j.io.w1.W1Master;
 import com.pi4j.temperature.TemperatureScale;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Peter Schuebl
@@ -46,7 +44,7 @@ public class W1TempExample {
 
         System.out.println(w1Master);
 
-        for (TmpDS18B20 device : w1Master.getDevices(TmpDS18B20.class)) {
+        for (TemperatureSensor device : w1Master.getDevices(TemperatureSensor.class)) {
             System.out.printf("%-20s %3.1f°C %3.1f°F\n", device.getName(), device.getTemperature(),
                     device.getTemperature(TemperatureScale.FARENHEIT));
         }

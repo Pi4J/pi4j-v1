@@ -5,9 +5,9 @@ package com.pi4j.io.w1;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  W1DummyDevice.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  W1Master.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,54 +17,29 @@ package com.pi4j.io.w1;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 /**
+ * Monitor the master for device changes (added/removed)
  * @author Peter Schuebl
  */
-public class W1DummyDevice implements W1Device {
+public class W1MasterWatcher {
 
-    private String name;
+    private W1Master w1Master;
 
-    private File deviceDir;
-
-    @Override
-    public String getName() {
-        return name;
+    public W1MasterWatcher(final W1Master w1Master) {
+        this.w1Master = w1Master;
     }
 
-    @Override
-    public String getId() {
-        return deviceDir.getName();
-    }
 
-    public W1DummyDevice(final File deviceDir) {
-        try {
-            name = new String(Files.readAllBytes(new File(deviceDir, "name").toPath()));
-        } catch (IOException e) {
-            // FIXME logging
-            name = deviceDir.getName();
-        }
-        this.deviceDir = deviceDir;
-    }
-
-    @Override
-    public String getValue() throws IOException {
-        return new String(Files.readAllBytes(new File(deviceDir, "w1_slave").toPath()));
-    }
 }

@@ -30,12 +30,14 @@ package com.pi4j.component.temperature.impl;
  */
 
 
+import com.pi4j.component.temperature.TemperatureSensor;
 import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -54,11 +56,53 @@ public class TmpDS18B20Test {
 
     @Test
     public void testDevices() {
-        System.out.println(master.toString());
+        //System.out.println(master.toString());
         final List<W1Device> devices = master.getDevices(TmpDS18B20DeviceType.FAMILY_CODE);
         assertEquals(2, devices.size());
         for (W1Device device : devices) {
-            System.out.println(((TmpDS18B20) device).getTemperature());
+            System.out.println(((TemperatureSensor) device).getTemperature());
         }
+    }
+
+    public void testName() throws URISyntaxException {
+        final String id = "28-00000698ebb1";
+        TmpDS18B20DeviceType.TmpDS18B20 device = createDevice(id);
+        device.setName("My Sensor");
+
+        assertEquals("My Sensor", device.getName());
+        assertEquals(id, device.getId());
+
+    }
+
+    private TmpDS18B20DeviceType.TmpDS18B20 createDevice(String id) throws URISyntaxException {
+        final TmpDS18B20DeviceType deviceType = new TmpDS18B20DeviceType();
+        final URI uri = TmpDS18B20Test.class.getResource("/w1/sys/bus/w1/devices/" + id).toURI();
+        final File deviceDir = new File(uri);
+        return deviceType.create(deviceDir);
+    }
+
+
+    @Test
+    public void testEquals() throws Exception {
+        final W1Device w1Devicea1 = createDevice("28-00000698ebb1");
+        final W1Device w1Devicea2 = createDevice("28-00000698ebb2");
+
+        assertTrue(w1Devicea1.equals(w1Devicea2));
+
+        final W1Device w1Deviceb = createDevice("28-00000698ebb2");
+        assertFalse(w1Devicea1.equals(w1Deviceb));
+        assertFalse(w1Devicea1.equals(null));
+
+        assertFalse(w1Devicea1.equals("123"));
+    }
+
+    @Test
+    public void testHashCode() throws Exception {
+        final W1Device w1Devicea1 = createDevice("28-00000698ebb1");
+        final W1Device w1Devicea2 = createDevice("28-00000698ebb2");
+        assertEquals(w1Devicea1.hashCode(), w1Devicea2.hashCode());
+
+        final W1Device w1Deviceb = createDevice("28-00000698ebb2");
+        assertNotEquals(w1Devicea1.hashCode(), w1Deviceb.hashCode());
     }
 }
