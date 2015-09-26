@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  PCA9685GpioServoExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PCA9685GpioServoExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -44,7 +44,7 @@ import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * Simple servo tester application demonstrating Pi4J's Servo component.
- * 
+ *
  * @author Christian Wehrli
  * @see Servo
  * @see com.pi4j.gpio.extension.pca.PCA9685GpioProvider
@@ -98,6 +98,8 @@ public class PCA9685GpioServoExample {
                     break;
             }
         }
+
+        System.out.println("Exiting PCA9685GpioServoExample");
     }
 
     private static char readCommand(Scanner scanner) {
@@ -129,7 +131,7 @@ public class PCA9685GpioServoExample {
     //------------------------------------------------------------------------------------------------------------------
     private final PCA9685GpioProvider gpioProvider;
     private final PCA9685GpioServoProvider gpioServoProvider;
-    
+
     private final Servo[] servos;
     private int activeServo;
 
@@ -138,9 +140,9 @@ public class PCA9685GpioServoExample {
 
         // Define outputs in use for this example
         provisionPwmOutputs(gpioProvider);
-        
+
         gpioServoProvider = new PCA9685GpioServoProvider(gpioProvider);
-        
+
         servos = new Servo[16];
 
         // Provide servo on channel 0
@@ -412,7 +414,7 @@ public class PCA9685GpioServoExample {
     private PCA9685GpioProvider createProvider() throws IOException {
         BigDecimal frequency = PCA9685GpioProvider.ANALOG_SERVO_FREQUENCY;
         BigDecimal frequencyCorrectionFactor = new BigDecimal("1.0578");
-        
+
         I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
         return new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
     }

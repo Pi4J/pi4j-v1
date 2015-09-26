@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BroadcomPinNumberingGpioExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  BroadcomPinNumberingGpioExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,14 +31,14 @@ import com.pi4j.io.gpio.*;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Raspberry Pi.  
- * 
+ * control of a GPIO pin on the Raspberry Pi.
+ *
  * @author Robert Savage
  */
 public class BroadcomPinNumberingGpioExample {
-    
+
     public static void main(String[] args) throws InterruptedException {
-        
+
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
 
         // in order to use the Broadcom GPIO pin numbering scheme, we need to configure the
@@ -47,7 +47,7 @@ public class BroadcomPinNumberingGpioExample {
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
-        
+
         // provision broadcom gpio pin #02 as an output pin and turn on
         final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiBcmPin.GPIO_02, "MyLED", PinState.HIGH);
 
@@ -57,7 +57,7 @@ public class BroadcomPinNumberingGpioExample {
         System.out.println("--> GPIO state should be: ON");
 
         Thread.sleep(5000);
-        
+
         // turn off gpio pin #01
         pin.low();
         System.out.println("--> GPIO state should be: OFF");
@@ -73,16 +73,18 @@ public class BroadcomPinNumberingGpioExample {
         // toggle the current state of gpio pin #01  (should turn off)
         pin.toggle();
         System.out.println("--> GPIO state should be: OFF");
-        
+
         Thread.sleep(5000);
 
         // turn on gpio pin #01 for 1 second and then off
         System.out.println("--> GPIO state should be: ON for only 1 second");
         pin.pulse(1000, true); // set second argument to 'true' use a blocking call
-        
+
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
+
+        System.out.println("Exiting BroadcomPinNumberingGpioExample");
     }
 }
 //END SNIPPET: control-gpio-snippet
