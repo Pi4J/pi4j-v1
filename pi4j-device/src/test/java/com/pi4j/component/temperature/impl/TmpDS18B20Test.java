@@ -33,9 +33,7 @@ package com.pi4j.component.temperature.impl;
 import com.pi4j.component.temperature.TemperatureSensor;
 import com.pi4j.io.w1.W1Device;
 import com.pi4j.io.w1.W1Master;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -62,7 +60,8 @@ public class TmpDS18B20Test {
         final List<W1Device> devices = master.getDevices(TmpDS18B20DeviceType.FAMILY_CODE);
         assertEquals(2, devices.size());
         for (W1Device device : devices) {
-            System.out.println(((TemperatureSensor) device).getTemperature());
+            //System.out.println(((TemperatureSensor) device).getTemperature());
+            assertTrue((((TemperatureSensor) device).getTemperature()) > 20.0);
         }
     }
 
@@ -83,11 +82,10 @@ public class TmpDS18B20Test {
         return deviceType.create(deviceDir);
     }
 
-    @Ignore
     @Test
     public void testEquals() throws Exception {
         final W1Device w1Devicea1 = createDevice("28-00000698ebb1");
-        final W1Device w1Devicea2 = createDevice("28-00000698ebb2");
+        final W1Device w1Devicea2 = createDevice("28-00000698ebb1");
 
         assertTrue(w1Devicea1.equals(w1Devicea2));
 
@@ -98,11 +96,10 @@ public class TmpDS18B20Test {
         assertFalse(w1Devicea1.equals("123"));
     }
 
-    @Ignore
     @Test
     public void testHashCode() throws Exception {
         final W1Device w1Devicea1 = createDevice("28-00000698ebb1");
-        final W1Device w1Devicea2 = createDevice("28-00000698ebb2");
+        final W1Device w1Devicea2 = createDevice("28-00000698ebb1");
         assertEquals(w1Devicea1.hashCode(), w1Devicea2.hashCode());
 
         final W1Device w1Deviceb = createDevice("28-00000698ebb2");
