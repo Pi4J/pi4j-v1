@@ -35,8 +35,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -71,17 +70,91 @@ public class W1MasterTest {
         final List<W1Device> devices = master.getDevices();
         assertEquals(1, devices.size());
         final W1Device dummyDevice = devices.get(0);
-        assertTrue(dummyDevice instanceof W1DummyDevice);
+        assertTrue(dummyDevice instanceof W1DummyDeviceType.W1DummyDevice);
         assertEquals("FE-00000698ebb3 Dummy Device", dummyDevice.getName());
     }
 
     @Test
+    public void testCheckDeviceChanges() throws URISyntaxException {
+        W1MasterDummy master = new W1MasterDummy();
+
+        assertEquals(0, master.getDevices().size());
+        final DummyDevice d1 = new DummyDevice("1");
+        final DummyDevice d2 = new DummyDevice("2");
+        master.setReadDevices(Arrays.<W1Device>asList(d1, d2));
+        assertEquals(0, master.getDevices().size());
+
+        master.checkDeviceChanges();
+        assertEquals(2, master.getDevices().size());
+
+        final DummyDevice d3 = new DummyDevice("3");
+        final DummyDevice d4 = new DummyDevice("4");
+        master.setReadDevices(Arrays.<W1Device>asList(d1, d3, d4));
+        master.checkDeviceChanges();
+        List<W1Device> devices = master.getDevices();
+        assertEquals(3, devices.size());
+        assertTrue(devices.contains(d1));
+        assertTrue(devices.contains(d3));
+        assertTrue(devices.contains(d4));
+
+        master.checkDeviceChanges();
+        assertEquals(3, master.getDevices().size());
+
+        master.setReadDevices(Collections.<W1Device>emptyList());
+        master.checkDeviceChanges();
+        assertEquals(0, master.getDevices().size());
+
+
+
+    }
+
+    @Test
     public void thereShouldBeNoDevicesForFamily28() {
-        assertEquals(0, master.getDevices("28").size());
+        assertEquals(0, master.getDevices(0x28).size());
     }
 
     @Test
     public void thereShouldBeOneDummyDevicesForFamilyFE() {
-        assertEquals(1, master.getDevices("FE").size());
+        assertEquals(1, master.getDevices(W1DummyDeviceType.FAMILY_ID).size());
+    }
+
+    static class DummyDevice extends W1BaseDevice {
+
+        public DummyDevice(String id) {
+            super(new File("FD-" + id));
+        }
+
+        @Override
+        public int getFamilyId() {
+            return 0xFD;
+        }
+
+        @Override
+        public String toString() {
+            return getId();
+        }
+    }
+
+    static class W1MasterDummy extends W1Master {
+
+
+        List<W1Device> readDevices = new ArrayList<>();
+
+        public W1MasterDummy() {
+            super("");
+        }
+
+        @Override
+        <T extends W1Device> List<T> readDevices() {
+            if (readDevices == null) { // during construction
+                readDevices = new ArrayList<>();
+            }
+            return (List<T>) readDevices;
+        }
+
+        public void setReadDevices(List<W1Device> readDevices) {
+            this.readDevices = new ArrayList<>();
+            this.readDevices.addAll(readDevices);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.pi4j.io.w1;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 /*
@@ -43,10 +44,12 @@ public class W1Master {
 
     private File masterDir = new File("/sys/bus/w1/devices");
 
+    private List<W1Device> devices = new CopyOnWriteArrayList<>();
+
     /**
      * Create an instance of the W1 master.
      * Typically there should only be one master.
-     *
+     * <p/>
      * java.util.ServiceLoader is used to add device support for individual devices.
      */
     public W1Master() {
@@ -55,6 +58,7 @@ public class W1Master {
 
     /**
      * Create a master with a different default dir e.g. for tests.
+     *
      * @param masterDir
      */
     public W1Master(final String masterDir) {
@@ -71,10 +75,40 @@ public class W1Master {
             final String deviceFamily = Integer.toHexString(w1DeviceType.getDeviceFamilyCode()).toUpperCase();
             deviceTypeMap.put(deviceFamily, w1DeviceType);
         }
+        devices.addAll(readDevices());
+    }
+
+    public void checkDeviceChanges() {
+        final List<W1Device> refreshedDevices = new ArrayList<>();
+        final List<W1Device> removedDevices = new ArrayList<>();
+
+        refreshedDevices.addAll(readDevices());
+
+        for (W1Device device : devices) {
+            if (!refreshedDevices.contains(device)) {
+                removedDevices.add(device);
+            }
+        }
+        refreshedDevices.removeAll(devices);
+
+        final int newCount = refreshedDevices.size();
+        final int removedCount = removedDevices.size();
+        if (newCount > 0) {
+            log.fine("found " + newCount + " new device(s): " + refreshedDevices);
+        }
+
+        if (removedCount > 0) {
+            log.fine("removed " + removedCount + " device(s): " + removedDevices);
+        }
+
+        devices.addAll(refreshedDevices);
+        devices.removeAll(removedDevices);
+
     }
 
     /**
      * Gets a list of the available device types.
+     *
      * @return
      */
     public Collection<W1DeviceType> getDeviceTypes() {
@@ -96,42 +130,86 @@ public class W1Master {
 
     /**
      * Gets a list of all registered slave device ids.
+     *
      * @return list of slave ids, can be empty, never null.
      */
     public List<String> getDeviceIDs() {
-        List<String> ids = new ArrayList<>();
-        for (File deviceDir: getDeviceDirs()) {
+        final List<String> ids = new ArrayList<>();
+        for (final File deviceDir : getDeviceDirs()) {
             ids.add(deviceDir.getName());
         }
+        /*
+        //for (final W1Device device: devices) {
+                ids.add(device.getId());
+         */
         return ids;
     }
 
+    /**
+     * Get the list of available devices.
+     *
+     * @return returns an unmodifiable list of W1Devices.
+     */
     public List<W1Device> getDevices() {
-        return getDevices((String)null);
+        return Collections.unmodifiableList(devices);
     }
 
-    public List<W1Device> getDevices(int deviceFamilyId) {
-        return getDevices(Integer.toHexString(deviceFamilyId));
+    public <T extends W1Device> List<T> getDevices(int deviceFamilyId) {
+        List<W1Device> filteredDevices = new ArrayList<>();
+        for (W1Device device : devices) {
+            if (deviceFamilyId == device.getFamilyId()) {
+                filteredDevices.add(device);
+            }
+        }
+        return (List<T>) filteredDevices;
     }
 
-    public <T extends W1Device> List<T> getDevices(String deviceFamilyId) {
+    <T extends W1Device> List<T> readDevices() {
         List<W1Device> devices = new ArrayList<>();
-        for (File deviceDir: getDeviceDirs()) {
+        for (File deviceDir : getDeviceDirs()) {
             String id = deviceDir.getName().substring(0, 2).toUpperCase();
-            if (deviceFamilyId == null || deviceFamilyId.toUpperCase().equals(id)) {
-                final W1DeviceType w1DeviceType = deviceTypeMap.get(id);
-                if (w1DeviceType != null) {
-                    final W1Device w1Device = w1DeviceType.create(deviceDir);
-                    devices.add(w1Device);
-                } else {
-                    log.info("no device type for [" + id + "] found - ignoring");
-                }
+            final W1DeviceType w1DeviceType = deviceTypeMap.get(id);
+            if (w1DeviceType != null) {
+                final W1Device w1Device = w1DeviceType.create(deviceDir);
+                devices.add(w1Device);
+            } else {
+                log.info("no device type for [" + id + "] found - ignoring");
             }
         }
         return (List<T>) devices;
     }
+    /*
+    public <T extends W1Device> List<T> getDevices(final String deviceFamilyId) {
+        List<W1Device> devices = new ArrayList<>();
+        for (W1Device device : readDevices()) {
 
-    public <T extends W1Device> List<T> getDevices(Class<T> type) {
+            if (deviceFamilyId == null || deviceFamilyId.toUpperCase().equals(device.getId())) {
+                devices.add(device);
+            }
+        }
+        return (List<T>) devices;
+    }
+    */
+
+    /**
+     * Get a list of devices that implement a certain interface.
+     *
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> getDevices(Class<T> type) {
+        final List<W1Device> allDevices = getDevices();
+        List<T> filteredDevices = new ArrayList<>();
+        for (W1Device device : allDevices) {
+            if (type.isAssignableFrom(device.getClass())) {
+                filteredDevices.add((T) device);
+            }
+        }
+        return filteredDevices;
+    }
+
+    public <T extends W1Device> List<T> getW1Devices(Class<T> type) {
         for (W1DeviceType deviceType : deviceTypes) {
             if (deviceType.getDeviceClass().equals(type)) {
                 return (List<T>) getDevices(deviceType.getDeviceFamilyCode());
