@@ -40,8 +40,17 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-08-31 :: 1.1-SNAPSHOT
+2015-09-26 :: 1.1-SNAPSHOT
 
+  *  Added W1 (1 wire) support.
+  *  Added MCP3204 ADC implementation and example code.
+  *  Added MCP3208 ADC implementation and example code.
+  *  Added MCP3004 ADC implementation and example code.
+  *  Updated MCP3008 ADC implementation and example code.
+  *  Updated MCP4725 DAC implementation and example code. 
+  *  Added ADC change background monitoring thread and event notifications.  
+  *  Fixed SPI issue where internal buffer was limited to 2048 bytes.  Dynamically allocated now.
+  *  Added optimizations for GPIO state change latency
   *  Added Gpio.pinModeAlt() method to the WiringPi wrappers to set pins to any ALT mode.
   *  Added cross-compiler support in Maven build
   *  Added cross-compiler shell script

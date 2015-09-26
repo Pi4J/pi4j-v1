@@ -391,7 +391,7 @@
 										<sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
 											password="${pi.password.dev}" trust="true" failonerror="false"
 											verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
-												
+
 										<!-- copy the DEB file to the Raspberry Pi -->
 										<scp
 											file="${project.build.directory}/pi4j-${project.version}.deb"
@@ -441,7 +441,7 @@
 							<goal>single</goal>
 						</goals>
 					</execution>
-        		</executions>				
+        		</executions>
 			</plugin>
 		</plugins>
 	</build>

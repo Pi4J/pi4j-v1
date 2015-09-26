@@ -3,7 +3,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  MCP3008GpioExample.java  
+ * FILENAME      :  MCP3204GpioExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -27,8 +27,8 @@
  * #L%
  */
 import com.pi4j.gpio.extension.base.AdcGpioProvider;
-import com.pi4j.gpio.extension.mcp.MCP3008GpioProvider;
-import com.pi4j.gpio.extension.mcp.MCP3008Pin;
+import com.pi4j.gpio.extension.mcp.MCP3204GpioProvider;
+import com.pi4j.gpio.extension.mcp.MCP3204Pin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinAnalogInput;
@@ -39,43 +39,39 @@ import com.pi4j.io.spi.SpiChannel;
 /**
  * <p>
  * This example code demonstrates how to setup a custom GpioProvider
- * for analog output pin using the MCP3008 ADC chip.
+ * for analog output pin using the MCP3204 ADC chip.
  * </p>
  *
  * <p>
- * This GPIO provider implements the MCP3008 10-Bit Analog-to-Digital Converter (ADC) as native Pi4J GPIO pins.
+ * This GPIO provider implements the MCP3204 12-Bit Analog-to-Digital Converter (ADC) as native Pi4J GPIO pins.
  * </p>
  *
  * <p>
- * The MCP3008 is connected via SPI connection to the Raspberry Pi and provides 8 GPIO analog input pins.
+ * The MCP3204 is connected via SPI connection to the Raspberry Pi and provides 4 GPIO analog input pins.
  * </p>
  *
- * @author Christian Wehrli, Robert Savage
+ * @author Robert Savage
  */
-public class MCP3008GpioExample {
+public class MCP3204GpioExample {
 
     public static void main(String args[]) throws Exception {
 
-        System.out.println("<--Pi4J--> MCP3008 ADC Example ... started.");
+        System.out.println("<--Pi4J--> MCP3204 ADC Example ... started.");
 
         // Create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // Create custom MCP3008 analog gpio provider
+        // Create custom MCP3204 analog gpio provider
         // we must specify which chip select (CS) that that ADC chip is physically connected to.
-        final AdcGpioProvider provider = new MCP3008GpioProvider(SpiChannel.CS0);
+        final AdcGpioProvider provider = new MCP3204GpioProvider(SpiChannel.CS0);
 
-        // Provision gpio analog input pins for all channels of the MCP3008.
+        // Provision gpio analog input pins for all channels of the MCP3204.
         // (you don't have to define them all if you only use a subset in your project)
         final GpioPinAnalogInput inputs[] = {
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH0, "MyAnalogInput-CH0"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH1, "MyAnalogInput-CH1"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH2, "MyAnalogInput-CH2"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH3, "MyAnalogInput-CH3"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH4, "MyAnalogInput-CH4"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH5, "MyAnalogInput-CH5"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH6, "MyAnalogInput-CH6"),
-                gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH7, "MyAnalogInput-CH7")
+                gpio.provisionAnalogInputPin(provider, MCP3204Pin.CH0, "MyAnalogInput-CH0"),
+                gpio.provisionAnalogInputPin(provider, MCP3204Pin.CH1, "MyAnalogInput-CH1"),
+                gpio.provisionAnalogInputPin(provider, MCP3204Pin.CH2, "MyAnalogInput-CH2"),
+                gpio.provisionAnalogInputPin(provider, MCP3204Pin.CH3, "MyAnalogInput-CH3")
         };
 
 
