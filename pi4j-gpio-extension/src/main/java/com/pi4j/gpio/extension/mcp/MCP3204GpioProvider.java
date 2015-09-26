@@ -5,7 +5,7 @@ package com.pi4j.gpio.extension.mcp;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP3004GpioProvider.java  
+ * FILENAME      :  MCP3204GpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -39,102 +39,101 @@ import com.pi4j.io.spi.SpiMode;
 /**
  *
  * <p>
- * This GPIO provider implements the MCP3004 SPI GPIO expansion board as native Pi4J GPIO pins. It is a 10-bit ADC
- * providing 4 input channels. More information about the board can be found here: -
- * http://ww1.microchip.com/downloads/en/DeviceDoc/21295d.pdf
+ * This GPIO provider implements the MCP3204 SPI GPIO expansion board as native Pi4J GPIO pins. It is a 12-bit ADC
+ * providing 4 input channels.
  * </p>
  *
  * <p>
- * The MCP3004 is connected via SPI connection to the Raspberry Pi and provides 4 GPIO pins that can be used for analog
- * input pins. The values returned are in the range 0-1023 (10 bit value).
+ * The MCP3204 is connected via SPI connection to the Raspberry Pi and provides 4 GPIO pins that can be used for analog
+ * input pins. The values returned are in the range 0-4095 (12 bit value).
  *
  * Note: This implementation currently only supports single-ended inputs.
  * </p>
  *
  * @author pojd, Hendrik Motza
  */
-public class MCP3004GpioProvider extends MCP3x0xGpioProvider implements AdcGpioProvider {
+public class MCP3204GpioProvider extends MCP3x0xGpioProvider implements AdcGpioProvider {
 
-	public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3004GpioProvider";
-	public static final String DESCRIPTION = "MCP3004 GPIO Provider";
+	public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP3204GpioProvider";
+	public static final String DESCRIPTION = "MCP3204 GPIO Provider";
 	public static final int INPUT_COUNT = 4;
-	public static final int RESOLUTION = 10;
+	public static final int RESOLUTION = 12;
 
 	/**
-	 * Create new instance of this MCP3004 provider with background monitoring and pin notification events enabled.
+	 * Create new instance of this MCP3204 provider with background monitoring and pin notification events enabled.
 	 *
 	 * @param channel
-	 *            spi channel the MCP3004 is connected to
+	 *            spi channel the MCP3204 is connected to
 	 * @throws IOException
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
-	public MCP3004GpioProvider(final SpiChannel channel) throws IOException {
+	public MCP3204GpioProvider(final SpiChannel channel) throws IOException {
 		this(channel, SpiDevice.DEFAULT_SPI_SPEED, SpiDevice.DEFAULT_SPI_MODE, true);
 	}
 
 	/**
-	 * Create new instance of this MCP3004 provider with background monitoring and pin notification events enabled.
+	 * Create new instance of this MCP3204 provider with background monitoring and pin notification events enabled.
 	 *
 	 * @param channel
-	 *            spi channel the MCP3004 is connected to
+	 *            spi channel the MCP3204 is connected to
 	 * @param speed
-	 *            spi speed to communicate with MCP3004
+	 *            spi speed to communicate with MCP3204
 	 * @throws IOException
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
-	public MCP3004GpioProvider(final SpiChannel channel, final int speed) throws IOException {
+	public MCP3204GpioProvider(final SpiChannel channel, final int speed) throws IOException {
 		this(channel, speed, SpiDevice.DEFAULT_SPI_MODE, true);
 	}
 
 	/**
-	 * Create new instance of this MCP3004 provider with background monitoring and pin notification events enabled.
+	 * Create new instance of this MCP3204 provider with background monitoring and pin notification events enabled.
 	 *
 	 * @param channel
-	 *            spi channel the MCP3004 is connected to
+	 *            spi channel the MCP3204 is connected to
 	 * @param mode
-	 *            spi mode to communicate with MCP3004
+	 *            spi mode to communicate with MCP3204
 	 * @throws IOException
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
-	public MCP3004GpioProvider(final SpiChannel channel, final SpiMode mode) throws IOException {
+	public MCP3204GpioProvider(final SpiChannel channel, final SpiMode mode) throws IOException {
 		this(channel, SpiDevice.DEFAULT_SPI_SPEED, mode, true);
 	}
 
 	/**
-	 * Create new instance of this MCP3004 provider with background monitoring and pin notification events enabled.
+	 * Create new instance of this MCP3204 provider with background monitoring and pin notification events enabled.
 	 *
 	 * @param channel
-	 *            spi channel the MCP3004 is connected to
+	 *            spi channel the MCP3204 is connected to
 	 * @param speed
-	 *            spi speed to communicate with MCP3004
+	 *            spi speed to communicate with MCP3204
 	 * @param mode
-	 *            spi mode to communicate with MCP3004
+	 *            spi mode to communicate with MCP3204
 	 * @throws IOException
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
-	public MCP3004GpioProvider(final SpiChannel channel, final int speed, final SpiMode mode) throws IOException {
+	public MCP3204GpioProvider(final SpiChannel channel, final int speed, final SpiMode mode) throws IOException {
 		this(channel, speed, mode, true);
 	}
 
 	/**
-	 * Create new instance of this MCP3004 provider. Optionally enable or disable background monitoring and pin
+	 * Create new instance of this MCP3204 provider. Optionally enable or disable background monitoring and pin
 	 * notification events.
 	 *
 	 * @param channel
-	 *            spi channel the MCP3004 is connected to
+	 *            spi channel the MCP3204 is connected to
 	 * @param speed
-	 *            spi speed to communicate with MCP3004
+	 *            spi speed to communicate with MCP3204
 	 * @param mode
-	 *            spi mode to communicate with MCP3004
+	 *            spi mode to communicate with MCP3204
 	 * @param enableBackgroundMonitoring
 	 *            if enabled, then a background thread will be created to constantly acquire the ADC input values and
 	 *            publish pin change listeners if the value change is beyond the configured threshold.
 	 * @throws IOException
 	 *             if an error occurs during initialization of the SpiDevice
 	 */
-	public MCP3004GpioProvider(final SpiChannel channel, final int speed, final SpiMode mode,
+	public MCP3204GpioProvider(final SpiChannel channel, final int speed, final SpiMode mode,
 			final boolean enableBackgroundMonitoring) throws IOException {
-		super(MCP3004Pin.ALL, channel, speed, RESOLUTION, mode);
+		super(MCP3204Pin.ALL, channel, speed, RESOLUTION, mode);
 
 		// default background monitoring interval
 		setMonitorInterval(DEFAULT_MONITOR_INTERVAL);
