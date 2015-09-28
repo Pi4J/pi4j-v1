@@ -24,6 +24,7 @@ SRC	=   com_pi4j_jni_Exception.c      \
         com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
 	    com_pi4j_jni_SerialInterrupt.c\
+	    com_pi4j_jni_WDT.c            \
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_I2C.c       \
@@ -43,6 +44,7 @@ OBJ	=   com_pi4j_jni_Exception.o      \
         com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
 	    com_pi4j_jni_SerialInterrupt.o\
+	    com_pi4j_jni_WDT.o         \
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
         com_pi4j_wiringpi_I2C.o       \
@@ -94,6 +96,7 @@ uninstall:
 
 # DO NOT DELETE
 com_pi4j_jni_Exception.o: com_pi4j_jni_Exception.h
+com_pi4j_jni_WDT.o: com_pi4j_jni_WDT.h
 com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_jni_SerialInterrupt.o: com_pi4j_jni_SerialInterrupt.h
