@@ -219,7 +219,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                     BitSet pinStates = BitSet.valueOf(buffer);
                     
                     // determine if there is a pin state difference
-                    for (int index = 0; index < pinStates.size(); index++) {
+                    for (int index = 0; index < PCF8574_MAX_IO_PINS; index++) {
                         if (pinStates.get(index) != currentStates.get(index)) {
                             Pin pin = PCF8574Pin.ALL[index];
                             PinState newState = (pinStates.get(index)) ? PinState.HIGH : PinState.LOW;
