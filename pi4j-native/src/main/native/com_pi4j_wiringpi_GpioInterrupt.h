@@ -64,6 +64,10 @@ jint GpioInterrupt_JNI_OnLoad(JavaVM *jvm);
  */
 void GpioInterrupt_JNI_OnUnload(JavaVM *jvm);
 
+/*
+ * GPIO JVM instance to perform callbacks on
+ */
+JavaVM *gpio_callback_jvm;
 
 #ifdef __cplusplus
 }

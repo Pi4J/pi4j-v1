@@ -40,8 +40,10 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-09-26 :: 1.1-SNAPSHOT
+2015-10-04 :: 1.1-SNAPSHOT
 
+  *  Fixed #180; WiringPiISR() callback causing native crash (NPE)
+  *  Added support for native Watchdog.
   *  Added W1 (1 wire) support.
   *  Added MCP3204 ADC implementation and example code.
   *  Added MCP3208 ADC implementation and example code.

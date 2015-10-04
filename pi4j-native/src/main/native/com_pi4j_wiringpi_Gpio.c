@@ -35,9 +35,6 @@
 
 /* Source for com_pi4j_wiringpi_Gpio */
 
-// java callback variables
-JavaVM *callback_jvm;
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    wiringPiSetup
@@ -48,7 +45,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetup
 {
 	return wiringPiSetup();
 }
-  
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
@@ -257,10 +253,10 @@ void CallbackWrapperFunc(int pin)
   {
     // get attached JVM
     JNIEnv *env;
-    (*callback_jvm)->AttachCurrentThread(callback_jvm, (void **)&env, NULL);
+    (*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL);
 
     // ensure that the JVM exists
-    if(callback_jvm != NULL)
+    if(gpio_callback_jvm != NULL)
     {
         // clear any exceptions on the stack
         (*env)->ExceptionClear(env);
@@ -275,7 +271,7 @@ void CallbackWrapperFunc(int pin)
     }
 
     // detach from thread
-    (*callback_jvm)->DetachCurrentThread(callback_jvm);
+    (*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm);
   }
   else
   {
