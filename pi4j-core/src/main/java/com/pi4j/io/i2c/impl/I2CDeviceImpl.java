@@ -28,7 +28,6 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -42,43 +41,6 @@ import com.pi4j.io.i2c.I2CDevice;
 public class I2CDeviceImpl implements I2CDevice {
 
 	/**
-	 * Base class for runnables used for writing data.
-	 * 
-	 * @see WriteByteRunnable
-	 * @see WriteBytesRunnable
-	 */
-	private static abstract class I2CDeviceImplRunnable<T> implements Callable<T> {
-
-		protected I2CDeviceImpl owner;
-		
-		protected int localAddress;
-				
-		public I2CDeviceImplRunnable(final I2CDeviceImpl owner, final int localAddress) {
-			this.owner = owner;
-			this.localAddress = localAddress;
-		}
-		
-		protected void handleErrorResults(final int ret, final boolean written) throws Exception {
-			
-            if (ret < 0) {
-            	final String desc;
-            	if (localAddress == -1) {
-            		desc = owner.makeDescription();
-            	} else {
-            		desc = owner.makeDescription(localAddress);
-            	}
-            	if (written) {
-            		throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
-            	} else {
-            		throw new IOException("Error reading from " + desc + ". Got '" + ret + "'.");
-            	}
-            }
-			
-		}
-		
-	}
-
-    /**
      * Reference to i2c bus
      */
     private I2CBusImpl bus;
@@ -114,117 +76,11 @@ public class I2CDeviceImpl implements I2CDevice {
      * 
      * @return The bus associated with this I2CDeviceImpl instance.
      */
-    private I2CBusImpl getBus() {
+    I2CBusImpl getBus() {
     	return bus;
     }
         
     /**
-     * Writes one byte to the bus.
-     *
-     * @see I2CDeviceImpl#write(byte)
-     * @see I2CDeviceImpl#write(int, byte)
-     */
-	private static class WriteByteRunnable extends I2CDeviceImplRunnable<Void> {
-		
-		private byte data;
-		
-		/**
-		 * @param owner The runnable's owner
-		 * @param data The byte to be written
-		 */
-		public WriteByteRunnable(final I2CDeviceImpl owner, final byte data) {
-			this(owner, -1, data);
-		}
-
-		/**
-		 * @param owner The runnable's owner
-		 * @param localAddress The register address where the byte has to be written to
-		 * @param data The byte to be written
-		 */
-		public WriteByteRunnable(final I2CDeviceImpl owner, 
-				final int localAddress, final byte data) {
-			super(owner, localAddress);
-			this.data = data;
-		}
-		
-		@Override
-		public Void call() throws Exception {
-
-            final int ret;
-            if (localAddress == -1) {
-            	ret = owner.getBus().writeByteDirect(owner, data);
-            } else {
-            	ret = owner.getBus().writeByte(owner, localAddress, data);
-            }
-
-            handleErrorResults(ret, true);
-            
-            return null;
-			
-		}
-		
-	}
-	
-    /**
-     * Writes n bytes to the bus.
-     *
-     * @see I2CDeviceImpl#write(byte[], int, int)
-     * @see I2CDeviceImpl#write(int, byte[], int, int)
-     */
-	private static class WriteBytesRunnable extends I2CDeviceImplRunnable<Void> {
-		
-		private byte[] data;
-		
-		private int offset;
-		
-		private int size;
-		
-		/**
-		 * @param owner The runnable's owner
-		 * @param data The bytes to be written
-		 * @param offset The offset where the bytes start within the data-array
-		 * @param size The number of bytes to be written
-		 */
-		public WriteBytesRunnable(final I2CDeviceImpl owner, final byte[] data,
-				final int offset, final int size) {
-			this(owner, -1, data, offset, size);
-		}
-
-		/**
-		 * @param owner The runnable's owner
-		 * @param localAddress The register address where the byte has to be written to
-		 * @param data The bytes to be written
-		 * @param offset The offset where the bytes start within the data-array
-		 * @param size The number of bytes to be written
-		 */
-		public WriteBytesRunnable(final I2CDeviceImpl owner, 
-				final int localAddress, final byte[] data,
-				final int offset, final int size) {
-			super(owner, localAddress);
-			this.data = data;
-			this.offset = offset;
-			this.size = size;
-		}
-		
-		@Override
-		public Void call() throws Exception {
-				
-            final int ret;
-            if (localAddress == -1) {
-            	ret = owner.getBus().writeBytesDirect(owner, size, offset, data);
-            } else {
-            	ret = owner.getBus().writeBytes(owner, localAddress, size, offset, data);
-            }
-            
-            handleErrorResults(ret, true);
-	            
-			return null;
-			
-		}
-		
-	}
-
-	/**
      * This method writes one byte to i2c device. 
      * 
      * @param data byte to be written
@@ -235,7 +91,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final byte data) throws IOException {
     	
     	bus.runActionOnExclusivLockedBus(
-    			new WriteByteRunnable(this, data));
+    			new I2CDeviceImplHelper.WriteByteCallable(this, data));
     	
     }
 
@@ -252,7 +108,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final byte[] data, final int offset, final int size) throws IOException {
 
     	bus.runActionOnExclusivLockedBus(
-    			new WriteBytesRunnable(this, data, offset, size));
+    			new I2CDeviceImplHelper.WriteBytesCallable(this, data, offset, size));
         
     }
 
@@ -268,7 +124,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final int address, final byte data) throws IOException {
 
     	bus.runActionOnExclusivLockedBus(
-    			new WriteByteRunnable(this, address, data));
+    			new I2CDeviceImplHelper.WriteByteCallable(this, address, data));
         
     }
 
@@ -286,132 +142,10 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final int address, final byte[] data, final int offset, final int size) throws IOException {
 
     	bus.runActionOnExclusivLockedBus(
-    			new WriteBytesRunnable(this, address, data, offset, size));
+    			new I2CDeviceImplHelper.WriteBytesCallable(this, address, data, offset, size));
         
     }
 
-    /**
-     * Reads one byte from the bus.
-     * 
-     * @see I2CDeviceImpl#read()
-     * @see I2CDeviceImpl#read(int)
-     */
-    private static class ReadByteRunnable extends I2CDeviceImplRunnable<Integer> {
-		
-		public ReadByteRunnable(I2CDeviceImpl owner) {
-			this(owner, -1);
-		}
-    	
-		public ReadByteRunnable(I2CDeviceImpl owner, int localAddress) {
-			super(owner, localAddress);
-		}
-
-		@Override
-		public Integer call() throws Exception {
-			
-			final Integer result;
-				
-            if (localAddress == -1) {
-            	result = owner.getBus().readByteDirect(owner);
-            } else {
-            	result = owner.getBus().readByte(owner, localAddress);
-            }
-
-            handleErrorResults(result, false);
-
-            return result;
-			
-		}
-    	
-    }
-
-    /**
-     * Reads n bytes from the bus.
-     * 
-     * @see I2CDeviceImpl#read(byte[], int, int)
-     * @see I2CDeviceImpl#read(int, byte[], int, int)
-     * @see I2CDeviceImpl#read(byte[], int, int, byte[], int, int)
-     */
-    private static class ReadBytesRunnable extends I2CDeviceImplRunnable<Integer> {
-		
-		private byte[] data;
-		
-		private int offset;
-		
-		private int size;
-		
-		private byte[] writeData;
-		
-		private int writeOffset;
-		
-		private int writeSize;
-    	
-		/**
-		 * @param owner The runnable's owner
-		 * @param data The buffer where the bytes read have to been stored
-		 * @param offset The offset where the bytes start within the data-array
-		 * @param size The number of bytes may be read at once
-		 */
-		public ReadBytesRunnable(final I2CDeviceImpl owner, final byte[] data,
-				final int offset, final int size) {
-			this(owner, -1, data, offset, size);
-		}
-		
-		/**
-		 * @param owner The runnable's owner
-		 * @param localAddress The register address where the byte has to be read from
-		 * @param data The buffer where the bytes read have to been stored
-		 * @param offset The offset where the bytes start within the data-array
-		 * @param size The number of bytes may be read at once
-		 */
-		public ReadBytesRunnable(final I2CDeviceImpl owner, final int localAddress,
-				final byte[] data, final int offset, final int size) {
-			super(owner, localAddress);
-			this.data = data;
-			this.offset = offset;
-			this.size = size;
-		}
-
-		/**
-		 * @param owner The runnable's owner
-		 * @param writeData The bytes to be written prior to reading
-		 * @param writeOffset The offset where the bytes start within the writeData-array
-		 * @param writeSize The number of bytes to be written
-		 * @param data The buffer where the bytes read have to been stored
-		 * @param offset The offset where the bytes start within the data-array
-		 * @param size The number of bytes may be read at once
-		 */
-		public ReadBytesRunnable(final I2CDeviceImpl owner,
-					final byte[] writeData, final int writeOffset, final int writeSize,
-					final byte[] data, final int offset, final int size) {
-			this(owner, -1, data, offset, size);
-			this.writeData = writeData;
-			this.writeOffset = writeOffset;
-			this.writeSize = writeSize;
-		}
-		
-		@Override
-		public Integer call() throws Exception {
-			
-			final Integer result;
-				
-			if (localAddress != -1) {
-    			result = owner.getBus().readBytes(owner, localAddress, size, offset, data);
-			} else  if (writeData == null) {
-				result = owner.getBus().readBytesDirect(owner, size, offset, data);
-			} else {
-				result = owner.getBus().writeAndReadBytesDirect(owner,
-						writeSize, writeOffset, writeData, size, offset, data);
-			}
-            
-            handleErrorResults(result, false);
-    
-			return result;
-			
-		}
-    	
-    }
-    
     /**
      * This method reads one byte from the i2c device.
      * Result is between 0 and 255 if read operation was successful, else a negative number for an error.
@@ -424,7 +158,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read() throws IOException {
 
     	return bus.runActionOnExclusivLockedBus(
-    			new ReadByteRunnable(this));
+    			new I2CDeviceImplHelper.ReadByteCallable(this));
         
     }
 
@@ -447,7 +181,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final byte[] data, final int offset, final int size) throws IOException {
 
     	return bus.runActionOnExclusivLockedBus(
-    			new ReadBytesRunnable(this, data, offset, size));
+    			new I2CDeviceImplHelper.ReadBytesCallable(this, data, offset, size));
         
     }
 
@@ -464,7 +198,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final int address) throws IOException {
 
     	return bus.runActionOnExclusivLockedBus(
-    			new ReadByteRunnable(this, address));
+    			new I2CDeviceImplHelper.ReadByteCallable(this, address));
         
     }
 
@@ -488,7 +222,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final int address, final byte[] data, final int offset, final int size) throws IOException {
 
     	return bus.runActionOnExclusivLockedBus(
-    			new ReadBytesRunnable(this, address, data, offset, size));
+    			new I2CDeviceImplHelper.ReadBytesCallable(this, address, data, offset, size));
         
     }
 
@@ -512,7 +246,7 @@ public class I2CDeviceImpl implements I2CDevice {
     		final int readSize) throws IOException {
 
     	return bus.runActionOnExclusivLockedBus(
-    			new ReadBytesRunnable(this, writeData, writeOffset, writeSize,
+    			new I2CDeviceImplHelper.ReadBytesCallable(this, writeData, writeOffset, writeSize,
     					readData, readOffset, readSize));
     	
     }
