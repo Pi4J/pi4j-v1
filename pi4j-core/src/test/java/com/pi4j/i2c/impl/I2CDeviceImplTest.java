@@ -38,6 +38,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +48,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.impl.I2CBusImpl;
 import com.pi4j.io.i2c.impl.I2CDeviceImpl;
-import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class I2CDeviceImplTest {
@@ -197,19 +196,18 @@ public class I2CDeviceImplTest {
 
 		// simple run runnable and return result. the original method
 		// adds locking but we want to test I2CDeviceImpl not I2CBusImpl!
-		when(bus.runActionOnExclusivLockedBus(any(I2CBus.I2CRunnable.class)))
+		when(bus.runActionOnExclusivLockedBus(any(Callable.class)))
 				.thenAnswer(new Answer<Object>() {
 					@Override
 					public Object answer(InvocationOnMock invocation)
 							throws Throwable {
-						I2CBus.I2CRunnable<Object> action = (I2CBus.I2CRunnable<Object>)
+						Callable<Object> action = (Callable<Object>)
 								invocation.getArguments()[0];
 						try {
-							action.run();
-						} catch (IOExceptionWrapperException e) {
-							throw e.getIOException();
+							return action.call();
+						} catch (IOException e) {
+							throw e;
 						}
-						return action.getResult();
 					}
 				});
 		

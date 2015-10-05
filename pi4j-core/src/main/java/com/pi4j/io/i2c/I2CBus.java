@@ -28,8 +28,7 @@ package com.pi4j.io.i2c;
  */
 
 import java.io.IOException;
-
-import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
+import java.util.concurrent.Callable;
 
 /**
  * This is abstraction of i2c bus. This interface allows the bus to return i2c device.
@@ -37,32 +36,6 @@ import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
  * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  */
 public interface I2CBus {
-
-	/**
-	 * Base-class for parameter 'action' of method 'runActionOnExclusivLockedBus'.
-	 *  
-	 * @param <T> The result-type
-	 * @see I2CBus#runActionOnExclusivLockedBus(I2CRunnable)
-	 * @see IOExceptionWrapperException
-	 */
-	static abstract class I2CRunnable<T> implements Runnable {
-		
-		/**
-		 * May be used as generic-type if there should be a void-result
-		 */
-		public static final class Void extends Object { };
-		
-		/**
-		 * The value which has to be returned by 'runActionOnExclusivLockedBus'.
-		 * Set this property within the 'run'-method.
-		 */
-		protected T result;
-		
-		public T getResult() {
-			return result;
-		}
-		
-	}
 
     public static final int BUS_0 = 0;
     public static final int BUS_1 = 1;
@@ -108,6 +81,6 @@ public interface I2CBus {
      * @throws IOException see method description above
      * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
      */
-    <T> T runActionOnExclusivLockedBus(I2CRunnable<T> action) throws IOException;
+    <T> T runActionOnExclusivLockedBus(Callable<T> action) throws IOException;
     
 }

@@ -28,8 +28,8 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
-import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
 /**
@@ -47,7 +47,7 @@ public class I2CDeviceImpl implements I2CDevice {
 	 * @see WriteByteRunnable
 	 * @see WriteBytesRunnable
 	 */
-	private static abstract class I2CDeviceImplRunnable<T> extends I2CBus.I2CRunnable<T> {
+	private static abstract class I2CDeviceImplRunnable<T> implements Callable<T> {
 
 		protected I2CDeviceImpl owner;
 		
@@ -130,30 +130,26 @@ public class I2CDeviceImpl implements I2CDevice {
 		}
 		
 		@Override
-		public void run() {
+		public Void call() throws Exception {
 
-			try {
-				
-	            final int ret;
-	            if (localAddress == -1) {
-	            	ret = owner.getBus().writeByteDirect(owner, data);
-	            } else {
-	            	ret = owner.getBus().writeByte(owner, localAddress, data);
-	            }
-	            
-	            if (ret < 0) {
-	            	final String desc;
-	            	if (localAddress == -1) {
-	            		desc = owner.makeDescription();
-	            	} else {
-	            		desc = owner.makeDescription(localAddress);
-	            	}
-	                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
-	            }
-	            
-			} catch (IOException e) {
-				throw new IOExceptionWrapperException(e);
-			}
+            final int ret;
+            if (localAddress == -1) {
+            	ret = owner.getBus().writeByteDirect(owner, data);
+            } else {
+            	ret = owner.getBus().writeByte(owner, localAddress, data);
+            }
+            
+            if (ret < 0) {
+            	final String desc;
+            	if (localAddress == -1) {
+            		desc = owner.makeDescription();
+            	} else {
+            		desc = owner.makeDescription(localAddress);
+            	}
+                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
+            }
+            
+            return null;
 			
 		}
 		
@@ -204,30 +200,26 @@ public class I2CDeviceImpl implements I2CDevice {
 		}
 		
 		@Override
-		public void run() {
-
-			try {
+		public Void call() throws Exception {
 				
-	            final int ret;
-	            if (localAddress == -1) {
-	            	ret = owner.getBus().writeBytesDirect(owner, size, offset, data);
-	            } else {
-	            	ret = owner.getBus().writeBytes(owner, localAddress, size, offset, data);
-	            }
+            final int ret;
+            if (localAddress == -1) {
+            	ret = owner.getBus().writeBytesDirect(owner, size, offset, data);
+            } else {
+            	ret = owner.getBus().writeBytes(owner, localAddress, size, offset, data);
+            }
+            
+            if (ret < 0) {
+            	final String desc;
+            	if (localAddress == -1) {
+            		desc = owner.makeDescription();
+            	} else {
+            		desc = owner.makeDescription(localAddress);
+            	}
+                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
+            }
 	            
-	            if (ret < 0) {
-	            	final String desc;
-	            	if (localAddress == -1) {
-	            		desc = owner.makeDescription();
-	            	} else {
-	            		desc = owner.makeDescription(localAddress);
-	            	}
-	                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
-	            }
-	            
-			} catch (IOException e) {
-				throw new IOExceptionWrapperException(e);
-			}
+			return null;
 			
 		}
 		
@@ -326,29 +318,27 @@ public class I2CDeviceImpl implements I2CDevice {
 		}
 		
 		@Override
-		public void run() {
+		public Integer call() throws Exception {
 			
-			try {
+			final Integer result;
 				
-	            if (localAddress == -1) {
-	            	result = owner.getBus().readByteDirect(owner);
-	            } else {
-	            	result = owner.getBus().readByte(owner, localAddress);
-	            }
-	            
-	            if (result < 0) {
-	            	final String desc;
-	            	if (localAddress == -1) {
-	            		desc = owner.makeDescription();
-	            	} else {
-	            		desc = owner.makeDescription(localAddress);
-	            	}
-	                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
-	            }
-    
-			} catch (IOException e) {
-				throw new IOExceptionWrapperException(e);
-			}
+            if (localAddress == -1) {
+            	result = owner.getBus().readByteDirect(owner);
+            } else {
+            	result = owner.getBus().readByte(owner, localAddress);
+            }
+            
+            if (result < 0) {
+            	final String desc;
+            	if (localAddress == -1) {
+            		desc = owner.makeDescription();
+            	} else {
+            		desc = owner.makeDescription(localAddress);
+            	}
+                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
+            }
+
+            return result;
 			
 		}
     	
@@ -423,32 +413,30 @@ public class I2CDeviceImpl implements I2CDevice {
 		}
 		
 		@Override
-		public void run() {
+		public Integer call() throws Exception {
 			
-			try {
+			final Integer result;
 				
-				if (localAddress != -1) {
-        			result = owner.getBus().readBytes(owner, localAddress, size, offset, data);
-				} else  if (writeData == null) {
-					result = owner.getBus().readBytesDirect(owner, size, offset, data);
-				} else {
-					result = owner.getBus().writeAndReadBytesDirect(owner,
-							writeSize, writeOffset, writeData, size, offset, data);
-				}
-	            
-	            if (result < 0) {
-	            	final String desc;
-	            	if (localAddress == -1) {
-	            		desc = owner.makeDescription();
-	            	} else {
-	            		desc = owner.makeDescription(localAddress);
-	            	}
-	                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
-	            }
-    
-			} catch (IOException e) {
-				throw new IOExceptionWrapperException(e);
+			if (localAddress != -1) {
+    			result = owner.getBus().readBytes(owner, localAddress, size, offset, data);
+			} else  if (writeData == null) {
+				result = owner.getBus().readBytesDirect(owner, size, offset, data);
+			} else {
+				result = owner.getBus().writeAndReadBytesDirect(owner,
+						writeSize, writeOffset, writeData, size, offset, data);
 			}
+            
+            if (result < 0) {
+            	final String desc;
+            	if (localAddress == -1) {
+            		desc = owner.makeDescription();
+            	} else {
+            		desc = owner.makeDescription(localAddress);
+            	}
+                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
+            }
+    
+			return result;
 			
 		}
     	

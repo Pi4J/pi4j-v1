@@ -42,8 +42,8 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ConcurrentModificationException;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
@@ -54,7 +54,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.impl.I2CBusImpl;
@@ -425,10 +424,10 @@ public class I2CBusImplTest {
 		
 		long before1 = System.currentTimeMillis();
 		boolean result1 = bus.runActionOnExclusivLockedBus(
-				new I2CBus.I2CRunnable<Boolean>() {
+				new Callable<Boolean>() {
 					@Override
-					public void run() {
-						result = true;
+					public Boolean call() throws Exception {
+						return true;
 					}
 				});
 		long time1 = System.currentTimeMillis() - before1;
@@ -441,10 +440,10 @@ public class I2CBusImplTest {
 		
 		long before2 = System.currentTimeMillis();
 		boolean result2 = bus.runActionOnExclusivLockedBus(
-				new I2CBus.I2CRunnable<Boolean>() {
+				new Callable<Boolean>() {
 					@Override
-					public void run() {
-						result = true;
+					public Boolean call() throws Exception {
+						return true;
 					}
 				});
 		long time2 = System.currentTimeMillis() - before2;
@@ -460,15 +459,15 @@ public class I2CBusImplTest {
 			public void run() {
 				try {
 					result3[0] = bus.runActionOnExclusivLockedBus(
-							new I2CBus.I2CRunnable<Boolean>() {
+							new Callable<Boolean>() {
 								@Override
-								public void run() {
-									result = true;
+								public Boolean call() throws Exception {
 									try {
 										Thread.sleep(100);
 									} catch (InterruptedException e) {
 										// never mind
 									}
+									return true;
 								}
 							});
 				} catch (Throwable e) {
@@ -481,10 +480,10 @@ public class I2CBusImplTest {
 		Thread.sleep(10);
 		long before3 = System.currentTimeMillis();
 		boolean result4 = bus.runActionOnExclusivLockedBus(
-				new I2CBus.I2CRunnable<Boolean>() {
+				new Callable<Boolean>() {
 					@Override
-					public void run() {
-						result = true;
+					public Boolean call() throws Exception {
+						return true;
 					}
 				});
 		long time3 = System.currentTimeMillis() - before3;
@@ -505,15 +504,15 @@ public class I2CBusImplTest {
 				try {
 					result7[0]
 							= bus.runActionOnExclusivLockedBus(
-							new I2CBus.I2CRunnable<Boolean>() {
+							new Callable<Boolean>() {
 								@Override
-								public void run() {
-									result = true;
+								public Boolean call() throws Exception {
 									try {
 										Thread.sleep(200);
 									} catch (InterruptedException e) {
 										// never mind
 									}
+									return true;
 								}
 							});
 				} catch (Throwable e) {
@@ -528,10 +527,10 @@ public class I2CBusImplTest {
 		boolean result8 = false;
 		try {
 			result8 = bus.runActionOnExclusivLockedBus(
-					new I2CBus.I2CRunnable<Boolean>() {
+					new Callable<Boolean>() {
 						@Override
-						public void run() {
-							result = true;
+						public Boolean call() throws Exception {
+							return true;
 						}
 					});
 		} catch (Exception e) {
@@ -565,16 +564,16 @@ public class I2CBusImplTest {
 					try {
 						result5[0]
 								= bus.runActionOnExclusivLockedBus(
-								new I2CBus.I2CRunnable<Boolean>() {
+								new Callable<Boolean>() {
 									@Override
-									public void run() {
-										result = true;
+									public Boolean call() throws Exception {
 										try {
 											long tts = rnd.nextInt(50) + 20;
 											Thread.sleep(tts);
 										} catch (InterruptedException e) {
 											// never mind
 										}
+										return true;
 									}
 								});
 					} catch (Throwable e) {
@@ -587,10 +586,10 @@ public class I2CBusImplTest {
 			Thread.sleep(10);
 			long before4 = System.currentTimeMillis();
 			boolean result6 = bus.runActionOnExclusivLockedBus(
-					new I2CBus.I2CRunnable<Boolean>() {
+					new Callable<Boolean>() {
 						@Override
-						public void run() {
-							result = true;
+						public Boolean call() throws Exception {
+							return true;
 						}
 					});
 			long time4 = System.currentTimeMillis() - before4;
@@ -612,18 +611,17 @@ public class I2CBusImplTest {
 		final boolean[] results = new boolean[] { false, false };
 		long before11 = System.currentTimeMillis();
 		results[0] = bus.runActionOnExclusivLockedBus(
-				new I2CBus.I2CRunnable<Boolean>() {
+				new Callable<Boolean>() {
 					@Override
-					public void run() {
-						result = true;
+					public Boolean call() throws Exception {
 						
 						try {
 							long before12 = System.currentTimeMillis();
 							results[1] = bus.runActionOnExclusivLockedBus(
-									new I2CBus.I2CRunnable<Boolean>() {
+									new Callable<Boolean>() {
 										@Override
-										public void run() {
-											result = true;
+										public Boolean call() throws Exception {
+											return true;
 										}
 									});
 							long time12 = System.currentTimeMillis() - before12;
@@ -634,6 +632,8 @@ public class I2CBusImplTest {
 						} catch (IOException e) {
 							throw new IOExceptionWrapperException(e);
 						}
+						
+						return true;
 						
 					}
 				});

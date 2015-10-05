@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -195,7 +196,7 @@ public abstract class I2CBusImpl implements I2CBus {
     }
     
     @Override
-    public <T> T runActionOnExclusivLockedBus(final I2CRunnable<T> action)
+    public <T> T runActionOnExclusivLockedBus(final Callable<T> action)
     		throws IOException {
     	
     	if (action == null) {
@@ -210,7 +211,7 @@ public abstract class I2CBusImpl implements I2CBus {
 	    	lock();
 	    	locked = true;
 	    	
-    		action.run();
+    		return action.call();
 	    
     	} catch (InterruptedException e) {
     		
@@ -218,8 +219,10 @@ public abstract class I2CBusImpl implements I2CBus {
     				+ busNumber, e);
     		throw new RuntimeException("Could not abtain an access-lock!", e);
     		
-    	} catch (IOExceptionWrapperException e) { // unwrap IOExceptionWrapperException
-    		throw e.getIOException();
+    	} catch (IOException e) { // unwrap IOExceptionWrapperException
+    		throw e;
+    	} catch (Exception e) { // unexpected exceptions
+    		throw new RuntimeException(e);
     	} finally {
     		
     		if (locked) {
@@ -231,8 +234,6 @@ public abstract class I2CBusImpl implements I2CBus {
     		}
     		
     	}
-    	
-    	return action.getResult();
     	
     }
 
