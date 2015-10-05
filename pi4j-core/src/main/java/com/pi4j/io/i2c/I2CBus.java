@@ -32,7 +32,7 @@ import java.io.IOException;
 import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
 
 /**
- * This is abstraction of i2c bus. This interface allows bus to return i2c device.
+ * This is abstraction of i2c bus. This interface allows the bus to return i2c device.
  * 
  * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  */

@@ -28,6 +28,7 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +80,7 @@ public abstract class I2CBusImpl implements I2CBus {
      * @return appropriate bus implementation
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
-    protected static I2CBus getBus(I2CBusImpl newInstanceCandidate)
+    protected static I2CBus getBus(final I2CBusImpl newInstanceCandidate)
     				throws UnsupportedBusNumberException, IOException {
     	
         final I2CBus bus;
@@ -143,6 +144,7 @@ public abstract class I2CBusImpl implements I2CBus {
     protected TimeUnit lockAquireTimeoutUnit;
     
     private final ReentrantLock accessLock = new ReentrantLock( true );
+    
     /**
      * @param busNumber used to identifiy the i2c bus within Pi4J
      * @result filename file name of device to be opened.
@@ -248,7 +250,6 @@ public abstract class I2CBusImpl implements I2CBus {
 		
 		logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
 		
-		// "or" means barging on a fair lock
 		if (accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
 			logger.log(Level.FINER, "I2CBusImpl-{0} locked", busNumber);
 		} else {
@@ -339,6 +340,8 @@ public abstract class I2CBusImpl implements I2CBus {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
 
+    	testWhetherBusIsLockedExclusive();
+    	
     	return I2C.i2cReadByteDirect(fd, device.getAddress());
     	
     }
@@ -352,6 +355,8 @@ public abstract class I2CBusImpl implements I2CBus {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
 
+    	testWhetherBusIsLockedExclusive();
+    	
     	return I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer);
     	
     }
@@ -363,6 +368,8 @@ public abstract class I2CBusImpl implements I2CBus {
     	if (device == null) {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
+
+    	testWhetherBusIsLockedExclusive();
 
     	return I2C.i2cReadByte(fd, device.getAddress(), localAddress);
 
@@ -377,6 +384,8 @@ public abstract class I2CBusImpl implements I2CBus {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
 
+    	testWhetherBusIsLockedExclusive();
+
     	return I2C.i2cReadBytes(fd, device.getAddress(), localAddress,
     			size, offset, buffer);
 
@@ -389,6 +398,8 @@ public abstract class I2CBusImpl implements I2CBus {
     	if (device == null) {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
+
+    	testWhetherBusIsLockedExclusive();
 
     	return I2C.i2cWriteByteDirect(data, device.getAddress(), data);
     	
@@ -403,6 +414,8 @@ public abstract class I2CBusImpl implements I2CBus {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
 
+    	testWhetherBusIsLockedExclusive();
+
     	return I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer);
     	
     }
@@ -414,6 +427,8 @@ public abstract class I2CBusImpl implements I2CBus {
     	if (device == null) {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
+
+    	testWhetherBusIsLockedExclusive();
 
     	return I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data);
     	
@@ -427,6 +442,8 @@ public abstract class I2CBusImpl implements I2CBus {
     	if (device == null) {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
+
+    	testWhetherBusIsLockedExclusive();
 
     	return I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
 
@@ -442,10 +459,20 @@ public abstract class I2CBusImpl implements I2CBus {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
     	
+    	testWhetherBusIsLockedExclusive();
+
     	return I2C.i2cWriteAndReadBytes(fd, device.getAddress(),
     			writeSize, writeOffset, writeBuffer,
     			readSize, readOffset, readBuffer);
     	
+    }
+    
+    private void testWhetherBusIsLockedExclusive() throws ConcurrentModificationException {
+
+    	if (!accessLock.isHeldByCurrentThread()) {
+    		throw new ConcurrentModificationException();
+    	}
+
     }
     
     private void testWhetherBusHasAlreadyBeenClosed() throws IOException {

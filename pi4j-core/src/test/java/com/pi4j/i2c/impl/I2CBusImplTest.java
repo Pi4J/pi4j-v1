@@ -41,6 +41,8 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ConcurrentModificationException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -221,10 +223,72 @@ public class I2CBusImplTest {
 				.withArguments(bus, DEVICE_ADDRESS);
 		
 		when(device.getAddress()).thenReturn(DEVICE_ADDRESS);
+
+		I2CDeviceImpl deviceImpl = (I2CDeviceImpl) device;
+
+		// test for required lock
+		
+		try {
+			bus.readByteDirect(deviceImpl);
+			fail("Calling 'readByteDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.readBytesDirect(deviceImpl, 0, 0, null);
+			fail("Calling 'readBytesDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.readByte(deviceImpl, 4711);
+			fail("Calling 'readByteDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.readBytes(deviceImpl, 4711, 0, 0, null);
+			fail("Calling 'readBytes' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.writeByteDirect(deviceImpl, (byte) 0);
+			fail("Calling 'writeByteDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.writeBytesDirect(deviceImpl, 0, 0, null);
+			fail("Calling 'writeBytesDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.writeByte(deviceImpl, 4711, (byte) 0);
+			fail("Calling 'writeByte' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.writeBytes(deviceImpl, 4711, 0, 0, null);
+			fail("Calling 'writeBytes' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
+		try {
+			bus.writeAndReadBytesDirect(deviceImpl, 0, 0, null, 0, 0, null);
+			fail("Calling 'writeAndReadBytesDirect' did not throw an RuntimeException although bus was not locked!");
+		} catch (RuntimeException e) {
+			// expected
+		}
 		
 		// test read-methods
 		
-		I2CDeviceImpl deviceImpl = (I2CDeviceImpl) device;
+		final Class<?> busClass = bus.getClass().getSuperclass();
+		final Method lock = busClass.getDeclaredMethod("lock");
+		lock.setAccessible(true);
+		lock.invoke(bus);
 		
 		int byteToRead = 123;
 		when(I2C.i2cReadByteDirect(anyInt(), eq(DEVICE_ADDRESS))).thenReturn(byteToRead);
@@ -347,7 +411,11 @@ public class I2CBusImplTest {
 		} catch (NullPointerException e) {
 			// expected
 		}
-				
+	
+		final Method unlock = busClass.getDeclaredMethod("unlock");
+		unlock.setAccessible(true);
+		unlock.invoke(bus);
+
 	}
 	
 	@Test
