@@ -333,15 +333,21 @@ public abstract class I2CBusImpl implements I2CBus {
         
     }
     
-    public int readByteDirect(final I2CDeviceImpl device) throws IOException {
-    	
+    private void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
+
     	testWhetherBusHasAlreadyBeenClosed();
 
     	if (device == null) {
     		throw new NullPointerException("Parameter 'device' is mandatory!");
     	}
-
+    	
     	testWhetherBusIsLockedExclusive();
+
+    }
+    
+    public int readByteDirect(final I2CDeviceImpl device) throws IOException {
+
+    	testForProperOperationConditions(device);
     	
     	return I2C.i2cReadByteDirect(fd, device.getAddress());
     	
@@ -350,13 +356,7 @@ public abstract class I2CBusImpl implements I2CBus {
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset,
     		final byte[] buffer) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
     	
     	return I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer);
     	
@@ -364,13 +364,7 @@ public abstract class I2CBusImpl implements I2CBus {
     
     public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
 
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cReadByte(fd, device.getAddress(), localAddress);
 
@@ -379,13 +373,7 @@ public abstract class I2CBusImpl implements I2CBus {
     public int readBytes(final I2CDeviceImpl device, final int localAddress,
     		final int size, final int offset, final byte[] buffer) throws IOException {
 
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cReadBytes(fd, device.getAddress(), localAddress,
     			size, offset, buffer);
@@ -394,13 +382,7 @@ public abstract class I2CBusImpl implements I2CBus {
     
     public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cWriteByteDirect(data, device.getAddress(), data);
     	
@@ -409,13 +391,7 @@ public abstract class I2CBusImpl implements I2CBus {
     public int writeBytesDirect(final I2CDeviceImpl device, final int size,
     		final int offset, final byte[] buffer) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer);
     	
@@ -423,13 +399,7 @@ public abstract class I2CBusImpl implements I2CBus {
     
     public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data);
     	
@@ -438,13 +408,7 @@ public abstract class I2CBusImpl implements I2CBus {
     public int writeBytes(final I2CDeviceImpl device, final int localAddress,
     		final int size, final int offset, final byte[] buffer) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
 
@@ -454,13 +418,7 @@ public abstract class I2CBusImpl implements I2CBus {
     		final int writeSize, final int writeOffset, final byte[] writeBuffer,
     		final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
     	
-    	testWhetherBusHasAlreadyBeenClosed();
-
-    	if (device == null) {
-    		throw new NullPointerException("Parameter 'device' is mandatory!");
-    	}
-    	
-    	testWhetherBusIsLockedExclusive();
+    	testForProperOperationConditions(device);
 
     	return I2C.i2cWriteAndReadBytes(fd, device.getAddress(),
     			writeSize, writeOffset, writeBuffer,
