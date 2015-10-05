@@ -69,7 +69,7 @@ public interface I2CBus {
      * a custom sequence of writes/reads.
      * <p>
      * The timeout used for the acquisition of the lock may be defined
-     * one getting the I2CBus from I2CFactory.
+     * on getting the I2CBus from I2CFactory.
 	 * <p>
 	 * The 'run'-method of 'action' may throw an 'IOExceptionWrapperException'
 	 * to wrap IOExceptions. The wrapped IOException is unwrapped by this method
