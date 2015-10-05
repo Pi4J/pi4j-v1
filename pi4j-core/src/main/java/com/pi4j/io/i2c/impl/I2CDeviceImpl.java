@@ -51,8 +51,29 @@ public class I2CDeviceImpl implements I2CDevice {
 
 		protected I2CDeviceImpl owner;
 		
-		public I2CDeviceImplRunnable(final I2CDeviceImpl owner) {
+		protected int localAddress;
+				
+		public I2CDeviceImplRunnable(final I2CDeviceImpl owner, final int localAddress) {
 			this.owner = owner;
+			this.localAddress = localAddress;
+		}
+		
+		protected void handleErrorResults(final int ret, final boolean written) throws Exception {
+			
+            if (ret < 0) {
+            	final String desc;
+            	if (localAddress == -1) {
+            		desc = owner.makeDescription();
+            	} else {
+            		desc = owner.makeDescription(localAddress);
+            	}
+            	if (written) {
+            		throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
+            	} else {
+            		throw new IOException("Error reading from " + desc + ". Got '" + ret + "'.");
+            	}
+            }
+			
 		}
 		
 	}
@@ -105,8 +126,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
 	private static class WriteByteRunnable extends I2CDeviceImplRunnable<Void> {
 		
-		private int localAddress;
-		
 		private byte data;
 		
 		/**
@@ -124,9 +143,8 @@ public class I2CDeviceImpl implements I2CDevice {
 		 */
 		public WriteByteRunnable(final I2CDeviceImpl owner, 
 				final int localAddress, final byte data) {
-			super(owner);
+			super(owner, localAddress);
 			this.data = data;
-			this.localAddress = localAddress;
 		}
 		
 		@Override
@@ -138,16 +156,8 @@ public class I2CDeviceImpl implements I2CDevice {
             } else {
             	ret = owner.getBus().writeByte(owner, localAddress, data);
             }
-            
-            if (ret < 0) {
-            	final String desc;
-            	if (localAddress == -1) {
-            		desc = owner.makeDescription();
-            	} else {
-            		desc = owner.makeDescription(localAddress);
-            	}
-                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
-            }
+
+            handleErrorResults(ret, true);
             
             return null;
 			
@@ -162,8 +172,6 @@ public class I2CDeviceImpl implements I2CDevice {
      * @see I2CDeviceImpl#write(int, byte[], int, int)
      */
 	private static class WriteBytesRunnable extends I2CDeviceImplRunnable<Void> {
-		
-		private int localAddress;
 		
 		private byte[] data;
 		
@@ -192,8 +200,7 @@ public class I2CDeviceImpl implements I2CDevice {
 		public WriteBytesRunnable(final I2CDeviceImpl owner, 
 				final int localAddress, final byte[] data,
 				final int offset, final int size) {
-			super(owner);
-			this.localAddress = localAddress;
+			super(owner, localAddress);
 			this.data = data;
 			this.offset = offset;
 			this.size = size;
@@ -209,15 +216,7 @@ public class I2CDeviceImpl implements I2CDevice {
             	ret = owner.getBus().writeBytes(owner, localAddress, size, offset, data);
             }
             
-            if (ret < 0) {
-            	final String desc;
-            	if (localAddress == -1) {
-            		desc = owner.makeDescription();
-            	} else {
-            		desc = owner.makeDescription(localAddress);
-            	}
-                throw new IOException("Error writing to " + desc + ". Got '" + ret + "'.");
-            }
+            handleErrorResults(ret, true);
 	            
 			return null;
 			
@@ -298,25 +297,15 @@ public class I2CDeviceImpl implements I2CDevice {
      * @see I2CDeviceImpl#read(int)
      */
     private static class ReadByteRunnable extends I2CDeviceImplRunnable<Integer> {
-    	
-		private int localAddress;
-    	
-		/**
-		 * @param owner The runnable's owner
-		 */
-		public ReadByteRunnable(final I2CDeviceImpl owner) {
+		
+		public ReadByteRunnable(I2CDeviceImpl owner) {
 			this(owner, -1);
 		}
-		
-		/**
-		 * @param owner The runnable's owner
-		 * @param localAddress The register address where the byte has to be read from
-		 */
-		public ReadByteRunnable(final I2CDeviceImpl owner, final int localAddress) {
-			super(owner);
-			this.localAddress = localAddress;
+    	
+		public ReadByteRunnable(I2CDeviceImpl owner, int localAddress) {
+			super(owner, localAddress);
 		}
-		
+
 		@Override
 		public Integer call() throws Exception {
 			
@@ -327,16 +316,8 @@ public class I2CDeviceImpl implements I2CDevice {
             } else {
             	result = owner.getBus().readByte(owner, localAddress);
             }
-            
-            if (result < 0) {
-            	final String desc;
-            	if (localAddress == -1) {
-            		desc = owner.makeDescription();
-            	} else {
-            		desc = owner.makeDescription(localAddress);
-            	}
-                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
-            }
+
+            handleErrorResults(result, false);
 
             return result;
 			
@@ -352,8 +333,6 @@ public class I2CDeviceImpl implements I2CDevice {
      * @see I2CDeviceImpl#read(byte[], int, int, byte[], int, int)
      */
     private static class ReadBytesRunnable extends I2CDeviceImplRunnable<Integer> {
-    	
-		private int localAddress;
 		
 		private byte[] data;
 		
@@ -387,8 +366,7 @@ public class I2CDeviceImpl implements I2CDevice {
 		 */
 		public ReadBytesRunnable(final I2CDeviceImpl owner, final int localAddress,
 				final byte[] data, final int offset, final int size) {
-			super(owner);
-			this.localAddress = localAddress;
+			super(owner, localAddress);
 			this.data = data;
 			this.offset = offset;
 			this.size = size;
@@ -426,15 +404,7 @@ public class I2CDeviceImpl implements I2CDevice {
 						writeSize, writeOffset, writeData, size, offset, data);
 			}
             
-            if (result < 0) {
-            	final String desc;
-            	if (localAddress == -1) {
-            		desc = owner.makeDescription();
-            	} else {
-            		desc = owner.makeDescription(localAddress);
-            	}
-                throw new IOException("Error reading from " + desc + ". Got '" + result + "'.");
-            }
+            handleErrorResults(result, false);
     
 			return result;
 			
