@@ -13,17 +13,19 @@ package com.pi4j.io.gpio;
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -53,19 +55,22 @@ public abstract class GpioProviderBase implements GpioProvider {
     public abstract String getName();
 
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<>();
-    protected final Map<Pin, GpioProviderPinCache> cache = new ConcurrentHashMap<>();
+
+    protected GpioProviderPinCache[] cache = new GpioProviderPinCache[100]; // support up to pin address 100
+
     protected boolean isshutdown = false;
-    
+
     @Override
     public boolean hasPin(Pin pin) {
         return (pin.getProvider().equals(getName()));
     }
-    
+
     protected GpioProviderPinCache getPinCache(Pin pin) {
-        if (!cache.containsKey(pin)) {
-            cache.put(pin, new GpioProviderPinCache(pin));
+        GpioProviderPinCache pc = cache[pin.getAddress()];
+        if(pc == null){
+            pc = cache[pin.getAddress()] = new GpioProviderPinCache(pin);
         }
-        return cache.get(pin);
+        return pc;
     }
 
     @Override
@@ -95,13 +100,13 @@ public abstract class GpioProviderBase implements GpioProvider {
         // cache mode
         getPinCache(pin).setMode(mode);
     }
-    
+
     @Override
     public boolean isExported(Pin pin) {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
-        
+
         // return cached exported state
         return getPinCache(pin).isExported();
     }
@@ -111,7 +116,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
-        
+
         // cache exported state
         getPinCache(pin).setExported(false);
     }
@@ -125,7 +130,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (!pin.getSupportedPinModes().contains(mode)) {
             throw new UnsupportedPinModeException(pin, mode);
         }
-        
+
         // cache mode
         getPinCache(pin).setMode(mode);
     }
@@ -139,18 +144,18 @@ public abstract class GpioProviderBase implements GpioProvider {
         // return cached mode value
         return getPinCache(pin).getMode();
     }
-    
-    
+
+
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
-        
+
         if (!pin.getSupportedPinPullResistance().contains(resistance)) {
             throw new UnsupportedPinPullResistanceException(pin, resistance);
         }
-        
+
         // cache resistance
         getPinCache(pin).setResistance(resistance);
     }
@@ -160,57 +165,52 @@ public abstract class GpioProviderBase implements GpioProvider {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
-        
+
         // return cached resistance
         return getPinCache(pin).getResistance();
     }
-    
+
     @Override
     public void setState(Pin pin, PinState state) {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 
-        PinMode mode = getMode(pin);
-        
-        // only permit invocation on pins set to DIGITAL_OUTPUT modes 
-        if (mode != PinMode.DIGITAL_OUTPUT) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + mode.getName() + "]");
+        GpioProviderPinCache pinCache = getPinCache(pin);
+
+        // only permit invocation on pins set to DIGITAL_OUTPUT modes
+        if (pinCache.getMode() != PinMode.DIGITAL_OUTPUT) {
+            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + pinCache.getMode().getName() + "]");
         }
 
         // for digital output pins, we will echo the event feedback
         dispatchPinDigitalStateChangeEvent(pin, state);
 
         // cache pin state
-        getPinCache(pin).setState(state);
+        pinCache.setState(state);
     }
 
     @Override
     public PinState getState(Pin pin) {
-        if (!hasPin(pin)) {
-            throw new InvalidPinException(pin);
-        }
-        
+        // the getMode() will validate the pin exists with the hasPin() function
         PinMode mode = getMode(pin);
 
-        // only permit invocation on pins set to DIGITAL modes 
+        // only permit invocation on pins set to DIGITAL modes
         if (!PinMode.allDigital().contains(mode)) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot getState() when pin mode is [" + mode.getName() + "]");
         }
 
         // return cached pin state
-        return getPinCache(pin).getState();           
+        return getPinCache(pin).getState();
     }
 
     @Override
     public void setValue(Pin pin, double value) {
-        if (!hasPin(pin)) {
-            throw new InvalidPinException(pin);
-        }
-        
+
+        // the getMode() will validate the pin exists with the hasPin() function
         PinMode mode = getMode(pin);
 
-        // only permit invocation on pins set to OUTPUT modes 
+        // only permit invocation on pins set to OUTPUT modes
         if (!PinMode.allOutput().contains(mode)) {
             throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setValue(" + value + ") when pin mode is [" + mode.getName() + "]");
         }
@@ -219,42 +219,39 @@ public abstract class GpioProviderBase implements GpioProvider {
         dispatchPinAnalogValueChangeEvent(pin, value);
 
         // cache pin analog value
-        getPinCache(pin).setAnalogValue(value);                        
+        getPinCache(pin).setAnalogValue(value);
     }
 
     @Override
     public double getValue(Pin pin) {
+        // the getMode() will validate the pin exists with the hasPin() function
+        PinMode mode = getMode(pin);
+
+        if (mode == PinMode.DIGITAL_OUTPUT) {
+            return getState(pin).getValue();
+        }
+
+        // return cached pin analog value
+        return getPinCache(pin).getAnalogValue();
+    }
+
+    @Override
+    public void setPwm(Pin pin, int value) {
         if (!hasPin(pin)) {
             throw new InvalidPinException(pin);
         }
 
         PinMode mode = getMode(pin);
-        
-        if (mode == PinMode.DIGITAL_OUTPUT) {
-            return getState(pin).getValue(); 
-        }
-        
-        // return cached pin analog value
-        return getPinCache(pin).getAnalogValue();                             
-    }
-    
-    @Override
-    public void setPwm(Pin pin, int value) {
-        if (!hasPin(pin)) {
-            throw new InvalidPinException(pin);        
-        }
-        
-        PinMode mode = getMode(pin);
 
         if (mode != PinMode.PWM_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
         }
-        
+
         // cache pin PWM value
-        getPinCache(pin).setPwmValue(value);                       
+        getPinCache(pin).setPwmValue(value);
     }
-    
-    
+
+
     @Override
     public int getPwm(Pin pin) {
         if (!hasPin(pin)) {
@@ -262,7 +259,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         }
 
         // return cached pin PWM value
-        return getPinCache(pin).getPwmValue();                           
+        return getPinCache(pin).getPwmValue();
     }
 
     @Override
@@ -280,7 +277,7 @@ public abstract class GpioProviderBase implements GpioProvider {
             }
         }
     }
-    
+
     @Override
     public void removeListener(Pin pin, PinListener listener) {
         synchronized (listeners) {
@@ -298,8 +295,8 @@ public abstract class GpioProviderBase implements GpioProvider {
                 }
             }
         }
-    }    
-    
+    }
+
     @Override
     public void removeAllListeners() {
         synchronized (listeners) {
@@ -321,48 +318,48 @@ public abstract class GpioProviderBase implements GpioProvider {
             }
         }
     }
-    
+
     protected void dispatchPinDigitalStateChangeEvent(Pin pin, PinState state) {
         // if the pin listeners map contains this pin, then dispatch event
         if (listeners.containsKey(pin)) {
             // dispatch this event to all listener handlers
             for (PinListener listener : listeners.get(pin)) {
                 listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
-            }            
+            }
         }
     }
-    
+
     protected void dispatchPinAnalogValueChangeEvent(Pin pin, double value) {
         // if the pin listeners map contains this pin, then dispatch event
         if (listeners.containsKey(pin)) {
             // dispatch this event to all listener handlers
             for (PinListener listener : listeners.get(pin)) {
                 listener.handlePinEvent(new PinAnalogValueChangeEvent(this, pin, value));
-            }            
+            }
         }
     }
-    
+
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
 
         // remove all listeners
         removeAllListeners();
-        
+
         // set shutdown tracking state variable
         isshutdown = true;
-    }     
-        
+    }
+
     /**
      * This method returns TRUE if the GPIO provider has been shutdown.
-     * 
+     *
      * @return shutdown state
      */
     @Override
     public boolean isShutdown(){
         return isshutdown;
-    }    
+    }
 }

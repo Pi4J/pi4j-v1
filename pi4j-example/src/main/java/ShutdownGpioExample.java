@@ -14,17 +14,19 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -37,39 +39,41 @@ import com.pi4j.io.gpio.RaspiPin;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Raspberry Pi.  
- * 
+ * control of a GPIO pin on the Raspberry Pi.
+ *
  * @author Robert Savage
  */
 public class ShutdownGpioExample {
-    
+
     public static void main(String[] args) throws InterruptedException {
-        
+
         System.out.println("<--Pi4J--> GPIO Shutdown Example ... started.");
-        
+
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
-        
+
         // provision gpio pin #01 as an output pin and turn on
         final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.HIGH);
-        
-        // configure the pin shutdown behavior; these settings will be 
+
+        // configure the pin shutdown behavior; these settings will be
         // automatically applied to the pin when the application is terminated
         pin.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
-        
+
         System.out.println("--> GPIO state should be: ON");
         System.out.println("    This program will automatically terminate in 10 seconds,");
         System.out.println("    or you can use the CTRL-C keystroke to terminate at any time.");
         System.out.println("    When the program terminates, the GPIO state should be shutdown and set to: OFF");
-        
+
         // wait 10 seconds
         Thread.sleep(10000);
-        
+
         System.out.println(" .. shutting down now ...");
-        
+
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
+
+        System.out.println("Exiting ShutdownGpioExample");
     }
 }
 //END SNIPPET: shutdown-gpio-snippet

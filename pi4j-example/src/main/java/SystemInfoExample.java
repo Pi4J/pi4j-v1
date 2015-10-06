@@ -14,17 +14,19 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -37,13 +39,13 @@ import java.text.ParseException;
 /**
  * This example code demonstrates how to access a few of the system information properties and
  * network information from the Raspberry Pi.
- * 
+ *
  * @author Robert Savage
  */
 public class SystemInfoExample {
-    
+
     public static void main(String[] args) throws InterruptedException, IOException, ParseException {
-        
+
         // display a few of the available system information properties
         System.out.println("----------------------------------------------------");
         System.out.println("HARDWARE INFO");
@@ -59,7 +61,7 @@ public class SystemInfoExample {
         System.out.println("Hardware Revision :  " + SystemInfo.getRevision());
         System.out.println("Is Hard Float ABI :  " + SystemInfo.isHardFloatAbi());
         System.out.println("Board Type        :  " + SystemInfo.getBoardType().name());
-        
+
         System.out.println("----------------------------------------------------");
         System.out.println("MEMORY INFO");
         System.out.println("----------------------------------------------------");
@@ -81,7 +83,7 @@ public class SystemInfoExample {
         System.out.println("OS Architecture   :  " + SystemInfo.getOsArch());
         System.out.println("OS Firmware Build :  " + SystemInfo.getOsFirmwareBuild());
         System.out.println("OS Firmware Date  :  " + SystemInfo.getOsFirmwareDate());
-        
+
         System.out.println("----------------------------------------------------");
         System.out.println("JAVA ENVIRONMENT INFO");
         System.out.println("----------------------------------------------------");
@@ -90,11 +92,11 @@ public class SystemInfoExample {
         System.out.println("Java Version      :  " + SystemInfo.getJavaVersion());
         System.out.println("Java VM           :  " + SystemInfo.getJavaVirtualMachine());
         System.out.println("Java Runtime      :  " + SystemInfo.getJavaRuntime());
-     
+
         System.out.println("----------------------------------------------------");
         System.out.println("NETWORK INFO");
         System.out.println("----------------------------------------------------");
-        
+
         // display some of the network information
         System.out.println("Hostname          :  " + NetworkInfo.getHostname());
         for (String ipAddress : NetworkInfo.getIPAddresses())
@@ -103,7 +105,7 @@ public class SystemInfoExample {
             System.out.println("FQDN              :  " + fqdn);
         for (String nameserver : NetworkInfo.getNameservers())
             System.out.println("Nameserver        :  " + nameserver);
-        
+
         System.out.println("----------------------------------------------------");
         System.out.println("CODEC INFO");
         System.out.println("----------------------------------------------------");
@@ -126,10 +128,11 @@ public class SystemInfoExample {
         System.out.println("VEC Frequency     :  " + SystemInfo.getClockFrequencyVEC());
         System.out.println("HDMI Frequency    :  " + SystemInfo.getClockFrequencyHDMI());
         System.out.println("DPI Frequency     :  " + SystemInfo.getClockFrequencyDPI());
-        
-            
+
+
         System.out.println();
         System.out.println();
+        System.out.println("Exiting SystemInfoExample");
     }
 }
 // END SNIPPET: system-info-snippet

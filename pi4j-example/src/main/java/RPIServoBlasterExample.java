@@ -11,17 +11,19 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 import com.pi4j.component.servo.ServoDriver;
@@ -33,26 +35,20 @@ public class RPIServoBlasterExample {
 
     public static void main(String[] args) throws Exception {
         ServoProvider servoProvider = new RPIServoBlasterProvider();
-        
         ServoDriver servo7 = servoProvider.getServoDriver(servoProvider.getDefinedServoPins().get(7));
-        
         long start = System.currentTimeMillis();
-        
+
         while (System.currentTimeMillis() - start < 120000) { // 2 minutes
-            
             for (int i = 50; i < 150; i++) {
                 servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
                 Thread.sleep(10);
             }
-            
             for (int i = 150; i > 50; i--) {
                 servo7.setServoPulseWidth(i); // Set raw value for this servo driver - 50 to 195
                 Thread.sleep(10);
             }
-            
         }
-        
+        System.out.println("Exiting RPIServoBlasterExample");
     }
-    
 }
 

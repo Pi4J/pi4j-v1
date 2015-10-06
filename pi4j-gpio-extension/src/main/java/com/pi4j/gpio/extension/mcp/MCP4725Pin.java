@@ -19,37 +19,42 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License"); you
- * may not use this file except in compliance with the License. You may obtain a copy of the License
- * at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 /**
  * <p>
  * This GPIO provider implements the MCP4725 12-Bit Digital-to-Analog Converter as native Pi4J GPIO pins.
- * More information about the board can be found here: 
+ * More information about the board can be found here:
  * http://http://www.adafruit.com/product/935
  * </p>
- * 
+ *
  * <p>
  * The MCP4725 is connected via SPI connection to the Raspberry Pi and provides 1 GPIO analog output pin.
  * </p>
- * 
+ *
  * @author Christian Wehrli
  * @version 1.0, Feb 11, 2014
- * 
+ *
  */
 public class MCP4725Pin {
 
     public static final Pin OUTPUT = createAnalogOutputPin(0, "ANALOG OUTPUT");
+
+    public static Pin[] ALL = { MCP4725Pin.OUTPUT };
 
     private static Pin createAnalogOutputPin(int address, String name) {
         return new PinImpl(MCP4725GpioProvider.NAME, address, name, EnumSet.of(PinMode.ANALOG_OUTPUT));

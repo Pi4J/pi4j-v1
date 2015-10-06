@@ -13,17 +13,19 @@ package com.pi4j.component.lcd;
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -42,8 +44,9 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     
     @Override
     public void clear() {
-        clear(0,0,getColumnCount());
-        clear(1,0,getColumnCount());
+	for(int i=0; i<getRowCount(); i++) {
+		clear(i,0,getColumnCount());
+	}
     }
     
     @Override
@@ -55,10 +58,11 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     @Override
     public void clear(int row, int column, int length){
         StringBuilder sb = new StringBuilder(getColumnCount());
-        for(int index = 0; index < getRowCount(); index++)
+        int maxLen = getColumnCount() - column; //Maximum length you can write spaces
+        for(int index = 0; (index < length && index < maxLen); index++) {
             sb.append(" ");
-        for(int index = 0; index < getRowCount(); index++)
-            write(index, 0, sb.toString());
+        }
+        write(row, column, sb.toString());
     }
     
     @Override

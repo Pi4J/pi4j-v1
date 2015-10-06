@@ -11,17 +11,19 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -78,6 +80,44 @@ static void changeOwner (char *file)
   }
 }
 
+int getExistingPinDirection(int edgePin)
+{
+	FILE *fd ;
+	char fName [128] ;
+	char data[RDBUF_LEN];
+
+	// construct the gpio direction file path
+	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+
+	// open the gpio direction file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		return -1;
+	}
+
+	// read the data from the file into the data buffer
+	if(fgets(data, RDBUF_LEN, fd) == NULL)
+	{
+		return -2;
+	}
+
+	// close the gpio direction file
+	fclose (fd) ;
+
+	// determine direction mode
+	if (strncasecmp(data, "in", 2) == 0)
+	{
+		return DIRECTION_IN;
+	}
+	else if (strncasecmp(data, "out", 3) == 0)
+	{
+		return DIRECTION_OUT;
+	}
+	else
+	{
+		return -3;
+	}
+}
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -351,7 +391,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 		char errstr[255];
 		sprintf (errstr, "Unsupported DIRECTION [%d] for GPIO pin [%d]\n", direction, pin) ;
 		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return;
+		return JNI_FALSE;
 	}
 
 	// close the direction file
@@ -360,7 +400,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 	// success
 	return (jboolean)1;
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -399,44 +438,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 	return direction;
 }
 
-int getExistingPinDirection(int edgePin)
-{
-	FILE *fd ;
-	char fName [128] ;
-	char data[RDBUF_LEN];
-
-	// construct the gpio direction file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
-
-	// open the gpio direction file
-	if ((fd = fopen (fName, "r")) == NULL)
-	{
-		return -1;
-	}
-
-	// read the data from the file into the data buffer
-	if(fgets(data, RDBUF_LEN, fd) == NULL)
-	{
-		return -2;
-	}
-
-	// close the gpio direction file
-	fclose (fd) ;
-
-	// determine direction mode
-	if (strncasecmp(data, "in", 2) == 0)
-	{
-		return DIRECTION_IN;
-	}
-	else if (strncasecmp(data, "out", 3) == 0)
-	{
-		return DIRECTION_OUT;
-	}
-	else
-	{
-		return -3;
-	}
-}
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil

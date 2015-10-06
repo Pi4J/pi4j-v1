@@ -14,23 +14,28 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2015-03-15]
+  [2015-04-18]
 
+  Version 1.0 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
 
-  The RELEASE CANDIDATE for Version 1.0 is now available.  Please report any defects/bugs that you find in
-  the release candidate builds via {{{https://github.com/Pi4J/pi4j/issues}GitHub}}.  No new features or enhancements
-  will be added to the release candidate version, only bug fixes.  Further enhancements and features will now be
-  contributed in the 1.1-SNAPSHOT builds.  (The release candidate codebase is now maintained in the 'master' branch.)\
+  Please note that with this release the project has changed licensing from the Apache Software License, Version 2 to
+  the GNU LGPL license, Version 3.0.  This change was necessary because the Pi4J release binaries are embedding the
+  WiringPi project (Pi4J now statically compiles against the WiringPi library) which is under GNU LGPL licensing.
+  Per the terms of Apache licensing, the licensed project cannot include components under LGPL licensing.
+  (<http://www.apache.org/legal/resolved.html>)
 
-  The 1.1-SNAPSHOT build includes a completely overhauled Serial communication implementation and API.
-  Thus please note that to add these enhancements some APIs required breaking changes where they may no longer be
-  backwards compatible with prior versions.  (This development codebase is now maintained in the 'develop' branch.)
+  New development and bug fixes will now be provided via the 1.1-SNAPSHOT builds and the latest development codebase
+  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/develop}develop}}' branch.
+
+  In addtition to maintenance and bug fixes, the 1.1-SNAPSHOT build also includes a completely overhauled Serial
+  communication API and implementation.  Please note that to add these serial API enhancements some APIs required
+  breaking changes where they may no longer be backwards compatible with prior versions.
 
 * Project Status
   
   Please note that this project is continually under development but has been very stable for well over a year.  The
-  functionality is very stable but improvements and bug fixes are continually committed into the 'develop' branch in
-  the Pi4J GitHub repository.
+  functionality is very stable but improvements and bug fixes are continually committed into the '{{{https://github.com/Pi4J/pi4j/tree/develop}develop}}' branch in
+  the Pi4J GitHub repository and SNAPSHOT builds are published in the {{{./download.html#Maven_Repository}Sonatype OSS repository}}.
   
   You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
   or ugly.  <(Well maybe keep the ugly feedback to a minimum.)>

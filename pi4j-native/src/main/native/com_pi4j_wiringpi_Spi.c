@@ -11,20 +11,23 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 #include <jni.h>
+#include <stdlib.h>
 #include <wiringPiSPI.h>
 #include "com_pi4j_wiringpi_Spi.h"
 
@@ -49,13 +52,28 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIGetFd
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang_String_2I
   (JNIEnv *env, jclass class, jint channel, jstring data, jint length)
 {
-	char buffer[2048];
-	int len = (*env)->GetStringUTFLength(env, data);
-	(*env)->GetStringUTFRegion(env, data, 0, len, buffer);
-	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+	char *buffer;
+
+    // get the number of total possible bytes in the UTF string
+	int bufferSize = (*env)->GetStringUTFLength(env, data);
+
+	// dynamically allocate buffer size
+    buffer = malloc(bufferSize);
+
+	// copy UTF string bytes to buffer
+	(*env)->GetStringUTFRegion(env, data, 0, length, buffer);
+
+	// SPI transfer (read/write) the data buffer
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, bufferSize);
+
+	// create a return string from the data buffer returned after SPI transfer (read/write)
 	jstring returnString = (*env)->NewStringUTF(env, buffer);
     data = returnString;
 
+    // free allocated buffer memory
+    free(buffer);
+
+    // return success/failure
 	return result;
 }
 
@@ -68,7 +86,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 (JNIEnv *env, jclass class, jint channel, jbyteArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes from the data array argument into a native unsigned character buffer
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
@@ -84,6 +105,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	}
 	(*env)->ReleaseByteArrayElements(env, data, body, 0);
 
+    // free allocated buffer memory
+    free(buffer);
+
 	return result;
 }
 
@@ -96,7 +120,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 (JNIEnv *env, jclass class, jint channel, jshortArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes (short values) from the data array argument into a native unsigned character buffer
 	jshort *body = (*env)->GetShortArrayElements(env, data, 0);
@@ -112,6 +139,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 		body[i] = buffer[i];
 	}
 	(*env)->ReleaseShortArrayElements(env, data, body, 0);
+
+    // free allocated buffer memory
+    free(buffer);
 
 	return result;
 }

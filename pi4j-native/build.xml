@@ -56,10 +56,19 @@
     <!-- this target is used when building maven project directly on the Raspberry Pi -->
     <target name="build-libpi4j.so-local">
         <echo message="Building native libpi4j shared library"/>
-        <exec command="sudo chmod +x build-local.sh" />
+        <exec command="chmod +x build-local.sh" />
         <exec executable="/bin/sh">
             <arg line="build-local.sh"/>
         </exec>
     </target>
+
+	<!-- this target is used when building maven project using the RPi cross-compiler -->
+	<target name="build-libpi4j.so-cross-compile">
+		<echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
+		<exec command="chmod +x build-local.sh" />
+		<exec executable="/bin/sh">
+			<arg line="build-local-cross-compile.sh"/>
+		</exec>
+	</target>
 
 </project>

@@ -13,17 +13,19 @@ package com.pi4j.gpio.extension.mcp;
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -77,7 +79,7 @@ public class MCP3008GpioProviderTestCase {
 		};
 		double result;
 		try {
-			result = mcpP3008Provider.getValue(inputPin);
+			result = mcpP3008Provider.getImmediateValue(inputPin);
 		} catch (Exception e) {
 			fail("No exception expected here, but got " + e);
 			e.printStackTrace();
@@ -87,20 +89,20 @@ public class MCP3008GpioProviderTestCase {
 		assertTrue(result < 0);
 	}
 
-	@Test
-	public void testReadReturnsValid() {
-		double result = mcpP3008Provider.getValue(inputPin);
-		assertEquals(511, result, 0.001);
-	}
-
-	@Test(expected = IOException.class)
-	public void testExceptionThrownDuringInitThrowsException() throws IOException {
-		new NonStrictExpectations() {
-			{
-				SpiFactory.getInstance(spiChannel);
-				result = new IOException("Some fake error");
-			}
-		};
-		new MCP3008GpioProvider(spiChannel);
-	}
+//	@Test
+//	public void testReadReturnsValid() throws IOException {
+//		double result = mcpP3008Provider.getImmediateValue(inputPin);
+//		assertEquals(511, result, 0.001);
+//	}
+//
+//	@Test(expected = IOException.class)
+//	public void testExceptionThrownDuringInitThrowsException() throws IOException {
+//		new NonStrictExpectations() {
+//			{
+//				SpiFactory.getInstance(spiChannel);
+//				result = new IOException("Some fake error");
+//			}
+//		};
+//		new MCP3008GpioProviderOld(spiChannel);
+//	}
 }

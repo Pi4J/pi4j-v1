@@ -13,17 +13,19 @@
  * %%
  * Copyright (C) 2012 - 2015 Pi4J
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
@@ -44,33 +46,33 @@ import java.io.IOException;
  * <p>
  * This example code demonstrates how to setup a custom GpioProvider
  * for GPIO pin state control and monitoring.
- * </p>  
- * 
+ * </p>
+ *
  * <p>
  * This example implements the MCP23017 GPIO expansion board.
  * More information about the board can be found here: *
  * http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
  * </p>
- * 
+ *
  * <p>
  * The MCP23017 is connected via I2C connection to the Raspberry Pi and provides
  * 16 GPIO pins that can be used for either digital input or digital output pins.
  * </p>
- * 
+ *
  * @author Robert Savage
  */
 public class PiFaceGpioExample {
-    
+
     public static void main(String args[]) throws InterruptedException, IOException {
-        
+
         System.out.println("<--Pi4J--> PiFace (MCP23017) GPIO Example ... started.");
-        
+
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
-        
+
         // create custom PiFace GPIO provider
         final PiFaceGpioProvider gpioProvider = new PiFaceGpioProvider(PiFaceGpioProvider.DEFAULT_ADDRESS, SpiChannel.CS0);
-        
+
         // provision gpio input pins from PiFaceGpioProvider
         GpioPinDigitalInput myInputs[] = {
                 gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_00),
@@ -82,7 +84,7 @@ public class PiFaceGpioExample {
                 gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_06),
                 gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_07)
             };
-        
+
         // create and register gpio pin listener
         gpio.addListener(new GpioPinListenerDigital() {
             @Override
@@ -92,9 +94,9 @@ public class PiFaceGpioExample {
                         + event.getState());
             }
         }, myInputs);
-        
+
         // provision gpio output pins and make sure they are all LOW at startup
-        GpioPinDigitalOutput myOutputs[] = { 
+        GpioPinDigitalOutput myOutputs[] = {
             gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_00),
             gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_01),
             gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_02),
@@ -104,7 +106,7 @@ public class PiFaceGpioExample {
             gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_06),
             gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_07),
           };
-        
+
         // keep program running for 20 seconds
         for (int count = 0; count < 10; count++) {
             gpio.setState(true, myOutputs);
@@ -112,10 +114,12 @@ public class PiFaceGpioExample {
             gpio.setState(false, myOutputs);
             Thread.sleep(1000);
         }
-        
+
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
+
+        System.out.println("Exiting PiFaceGpioExample");
     }
 }
 

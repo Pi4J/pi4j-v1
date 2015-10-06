@@ -8,10 +8,14 @@ TARGET=libpi4j.so
 #DEBUG	= -g -O0
 DEBUG	= -O3
 CC	= gcc
-INCLUDE	= -I/usr/lib/jvm/jdk-7-oracle-armhf/include -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux -I/usr/local/include -I/usr/local/include/linux
-CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(LIBS) 
+INCLUDE	= -I. -IwiringPi/wiringPi -IwiringPi/devLib \
+          -I/$(JAVA_HOME)/include -I/$(JAVA_HOME)/include/linux \
+          -I/usr/lib/jvm/jdk-7-oracle-armhf/include -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux \
+          -I/usr/local/include -I/usr/local/include/linux
 
-LIBS    =  -L/usr/local/lib /usr/local/lib/libwiringPi.a /usr/local/lib/libwiringPiDev.a
+CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
+
+LIBS    =  -L. -LwiringPi/wiringPi -LwiringPi/devLib -L/usr/local/lib -lwiringPi -lwiringPiDev
 
 # Should not alter anything below this line
 ###############################################################################
@@ -20,6 +24,7 @@ SRC	=   com_pi4j_jni_Exception.c      \
         com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
 	    com_pi4j_jni_SerialInterrupt.c\
+	    com_pi4j_jni_WDT.c            \
 	    com_pi4j_wiringpi_Gpio.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_I2C.c       \
@@ -39,6 +44,7 @@ OBJ	=   com_pi4j_jni_Exception.o      \
         com_pi4j_jni_I2C.o            \
 	    com_pi4j_jni_Serial.o         \
 	    com_pi4j_jni_SerialInterrupt.o\
+	    com_pi4j_jni_WDT.o         \
 	    com_pi4j_wiringpi_Gpio.o      \
         com_pi4j_wiringpi_Serial.o    \
         com_pi4j_wiringpi_I2C.o       \
@@ -62,7 +68,7 @@ $(TARGET):	$(OBJ)
 	@size   $(TARGET)
 
 .c.o:
-	@echo [COMPILE] "$(CC) -c $(CFLAGS)" $<
+	@echo [COMPILE] $<
 	@$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
@@ -90,6 +96,7 @@ uninstall:
 
 # DO NOT DELETE
 com_pi4j_jni_Exception.o: com_pi4j_jni_Exception.h
+com_pi4j_jni_WDT.o: com_pi4j_jni_WDT.h
 com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_jni_SerialInterrupt.o: com_pi4j_jni_SerialInterrupt.h
