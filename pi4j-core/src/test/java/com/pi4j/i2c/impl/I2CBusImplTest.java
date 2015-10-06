@@ -58,7 +58,6 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.impl.I2CBusImpl;
 import com.pi4j.io.i2c.impl.I2CDeviceImpl;
-import com.pi4j.io.i2c.impl.IOExceptionWrapperException;
 import com.pi4j.jni.I2C;
 
 @RunWith(PowerMockRunner.class)
@@ -630,7 +629,9 @@ public class I2CBusImplTest {
 							assertTrue("It seems that the bus was locked because running the Runnable "
 									+ "took more time than expected!", time12 < DEFAULT_TIMEOUT);
 						} catch (IOException e) {
-							throw new IOExceptionWrapperException(e);
+							throw e;
+						} catch (Exception e) {
+							throw new RuntimeException(e);
 						}
 						
 						return true;
