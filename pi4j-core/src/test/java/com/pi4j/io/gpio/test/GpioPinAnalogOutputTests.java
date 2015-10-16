@@ -28,14 +28,12 @@ package com.pi4j.io.gpio.test;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-
 import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.Random;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
@@ -53,8 +51,8 @@ public class GpioPinAnalogOutputTests {
     private static GpioController gpio;
     private static GpioPinAnalogOutput pin;
     
-    @BeforeClass 
-    public static void setup() {
+    @Before 
+    public void setup() {
         // create a mock gpio provider and controller
         gpio = MockGpioFactory.getInstance();
         
