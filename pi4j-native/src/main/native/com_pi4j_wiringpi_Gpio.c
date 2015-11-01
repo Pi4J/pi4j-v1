@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_Gpio.c  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  com_pi4j_wiringpi_Gpio.c
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -240,8 +240,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 // monitoring thread data structure
 struct callback_data{
     int pin;
-    jclass class;
-    jmethodID method;
+    jobject interface;
 };
 
 // monitoring thread data structure array
@@ -261,8 +260,22 @@ void CallbackWrapperFunc(int pin)
         // clear any exceptions on the stack
         (*env)->ExceptionClear(env);
 
-        // invoke the callback method in the callback interface
-        (*env)->CallVoidMethod(env, callbacks[pin].class, callbacks[pin].method, pin);
+        // verify that the callback interface class still exists
+        jclass clbk_class = (*env)->GetObjectClass(env, callbacks[pin].interface);
+        if(clbk_class == NULL){
+            printf("NATIVE (wiringPiISR) ERROR; JNI 'CallbackWrapperFunc' could not find 'callback' class.\n");
+        }
+        else{
+            // verify that the callback method class still exists
+            jmethodID clbk_method = (*env)->GetMethodID(env, clbk_class, "callback", "(I)V");
+            if(clbk_method == NULL){
+                printf("NATIVE (wiringPiISR) ERROR; JNI 'CallbackWrapperFunc' could not get 'callback' method id.\n");
+            }
+            else{
+                // invoke the callback method in the callback interface
+                (*env)->CallVoidMethod(env, clbk_class, clbk_method, pin);
+            }
+        }
 
         // clear any user caused exceptions on the stack
         if((*env)->ExceptionCheck(env)){
@@ -355,8 +368,8 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
     }
 
     // setup pin callback data structure
-    callbacks[pin].class = clbk_class;
-    callbacks[pin].method = clbk_method;
+    callbacks[pin].pin = pin;
+    callbacks[pin].interface = callbackInterface;
 
     if(pin > MAX_GPIO_PINS)
     {
