@@ -40,10 +40,6 @@ import com.pi4j.temperature.TemperatureScale;
 
 public class TemperatureConversionTests {
 
-    @BeforeClass 
-    public static void setup() {
-    }
-
     // **********************************************
     // FARENHEIT CONVERSION TESTS
     // **********************************************

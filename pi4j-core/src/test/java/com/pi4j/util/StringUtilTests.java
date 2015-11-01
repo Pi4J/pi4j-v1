@@ -37,10 +37,6 @@ import org.junit.Test;
 
 public class StringUtilTests {
 
-    @BeforeClass 
-    public static void setup() {
-    }
-
     @Test
     public void testIsNullOrEmpty() {
         assertTrue(StringUtil.isNullOrEmpty(null));
