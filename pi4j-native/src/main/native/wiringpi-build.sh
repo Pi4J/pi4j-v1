@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/bin/bash -e
 ###
 # #%L
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
 # PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  wiringpi-build.sh  
-# 
-# This file is part of the Pi4J project. More information about 
+# FILENAME      :  wiringpi-build.sh
+#
+# This file is part of the Pi4J project. More information about
 # this project can be found here:  http://www.pi4j.com/
 # **********************************************************************
 # %%
@@ -28,44 +28,81 @@
 # #L%
 ###
 
+# -- RASPBERRY PI --
+# set default wiringPi repository URL if not already defined
+if [ -z $WIRINGPI_REPO ]; then
+    WIRINGPI_REPO=git://git.drogon.net/wiringPi
+fi
+# set default wiringPi repository branch if not already defined
+if [ -z $WIRINGPI_BRANCH ]; then
+	WIRINGPI_BRANCH=master
+fi
+# set default wiringPi directory if not already defined
+if [ -z WIRINGPI_DIRECTORY ]; then
+	WIRINGPI_DIRECTORY=wiringPi
+fi
+
+echo "============================"
+echo "Building wiringPi Library   "
+echo "============================"
+echo "REPOSITORY : $WIRINGPI_REPO"
+echo "BRANCH     : $WIRINGPI_BRANCH"
+echo "DIRECTORY  : $WIRINGPI_DIRECTORY"
+
 # ----------------------------------
 # clone wiringPi from github
 # ----------------------------------
 rm -rf wiringPi
-git clone git://git.drogon.net/wiringPi
+git clone $WIRINGPI_REPO -b $WIRINGPI_BRANCH wiringPi
 cd wiringPi
 
-# ----------------------------------
-# uninstall any previous copies
-# ----------------------------------
-cd wiringPi
-#sudo -E make uninstall
+# get wiringPi version
+# (NOTE: The Lemaker (BananaPi) and Hardkernel (Odroid) versions of WiringPi
+#  are a bit outdated and do not have the VERSION file in the repo.)
+if [ -f VERSION ]; then
+  WIRINGPI_VERSION=$(cat VERSION)
+else
+  WIRINGPI_VERSION=2.0
+fi
+
+# create target directories to hold compiled libraries
+mkdir -p lib/static
+mkdir -p lib/dynamic
+
 
 # ----------------------------------
-# build latest wiringPi 
+# build latest wiringPi
 # ----------------------------------
 echo
 echo "============================"
 echo "wiringPi Build script"
 echo "============================"
 echo
-echo "Compiling wiringPi STATIC library"
-make clean
-make static -j5 $@
+echo "Compiling wiringPi library"
+
+cd $WIRINGPI_DIRECTORY
+make clean all static -j5 $@
+mv libwiringPi.a ../lib/static/libwiringPi.a
+mv libwiringPi.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPi.so
+
 
 # ----------------------------------
 # build latest wiringPi devLib
 # ----------------------------------
+
 echo
 echo "============================"
 echo "wiringPi devLib Build script"
 echo "============================"
 echo
-echo "Copying wiringPi header files and static lib"
+
 cd ../devLib
-cp ../wiringPi/*.h .
-cp ../wiringPi/*.a .
+cp ../$WIRINGPI_DIRECTORY/*.h .
 echo "Compiling wiringPi devLib STATIC library"
-make clean
-make static -j5 $@
+make clean static -j5 LIBS=lib/static $@
+mv libwiringPiDev.a ../lib/static/libwiringPiDev.a
+
+echo "Compiling wiringPi devLib DYNAMIC library"
+make all -j5 LIBS=lib/dynamic $@
+mv libwiringPiDev.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPiDev.so
 echo

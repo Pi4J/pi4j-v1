@@ -30,7 +30,6 @@
 #include <wiringPi.h>
 #include "com_pi4j_wiringpi_GpioPin.h"
 
-
 /**
  * --------------------------------------------------------
  * GET EDGE GPIO PIN
@@ -38,8 +37,6 @@
  */
 int getEdgePin(int pin)
 {
-    int model, rev, mem, maker, overVolted ;
-
 	// validate lower bounds
 	if(pin < 0)
 		return -1;
@@ -47,6 +44,14 @@ int getEdgePin(int pin)
 	// validate upper bounds
 	if(pin >= MAX_GPIO_PINS)
 		return -1;
+
+    // check for macro definion for Compute Module, some older versions of WiringPi may be missing this macro.
+    // (I'm looking at you LeMaker!)
+    #ifndef PI_MODEL_CM
+    return wpiPinToGpio(pin);
+    #else
+
+    int model, rev, mem, maker, overVolted ;
 
 	// return the edge pin index
 	// (will return -1 for invalid pin)
@@ -57,6 +62,8 @@ int getEdgePin(int pin)
     else{
         return wpiPinToGpio(pin);
     }
+
+    #endif
 }
 
 

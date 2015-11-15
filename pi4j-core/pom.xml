@@ -17,7 +17,7 @@
 	<dependencies>
 
         <!-- while the pi4j-native dependency is not needed for compiling this
-             project, including it here ensures that it get compiled in the maven
+             project, including it here ensures that it gets compiled in the maven
              build lifecycle before the pi4j-core project.    -->
         <dependency>
 			<groupId>com.pi4j</groupId>
@@ -91,17 +91,97 @@
 						</goals>
 						<configuration>
 							<artifactItems>
-								<!-- we define the libpi4j native project as a dependency so that 
+								<!-- we define the libpi4j native project as a dependency so that
 									native library can be included in the final packaged pi4j.jar -->
-								<artifactItem>
+
+                                <!-- LIBPI4J for the Raspberry-Pi platform -->
+                                <artifactItem>
 									<groupId>com.pi4j</groupId>
 									<artifactId>pi4j-native</artifactId>
 									<version>${project.version}</version>
-									<type>so</type>
+                                    <classifier>raspberrypi-static</classifier>
+                                    <type>so</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+									<outputDirectory>${project.build.directory}/lib/raspberrypi/static</outputDirectory>
 									<destFileName>libpi4j.so</destFileName>
 								</artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>raspberrypi-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/raspberrypi/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
+                                <!-- LIBPI4J for the Banana-Pi platform -->
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bananapi-static</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bananapi/static</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bananapi-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bananapi/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
+                                <!-- LIBPI4J for the Banana-Pro platform -->
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bananapro-static</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bananapro/static</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bananapro-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bananapro/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
+                                <!-- LIBPI4J for the Odroid platform -->
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>odroid-static</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/odroid/static</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>odroid-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/odroid/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -196,12 +276,12 @@
 								<if>
 									<equals arg1="${pi.transfer.dev}" arg2="true" />
 									<then>
-									
+
 										<!-- ensure the target directory exists on the Raspberry Pi -->
 										<sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
 											password="${pi.password.dev}" trust="true" failonerror="false"
 											verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
-												
+
 										<!-- copy the JAR file to the Raspberry Pi -->
 										<scp
 											file="${project.build.directory}/${project.build.finalName}.jar"

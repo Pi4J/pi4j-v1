@@ -110,7 +110,7 @@
 		<pi.password>raspberry</pi.password>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
-		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
+		<pi.dirBuildTemp>pi4j-temp</pi.dirBuildTemp>
 
 		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
 		<pi.transfer.dev>false</pi.transfer.dev>
@@ -118,7 +118,7 @@
 		<pi.port.dev>${pi.port}</pi.port.dev>
 		<pi.user.dev>${pi.user}</pi.user.dev>
 		<pi.password.dev>${pi.password}</pi.password.dev>
-		<pi.dirCopyTo.dev>/home/pi/pi4j-dev</pi.dirCopyTo.dev>
+		<pi.dirCopyTo.dev>pi4j-dev</pi.dirCopyTo.dev>
 
 		<!-- PROJECT ENCODING PROPERTIES -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -4,9 +4,9 @@
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
 # PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  install-prerequisites.sh  
-# 
-# This file is part of the Pi4J project. More information about 
+# FILENAME      :  install-prerequisites.sh
+#
+# This file is part of the Pi4J project. More information about
 # this project can be found here:  http://www.pi4j.com/
 # **********************************************************************
 # %%
@@ -30,8 +30,9 @@
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
-if [ ! -z "`type apt-get 2>/dev/null;`" ]; then 
+if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
   sudo apt-get install gcc -y
   sudo apt-get install git-core -y
   sudo apt-get install oracle-java7-jdk -y
+  sudo apt-get install tree -y
 fi

@@ -50,10 +50,10 @@
 			</properties>
 		</profile>
 
-		<!-- This profile is used to dynamically rebuild the native library .H 
-			header files from the defined JNI jar classes. This profile should only be 
-			used when changes have been made to the JNI Java wrapper classes and new 
-			native method signatures are required. To use this profile, simply include 
+		<!-- This profile is used to dynamically rebuild the native library .H
+			header files from the defined JNI jar classes. This profile should only be
+			used when changes have been made to the JNI Java wrapper classes and new
+			native method signatures are required. To use this profile, simply include
 			the "-generate-jni-headers" command argument with the maven build command. -->
 		<profile>
 			<id>generate-jni-headers</id>
@@ -61,7 +61,7 @@
 			<!-- SPECIAL PROFILE DEPENDENCIES -->
 			<dependencies>
 
-				<!-- we define the pi4j Java project as a dependency so that the .H header 
+				<!-- we define the pi4j Java project as a dependency so that the .H header
 					files can be generated based on the Java native wrapper classes -->
 				<dependency>
 					<groupId>com.pi4j</groupId>
@@ -153,7 +153,7 @@
 						</goals>
 					</execution>
 
-					<!-- copy the native source files and compile them with gcc on the RaspberyPi 
+					<!-- copy the native source files and compile them with gcc on the RaspberyPi
 						platform -->
 					<execution>
 						<id>build-native-so</id>
@@ -165,10 +165,10 @@
 							<tasks>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 								                  classpathref="maven.plugin.classpath" />
-				                <property name="compile_classpath" 
+				                <property name="compile_classpath"
 				                          refid="maven.compile.classpath"/>
 				                <property name="project-build-directory"
-				                          value="${project.build.directory}"/>		
+				                          value="${project.build.directory}"/>
 				                <property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>
 
                                 <ant target="${pi4j-native-ant-build-target}" >
@@ -214,9 +214,49 @@
                         </goals>
                         <configuration>
                             <artifacts>
+                                <!-- LIBPI4J for RASPBERRY-PI -->
                                 <artifact>
-                                    <file>${project.build.directory}/libpi4j.so</file>
+                                    <file>${project.build.directory}/raspberrypi/static/libpi4j.so</file>
                                     <type>so</type>
+                                    <classifier>raspberrypi-static</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/raspberrypi/dynamic/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>raspberrypi-dynamic</classifier>
+                                </artifact>
+                                <!-- LIBPI4J for BANANA-PI -->
+                                <artifact>
+                                    <file>${project.build.directory}/bananapi/static/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>bananapi-static</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/bananapi/dynamic/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>bananapi-dynamic</classifier>
+                                </artifact>
+                                <!-- LIBPI4J for BANANA-PRO -->
+                                <artifact>
+                                    <file>${project.build.directory}/bananapro/static/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>bananapro-static</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/bananapro/dynamic/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>bananapro-dynamic</classifier>
+                                </artifact>
+                                <!-- LIBPI4J for ODROID -->
+                                <artifact>
+                                    <file>${project.build.directory}/odroid/static/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>odroid-static</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/odroid/dynamic/libpi4j.so</file>
+                                    <type>so</type>
+                                    <classifier>odroid-dynamic</classifier>
                                 </artifact>
                             </artifacts>
                         </configuration>

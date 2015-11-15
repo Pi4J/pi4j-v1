@@ -30,6 +30,7 @@
 #include <wiringPi.h>
 #include <softTone.h>
 #include "com_pi4j_wiringpi_SoftTone.h"
+#include "com_pi4j_jni_Exception.h"
 
 /* Source for com_pi4j_wiringpi_SoftTone */
 
@@ -63,5 +64,10 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_SoftTone_softToneWrite
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_SoftTone_softToneStop
   (JNIEnv *env, jclass class, jint pin)
 {
-    softToneStop(pin);
+	#ifdef WIRINGPI_SOFTTONE_STOP_UNSUPPORTED
+	throwUnsupportedOperationException(env,
+	    "This implementation of WiringPi does not support method 'softToneStop'.");
+	#else
+	softToneStop(pin);
+	#endif
 }

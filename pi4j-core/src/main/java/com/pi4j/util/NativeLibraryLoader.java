@@ -86,7 +86,12 @@ public class NativeLibraryLoader {
 
 		loadedLibraries.add(fileName);
 
-		String path = "/lib/" + fileName;
+        //
+        // path = /lib/{platform}/{linking:static|dynamic}/{filename}
+        //
+        String platform = System.getProperty("pi4j.platform", "raspberrypi");
+        String linking = System.getProperty("pi4j.linking", "static");
+		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
 		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 		try {
 			loadLibraryFromClasspath(path);
@@ -100,10 +105,10 @@ public class NativeLibraryLoader {
 
 	/**
 	 * Loads library from classpath
-	 * 
+	 *
 	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted after exiting. Method uses String as filename because the pathname is
 	 * "abstract", not system-dependent.
-	 * 
+	 *
 	 * @param filename
 	 *            The filename in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
 	 * @throws IOException

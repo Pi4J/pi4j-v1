@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <wiringPiSPI.h>
 #include "com_pi4j_wiringpi_Spi.h"
+#include "com_pi4j_jni_Exception.h"
 
 /* Source for com_pi4j_wiringpi_Spi */
 
@@ -165,5 +166,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetupMode
   (JNIEnv *env, jclass class, jint channel, jint speed, jint mode)
 {
+	#ifdef WIRINGPI_SPI_SETUP_MODE_UNSUPPORTED
+	throwUnsupportedOperationException(env,
+	    "This implementation of WiringPi does not support method 'wiringPiSPISetupMode'.");
+	return -1;
+	#else
 	return wiringPiSPISetupMode(channel, speed, mode);
+	#endif
 }
