@@ -84,6 +84,6 @@ public class PCA9685GpioServoDriver implements ServoDriver {
     }
     
     protected void updateResolution() {
-        resolution = new BigDecimal(4096).divide(getProvider().getFrequency()).intValue();
+        resolution = new BigDecimal(4096).divide(getProvider().getFrequency(), BigDecimal.ROUND_HALF_DOWN).intValue();
     }
 }
