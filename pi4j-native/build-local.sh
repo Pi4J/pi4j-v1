@@ -42,4 +42,5 @@ cd target/native
 # ----------------------------------
 # LAUNCH BUILD FROM TARGET FOLDER
 # ----------------------------------
-. build.sh $@
+chmod +x build.sh
+./build.sh $@

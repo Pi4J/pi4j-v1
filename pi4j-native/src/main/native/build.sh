@@ -29,8 +29,8 @@
 ###
 
 # set executable permissions on build scripts
-sudo chmod +x install-prerequisites.sh
-sudo chmod +x wiringpi-build.sh
+chmod +x install-prerequisites.sh
+chmod +x wiringpi-build.sh
 
 # ------------------------------------------------------
 # INSTALL BUILD PREREQUISITES
