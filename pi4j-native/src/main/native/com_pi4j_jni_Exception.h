@@ -38,6 +38,7 @@ extern "C" {
 
 jint throwNoClassDefError( JNIEnv *env, char *message );
 jint throwIOException( JNIEnv *env, char *message );
+jint throwUnsupportedOperationException( JNIEnv *env, char *message );
 
 #ifdef __cplusplus
 }

@@ -27,6 +27,7 @@
  * #L%
  */
 #include <jni.h>
+#include "com_pi4j_jni_Exception.h"
 
 /* Source for com_pi4j_jni_Exception */
 
@@ -59,3 +60,17 @@ jint throwIOException( JNIEnv *env, char *message )
 
     return (*env)->ThrowNew( env, exClass, message );
 }
+
+jint throwUnsupportedOperationException( JNIEnv *env, char *message )
+{
+    jclass exClass;
+    char *className = "java/lang/UnsupportedOperationException" ;
+
+    exClass = (*env)->FindClass( env, className );
+    if ( exClass == NULL ) {
+        return throwNoClassDefError( env, className );
+    }
+
+    return (*env)->ThrowNew( env, exClass, message );
+}
+
