@@ -81,7 +81,7 @@ echo
 echo "Compiling wiringPi library"
 
 cd $WIRINGPI_DIRECTORY
-make clean all static -j5 $@
+make clean all static -j1 $@
 mv libwiringPi.a ../lib/static/libwiringPi.a
 mv libwiringPi.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPi.so
 
@@ -99,10 +99,10 @@ echo
 cd ../devLib
 cp ../$WIRINGPI_DIRECTORY/*.h .
 echo "Compiling wiringPi devLib STATIC library"
-make clean static -j5 LIBS=lib/static $@
+make clean static -j1 LIBS=lib/static $@
 mv libwiringPiDev.a ../lib/static/libwiringPiDev.a
 
 echo "Compiling wiringPi devLib DYNAMIC library"
-make all -j5 LIBS=lib/dynamic $@
+make all -j1 LIBS=lib/dynamic $@
 mv libwiringPiDev.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPiDev.so
 echo

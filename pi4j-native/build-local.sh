@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 ###
 # #%L
 # **********************************************************************
@@ -39,34 +39,7 @@ mkdir -p target/native
 cp -R src/main/native target
 cd target/native
 
-ARCHITECTURE=$(uname -m)
-echo "PLATFORM ARCH: $ARCHITECTURE"
-if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
-   echo "-------------------------------------------"
-   echo " -- INSTALLING PREREQUISITES ON PI"
-   echo "-------------------------------------------"
-
-   chmod +x install-prerequisites.sh
-   ./install-prerequisites.sh
-fi
-
-echo "-------------------------------------------"
-echo " -- BUILDING LATEST WIRINGPI"
-echo "-------------------------------------------"
-chmod +x wiringpi-build.sh
-./wiringpi-build.sh $@
-
-echo "-------------------------------------------"
-echo " -- COMPILING LIBPI4J.SO JNI NATIVE LIBRARY"
-echo "-------------------------------------------"
-make clean
-make all $@
-
-echo "-------------------------------------------"
-echo " -- COPYING FINAL LIBPI4J.SO TO TARGET"
-echo "-------------------------------------------"
-cp libpi4j.so ../libpi4j.so
-
-echo "-------------------------------------------"
-echo " -- DONE BUILDING Pi4J NATIVE LIBRARY"
-echo "-------------------------------------------"
+# ----------------------------------
+# LAUNCH BUILD FROM TARGET FOLDER
+# ----------------------------------
+. build.sh $@

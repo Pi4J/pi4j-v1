@@ -92,7 +92,7 @@
 
 									<!-- trigger javah execution -->
 									<javahClassNames>
-                                                                                <javahClassName>com.pi4j.jni.WDT</javahClassName>
+										<javahClassName>com.pi4j.jni.WDT</javahClassName>
 										<javahClassName>com.pi4j.jni.I2C</javahClassName>
 										<javahClassName>com.pi4j.jni.Serial</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
@@ -146,6 +146,8 @@
 							<tasks>
 								<mkdir dir="target" />
 								<mkdir dir="target/classes" />
+								<mkdir dir="target/native" />
+								<mkdir dir="target/native/lib" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -216,45 +218,45 @@
                             <artifacts>
                                 <!-- LIBPI4J for RASPBERRY-PI -->
                                 <artifact>
-                                    <file>${project.build.directory}/raspberrypi/static/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/raspberrypi/static/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>raspberrypi-static</classifier>
                                 </artifact>
                                 <artifact>
-                                    <file>${project.build.directory}/raspberrypi/dynamic/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>raspberrypi-dynamic</classifier>
                                 </artifact>
                                 <!-- LIBPI4J for BANANA-PI -->
                                 <artifact>
-                                    <file>${project.build.directory}/bananapi/static/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/bananapi/static/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>bananapi-static</classifier>
                                 </artifact>
                                 <artifact>
-                                    <file>${project.build.directory}/bananapi/dynamic/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/bananapi/dynamic/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>bananapi-dynamic</classifier>
                                 </artifact>
                                 <!-- LIBPI4J for BANANA-PRO -->
                                 <artifact>
-                                    <file>${project.build.directory}/bananapro/static/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/bananapro/static/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>bananapro-static</classifier>
                                 </artifact>
                                 <artifact>
-                                    <file>${project.build.directory}/bananapro/dynamic/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>bananapro-dynamic</classifier>
                                 </artifact>
                                 <!-- LIBPI4J for ODROID -->
                                 <artifact>
-                                    <file>${project.build.directory}/odroid/static/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/odroid/static/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>odroid-static</classifier>
                                 </artifact>
                                 <artifact>
-                                    <file>${project.build.directory}/odroid/dynamic/libpi4j.so</file>
+                                    <file>${project.build.directory}/native/lib/odroid/dynamic/libpi4j.so</file>
                                     <type>so</type>
                                     <classifier>odroid-dynamic</classifier>
                                 </artifact>

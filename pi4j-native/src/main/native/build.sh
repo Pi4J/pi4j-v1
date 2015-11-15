@@ -28,25 +28,26 @@
 # #L%
 ###
 
-
-# ------------------------------------------------------
-# INSTALL BUILD PREREQUISITES
-# ------------------------------------------------------
-echo
-echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*                 INSTALLING Pi4J BUILD PREREQUISITES                *"
-echo "*                                                                    *"
-echo "**********************************************************************"
-echo
-
 # set executable permissions on build scripts
 sudo chmod +x install-prerequisites.sh
 sudo chmod +x wiringpi-build.sh
 
-# download and install development prerequisites
-./install-prerequisites.sh
-
+# ------------------------------------------------------
+# INSTALL BUILD PREREQUISITES
+# ------------------------------------------------------
+ARCHITECTURE=$(uname -m)
+echo "PLATFORM ARCH: $ARCHITECTURE"
+if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
+   echo
+   echo "**********************************************************************"
+   echo "*                                                                    *"
+   echo "*                 INSTALLING Pi4J BUILD PREREQUISITES                *"
+   echo "*                                                                    *"
+   echo "**********************************************************************"
+   echo
+   # download and install development prerequisites
+   ./install-prerequisites.sh
+fi
 
 # ------------------------------------------------------
 # RASPBERRY-PI
@@ -65,7 +66,7 @@ export WIRINGPI_REPO=git://git.drogon.net/wiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
-./wiringpi-build.sh
+./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies
 echo
@@ -74,7 +75,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so $@
 
 # compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
 echo
@@ -83,7 +84,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
 
 
 # ------------------------------------------------------
@@ -103,7 +104,7 @@ export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
 export WIRINGPI_BRANCH=bananapi
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
-./wiringpi-build.sh
+./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies
 echo
@@ -112,7 +113,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED'
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
 
 # compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
 echo
@@ -121,7 +122,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so  CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED'
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
 
 
 # ------------------------------------------------------
@@ -144,7 +145,7 @@ export WIRINGPI_DIRECTORY=wiringPi
 #export WIRINGPI_BRANCH=master
 #export WIRINGPI_DIRECTORY=wiringLMK
 rm --recursive --force wiringPi
-./wiringpi-build.sh
+./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies
 echo
@@ -153,7 +154,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED'
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 # compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
 echo
@@ -162,7 +163,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED'
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 
 # ------------------------------------------------------
@@ -182,7 +183,7 @@ export WIRINGPI_REPO=https://github.com/hardkernel/wiringPi.git
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
-./wiringpi-build.sh
+./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library on the Raspberry Pi platform
 echo
@@ -191,7 +192,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED'
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 echo
 echo "=============================================="
@@ -199,7 +200,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED'
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 
 echo
