@@ -1,13 +1,11 @@
 package com.pi4j.io.gpio;
 
-import com.pi4j.wiringpi.GpioInterruptListener;
-
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  RaspiGpioProvider.java  
+ * FILENAME      :  BananaProGpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -31,48 +29,30 @@ import com.pi4j.wiringpi.GpioInterruptListener;
  * #L%
  */
 
+import com.pi4j.wiringpi.GpioInterruptListener;
+
 /**
- * Raspberry PI {@link GpioProvider} implementation.
+ * BananaPro {@link GpioProvider} implementation.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public class RaspiGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
+public class BananaProGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
 
-    public static final String NAME = "RaspberryPi GPIO Provider";
+    public static final String NAME = "BananaPro GPIO Provider";
 
     /**
      * Default Constructor
      */
-    public RaspiGpioProvider() {
-        // set wiringPi interface for internal use
-        // we will use the (default) WiringPi pin number scheme with the wiringPi library
-        this(RaspiPinNumberingScheme.DEFAULT_PIN_NUMBERING);
-    }
+    public BananaProGpioProvider() {
 
-    /**
-     * Alternate Constructor allowing user ot override default pin numbering scheme
-     *
-     * @param pinNumberingScheme
-     */
-    public RaspiGpioProvider(RaspiPinNumberingScheme pinNumberingScheme) {
+        // configure the Pi4J platform to use the "bananapro" implementation
+        System.setProperty("pi4j.platform", "bananapro");
+
         // set wiringPi interface for internal use
-        switch(pinNumberingScheme){
-            case BROADCOM_PIN_NUMBERING: {
-                // we will use the raw/direct Broadcom GPIO pin number scheme with the wiringPi library
-                com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
-                break;
-            }
-            case DEFAULT_PIN_NUMBERING: {
-                // we will use the WiringPi pin number scheme with the wiringPi library
-                com.pi4j.wiringpi.Gpio.wiringPiSetup();
-                break;
-            }
-            default: {
-                throw new RuntimeException("Unsupported pin numbering scheme: " + pinNumberingScheme.name());
-            }
-        }
+        // we will use the WiringPi pin number scheme with the wiringPi library
+        com.pi4j.wiringpi.Gpio.wiringPiSetup();
     }
 
     @Override

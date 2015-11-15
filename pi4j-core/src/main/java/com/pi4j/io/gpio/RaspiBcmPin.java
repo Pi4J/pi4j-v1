@@ -42,9 +42,7 @@ import java.util.Map;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class RaspiBcmPin {
-
-    private static Map<String, Pin> pins = new HashMap<String, Pin>();
+public class RaspiBcmPin extends PinBase {
 
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");         // <P1:03>
     public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");         // <P1:05>
@@ -78,27 +76,4 @@ public class RaspiBcmPin {
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29");       // <P1:04> requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");       // <P1:05> requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");       // <P1:06> requires B rev2 or newer model (P5 header)
-
-
-    private static Pin createDigitalPin(int address, String name) {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
-                    EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-                    PinPullResistance.all());
-        if (pins == null) { pins = new HashMap<String, Pin>(); }
-        pins.put(name, pin);
-        return pin;
-    }
-
-    private static Pin createDigitalAndPwmPin(int address, String name) {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name, 
-                           EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
-                           PinPullResistance.all());
-        if (pins == null) { pins = new HashMap<String, Pin>(); }
-        pins.put(name, pin);
-        return pin;
-    }
-    
-    public static Pin getPinByName(String name) {
-    	return pins.get(name);
-    }
 }
