@@ -74,4 +74,11 @@ public class BananaProPin extends PinBase {
     public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");
     public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");
 
+    protected static Pin createDigitalPin(int address, String name) {
+        return createDigitalPin(BananaProGpioProvider.NAME, address, name);
+    }
+
+    protected static Pin createDigitalAndPwmPin(int address, String name) {
+        return createDigitalAndPwmPin(BananaProGpioProvider.NAME, address, name);
+    }
 }

@@ -76,4 +76,12 @@ public class RaspiBcmPin extends PinBase {
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29");       // <P1:04> requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");       // <P1:05> requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");       // <P1:06> requires B rev2 or newer model (P5 header)
+
+    protected static Pin createDigitalPin(int address, String name) {
+        return createDigitalPin(RaspiGpioProvider.NAME, address, name);
+    }
+
+    protected static Pin createDigitalAndPwmPin(int address, String name) {
+        return createDigitalAndPwmPin(RaspiGpioProvider.NAME, address, name);
+    }
 }

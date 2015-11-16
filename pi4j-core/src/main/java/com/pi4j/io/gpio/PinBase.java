@@ -46,8 +46,8 @@ public abstract class PinBase {
 
     protected static Map<String, Pin> pins = new HashMap<String, Pin>();
 
-    protected static Pin createDigitalPin(int address, String name) {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name,
+    protected static Pin createDigitalPin(String providerName, int address, String name) {
+        Pin pin = new PinImpl(providerName, address, name,
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     PinPullResistance.all());
         if (pins == null) { pins = new HashMap<String, Pin>(); }
@@ -55,8 +55,8 @@ public abstract class PinBase {
         return pin;
     }
 
-    protected static Pin createDigitalAndPwmPin(int address, String name) {
-        Pin pin = new PinImpl(RaspiGpioProvider.NAME, address, name,
+    protected static Pin createDigitalAndPwmPin(String providerName, int address, String name) {
+        Pin pin = new PinImpl(providerName, address, name,
                            EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
                            PinPullResistance.all());
         if (pins == null) { pins = new HashMap<String, Pin>(); }

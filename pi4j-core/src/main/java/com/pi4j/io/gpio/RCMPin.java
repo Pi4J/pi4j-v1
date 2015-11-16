@@ -92,4 +92,11 @@ public class RCMPin extends PinBase {
     public static final Pin GPIO_44 = createDigitalPin(44, "GPIO 44");
     public static final Pin GPIO_45 = createDigitalAndPwmPin(45, "GPIO 45"); // supports PWM1 [ALT0]
 
+    protected static Pin createDigitalPin(int address, String name) {
+        return createDigitalPin(RaspiGpioProvider.NAME, address, name);
+    }
+
+    protected static Pin createDigitalAndPwmPin(int address, String name) {
+        return createDigitalAndPwmPin(RaspiGpioProvider.NAME, address, name);
+    }
 }
