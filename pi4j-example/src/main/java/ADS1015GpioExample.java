@@ -42,6 +42,7 @@ import com.pi4j.io.gpio.GpioPinAnalogInput;
 import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
@@ -52,10 +53,10 @@ import com.pi4j.io.i2c.I2CBus;
  * @author Robert Savage
  */
 public class ADS1015GpioExample {
-
-
-    public static void main(String args[]) throws InterruptedException, IOException {
-
+    
+    
+    public static void main(String args[]) throws InterruptedException, UnsupportedBusNumberException, IOException {
+        
         System.out.println("<--Pi4J--> ADS1015 GPIO Example ... started.");
 
         // number formatters

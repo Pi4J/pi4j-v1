@@ -34,11 +34,16 @@ import java.io.IOException;
 /**
  * This is abstraction of an i2c device. It allows data to be read or written to the device.
  * 
- * @author Daniel Sendula
+ * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  *
  */
 public interface I2CDevice {
 
+	/**
+	 * @return The address for which this instance is constructed for.
+	 */
+	int getAddress();
+	
     /**
      * This method writes one byte directly to i2c device.
      * 
@@ -144,4 +149,5 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException;
+    
 }
