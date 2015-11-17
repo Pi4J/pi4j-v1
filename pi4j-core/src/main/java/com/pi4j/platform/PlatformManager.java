@@ -5,9 +5,9 @@ package com.pi4j.platform;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  PlatformManager.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PlatformManager.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.platform;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -95,16 +95,19 @@ public class PlatformManager {
 
     /**
      * Internal method to get the default platform.  It will attempt to first
-     * get the platform using the system property "pi4j.platform".  If the
-     * system property is not found or the value is not legal, then return
-     * the default 'RASPBERRY_PI' platform.
+     * get the platform using the 'PI4J_PLATFORM' environment variable, if the
+     * environment variable is not configured, then it will attempt to use the
+     * system property "pi4j.platform".  If the system property is not found or
+     * the value is not legal, then return the default 'RASPBERRY_PI' platform.
      *
      * @return default platform enumeration
      */
     protected static Platform getDefaultPlatform(){
+        // attempt to get assigned platform identifier from the environment variables
+        String envPlatformId = System.getenv("PI4J_PLATFORM");
 
         // attempt to get assigned platform identifier from the system properties
-        String platformId = System.getProperty("pi4j.platform", "");
+        String platformId = System.getProperty("pi4j.platform", envPlatformId);
 
         // if a platform id was found in the system properties, then
         // attempt to lookup the platform enumeration using the platform
