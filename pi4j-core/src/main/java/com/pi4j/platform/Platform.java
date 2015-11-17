@@ -33,6 +33,11 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CFactoryProvider;
 import com.pi4j.io.i2c.I2CFactoryProviderBanana;
 import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
+import com.pi4j.system.SystemInfoProvider;
+import com.pi4j.system.impl.BananaPiSystemInfoProvider;
+import com.pi4j.system.impl.BananaProSystemInfoProvider;
+import com.pi4j.system.impl.OdroidSystemInfoProvider;
+import com.pi4j.system.impl.RaspiSystemInfoProvider;
 
 /**
  * <p>
@@ -161,4 +166,32 @@ public enum Platform {
             }
         }
     }
+
+    public SystemInfoProvider getSystemInfoProvider(){
+        return getSystemInfoProvider(this);
+    }
+
+    public static SystemInfoProvider getSystemInfoProvider(Platform platform){
+        // return the system info provider based on the provided platform
+        switch(platform) {
+            case RASPBERRYPI: {
+                return new RaspiSystemInfoProvider();
+            }
+            case BANANAPI: {
+                return new BananaPiSystemInfoProvider();
+            }
+            case BANANAPRO: {
+                return new BananaProSystemInfoProvider();
+            }
+            case ODROID: {
+                // TODO: IMPLEMENT ODROID PROVIDER
+                return new OdroidSystemInfoProvider();
+            }
+            default: {
+                // if a platform cannot be determine, then assume it's the default RaspberryPi
+                return new RaspiSystemInfoProvider();
+            }
+        }
+    }
+
 }
