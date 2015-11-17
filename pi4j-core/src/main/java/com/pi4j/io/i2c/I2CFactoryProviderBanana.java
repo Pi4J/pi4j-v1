@@ -35,7 +35,6 @@ import java.io.IOException;
 
 public class I2CFactoryProviderBanana implements I2CFactoryProvider
 {
-
 	public I2CBus getBus(int busNumber) throws IOException
 	{
 		return I2CBusImplBananaPi.getBus(busNumber);

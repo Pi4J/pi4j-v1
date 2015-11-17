@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  BananaProGpioProvider.java  
+ * FILENAME      :  OdroidGpioProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -39,17 +39,17 @@ import com.pi4j.wiringpi.GpioInterruptListener;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public class BananaProGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
+public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
 
-    public static final String NAME = "BananaPro GPIO Provider";
+    public static final String NAME = "Odroid GPIO Provider";
 
     /**
      * Default Constructor
      */
-    public BananaProGpioProvider() {
+    public OdroidGpioProvider() {
 
-        // configure the Pi4J platform to use the "bananapro" implementation
-        System.setProperty("pi4j.platform", Platform.BANANAPRO.id());
+        // configure the Pi4J platform to use the "odroid" implementation
+        System.setProperty("pi4j.platform", Platform.ODROID.id());
 
         // set wiringPi interface for internal use
         // we will use the WiringPi pin number scheme with the wiringPi library

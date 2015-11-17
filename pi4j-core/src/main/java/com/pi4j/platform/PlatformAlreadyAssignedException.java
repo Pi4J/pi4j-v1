@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.platform;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  BananaProGpioProvider.java  
+ * FILENAME      :  PlatformAlreadyAssignedException.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,35 +29,25 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-import com.pi4j.platform.Platform;
-import com.pi4j.wiringpi.GpioInterruptListener;
-
 /**
- * BananaPro {@link GpioProvider} implementation.
+ * <p>
+ * This exception is thrown if a platform assignment is attempted when a
+ * platform instance has already been assigned.
+ * </p>
  *
+ * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
-public class BananaProGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
-
-    public static final String NAME = "BananaPro GPIO Provider";
+public class PlatformAlreadyAssignedException extends Exception {
 
     /**
      * Default Constructor
+     *
+     * @param platform
      */
-    public BananaProGpioProvider() {
-
-        // configure the Pi4J platform to use the "bananapro" implementation
-        System.setProperty("pi4j.platform", Platform.BANANAPRO.id());
-
-        // set wiringPi interface for internal use
-        // we will use the WiringPi pin number scheme with the wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
+    public PlatformAlreadyAssignedException(Platform platform){
+        super("The Pi4J platform has already been assigned as '" + platform.label() +
+              "'; cannot change platforms once a platform assignment has been made.");
     }
 }

@@ -29,6 +29,8 @@ package com.pi4j.io.i2c;
  * #L%
  */
 
+import com.pi4j.platform.PlatformManager;
+
 import java.io.IOException;
 
 /**
@@ -41,7 +43,7 @@ import java.io.IOException;
 public class I2CFactory
 {
 
-	volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberry();
+	volatile static I2CFactoryProvider provider = null;
 
 	// private constructor
 	private I2CFactory()
@@ -51,13 +53,20 @@ public class I2CFactory
 
 	/**
 	 * Create new I2CBus instance
-	 * 
+	 *
 	 * @return Return a new I2CBus impl instance.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public static I2CBus getInstance(int busNumber) throws IOException
 	{
+        // if a provider has not been previously assigned, then create an instance now
+        if(provider == null){
+            // create the provider based on the PlatformManager's selected platform
+            provider = PlatformManager.getPlatform().getI2CFactoryProvider();
+        }
+
+        // return the provider's bus instance
 		return provider.getBus(busNumber);
 	}
 

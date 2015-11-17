@@ -29,6 +29,7 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+import com.pi4j.platform.Platform;
 import com.pi4j.wiringpi.GpioInterruptListener;
 
 /**
@@ -48,7 +49,7 @@ public class BananaPiGpioProvider extends WiringPiGpioProviderBase implements Gp
     public BananaPiGpioProvider() {
 
         // configure the Pi4J platform to use the "bananapi" implementation
-        System.setProperty("pi4j.platform", "bananapi");
+        System.setProperty("pi4j.platform", Platform.BANANAPI.id());
 
         // set wiringPi interface for internal use
         // we will use the WiringPi pin number scheme with the wiringPi library

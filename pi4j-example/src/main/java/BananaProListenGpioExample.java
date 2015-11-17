@@ -30,6 +30,9 @@
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.platform.Platform;
+import com.pi4j.platform.PlatformAlreadyAssignedException;
+import com.pi4j.platform.PlatformManager;
 
 /**
  * This example code demonstrates how to setup a listener
@@ -43,16 +46,16 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
  */
 public class BananaProListenGpioExample {
 
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
 
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // assign the default provider as the BananaPro provider.
+        // explicitly assign the platform as the BananaPro platform.
         //
         // ####################################################################
-        GpioFactory.setDefaultProvider(new BananaProGpioProvider());
+        PlatformManager.setPlatform(Platform.BANANAPRO);
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
