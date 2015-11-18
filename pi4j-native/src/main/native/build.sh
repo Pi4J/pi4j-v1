@@ -62,7 +62,8 @@ echo
 WIRINGPI_PLATFORM=raspberrypi
 
 # build wiringPi
-export WIRINGPI_REPO=git://git.drogon.net/wiringPi
+#export WIRINGPI_REPO=git://git.drogon.net/wiringPi
+export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
@@ -100,7 +101,8 @@ echo
 WIRINGPI_PLATFORM=bananapi
 
 # build wiringPi
-export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
+#export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
+export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
 export WIRINGPI_BRANCH=bananapi
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
@@ -138,7 +140,8 @@ echo
 WIRINGPI_PLATFORM=bananapro
 
 # build wiringPi
-export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
+#export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
+export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
 export WIRINGPI_BRANCH=bananapro
 export WIRINGPI_DIRECTORY=wiringPi
 #export WIRINGPI_REPO=https://github.com/LeMaker/WiringLMK.git
@@ -179,7 +182,8 @@ echo
 WIRINGPI_PLATFORM=odroid
 
 # build wiringPi
-export WIRINGPI_REPO=https://github.com/hardkernel/wiringPi.git
+#export WIRINGPI_REPO=https://github.com/hardkernel/wiringPi.git
+export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi-Odroid
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
