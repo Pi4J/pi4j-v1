@@ -30,6 +30,8 @@ package com.pi4j.io.gpio;
  */
 
 
+import java.util.EnumSet;
+
 /**
  * BananaPi pin definitions for (default) WiringPi pin numbering scheme.
  *
@@ -39,15 +41,15 @@ package com.pi4j.io.gpio;
 public class BananaPiPin extends PinBase {
 
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
-    public static final Pin GPIO_01 = createDigitalAndPwmPin(1, "GPIO 1"); // supports PWM
+    public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");
     public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");
     public static final Pin GPIO_04 = createDigitalPin(4, "GPIO 4");
     public static final Pin GPIO_05 = createDigitalPin(5, "GPIO 5");
     public static final Pin GPIO_06 = createDigitalPin(6, "GPIO 6");
-    public static final Pin GPIO_07 = createDigitalPin(7, "GPIO 7");
-    public static final Pin GPIO_08 = createDigitalPin(8, "GPIO 8");
-    public static final Pin GPIO_09 = createDigitalPin(9, "GPIO 9");
+    public static final Pin GPIO_07 = createDigitalAndPwmPinNoEdge(7, "GPIO 7");
+    public static final Pin GPIO_08 = createDigitalPinNoEdge(8, "GPIO 8", EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP));
+    public static final Pin GPIO_09 = createDigitalPinNoEdge(9, "GPIO 9", EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP));
     public static final Pin GPIO_10 = createDigitalPin(10, "GPIO 10");
     public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11");
     public static final Pin GPIO_12 = createDigitalPin(12, "GPIO 12");
@@ -56,15 +58,27 @@ public class BananaPiPin extends PinBase {
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15");
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
     public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17");
-    public static final Pin GPIO_18 = createDigitalPin(18, "GPIO 18");
+    public static final Pin GPIO_18 = createDigitalPinNoEdge(18, "GPIO 18");
     public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19");
-    public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20");
+    public static final Pin GPIO_20 = createDigitalPinNoEdge(20, "GPIO 20");
 
     protected static Pin createDigitalPin(int address, String name) {
         return createDigitalPin(BananaPiGpioProvider.NAME, address, name);
     }
 
+    protected static Pin createDigitalPinNoEdge(int address, String name, EnumSet<PinPullResistance> resistance) {
+        return createDigitalPin(BananaPiGpioProvider.NAME, address, name, resistance, EnumSet.noneOf(PinEdge.class));
+    }
+
+    protected static Pin createDigitalPinNoEdge(int address, String name) {
+        return createDigitalPin(BananaPiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
+    }
+
     protected static Pin createDigitalAndPwmPin(int address, String name) {
         return createDigitalAndPwmPin(BananaPiGpioProvider.NAME, address, name);
+    }
+
+    protected static Pin createDigitalAndPwmPinNoEdge(int address, String name) {
+        return createDigitalAndPwmPin(BananaPiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
     }
 }
