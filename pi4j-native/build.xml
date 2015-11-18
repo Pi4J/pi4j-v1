@@ -33,6 +33,11 @@
                 todir="${project-build-directory}/native/lib" port="${pi-port}" trust="true"
                 verbose="true" failonerror="true">
         </scp>
+
+        <!-- remove the temporary target directory from the Raspberry Pi -->
+        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+                 password="${pi-password}" trust="true" failonerror="true"
+                 verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
     </target>
 
     <!-- this target is used when building maven project directly on the Raspberry Pi -->
