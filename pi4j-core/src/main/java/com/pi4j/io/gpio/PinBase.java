@@ -47,18 +47,37 @@ public abstract class PinBase {
     protected static Map<String, Pin> pins = new HashMap<String, Pin>();
 
     protected static Pin createDigitalPin(String providerName, int address, String name) {
-        Pin pin = new PinImpl(providerName, address, name,
-                    EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-                    PinPullResistance.all());
-        if (pins == null) { pins = new HashMap<String, Pin>(); }
-        pins.put(name, pin);
-        return pin;
+        return createDigitalPin(providerName, address, name, EnumSet.allOf(PinEdge.class));
+    }
+
+    protected static Pin createDigitalPin(String providerName, int address, String name, EnumSet<PinPullResistance> resistance, EnumSet<PinEdge> edges) {
+        return createPin(providerName, address, name,
+                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
+                resistance,
+                edges);
+    }
+
+    protected static Pin createDigitalPin(String providerName, int address, String name, EnumSet<PinEdge> edges) {
+        return createPin(providerName, address, name,
+                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
+                PinPullResistance.all(),
+                edges);
+    }
+
+    protected static Pin createDigitalAndPwmPin(String providerName, int address, String name, EnumSet<PinEdge> edges) {
+        return createPin(providerName, address, name,
+                         EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
+                         PinPullResistance.all(),
+                         edges);
     }
 
     protected static Pin createDigitalAndPwmPin(String providerName, int address, String name) {
-        Pin pin = new PinImpl(providerName, address, name,
-                           EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
-                           PinPullResistance.all());
+        return createDigitalAndPwmPin(providerName, address, name, EnumSet.allOf(PinEdge.class));
+    }
+
+    protected static Pin createPin(String providerName, int address, String name, EnumSet<PinMode> modes,
+                                   EnumSet<PinPullResistance> resistance, EnumSet<PinEdge> edges) {
+        Pin pin = new PinImpl(providerName, address, name, modes, resistance, edges);
         if (pins == null) { pins = new HashMap<String, Pin>(); }
         pins.put(name, pin);
         return pin;
