@@ -30,10 +30,6 @@ package com.pi4j.io.gpio;
  */
 
 
-import com.pi4j.io.gpio.impl.PinImpl;
-
-import java.util.EnumSet;
-
 /**
  * Raspberry Pi Compute Module pin definitions.
  *
@@ -43,7 +39,7 @@ import java.util.EnumSet;
  *  For PWM pin definitions see: http://elinux.org/RPi_BCM2835_GPIOs
  */
 @SuppressWarnings("unused")
-public class RCMPin extends PinBase {
+public class RCMPin extends PinProvider {
 
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");

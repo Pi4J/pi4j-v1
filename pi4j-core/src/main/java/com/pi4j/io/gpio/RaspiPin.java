@@ -30,19 +30,13 @@ package com.pi4j.io.gpio;
  */
 
 
-import com.pi4j.io.gpio.impl.PinImpl;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Raspberry Pi pin definitions for (default) WiringPi pin numbering scheme.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class RaspiPin extends PinBase {
+public class RaspiPin extends PinProvider {
 
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalAndPwmPin(1, "GPIO 1"); // supports PWM0 [ALT5]

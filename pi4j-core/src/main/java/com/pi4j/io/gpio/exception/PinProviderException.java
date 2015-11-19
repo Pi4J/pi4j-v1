@@ -30,6 +30,7 @@ package com.pi4j.io.gpio.exception;
  */
 
 
+import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
 
 /**
@@ -43,13 +44,18 @@ public class PinProviderException extends RuntimeException {
 
     private static final long serialVersionUID = -519207741462960871L;
     private final Pin pin;
+    private final GpioProvider gpioProvider;
 
-    public PinProviderException(Pin pin) {
-        super("Unknown GPIO pin provider [" + pin.getProvider() + "] on pin [" + pin.toString() + "]");
+    public PinProviderException(GpioProvider provider, Pin pin) {
+        super("GPIO pin [" + pin.toString() + "] expects provider [" + pin.getProvider() + "] but is attempting to be provisioned with provider [" + provider.getName() + "]; provisioning failed.");
         this.pin = pin;
+        this.gpioProvider = provider;
     }
 
     public Pin getPin() {
         return pin;
+    }
+    public GpioProvider getGpioProvider() {
+        return gpioProvider;
     }
 }

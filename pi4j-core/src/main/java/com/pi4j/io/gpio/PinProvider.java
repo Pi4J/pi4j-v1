@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  PinBase.java  
+ * FILENAME      :  PinProvider.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -42,7 +42,7 @@ import java.util.Map;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public abstract class PinBase {
+public abstract class PinProvider {
 
     protected static Map<String, Pin> pins = new HashMap<String, Pin>();
 
@@ -86,4 +86,18 @@ public abstract class PinBase {
     public static Pin getPinByName(String name) {
     	return pins.get(name);
     }
+
+    public static Pin getPinByAddress(int address) {
+        for(Pin pin : pins.values()){
+            if(pin.getAddress() == address){
+                return pin;
+            }
+        }
+        return null;
+    }
+
+    public static Pin[] allPins() {
+        return pins.values().toArray(new Pin[0]);
+    }
+
 }

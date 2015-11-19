@@ -38,7 +38,7 @@ import java.util.EnumSet;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class BananaPiPin extends PinBase {
+public class BananaPiPin extends PinProvider {
 
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");

@@ -33,6 +33,7 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.exception.GpioPinExistsException;
 import com.pi4j.io.gpio.exception.GpioPinNotProvisionedException;
+import com.pi4j.io.gpio.exception.PinProviderException;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
@@ -507,6 +508,12 @@ public class GpioControllerImpl implements GpioController {
 
     @Override
     public GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState) {
+
+        // if the provider does not match the pin's provider then throw an error
+        if(!provider.getName().equals(pin.getProvider())){
+            throw new PinProviderException(provider, pin);
+        }
+
         // if an existing pin has been previously created, then throw an error
         for(GpioPin p : pins) {
             if (p.getProvider().equals(provider) && p.getPin().equals(pin)) {

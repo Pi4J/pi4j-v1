@@ -30,19 +30,13 @@ package com.pi4j.io.gpio;
  */
 
 
-import com.pi4j.io.gpio.impl.PinImpl;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Raspberry Pi pin definitions for the Broadcom pin numbering scheme.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class RaspiBcmPin extends PinBase {
+public class RaspiBcmPin extends PinProvider {
 
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");         // <P1:03>
     public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");         // <P1:05>
