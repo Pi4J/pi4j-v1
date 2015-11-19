@@ -6,7 +6,7 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  SerialExample.java  
+ * FILENAME      :  BananaPiSerialExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,30 +32,33 @@
 
 
 import com.pi4j.io.serial.*;
+import com.pi4j.platform.Platform;
+import com.pi4j.platform.PlatformAlreadyAssignedException;
+import com.pi4j.platform.PlatformManager;
 
 import java.io.IOException;
 import java.util.Date;
 
 /**
  * This example code demonstrates how to perform serial communications using the Raspberry Pi.
+ * (see 'BananaPiSerial' for constant definitions for BananaPi Serial Port addresses.)
  *
  * @author Robert Savage
  */
-public class SerialExample {
+public class BananaPiSerialExample {
 
-    public static void main(String args[]) throws InterruptedException, IOException {
+    public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
 
-        // !! ATTENTION !!
-        // By default, the serial port is configured as a console port
-        // for interacting with the Linux OS shell.  If you want to use
-        // the serial port in a software program, you must disable the
-        // OS from using this port.  Please see this blog article by
-        // Clayton Smith for step-by-step instructions on how to disable
-        // the OS console for this port:
-        // http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/
+        // ####################################################################
+        //
+        // since we are not using the default Raspberry Pi platform, we should
+        // explicitly assign the platform as the BananaPi platform.
+        //
+        // ####################################################################
+        PlatformManager.setPlatform(Platform.BANANAPI);
 
         System.out.println("<--Pi4J--> Serial Communication Example ... started.");
-        System.out.println(" ... connect using settings: 38400, 8, N, 1.");
+        System.out.println(" ... connect using settings: 115200, 8, N, 1.");
         System.out.println(" ... data received on serial port should be displayed below.");
 
         // create an instance of the serial communications class
@@ -81,8 +84,8 @@ public class SerialExample {
         });
 
         try {
-            // by default, use the DEFAULT com port on the Raspberry Pi
-            String serialPort = Serial.DEFAULT_COM_PORT;
+            // see 'BananaPiSerial' for constant definitions for BananaPi Serial Port addresses.
+            String serialPort = BananaPiSerial.DEFAULT_COM_PORT; // TX is located at CON3-08; RX is located at CON3-10
 
             // optionally allow a CLI argument to override the serial port address.
             if(args.length > 0){
@@ -90,7 +93,7 @@ public class SerialExample {
             }
 
             // open the default serial port provided on the GPIO header
-            serial.open(serialPort, Baud._38400, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
+            serial.open(serialPort, Baud._115200, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
 
             // continuous loop to keep the program running until the user terminates the program
             while(true) {
