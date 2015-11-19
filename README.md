@@ -40,13 +40,14 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-11-18 :: 1.1-SNAPSHOT
+2015-11-19 :: 1.1-SNAPSHOT
 
-  *  (Experimental) Added GPIO support for BananaPi platform
   *  (Experimental) Added GPIO support for BananaPro platform
-  *  (Experimental) Added JNI/WiringPi support for BananaPi platform
   *  (Experimental) Added JNI/WiringPi support for BananaPro platform
   *  (Experimental) Added JNI/WiringPi support for Odroid platform
+  *  Validated/fixed GPIO, PWM, SERIAL, I2C, and SPI on BananaPi platform
+  *  Added GPIO support for BananaPi platform
+  *  Added JNI/WiringPi support for BananaPi platform
   *  Added PWM examples
   *  Fixed #180; WiringPiISR() callback causing native crash (NPE)
   *  Added support for native Watchdog.
