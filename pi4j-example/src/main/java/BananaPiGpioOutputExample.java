@@ -1,5 +1,3 @@
-// START SNIPPET: control-gpio-snippet
-
 /*
  * #%L
  * **********************************************************************
@@ -103,7 +101,6 @@ public class BananaPiGpioOutputExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting ControlGpioExample");
+        System.out.println("Exiting BananaPiGpioOutputExample");
     }
 }
-//END SNIPPET: control-gpio-snippet
