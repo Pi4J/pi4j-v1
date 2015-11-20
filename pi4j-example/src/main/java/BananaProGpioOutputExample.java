@@ -34,7 +34,7 @@ import com.pi4j.platform.PlatformManager;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the BananaPi.
+ * control of a GPIO pin on the BananaPro.
  *
  * @author Robert Savage
  */
@@ -45,7 +45,7 @@ public class BananaProGpioOutputExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
+        // explicitly assign the platform as the BananaPro platform.
         //
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPRO);

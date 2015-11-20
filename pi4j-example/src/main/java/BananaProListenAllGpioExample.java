@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaPiListenAllGpioExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  BananaProListenAllGpioExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -36,21 +36,21 @@ import com.pi4j.platform.PlatformManager;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the BananaPi.
+ * for GPIO pin state changes on the BananaPro.
  *
  * @author Robert Savage
  */
-public class BananaPiListenAllGpioExample {
+public class BananaProListenAllGpioExample {
 
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
 
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
+        // explicitly assign the platform as the BananaPro platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
+        PlatformManager.setPlatform(Platform.BANANAPRO);
 
         System.out.println("<--Pi4J--> GPIO Listen (All Pins) Example ... started.");
 
@@ -68,22 +68,20 @@ public class BananaPiListenAllGpioExample {
 
         // provision gpio input pins with its internal pull down resistor enabled
         GpioPinDigitalInput[] event_pins = {
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_00, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_01, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_02, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_03, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_04, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_05, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_06, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_10, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_11, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_12, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_13, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_14, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_15, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_16, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_17, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_19, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_00, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_02, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_03, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_04, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_05, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_06, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_07, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_10, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_11, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_12, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_13, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_14, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_15, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_16, PinPullResistance.PULL_DOWN),
         };
 
         // create and register gpio pin listeners
@@ -92,11 +90,19 @@ public class BananaPiListenAllGpioExample {
         // these pins must be polled for input state changes, these pins do not support edge detection and/or interrupts
         // provision gpio input pins with its internal pull resistors configured
         GpioPinDigitalInput[] polled_pins = {
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_07, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_08, PinPullResistance.PULL_UP), // I2C pin permanently pulled up
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_09, PinPullResistance.PULL_UP), // I2C pin permanently pulled up
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_18, PinPullResistance.PULL_DOWN),
-                gpio.provisionDigitalInputPin(BananaPiPin.GPIO_20, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_01, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_08), // I2C pin permanently pulled up
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_09), // I2C pin permanently pulled up
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_21, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_22, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_23, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_24, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_25, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_26, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_27, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_28, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_29, PinPullResistance.PULL_DOWN),
+                gpio.provisionDigitalInputPin(BananaProPin.GPIO_31),  // this pin is permanently pulled up
         };
 
         System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
