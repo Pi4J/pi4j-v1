@@ -1,4 +1,4 @@
-/*
+package bananapi;/*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
@@ -30,11 +30,14 @@
 import com.pi4j.io.spi.SpiChannel;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
+import com.pi4j.platform.Platform;
+import com.pi4j.platform.PlatformAlreadyAssignedException;
+import com.pi4j.platform.PlatformManager;
 
 import java.io.IOException;
 
 /**
- * This example code demonstrates how to perform basic SPI communications using the Raspberry Pi.
+ * This example code demonstrates how to perform basic SPI communications using the BananaPi.
  * CS0 and CS1 (ship-select) are supported for SPI0.
  *
  * @author Robert Savage
@@ -48,16 +51,23 @@ public class SpiExample {
     public static byte INIT_CMD = (byte) 0xD0;
 
 
-    public static void main(String args[]) throws InterruptedException, IOException {
+    public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
+
+        // ####################################################################
+        //
+        // since we are not using the default Raspberry Pi platform, we should
+        // explicitly assign the platform as the BananaPi platform.
+        //
+        // ####################################################################
+        PlatformManager.setPlatform(Platform.BANANAPI);
 
         //
         // This SPI example is using the Pi4J SPI interface to communicate with
         // the SPI hardware interface connected to a MCP23S17 I/O Expander.
         //
         // Please note the following command are required to enable the SPI driver on
-        // your Raspberry Pi:
-        // >  sudo modprobe spi_bcm2708
-        // >  sudo chown `id -u`.`id -g` /dev/spidev0.*
+        // your BananaPi:
+        // >  sudo modprobe spi-sun7i
         //
         // this source code was adapted from:
         // https://github.com/thomasmacpherson/piface/blob/master/python/piface/pfio.py
