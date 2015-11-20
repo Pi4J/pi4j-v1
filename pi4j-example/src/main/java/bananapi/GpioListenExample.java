@@ -1,9 +1,10 @@
+package bananapi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaProListenGpioExample.java  
+ * FILENAME      :  GpioListenExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -26,7 +27,6 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
@@ -36,7 +36,7 @@ import com.pi4j.platform.PlatformManager;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the BananaPro.
+ * for GPIO pin state changes on the BananaPi.
  *
  * The internal resistance is set to PULL UP. So when
  * connecting GPIO pin #2 to a ground pin, you should
@@ -44,7 +44,7 @@ import com.pi4j.platform.PlatformManager;
  *
  * @author Robert Savage
  */
-public class BananaProListenGpioExample {
+public class GpioListenExample {
 
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
@@ -52,22 +52,28 @@ public class BananaProListenGpioExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPro platform.
+        // explicitly assign the platform as the BananaPi platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPRO);
+        PlatformManager.setPlatform(Platform.BANANAPI);
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
         // ####################################################################
         //
-        // When provisioning a pin, use the BananaProPin class
+        // When provisioning a pin, use the BananaPiPin class.
+        //
+        // Please note that not all GPIO pins support edge triggered interrupt
+        // and thus not all pins are eligible for pin state change listeners.
+        // These pins must be polled to detect state changes.  See the
+        // 'GpioListenAllExample' for a complete example including polled
+        // pins.
         //
         // ####################################################################
 
         // provision gpio pin #02 as an input pin with its internal pull up resistor enabled
-        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(BananaProPin.GPIO_02, PinPullResistance.PULL_UP);
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(BananaPiPin.GPIO_02, PinPullResistance.PULL_UP);
 
         // create and register gpio pin listener
         myButton.addListener(new GpioPinListenerDigital() {

@@ -1,9 +1,10 @@
+package bananapi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaProGpioOutputExample.java  
+ * FILENAME      :  GpioOutputExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -32,23 +33,25 @@ import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 
+import java.util.EnumSet;
+
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the BananaPro.
+ * control of a GPIO pin on the BananaPi.
  *
  * @author Robert Savage
  */
-public class BananaProGpioOutputExample {
+public class GpioOutputExample {
 
     public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException {
 
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPro platform.
+        // explicitly assign the platform as the BananaPi platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPRO);
+        PlatformManager.setPlatform(Platform.BANANAPI);
 
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
 
@@ -57,7 +60,7 @@ public class BananaProGpioOutputExample {
 
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
-        Pin selectedPin = BananaProPin.GPIO_31;
+        Pin selectedPin = BananaPiPin.GPIO_01;
         if (args.length > 0){
             int address = Integer.parseInt(args[0]);
             selectedPin = BananaPiPin.getPinByAddress(address);
@@ -99,6 +102,6 @@ public class BananaProGpioOutputExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting BananaPiGpioOutputExample");
+        System.out.println("Exiting bananapi.GpioOutputExample");
     }
 }

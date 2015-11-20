@@ -1,9 +1,10 @@
+package bananapi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaPiListenAllGpioExample.java  
+ * FILENAME      :  GpioListenAllExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -40,7 +41,7 @@ import com.pi4j.platform.PlatformManager;
  *
  * @author Robert Savage
  */
-public class BananaPiListenAllGpioExample {
+public class GpioListenAllExample {
 
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
 
@@ -65,6 +66,19 @@ public class BananaPiListenAllGpioExample {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
         };
+
+        // ####################################################################
+        //
+        // When provisioning a pin, use the BananaPiPin class.
+        //
+        // Please note that not all GPIO pins support edge triggered interrupts
+        // and thus not all pins are eligible for pin state change listeners.
+        // These pins must be polled to detect state changes.
+        //
+        // An example of pins that support interrupt listeners as well as pins
+        // that support only polling are included below.
+        //
+        // ####################################################################
 
         // provision gpio input pins with its internal pull down resistor enabled
         GpioPinDigitalInput[] event_pins = {
@@ -125,4 +139,3 @@ public class BananaPiListenAllGpioExample {
     }
 }
 
-// END SNIPPET: listen-multi-gpio-snippet

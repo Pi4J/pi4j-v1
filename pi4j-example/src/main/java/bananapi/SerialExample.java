@@ -1,12 +1,11 @@
-// START SNIPPET: serial-snippet
-
+package bananapi;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaPiSerialExample.java  
+ * FILENAME      :  SerialExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -45,7 +44,7 @@ import java.util.Date;
  *
  * @author Robert Savage
  */
-public class BananaPiSerialExample {
+public class SerialExample {
 
     public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
 
@@ -131,4 +130,3 @@ public class BananaPiSerialExample {
     }
 }
 
-// END SNIPPET: serial-snippet

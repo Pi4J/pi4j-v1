@@ -38,7 +38,7 @@ import java.io.IOException;
 
 /**
  * This example code demonstrates how to perform simple I2C
- * communication on the BananaPi.  For this example we will
+ * communication on the Raspberry Pi.  For this example we will
  * connect to a 'TSL2561' LUX sensor.
  *
  * Data Sheet:
@@ -55,7 +55,7 @@ import java.io.IOException;
  * > TSL2561 DATA 0 = 0x1e
  * > TSL2561 DATA 1 = 0x04
  * > ... powering down TSL2561
- * > Exiting BananaPiI2CExample
+ * > Exiting bananapi.I2CExample
  *
  *
  * @author Robert Savage
@@ -86,14 +86,6 @@ public class I2CExample {
      * @throws IOException
      */
     public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
-
-        // ####################################################################
-        //
-        // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
-        //
-        // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
 
         System.out.println("<--Pi4J--> I2C Example ... started.");
 
@@ -132,6 +124,6 @@ public class I2CExample {
         device.write(TSL2561_REG_CONTROL, TSL2561_POWER_DOWN);
 
         // done
-        System.out.println("Exiting BananaPiI2CExample");
+        System.out.println("Exiting I2CExample");
     }
 }

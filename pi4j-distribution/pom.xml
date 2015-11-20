@@ -203,7 +203,7 @@
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/distro-contents/examples</outputDirectory>
-									<includes>*.java,build</includes>
+									<includes>**/*.java,**/build</includes>
 								</artifactItem>
 							</artifactItems>
 							<includes>**/*.java</includes>
@@ -328,6 +328,24 @@
                             <src>${project.build.directory}/distro-contents/examples/build</src>
                             <type>file</type>
                             <dst>/opt/pi4j/examples/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/bananapi/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/bananapi/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/bananapro/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/bananapro/build</dst>
                             <mapper>
                                 <type>perm</type>
                                 <filemode>755</filemode>

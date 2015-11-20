@@ -1,9 +1,10 @@
+package bananapi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaPiI2CExample.java  
+ * FILENAME      :  I2CExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -58,12 +59,12 @@ import java.nio.charset.StandardCharsets;
  * > TSL2561 DATA 0 = 0x1e
  * > TSL2561 DATA 1 = 0x04
  * > ... powering down TSL2561
- * > Exiting BananaPiI2CExample
+ * > Exiting bananapi.I2CExample
  *
  *
  * @author Robert Savage
  */
-public class BananaPiI2CExample {
+public class I2CExample {
 
     // TSL2561 I2C address
     public static final int TSL2561_ADDR = 0x39; // address pin not connected (FLOATING)
@@ -135,6 +136,6 @@ public class BananaPiI2CExample {
         device.write(TSL2561_REG_CONTROL, TSL2561_POWER_DOWN);
 
         // done
-        System.out.println("Exiting BananaPiI2CExample");
+        System.out.println("Exiting bananapi.I2CExample");
     }
 }

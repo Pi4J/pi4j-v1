@@ -5,7 +5,7 @@ set -e # exit on error
 # #%L
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
-# PROJECT       :  Pi4J :: Java Examples
+# PROJECT       :  Pi4J :: Java Examples (for BananaPro)
 # FILENAME      :  build
 #
 # This file is part of the Pi4J project. More information about
@@ -32,13 +32,17 @@ set -e # exit on error
 
 cd $(dirname $(readlink -f $0))
 
+# platform constants used in this script
+PLATFORM_NAME="BananaPro"
+PLATFORM_ID="bananapro"
+
 # first optional argument can be a single Java source file or "clean"
 filename=$1
 
 # if the first argument is "clean", then only clean the *.class files from the directory
 if [ "$filename" = "clean" ]; then
   echo "-------------------------------------------------------------------------"
-  echo " CLEANING Pi4J EXAMPLES"
+  echo " CLEANING Pi4J EXAMPLES (for $PLATFORM_NAME)"
   echo "-------------------------------------------------------------------------"
   rm -f *.class
   echo ".. done .."
@@ -47,7 +51,7 @@ fi
 
 # otherwise, continue with building the samples
 echo "-------------------------------------------------------------------------"
-echo " BUILDING Pi4J EXAMPLES"
+echo " BUILDING Pi4J EXAMPLES (for $PLATFORM_NAME)"
 echo "-------------------------------------------------------------------------"
 
 # check for user provided filename argument
@@ -69,8 +73,6 @@ if [ -z $filename ]; then
 	index=$((index+1))
   done
 
-  # reset filename for printed execution instructions below
-  filename="BlinkGpioExample.java"
 else
   # COMPILE SINGLE JAVA SOURCE FILE
   echo "[1 of 1] ... compiling : $filename"
@@ -80,8 +82,7 @@ fi
 # THE FOLLOWING INSTRUCTIONS WILL EXECUTE ONE OF THE EXAMPLES
 echo "-------------------------------------------------------------------------"
 echo "The following command syntax can be used to execute the sample projects:"
-echo "  sudo pi4j --run ${filename%.*} "
+echo "  sudo pi4j --run $PLATFORM_ID.${filename%.*} "
 echo "   - or - "
-echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' ${filename%.*}"
+echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' $PLATFORM_ID.${filename%.*}"
 echo "-------------------------------------------------------------------------"
-

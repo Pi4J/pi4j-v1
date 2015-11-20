@@ -1,9 +1,10 @@
+package bananapi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  BananaPiPwmExample.java  
+ * FILENAME      :  PwmExample.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -43,7 +44,7 @@ import com.pi4j.platform.PlatformManager;
  *
  * @author Robert Savage
  */
-public class BananaPiPwmExample {
+public class PwmExample {
     /**
      * @param args the command line arguments
      * @throws InterruptedException
@@ -87,6 +88,6 @@ public class BananaPiPwmExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting BananaPiPwmExample");
+        System.out.println("Exiting bananapi.PwmExample");
     }
 }
