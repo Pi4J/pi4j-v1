@@ -56,6 +56,12 @@ public class GpioOutputExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
+        // ####################################################################
+        //
+        // When provisioning a pin, use the BananaProPin class.
+        //
+        // ####################################################################
+
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin selectedPin = BananaProPin.GPIO_01;
