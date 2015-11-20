@@ -1,12 +1,12 @@
-package bananapi;
+package bananapro;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  I2CExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -16,33 +16,30 @@ package bananapi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * This example code demonstrates how to perform simple I2C
- * communication on the BananaPi.  For this example we will
+ * communication on the BananaPro.  For this example we will
  * connect to a 'TSL2561' LUX sensor.
  *
  * Data Sheet:
@@ -94,15 +91,16 @@ public class I2CExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
+        // explicitly assign the platform as the BananaPro platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
+        PlatformManager.setPlatform(Platform.BANANAPRO);
 
         System.out.println("<--Pi4J--> I2C Example ... started.");
 
         // get the I2C bus to communicate on
-        // - I2CBus.BUS_2 uses header pin CON3:3 as SDA and header pin CON3:5 as SCL
+        // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
+        // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
 
         // create an I2C device for an individual device on the bus that you want to communicate with
