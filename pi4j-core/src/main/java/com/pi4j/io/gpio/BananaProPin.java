@@ -65,7 +65,7 @@ public class BananaProPin extends PinProvider {
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27");
     public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28");
     public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29");
-    public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");
+    //public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30"); << This is SoC GPIO-00 which cannot be exported.
     public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");
 
     protected static Pin createDigitalPin(int address, String name) {
