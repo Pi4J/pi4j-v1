@@ -4,9 +4,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  PwmExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PwmExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -16,12 +16,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,6 +50,12 @@ public class PwmExample {
         // All Raspberry Pi models support a hardware PWM pin on GPIO_01.
         // Raspberry Pi models A+, B+, and 2B also support hardware PWM pins: GPIO_23, GPIO_24, GPIO_26
         GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
+
+        // you can optionally use these wiringPi methods to further customize the PWM generator
+        // see: http://wiringpi.com/reference/raspberry-pi-specifics/
+        com.pi4j.wiringpi.Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
+        com.pi4j.wiringpi.Gpio.pwmSetRange(1000);
+        com.pi4j.wiringpi.Gpio.pwmSetClock(500);
 
         // set the PWM rate to 500
         pwm.setPwm(500);

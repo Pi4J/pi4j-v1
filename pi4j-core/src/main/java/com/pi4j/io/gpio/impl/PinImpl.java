@@ -122,4 +122,13 @@ public class PinImpl implements Pin {
         return supportsPinEdges();
     }
 
+    @Override
+    public int compareTo(Pin o) {
+        if(this.getAddress() < o.getAddress())
+            return -1;
+        else if(this.getAddress() > o.getAddress())
+            return 1;
+        else
+            return  0;
+    }
 }
