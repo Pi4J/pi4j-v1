@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * This example code demonstrates how to perform serial communications using the Raspberry Pi.
+ * This example code demonstrates how to perform serial communications using the BananaPi.
  * (see 'BananaPiSerial' for constant definitions for BananaPi Serial Port addresses.)
  *
  * @author Robert Savage
@@ -74,8 +74,8 @@ public class SerialExample {
 
                 // print out the data received to the console
                 try {
-                    System.out.print("[HEX DATA]   " + event.getHexByteString());
-                    System.out.print("[ASCII DATA] " + event.getAsciiString());
+                    System.out.println("[HEX DATA]   " + event.getHexByteString());
+                    System.out.println("[ASCII DATA] " + event.getAsciiString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

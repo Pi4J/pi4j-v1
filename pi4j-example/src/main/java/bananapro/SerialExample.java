@@ -1,14 +1,13 @@
-// START SNIPPET: serial-snippet
-
+package bananapro;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  SerialExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  SerialExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -18,12 +17,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -32,30 +31,33 @@
 
 
 import com.pi4j.io.serial.*;
+import com.pi4j.platform.Platform;
+import com.pi4j.platform.PlatformAlreadyAssignedException;
+import com.pi4j.platform.PlatformManager;
 
 import java.io.IOException;
 import java.util.Date;
 
 /**
- * This example code demonstrates how to perform serial communications using the Raspberry Pi.
+ * This example code demonstrates how to perform serial communications using the BananaPro.
+ * (see 'BananaProSerial' for constant definitions for BananaPro Serial Port addresses.)
  *
  * @author Robert Savage
  */
 public class SerialExample {
 
-    public static void main(String args[]) throws InterruptedException, IOException {
+    public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
 
-        // !! ATTENTION !!
-        // By default, the serial port is configured as a console port
-        // for interacting with the Linux OS shell.  If you want to use
-        // the serial port in a software program, you must disable the
-        // OS from using this port.  Please see this blog article by
-        // Clayton Smith for step-by-step instructions on how to disable
-        // the OS console for this port:
-        // http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/
+        // ####################################################################
+        //
+        // since we are not using the default Raspberry Pi platform, we should
+        // explicitly assign the platform as the BananaPro platform.
+        //
+        // ####################################################################
+        PlatformManager.setPlatform(Platform.BANANAPRO);
 
         System.out.println("<--Pi4J--> Serial Communication Example ... started.");
-        System.out.println(" ... connect using settings: 38400, 8, N, 1.");
+        System.out.println(" ... connect using settings: 115200, 8, N, 1.");
         System.out.println(" ... data received on serial port should be displayed below.");
 
         // create an instance of the serial communications class
@@ -81,8 +83,8 @@ public class SerialExample {
         });
 
         try {
-            // by default, use the DEFAULT com port on the Raspberry Pi
-            String serialPort = Serial.DEFAULT_COM_PORT;
+            // see 'BananaProSerial' for constant definitions for BananaPro Serial Port addresses.
+            String serialPort = BananaProSerial.DEFAULT_COM_PORT; // TX is located at CON6-08; RX is located at CON6-10
 
             // optionally allow a CLI argument to override the serial port address.
             if(args.length > 0){
@@ -90,7 +92,7 @@ public class SerialExample {
             }
 
             // open the default serial port provided on the GPIO header
-            serial.open(serialPort, Baud._38400, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
+            serial.open(serialPort, Baud._115200, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
 
             // continuous loop to keep the program running until the user terminates the program
             while(true) {
@@ -128,4 +130,3 @@ public class SerialExample {
     }
 }
 
-// END SNIPPET: serial-snippet
