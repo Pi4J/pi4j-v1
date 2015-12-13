@@ -40,8 +40,10 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-11-20 :: 1.1-SNAPSHOT
+2015-12-13 :: 1.1-SNAPSHOT
 
+  *  Removed 'sudo' from pi4j script when launching compiled Java applications
+  *  Added support for '/dev/gpiomem' to eliminate 'root' permissions requirement for basic GPIO.
   *  (Experimental) Added JNI/WiringPi support for Odroid platform
   *  Validated/fixed GPIO, PWM, SERIAL, I2C, and SPI on BananaPro platform
   *  Added GPIO support for BananaPro platform

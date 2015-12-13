@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_GpioUtil.c  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  com_pi4j_wiringpi_GpioUtil.c
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -56,30 +56,6 @@
 #define EDGE_RISING 2
 #define EDGE_FALLING 3
 
-/*
- * changeOwner:
- *	Change the ownership of the file to the real userId of the calling
- *	program so we can access it.
- *********************************************************************************
- */
-static void changeOwner (char *file)
-{
-  uid_t uid = getuid () ;
-  uid_t gid = getgid () ;
-
-  if (chown (file, uid, gid) != 0)
-  {
-    if (errno == ENOENT)	// Warn that it's not there
-    {
-      fprintf (stderr, "Warning: File not present: %s\n", file) ;
-    }
-    else
-    {
-      fprintf (stderr, "Unable to change ownership of %s: %s\n", file, strerror (errno)) ;
-    }
-  }
-}
-
 int getExistingPinDirection(int edgePin)
 {
 	FILE *fd ;
@@ -98,6 +74,8 @@ int getExistingPinDirection(int edgePin)
 	// read the data from the file into the data buffer
 	if(fgets(data, RDBUF_LEN, fd) == NULL)
 	{
+        // close the gpio direction file
+  	    fclose (fd) ;
 		return -2;
 	}
 
@@ -173,6 +151,13 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	// get the pin direction
 	int existing_direction = getExistingPinDirection(edgePin);
 
+    // wait 100 milliseconds
+    // for some reason we need to wait a short time after exporting the pin
+    // before we can access the direction file; probably to allow for the
+    // 'bcm2835_gpiomem' kernel driver enough time to apply the udev rules
+    // to grant permisisons to the /sys/class/gpio/gpio%d/* interface files.
+    usleep(100000);
+
 	// set direction if its not already configured with the same direction value
 	if(direction != existing_direction)
 	{
@@ -219,13 +204,6 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	    // close the direction file
 	    fclose (fd) ;
     }
-
-	// change ownership so the current user can actually use it!
-	sprintf (fName, "/sys/class/gpio/gpio%d/value", edgePin) ;
-	changeOwner (fName) ;
-
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin) ;
-	changeOwner (fName) ;
 }
 
 
@@ -492,6 +470,13 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	// close the export file
 	fclose (fd) ;
 
+    // wait 100 milliseconds
+    // for some reason we need to wait a short time after exporting the pin
+    // before we can access the direction file; probably to allow for the
+    // 'bcm2835_gpiomem' kernel driver enough time to apply the udev rules
+    // to grant permisisons to the /sys/class/gpio/gpio%d/* interface files.
+    usleep(100000);
+
 	// access the pin direction file and force the pin direction to IN
 	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
 	if ((fd = fopen (fName, "w")) == NULL)
@@ -535,13 +520,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
 		return (jboolean)0;
 	}
-
-	// Change ownership of the value and edge files, so the current user can actually use it!
-	sprintf (fName, "/sys/class/gpio/gpio%d/value", edgePin);
-	changeOwner(fName);
-
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin);
-	changeOwner(fName);
 
 	// close the gpio edge file
 	fclose (fd);
