@@ -5,9 +5,9 @@ package com.pi4j.system.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  RaspiSystemInfoProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  RaspiSystemInfoProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.system.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -114,6 +114,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         long type = (irevision >> 4) & 0xFF;
         long rev = irevision & 0xF;
 
+
         // determine board type based on revision scheme
         if (scheme == 0) {
             // The following info obtained from:
@@ -122,38 +123,59 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
             // http://www.raspberrypi.org/phpBB3/viewtopic.php?p=281039#p281039
             // http://elinux.org/RPi_HardwareHistory
             switch (revision) {
-                case "0002":  // Model B Revision 1
-                case "0003":  // Model B Revision 1 + Fuses mod and D14 removed
-                    return SystemInfo.BoardType.ModelB_Rev1;
+                case "0002":  // Model B Revision 1 (Egoman)
+                    return SystemInfo.BoardType.ModelB_Rev1_0;
+
+                case "0003":  // Model B Revision 1 (Egoman) + Fuses mod and D14 removed
+                    return SystemInfo.BoardType.ModelB_Rev1_1;
+
                 case "0004":  // Model B Revision 2 256MB (Sony)
                 case "0005":  // Model B Revision 2 256MB (Qisda)
                 case "0006":  // Model B Revision 2 256MB (Egoman)
-                    return SystemInfo.BoardType.ModelB_Rev2;
+                    return SystemInfo.BoardType.ModelB_Rev2_0;
+
                 case "0007":  // Model A 256MB (Egoman)
                 case "0008":  // Model A 256MB (Sony)
-                case "0009":  // Model A 256MB (Qisda)
-                    return SystemInfo.BoardType.ModelA_Rev1;
+                    return SystemInfo.BoardType.ModelA_Rev2_0;
+
+                case "0009":  // Model B Revision 2 256MB (Unknown)
                 case "000d":  // Model B Revision 2 512MB (Egoman)
                 case "000e":  // Model B Revision 2 512MB (Sony)
-                case "000f":  // Model B Revision 2 512MB (Qisda)
-                    return SystemInfo.BoardType.ModelB_Rev2;
+                case "000f":  // Model B Revision 2 512MB (Egoman)
+                    return SystemInfo.BoardType.ModelB_Rev2_0;
+
                 case "0010":  // Model B Plus 512MB (Sony)
                 {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
                     if (getHardware().equalsIgnoreCase("BCM2709"))
-                        return SystemInfo.BoardType.Model2B_Rev1;
+                        return SystemInfo.BoardType.Model2B_Rev1_0;
                     else
-                        return SystemInfo.BoardType.ModelB_Plus_Rev1;
+                        return SystemInfo.BoardType.ModelB_Plus_Rev1_2;
                 }
+
                 case "0011":  // Compute Module 512MB (Sony)
-                    return SystemInfo.BoardType.Compute_Module_Rev1;
+                    return SystemInfo.BoardType.Compute_Module_Rev1_2;
+
                 case "0012":  // Model A Plus 512MB (Sony)
-                    return SystemInfo.BoardType.ModelA_Plus_Rev1;
+                    return SystemInfo.BoardType.ModelA_Plus_Rev1_2;
+
+                case "0013":  // Model B Plus 512MB (Egoman)
+                    return SystemInfo.BoardType.ModelB_Plus_Rev1_2;
+
+                case "0014":  // Compute Module Rev 1.2, 512MB, (Sony)
+                    return SystemInfo.BoardType.Compute_Module_Rev1_1;
+
+                case "0015":  // Model A Plus 256MB (Sony)
+                    return SystemInfo.BoardType.ModelA_Plus_Rev1_1;
+
                 default:
                     return SystemInfo.BoardType.UNKNOWN;
             }
         }
         else if (type == 4) {
-            return SystemInfo.BoardType.Model2B_Rev1;
+            return SystemInfo.BoardType.Model2B_Rev1_0;
+        }
+        else if (type == 9) {
+            return SystemInfo.BoardType.ModelZero_Rev1_0;
         }
         else {
             return SystemInfo.BoardType.UNKNOWN;
