@@ -394,6 +394,11 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public void setPwmRange(int range) {
+        provider.setPwmRange(pin, range);
+    }
+
+    @Override
     public int getPwm() {
         return provider.getPwm(pin);
     }

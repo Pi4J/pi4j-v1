@@ -210,23 +210,62 @@ public abstract class WiringPiGpioProviderBase extends GpioProviderBase implemen
 
     @Override
     public void setPwm(Pin pin, int value) {
+        // validate pin
+        if (!hasPin(pin)) {
+            throw new InvalidPinException(pin);
+        }
 
-        // if its not a PWM pin, then superclass implementation will throw an exception
-        super.setPwm(pin, value);
+        // get pin configured mode
+        PinMode mode = getMode(pin);
 
-        // set PWM to hardware
-        setPwmValue(pin, value);
+        // validate mode; set PWM value based on pin mode
+        if (mode == PinMode.PWM_OUTPUT) {
+            // set pin hardware PWM value
+            com.pi4j.wiringpi.Gpio.pwmWrite(pin.getAddress(), value);
+        }
+        else if(mode == PinMode.SOFT_PWM_OUTPUT) {
+            // set pin software emulated PWM value
+            com.pi4j.wiringpi.SoftPwm.softPwmWrite(pin.getAddress(), value);
+        }
+        else {
+            // unsupported pin mode
+            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
+        }
+
+        // cache updated pin PWM value
+        getPinCache(pin).setPwmValue(value);
+    }
+
+    @Override
+    public void setPwmRange(Pin pin, int range){
+        // validate pin
+        if (!hasPin(pin)) {
+            throw new InvalidPinException(pin);
+        }
+
+        // get pin configured mode
+        PinMode mode = getMode(pin);
+
+        // validate mode; set PWM value based on pin mode
+        if (mode == PinMode.PWM_OUTPUT) {
+            // set pin hardware PWM value
+            com.pi4j.wiringpi.Gpio.pwmSetRange(range);
+        }
+        else if(mode == PinMode.SOFT_PWM_OUTPUT) {
+            // first, stop the software emulated PWM driver for this pin
+            com.pi4j.wiringpi.SoftPwm.softPwmStop(pin.getAddress());
+            // update the PWM range for this pin
+            com.pi4j.wiringpi.SoftPwm.softPwmCreate(pin.getAddress(), 0, range);
+        }
+        else {
+            // unsupported operation
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public int getPwm(Pin pin) {
         return super.getPwm(pin);
-    }
-
-    // internal
-    private void setPwmValue(Pin pin, int value) {
-        // set pin PWM value
-        com.pi4j.wiringpi.Gpio.pwmWrite(pin.getAddress(), value);
     }
 
     @Override

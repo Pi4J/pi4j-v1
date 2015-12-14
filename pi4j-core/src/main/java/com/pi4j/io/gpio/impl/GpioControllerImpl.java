@@ -823,6 +823,55 @@ public class GpioControllerImpl implements GpioController {
     }
 
     @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, String name) {
+        // return new new pin instance
+        return (GpioPinPwmOutput)provisionPin(provider, pin, name, PinMode.SOFT_PWM_OUTPUT);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin) {
+        // return new new pin instance
+        return (GpioPinPwmOutput)provisionPin(provider, pin, PinMode.SOFT_PWM_OUTPUT);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, String name) {
+        return provisionSoftPwmOutputPin(defaultProvider, pin, name);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin) {
+        return provisionSoftPwmOutputPin(defaultProvider, pin);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, int defaultValue) {
+        return provisionSoftPwmOutputPin(provider, pin, pin.getName(), defaultValue);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, String name, int defaultValue)  {
+        // create new GPIO pin instance
+        GpioPinPwmOutput gpioPin = provisionSoftPwmOutputPin(provider, pin, name);
+
+        // apply default value
+        gpioPin.setPwm(defaultValue);
+
+        // return new new pin instance
+        return gpioPin;
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, String name, int defaultValue) {
+        return provisionSoftPwmOutputPin(defaultProvider, pin, name, defaultValue);
+    }
+
+    @Override
+    public GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, int defaultValue) {
+        return provisionSoftPwmOutputPin(defaultProvider, pin, defaultValue);
+    }
+
+    @Override
     public void unprovisionPin(GpioPin... pin) {
         if (pin == null || pin.length == 0) {
             throw new IllegalArgumentException("Missing pin argument.");

@@ -52,14 +52,14 @@ public abstract class PinProvider {
 
     protected static Pin createDigitalPin(String providerName, int address, String name, EnumSet<PinPullResistance> resistance, EnumSet<PinEdge> edges) {
         return createPin(providerName, address, name,
-                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
+                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.SOFT_PWM_OUTPUT),
                 resistance,
                 edges);
     }
 
     protected static Pin createDigitalPin(String providerName, int address, String name, EnumSet<PinEdge> edges) {
         return createPin(providerName, address, name,
-                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
+                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.SOFT_PWM_OUTPUT),
                 PinPullResistance.all(),
                 edges);
     }

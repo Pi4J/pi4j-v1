@@ -243,7 +243,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
         PinMode mode = getMode(pin);
 
-        if (mode != PinMode.PWM_OUTPUT) {
+        if (mode != PinMode.PWM_OUTPUT || mode != PinMode.SOFT_PWM_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
         }
 
@@ -251,6 +251,13 @@ public abstract class GpioProviderBase implements GpioProvider {
         getPinCache(pin).setPwmValue(value);
     }
 
+    @Override
+    public void setPwmRange(Pin pin, int range){
+        if (!hasPin(pin)) {
+            throw new InvalidPinException(pin);
+        }
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public int getPwm(Pin pin) {

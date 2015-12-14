@@ -54,3 +54,14 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_SoftPwm_softPwmWrite
 {
 	softPwmWrite(pin, value);
 }
+
+/*
+ * Class:     com_pi4j_wiringpi_SoftPwm
+ * Method:    softPwmStop
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_SoftPwm_softPwmStop
+  (JNIEnv *env, jclass class, jint pin)
+{
+	softPwmStop(pin);
+}
