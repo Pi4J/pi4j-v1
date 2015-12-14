@@ -90,7 +90,7 @@ public class I2CExample {
         System.out.println("<--Pi4J--> I2C Example ... started.");
 
         // get the I2C bus to communicate on
-        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
+        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_1);
 
         // create an I2C device for an individual device on the bus that you want to communicate with
         // in this example we will use the default address for the TSL2561 chip which is 0x39.
