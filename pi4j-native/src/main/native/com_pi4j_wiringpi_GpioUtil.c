@@ -39,6 +39,8 @@
 #include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_GpioUtil.h"
 
+#define ENVIRON_GPIOMEM          "WIRINGPI_GPIOMEM"
+#define ENVIRON_GPIOMEM_ENABLED  "1"
 
 /* Source for com_pi4j_wiringpi_GpioUtil */
 
@@ -604,5 +606,80 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
 {
 	// validate the pin number
 	return isPinValid(pin);
+}
+
+/*
+ * This method will return a value of '1' if Privileged access is required.
+ * This method will return a value of '0' if Privileged access is NOT required.
+ * Privileged access is required if any of the the following conditions are not met:
+ *    - You are running with Linux kernel version 4.1.7 or greater
+ *    - The Device Tree is enabled
+ *    - The 'bcm2835_gpiomem' kernel module loaded.
+ *    - Udev rules are configured to permit write access to '/sys/class/gpio/'
+ */
+int isPrivilegedAccessRequired()
+{
+    int gpiomem_fd;
+    FILE *export_fd;
+
+    // check for read/write access to the the /dev/gpiomem' device
+    // this device will only exist if the 'bcm2835_gpiomem' kernel model is loaded
+    if ((gpiomem_fd = open ("/dev/gpiomem", O_RDWR | O_SYNC | O_CLOEXEC) ) < 0){
+      return 1; // Privileged access is required
+    }
+
+	// close the gpiomem device file
+	close (gpiomem_fd);
+
+	// validate that the export file can be accessed
+	if ((export_fd = fopen ("/sys/class/gpio/export", "w")) == NULL)
+	{
+	  return 1; // Privileged access is required
+	}
+
+	// close export file
+	fclose (export_fd) ;
+
+    // Privileged access is NOT required
+    return 0;
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    isPrivilegedAccessRequired
+ * Signature: (I)Z
+ *
+ * This method will return a value of 'true' if Privileged access is required.
+ * This method will return a value of 'false' if Privileged access is NOT required.
+ * Privileged access is required if any of the the following conditions are not met:
+ *    - You are running with Linux kernel version 4.1.7 or greater
+ *    - The Device Tree is enabled
+ *    - The 'bcm2835_gpiomem' kernel module loaded.
+ *    - Udev rules are configured to permit write access to '/sys/class/gpio/'
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPrivilegedAccessRequired
+(JNIEnv *env, jclass class)
+{
+    return (jboolean)isPrivilegedAccessRequired();
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    enableNonPrivilegedAccess
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_enableNonPrivilegedAccess
+(JNIEnv *env, jclass class)
+{
+   // first check to see if priviliged access is required
+   if(isPrivilegedAccessRequired()){
+	  // throw exception
+	  char errstr[255];
+	  sprintf(errstr, "ERROR; Access to GPIO pins on this system requires priviliged access.") ;
+	  (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+   }
+
+   // next set the environment variable ''
+   setenv(ENVIRON_GPIOMEM, ENVIRON_GPIOMEM_ENABLED, 1);
 }
 

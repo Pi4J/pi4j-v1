@@ -42,6 +42,8 @@ Copyright (C) 2012-2015 Pi4J
 
 2015-12-13 :: 1.1-SNAPSHOT
 
+  *  Added non-privileged GPIO example code.
+  *  Added support for enabling non-privileged GPIO access via the Pi4J APIs
   *  Removed 'sudo' from pi4j script when launching compiled Java applications
   *  Added support for '/dev/gpiomem' to eliminate 'root' permissions requirement for basic GPIO.
   *  (Experimental) Added JNI/WiringPi support for Odroid platform
