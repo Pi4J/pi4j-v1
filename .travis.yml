@@ -1,9 +1,8 @@
 language: java
 jdk:
-  - oraclejdk8
   - oraclejdk7
 os:
   - linux
 
-install: "mvn clean install -Dmaven.javadoc.skip=false --projects pi4j-core"
+install: "mvn clean install -Dmaven.javadoc.skip=false -DskipTests=true"
 
