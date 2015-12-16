@@ -4,4 +4,4 @@ jdk:
 os:
   - linux
 
-script: mvn clean install -Dmaven.javadoc.skip=false
+install: "mvn clean install -Dmaven.javadoc.skip=false -DskipTests=true --projects pi4j-core,pi4j-examples,pi4j-device,pi4j-service"
