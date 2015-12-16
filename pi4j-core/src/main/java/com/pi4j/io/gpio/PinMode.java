@@ -37,7 +37,6 @@ import java.util.EnumSet;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-@SuppressWarnings("unused")
 public enum PinMode {
 
     DIGITAL_INPUT(0, "input", PinDirection.IN),
