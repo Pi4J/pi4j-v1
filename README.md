@@ -1,6 +1,5 @@
  Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
-[![Build Status](https://travis-ci.org/Pi4J/pi4j.svg)](https://travis-ci.org/Pi4J/pi4j)
 
 ## PROJECT INFORMATION
 
