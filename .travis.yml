@@ -4,4 +4,4 @@ jdk:
 os:
   - linux
 
-script: "mvn clean install -Pnative"
+script: "mvn clean install -P native"
