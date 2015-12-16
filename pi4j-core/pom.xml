@@ -22,6 +22,7 @@
         <dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-native</artifactId>
+			<classifier>raspberrypi-static</classifier>
 			<version>${project.version}</version>
 			<type>so</type>
 			<scope>provided</scope>
