@@ -1,5 +1,6 @@
  Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core)
 
 ## PROJECT INFORMATION
 
