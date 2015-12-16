@@ -1,5 +1,7 @@
+[![Build Status](https://travis-ci.org/Pi4J/pi4j.svg)](https://travis-ci.org/Pi4J/pi4j)
+
 ==========================================================================
- Pi4J :: Java library for Raspberry Pi
+ Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
 
 ## PROJECT INFORMATION
