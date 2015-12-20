@@ -177,10 +177,13 @@ public abstract class GpioProviderBase implements GpioProvider {
         }
 
         GpioProviderPinCache pinCache = getPinCache(pin);
+    	final PinMode pinMode = pinCache.getMode();
 
         // only permit invocation on pins set to DIGITAL_OUTPUT modes
-        if (pinCache.getMode() != PinMode.DIGITAL_OUTPUT) {
-            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pin.getName() + "]; cannot setState() when pin mode is [" + pinCache.getMode().getName() + "]");
+        if (pinMode != PinMode.DIGITAL_OUTPUT) {
+        	final String pinName = pin.getName();
+        	final String pinModeName = pinMode != null ? pinMode.getName() : "null";
+            throw new InvalidPinModeException(pin, "Invalid pin mode on pin [" + pinName + "]; cannot setState() when pin mode is [" + pinModeName + "]");
         }
 
         // for digital output pins, we will echo the event feedback
