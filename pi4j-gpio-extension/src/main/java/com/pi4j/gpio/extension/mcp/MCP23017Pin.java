@@ -54,22 +54,22 @@ import com.pi4j.io.gpio.impl.PinImpl;
  */
 public class MCP23017Pin {
     
-    public static final Pin GPIO_A0 = createDigitalPin(1, "GPIO A0");
-    public static final Pin GPIO_A1 = createDigitalPin(2, "GPIO A1");
-    public static final Pin GPIO_A2 = createDigitalPin(4, "GPIO A2");
-    public static final Pin GPIO_A3 = createDigitalPin(8, "GPIO A3");
-    public static final Pin GPIO_A4 = createDigitalPin(16, "GPIO A4");
-    public static final Pin GPIO_A5 = createDigitalPin(32, "GPIO A5");
-    public static final Pin GPIO_A6 = createDigitalPin(64, "GPIO A6");
-    public static final Pin GPIO_A7 = createDigitalPin(128, "GPIO A7");
-    public static final Pin GPIO_B0 = createDigitalPin(1001, "GPIO B0");
-    public static final Pin GPIO_B1 = createDigitalPin(1002, "GPIO B1");
-    public static final Pin GPIO_B2 = createDigitalPin(1004, "GPIO B2");
-    public static final Pin GPIO_B3 = createDigitalPin(1008, "GPIO B3");
-    public static final Pin GPIO_B4 = createDigitalPin(1016, "GPIO B4");
-    public static final Pin GPIO_B5 = createDigitalPin(1032, "GPIO B5");
-    public static final Pin GPIO_B6 = createDigitalPin(1064, "GPIO B6");
-    public static final Pin GPIO_B7 = createDigitalPin(1128, "GPIO B7");
+    public static final Pin GPIO_A0 = createDigitalPin(1, 1, "GPIO A0");
+    public static final Pin GPIO_A1 = createDigitalPin(2, 2, "GPIO A1");
+    public static final Pin GPIO_A2 = createDigitalPin(3, 4, "GPIO A2");
+    public static final Pin GPIO_A3 = createDigitalPin(4, 8, "GPIO A3");
+    public static final Pin GPIO_A4 = createDigitalPin(5, 16, "GPIO A4");
+    public static final Pin GPIO_A5 = createDigitalPin(6, 32, "GPIO A5");
+    public static final Pin GPIO_A6 = createDigitalPin(7, 64, "GPIO A6");
+    public static final Pin GPIO_A7 = createDigitalPin(8, 128, "GPIO A7");
+    public static final Pin GPIO_B0 = createDigitalPin(9, 1001, "GPIO B0");
+    public static final Pin GPIO_B1 = createDigitalPin(10, 1002, "GPIO B1");
+    public static final Pin GPIO_B2 = createDigitalPin(12, 1004, "GPIO B2");
+    public static final Pin GPIO_B3 = createDigitalPin(13, 1008, "GPIO B3");
+    public static final Pin GPIO_B4 = createDigitalPin(14, 1016, "GPIO B4");
+    public static final Pin GPIO_B5 = createDigitalPin(15, 1032, "GPIO B5");
+    public static final Pin GPIO_B6 = createDigitalPin(16, 1064, "GPIO B6");
+    public static final Pin GPIO_B7 = createDigitalPin(17, 1128, "GPIO B7");
     
     public static Pin[] ALL_A_PINS = { MCP23017Pin.GPIO_A0, MCP23017Pin.GPIO_A1, MCP23017Pin.GPIO_A2, MCP23017Pin.GPIO_A3,
                                        MCP23017Pin.GPIO_A4, MCP23017Pin.GPIO_A5, MCP23017Pin.GPIO_A6, MCP23017Pin.GPIO_A7 };
@@ -82,8 +82,8 @@ public class MCP23017Pin {
                                 MCP23017Pin.GPIO_B0, MCP23017Pin.GPIO_B1, MCP23017Pin.GPIO_B2, MCP23017Pin.GPIO_B3,
                                 MCP23017Pin.GPIO_B4, MCP23017Pin.GPIO_B5, MCP23017Pin.GPIO_B6, MCP23017Pin.GPIO_B7 };
     
-    private static Pin createDigitalPin(int address, String name) {
-        return new PinImpl(MCP23017GpioProvider.NAME, address, name, 
+    private static Pin createDigitalPin(int address, int i2cAddress, String name) {
+        return new MCP23017PinImpl(MCP23017GpioProvider.NAME, address, i2cAddress, name, 
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
                     EnumSet.of(PinPullResistance.PULL_UP, PinPullResistance.OFF));    
     }    
