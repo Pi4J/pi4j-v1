@@ -42,12 +42,13 @@ import com.pi4j.component.temperature.TemperatureSensor;
 import com.pi4j.component.temperature.TemperatureSensorBase;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.temperature.TemperatureScale;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.IOException;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,7 +71,7 @@ public class Tmp102 extends TemperatureSensorBase implements TemperatureSensor {
      *
      * @throws IOException
      */
-    public Tmp102(int i2cBus, int i2cAddr) throws IOException {
+    public Tmp102(int i2cBus, int i2cAddr) throws UnsupportedBusNumberException, IOException {
         this.i2cAddr = i2cAddr;
         this.dev     = I2CFactory.getInstance(i2cBus).getDevice(i2cAddr);
     }

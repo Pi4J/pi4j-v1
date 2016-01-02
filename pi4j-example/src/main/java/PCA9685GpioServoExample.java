@@ -41,6 +41,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * Simple servo tester application demonstrating Pi4J's Servo component.
@@ -411,7 +412,7 @@ public class PCA9685GpioServoExample {
     //------------------------------------------------------------------------------------------------------------------
     // Helpers
     //------------------------------------------------------------------------------------------------------------------
-    private PCA9685GpioProvider createProvider() throws IOException {
+    private PCA9685GpioProvider createProvider() throws UnsupportedBusNumberException, IOException {
         BigDecimal frequency = PCA9685GpioProvider.ANALOG_SERVO_FREQUENCY;
         BigDecimal frequencyCorrectionFactor = new BigDecimal("1.0578");
 

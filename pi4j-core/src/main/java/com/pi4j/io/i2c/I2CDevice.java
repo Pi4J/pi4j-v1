@@ -5,9 +5,9 @@ package com.pi4j.io.i2c;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CDevice.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CDevice.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.io.i2c;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,10 +34,15 @@ import java.io.IOException;
 /**
  * This is abstraction of an i2c device. It allows data to be read or written to the device.
  *
- * @author Daniel Sendula
+ * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  *
  */
 public interface I2CDevice {
+
+	/**
+	 * @return The address for which this instance is constructed for.
+	 */
+	int getAddress();
 
     /**
      * This method writes one byte directly to i2c device.
@@ -163,4 +168,5 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(byte[] writeBuffer, int writeOffset, int writeSize, byte[] readBuffer, int readOffset, int readSize) throws IOException;
+
 }

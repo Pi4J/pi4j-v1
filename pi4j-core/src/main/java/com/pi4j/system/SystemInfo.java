@@ -5,9 +5,9 @@ package com.pi4j.system;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SystemInfo.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  SystemInfo.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.system;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,25 +30,8 @@ package com.pi4j.system;
  */
 
 
-import com.pi4j.io.i2c.I2CFactoryProviderBanana;
-import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
-import com.pi4j.platform.Platform;
-import com.pi4j.platform.PlatformManager;
-import com.pi4j.util.ExecUtil;
-import com.pi4j.util.StringUtil;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SystemInfo {
 

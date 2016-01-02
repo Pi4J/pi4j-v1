@@ -5,9 +5,9 @@ package com.pi4j.platform;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  Platform.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  Platform.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,22 +17,25 @@ package com.pi4j.platform;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.BananaPiGpioProvider;
+import com.pi4j.io.gpio.BananaProGpioProvider;
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.RaspiGpioProvider;
 import com.pi4j.io.i2c.I2CFactoryProvider;
-import com.pi4j.io.i2c.I2CFactoryProviderBanana;
-import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
+import com.pi4j.io.i2c.I2CFactoryProviderBananaPi;
+import com.pi4j.io.i2c.I2CFactoryProviderRaspberryPi;
 import com.pi4j.system.SystemInfoProvider;
 import com.pi4j.system.impl.BananaPiSystemInfoProvider;
 import com.pi4j.system.impl.BananaProSystemInfoProvider;
@@ -148,21 +151,21 @@ public enum Platform {
         // return the I2C provider based on the provided platform
         switch(platform) {
             case RASPBERRYPI: {
-                return new I2CFactoryProviderRaspberry();
+                return new I2CFactoryProviderRaspberryPi();
             }
             case BANANAPI: {
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderBananaPi();
             }
             case BANANAPRO: {
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderBananaPi();
             }
             case ODROID: {
                 // TODO: IMPLEMENT ODROID PROVIDER
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderBananaPi();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
-                return new I2CFactoryProviderRaspberry();
+                return new I2CFactoryProviderRaspberryPi();
             }
         }
     }

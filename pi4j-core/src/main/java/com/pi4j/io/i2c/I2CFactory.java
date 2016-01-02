@@ -5,9 +5,9 @@ package com.pi4j.io.i2c;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactory.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CFactory.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,21 +17,20 @@ package com.pi4j.io.i2c;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.pi4j.platform.PlatformManager;
-
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * I2C factory - it returns instances of {@link I2CBus} interface.
@@ -40,10 +39,21 @@ import java.io.IOException;
  *         href="http://www.savagehomeautomation.com">http://www
  *         .savagehomeautomation.com</a>)
  */
-public class I2CFactory
-{
+public class I2CFactory {
 
-	volatile static I2CFactoryProvider provider = null;
+    public static final long DEFAULT_LOCKAQUIRE_TIMEOUT = 1000;
+
+    public static final TimeUnit DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS = TimeUnit.MILLISECONDS;
+
+	public static class UnsupportedBusNumberException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public UnsupportedBusNumberException() {
+			super();
+		}
+	}
+
+	volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberryPi();
 
 	// private constructor
 	private I2CFactory()
@@ -52,22 +62,38 @@ public class I2CFactory
 	}
 
 	/**
-	 * Create new I2CBus instance
+	 * Create new I2CBus instance.
+	 * <p>
+	 * The timeout for locking the bus for exclusive communication is set to DEFAULT_LOCKAQUIRE_TIMEOUT.
 	 *
-	 * @return Return a new I2CBus impl instance.
-	 *
-	 * @throws IOException
+	 * @param busNumber The bus number
+	 * @return Return a new I2CBus instance
+	 * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
+	 * @throws IOException If communication to i2c-bus fails
+	 * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT
+	 * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
 	 */
-	public static I2CBus getInstance(int busNumber) throws IOException
+	public static I2CBus getInstance(int busNumber)
+			throws UnsupportedBusNumberException, IOException
 	{
-        // if a provider has not been previously assigned, then create an instance now
-        if(provider == null){
-            // create the provider based on the PlatformManager's selected platform
-            provider = PlatformManager.getPlatform().getI2CFactoryProvider();
-        }
+		return provider.getBus(busNumber, DEFAULT_LOCKAQUIRE_TIMEOUT, DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
+	}
 
-        // return the provider's bus instance
-		return provider.getBus(busNumber);
+	/**
+	 * Create new I2CBus instance.
+	 *
+	 * @param busNumber The bus number
+	 * @param lockAquireTimeout The timeout for locking the bus for exclusive communication
+	 * @param lockAquireTimeoutUnit The units of lockAquireTimeout
+	 * @return Return a new I2CBus instance
+	 * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
+	 * @throws IOException If communication to i2c-bus fails
+	 */
+	public static I2CBus getInstance(int busNumber,
+			long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
+			throws UnsupportedBusNumberException, IOException
+	{
+		return provider.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
 	}
 
 	/**
@@ -78,4 +104,5 @@ public class I2CFactory
 	{
 		provider = factoryProvider;
 	}
+
 }
