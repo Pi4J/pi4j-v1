@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.jni.I2C;
 
 /**
@@ -56,14 +57,6 @@ import com.pi4j.jni.I2C;
  *
  */
 public abstract class I2CBusImpl implements I2CBus {
-
-    public static class UnsupportedBusNumberException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public UnsupportedBusNumberException() {
-            super();
-        }
-    }
 
     private static final Logger logger = Logger.getLogger(I2CBusImpl.class.getCanonicalName());
 
@@ -383,15 +376,5 @@ public abstract class I2CBusImpl implements I2CBus {
     @Override
     public String toString() {
         return "I2CBus '" + busNumber + "' ('" + filename + "')";
-    }
-
-    @Override
-    public String getFileName() {
-        return filename;
-    }
-
-    @Override
-    public int getFileDescriptor() {
-        return fd;
     }
 }

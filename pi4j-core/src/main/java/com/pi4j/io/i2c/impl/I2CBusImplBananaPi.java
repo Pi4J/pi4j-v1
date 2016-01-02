@@ -11,7 +11,7 @@ package com.pi4j.io.i2c.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,8 @@ package com.pi4j.io.i2c.impl;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of
