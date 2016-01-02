@@ -35,9 +35,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * I2C factory - it returns instances of {@link I2CBus} interface.
  *
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www
- *         .savagehomeautomation.com</a>)
+ * @author Robert Savage (<a href="http://www.savagehomeautomation.com">http://www .savagehomeautomation.com</a>)
  */
 public class I2CFactory {
 
@@ -45,64 +43,58 @@ public class I2CFactory {
 
     public static final TimeUnit DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS = TimeUnit.MILLISECONDS;
 
-	public static class UnsupportedBusNumberException extends Exception {
-		private static final long serialVersionUID = 1L;
+    public static class UnsupportedBusNumberException extends Exception {
+        private static final long serialVersionUID = 1L;
 
-		public UnsupportedBusNumberException() {
-			super();
-		}
-	}
+        public UnsupportedBusNumberException() {
+            super();
+        }
+    }
 
-	volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberryPi();
+    volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberryPi();
 
-	// private constructor
-	private I2CFactory()
-	{
-		// forbid object construction
-	}
+    // private constructor
+    private I2CFactory() {
+        // forbid object construction
+    }
 
-	/**
-	 * Create new I2CBus instance.
-	 * <p>
-	 * The timeout for locking the bus for exclusive communication is set to DEFAULT_LOCKAQUIRE_TIMEOUT.
-	 *
-	 * @param busNumber The bus number
-	 * @return Return a new I2CBus instance
-	 * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
-	 * @throws IOException If communication to i2c-bus fails
-	 * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT
-	 * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
-	 */
-	public static I2CBus getInstance(int busNumber)
-			throws UnsupportedBusNumberException, IOException
-	{
-		return provider.getBus(busNumber, DEFAULT_LOCKAQUIRE_TIMEOUT, DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
-	}
+    /**
+     * Create new I2CBus instance.
+     * <p>
+     * The timeout for locking the bus for exclusive communication is set to DEFAULT_LOCKAQUIRE_TIMEOUT.
+     *
+     * @param busNumber The bus number
+     * @return Return a new I2CBus instance
+     * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
+     * @throws IOException If communication to i2c-bus fails
+     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT
+     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
+     */
+    public static I2CBus getInstance(int busNumber) throws UnsupportedBusNumberException, IOException {
+        return provider.getBus(busNumber, DEFAULT_LOCKAQUIRE_TIMEOUT, DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
+    }
 
-	/**
-	 * Create new I2CBus instance.
-	 *
-	 * @param busNumber The bus number
-	 * @param lockAquireTimeout The timeout for locking the bus for exclusive communication
-	 * @param lockAquireTimeoutUnit The units of lockAquireTimeout
-	 * @return Return a new I2CBus instance
-	 * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
-	 * @throws IOException If communication to i2c-bus fails
-	 */
-	public static I2CBus getInstance(int busNumber,
-			long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit)
-			throws UnsupportedBusNumberException, IOException
-	{
-		return provider.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
-	}
+    /**
+     * Create new I2CBus instance.
+     *
+     * @param busNumber The bus number
+     * @param lockAquireTimeout The timeout for locking the bus for exclusive communication
+     * @param lockAquireTimeoutUnit The units of lockAquireTimeout
+     * @return Return a new I2CBus instance
+     * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
+     * @throws IOException If communication to i2c-bus fails
+     */
+    public static I2CBus getInstance(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
+        return provider.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+    }
 
-	/**
-	 * allow changing the provider for the factory
-	 * @param factoryProvider
-	 */
-	public static void setFactory(I2CFactoryProvider factoryProvider)
-	{
-		provider = factoryProvider;
-	}
+    /**
+     * allow changing the provider for the factory
+     *
+     * @param factoryProvider
+     */
+    public static void setFactory(I2CFactoryProvider factoryProvider) {
+        provider = factoryProvider;
+    }
 
 }

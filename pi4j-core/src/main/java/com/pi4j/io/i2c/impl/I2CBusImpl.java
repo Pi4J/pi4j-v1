@@ -81,7 +81,6 @@ public abstract class I2CBusImpl implements I2CBus {
      * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
      */
     protected static I2CBus getBus(final I2CBusImpl newInstanceCandidate) throws UnsupportedBusNumberException, IOException {
-
         final I2CBus bus;
 
         InterruptedException lockException = null;
@@ -93,36 +92,30 @@ public abstract class I2CBusImpl implements I2CBus {
         } catch (InterruptedException e) {
             lockException = e;
         }
+
         if (!locked) {
             throw new RuntimeException("Could not abtain lock to build new bus!", lockException);
         }
 
         try {
-
             final I2CBus i2cBus = busSingletons.get(newInstanceCandidate.busNumber);
 
             if (i2cBus == null) {
-
                 newInstanceCandidate.open();
                 bus = newInstanceCandidate;
                 busSingletons.put(newInstanceCandidate.busNumber, bus);
-
             } else {
                 bus = i2cBus;
             }
-
         } finally {
-
             try {
                 singletonPerBusLock.unlock();
             } catch (Throwable e) {
                 logger.log(Level.WARNING, "Unlocking 'singletonPerBusLock' throws an exception", e);
             }
-
         }
 
         return bus;
-
     }
 
     /** File handle for this i2c bus */
@@ -153,7 +146,6 @@ public abstract class I2CBusImpl implements I2CBus {
      * @throws IOException thrown in case that file cannot be opened
      */
     protected I2CBusImpl(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-
         this.filename = getFilenameForBusnumber(busNumber);
         this.busNumber = busNumber;
 
@@ -162,12 +154,12 @@ public abstract class I2CBusImpl implements I2CBus {
         } else {
             this.lockAquireTimeout = lockAquireTimeout;
         }
+
         if (lockAquireTimeoutUnit == null) {
             this.lockAquireTimeoutUnit = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS;
         } else {
             this.lockAquireTimeoutUnit = lockAquireTimeoutUnit;
         }
-
     }
 
     /**
@@ -181,9 +173,7 @@ public abstract class I2CBusImpl implements I2CBus {
      */
     @Override
     public I2CDevice getDevice(int address) throws IOException {
-
         return new I2CDeviceImpl(this, address);
-
     }
 
     /**
@@ -200,7 +190,6 @@ public abstract class I2CBusImpl implements I2CBus {
      * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
      */
     public <T> T runActionOnExclusivLockedBus(final Callable<T> action) throws IOException {
-
         if (action == null) {
             throw new RuntimeException("Parameter 'action' is mandatory!");
         }
@@ -214,18 +203,14 @@ public abstract class I2CBusImpl implements I2CBus {
             locked = true;
 
             return action.call();
-
         } catch (InterruptedException e) {
-
             logger.log(Level.FINER, "Failed locking I2CBusImpl-" + busNumber, e);
             throw new RuntimeException("Could not abtain an access-lock!", e);
-
         } catch (IOException e) { // unwrap IOExceptionWrapperException
             throw e;
         } catch (Exception e) { // unexpected exceptions
             throw new RuntimeException(e);
         } finally {
-
             if (locked) {
                 try {
                     unlock();
@@ -233,23 +218,18 @@ public abstract class I2CBusImpl implements I2CBus {
                     logger.log(Level.WARNING, "Could not unlock access-lock!", e);
                 }
             }
-
         }
-
     }
 
     private void unlock() {
-
         logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
 
         accessLock.unlock();
 
         logger.log(Level.FINER, "I2CBusImpl-{0} unlocked", busNumber);
-
     }
 
     private void lock() throws InterruptedException {
-
         logger.log(Level.FINEST, "Will try to lock I2CBusImpl-{0}", busNumber);
 
         if (accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
@@ -257,7 +237,6 @@ public abstract class I2CBusImpl implements I2CBus {
         } else {
             throw new InterruptedException("timeout for lock acquisition elapsed");
         }
-
     }
 
     /**
@@ -266,7 +245,6 @@ public abstract class I2CBusImpl implements I2CBus {
      * @throws IOException thrown in case there are problems opening the i2c bus.
      */
     public void open() throws IOException {
-
         if (fd != -1) {
             return;
         }
@@ -275,7 +253,6 @@ public abstract class I2CBusImpl implements I2CBus {
         if (fd < 0) {
             throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
         }
-
     }
 
     /**
@@ -285,7 +262,6 @@ public abstract class I2CBusImpl implements I2CBus {
      */
     @Override
     public void close() throws IOException {
-
         testWhetherBusHasAlreadyBeenClosed();
 
         InterruptedException lockException = null;
@@ -297,17 +273,15 @@ public abstract class I2CBusImpl implements I2CBus {
         } catch (InterruptedException e) {
             lockException = e;
         }
+
         if (!locked) {
             throw new RuntimeException("Could not abtain lock to close the bus!", lockException);
         }
 
         try {
-
             I2C.i2cClose(fd);
             fd = -1;
-
         } finally {
-
             /*
              * after closing the fd, we must "forget" the singleton bus instance, otherwise further request to this bus will always fail
              */
@@ -322,13 +296,10 @@ public abstract class I2CBusImpl implements I2CBus {
             } catch (Throwable e) {
                 logger.log(Level.WARNING, "Unlocking 'singletonPerBusLock' throws an exception", e);
             }
-
         }
-
     }
 
     private void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
-
         testWhetherBusHasAlreadyBeenClosed();
 
         if (device == null) {
@@ -336,95 +307,72 @@ public abstract class I2CBusImpl implements I2CBus {
         }
 
         testWhetherBusIsLockedExclusive();
-
     }
 
     public int readByteDirect(final I2CDeviceImpl device) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cReadByteDirect(fd, device.getAddress());
-
     }
 
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer);
-
     }
 
     public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cReadByte(fd, device.getAddress(), localAddress);
-
     }
 
     public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cReadBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
-
     }
 
     public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cWriteByteDirect(data, device.getAddress(), data);
-
     }
 
     public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer);
-
     }
 
     public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data);
-
     }
 
     public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
-
     }
 
     public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer, final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
-
         testForProperOperationConditions(device);
 
         return I2C.i2cWriteAndReadBytes(fd, device.getAddress(), writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
-
     }
 
     private void testWhetherBusIsLockedExclusive() throws ConcurrentModificationException {
-
         if (!accessLock.isHeldByCurrentThread()) {
             throw new ConcurrentModificationException();
         }
-
     }
 
     private void testWhetherBusHasAlreadyBeenClosed() throws IOException {
-
         if (fd == -1) {
             throw new IOException(toString() + " has already been closed! A new bus has to be aquired.");
         }
-
     }
 
     @Override

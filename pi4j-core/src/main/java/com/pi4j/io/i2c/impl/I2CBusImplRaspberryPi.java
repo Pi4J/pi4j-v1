@@ -40,9 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class I2CBusImplRaspberryPi extends I2CBusImpl {
 
     public static I2CBusImplRaspberryPi getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-
         return (I2CBusImplRaspberryPi) I2CBusImpl.getBus(new I2CBusImplRaspberryPi(busNumber, lockAquireTimeout, lockAquireTimeoutUnit));
-
     }
 
     private I2CBusImplRaspberryPi(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
@@ -51,7 +49,6 @@ public class I2CBusImplRaspberryPi extends I2CBusImpl {
 
     @Override
     protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
-
         if ((busNumber < 0) || (busNumber > 1)) {
             throw new UnsupportedBusNumberException();
         }

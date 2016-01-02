@@ -38,11 +38,11 @@ import java.io.IOException;
  */
 public interface I2CBus {
 
-    public static final int BUS_0 = 0;
-    public static final int BUS_1 = 1;
-    public static final int BUS_2 = 2;
-    public static final int BUS_3 = 3;
-    public static final int BUS_4 = 4;
+    int BUS_0 = 0;
+    int BUS_1 = 1;
+    int BUS_2 = 2;
+    int BUS_3 = 3;
+    int BUS_4 = 4;
 
     /**
      * Returns i2c device.
@@ -53,8 +53,10 @@ public interface I2CBus {
      */
     I2CDevice getDevice(int address) throws IOException;
 
+    @Deprecated
     String getFileName();
 
+    @Deprecated
     int getFileDescriptor();
 
     /**

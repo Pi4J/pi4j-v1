@@ -43,9 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class I2CBusImplBananaPi extends I2CBusImpl {
 
     public static I2CBusImplBananaPi getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-
         return (I2CBusImplBananaPi) I2CBusImpl.getBus(new I2CBusImplBananaPi(busNumber, lockAquireTimeout, lockAquireTimeoutUnit));
-
     }
 
     private I2CBusImplBananaPi(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
@@ -54,7 +52,6 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
 
     @Override
     protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
-
         if ((busNumber < 0) || (busNumber > 3)) {
             throw new UnsupportedBusNumberException();
         }
