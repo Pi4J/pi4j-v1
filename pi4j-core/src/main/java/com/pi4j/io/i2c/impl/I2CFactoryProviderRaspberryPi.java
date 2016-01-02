@@ -5,9 +5,9 @@ package com.pi4j.io.i2c.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactoryProviderRaspberryPi.java
- *
- * This file is part of the Pi4J project. More information about
+ * FILENAME      :  I2CFactoryProviderRaspberryPi.java  
+ * 
+ * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,28 +17,28 @@ package com.pi4j.io.i2c.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-import com.pi4j.io.i2c.I2CFactoryProvider;
 
-public class I2CFactoryProviderRaspberryPi implements I2CFactoryProvider {
+public class I2CFactoryProviderRaspberryPi extends I2CProviderImpl {
 
-    public I2CBus getBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-        return I2CBusImplRaspberryPi.getBus(busNumber, lockAquireTimeout, lockAquireTimeoutUnit);
+    @Override
+    protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
+        if ((busNumber < 0) || (busNumber > 1)) {
+            throw new UnsupportedBusNumberException();
+        }
+
+        return "/dev/i2c-" + busNumber;
     }
 }
