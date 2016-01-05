@@ -10,7 +10,7 @@ package com.pi4j.io.gpio.event;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinDigitalEdgeDetectionListener.java  
+ * FILENAME      :  GpioPinDigitalPulseDetectionListener.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -39,7 +39,7 @@ package com.pi4j.io.gpio.event;
  *
  * @author Stefan
  */
-public interface GpioPinDigitalEdgeDetectionListener extends GpioPinListener {
+public interface GpioPinDigitalPulseDetectionListener extends GpioPinListener {
 
-    public void handleGpioPinDigitalEdgeDetectionEvent(GpioPinDigitalEdgeDetectionEvent event);
+    public void handleGpioPinDigitalPulseEvent(GpioPinDigitalPulseEvent event);
 }

@@ -10,7 +10,7 @@ package com.pi4j.io.gpio.event;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioPinDigitalEdgeDetectionListener.java  
+ * FILENAME      :  GpioPinDigitalPulseDetector.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -35,11 +35,37 @@ package com.pi4j.io.gpio.event;
  */
 
 
+import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.PinState;
+
 /**
  *
  * @author Stefan
  */
-public interface GpioPinDigitalEdgeDetectionListener extends GpioPinListener {
+public class GpioPinDigitalPulseDetector implements GpioPinListenerDigital {
 
-    public void handleGpioPinDigitalEdgeDetectionEvent(GpioPinDigitalEdgeDetectionEvent event);
+    private long pulseStart = 0;
+
+    @Override
+    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+        PinState state = event.getState();
+        GpioPin pin = event.getPin();
+        if (state == PinState.HIGH) {
+            pulseStart = System.currentTimeMillis();
+        } else if (state == PinState.LOW) {
+            if (pulseStart == 0) {
+                return;
+            }
+            long pulseEnd = System.currentTimeMillis();
+            int pulseDuration = (int) (pulseEnd - pulseStart);
+            GpioPinDigitalPulseEvent ev = new GpioPinDigitalPulseEvent(this, pin, pulseDuration);
+            for (GpioPinListener listener : pin.getListeners()) {
+                if (listener instanceof GpioPinDigitalPulseDetectionListener) {
+                    ((GpioPinDigitalPulseDetectionListener) listener).handleGpioPinDigitalPulseEvent(ev);
+                }
+            }
+        }
+    }
 }
