@@ -11,7 +11,7 @@ package com.pi4j.wiringpi;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,11 +56,12 @@ import java.util.Vector;
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ * @author Heikki Vesalainen
  */
 public class GpioInterrupt {
 
     private static Vector<GpioInterruptListener> listeners = new Vector<>();
-    private Object lock;
+    private static volatile Thread[] threads = new Thread[Gpio.NUM_PINS];
 
     // private constructor 
     private GpioInterrupt()  {
@@ -74,8 +75,8 @@ public class GpioInterrupt {
 
     /**
      * <p>
-     * This method is used to instruct the native code to setup a monitoring thread to monitor
-     * interrupts that represent changes to the selected GPIO pin.
+     * This method is used to to setup resources needed to enable
+     * listening for changes to the selected GPIO pin.
      * </p>
      * 
      * <p>
@@ -84,54 +85,105 @@ public class GpioInterrupt {
      * 
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @return A return value of a negative number represents an error. A return value of '0'
-     *         represents success and that the GPIO pin is already being monitored. A return value
-     *         of '1' represents success and that a new monitoring thread was created to handle the
-     *         requested GPIO pin number.
+     *         represents success and that the GPIO pin was alreaedy set up. A return value
+     *         of '1' represents success and that the setup was successful.
      */
-    public static native int enablePinStateChangeCallback(int pin);
+    public static int enablePinStateChangeCallback(int pin) {
+        if (threads[pin] != null) {
+            return 0;
+        } else {
+            int ret = initPoll(pin);
+            threads[pin] = new PollThread(pin);
+            threads[pin].start();
+            return ret;
+        }
+    }
+
+    private static class PollThread extends Thread {
+        public int index;
+        public PollThread(int index) {
+            super("Pi4J polling thread for pin #" + index);
+            this.index = index;
+        }
+        public void run() {
+            int previousValue = Gpio.digitalRead(index);
+
+            while (GpioInterrupt.threads[index] != null) {
+                int nextValue = GpioInterrupt.pollPinStateChange(index, previousValue, 10000);
+                if (nextValue >= 0) {
+                    if (nextValue != previousValue) {
+                        GpioInterrupt.pinStateChangeCallback(index, nextValue == 1);
+                    }
+                    previousValue = nextValue;
+                } else {
+                    GpioInterrupt.closePoll(index);
+                    throw new IllegalStateException("Pin #" + index + " could not be polled");
+                }
+            }
+        }
+    }
 
     /**
      * <p>
-     * This method is used to instruct the native code to stop the monitoring thread monitoring
-     * interrupts on the selected GPIO pin.
+     * This method is used to instruct the native code to setup resources to enable
+     * polling for changes to the selected GPIO pin.
+     * </p>
+     * 
+     * <p>
+     * <b>The GPIO pin must first be exported before it can be monitored.</b>
+     * </p>
+     * 
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @return A return value of a negative number represents an error. A return value of '0'
+     *         represents success and that the GPIO pin was alreaedy set up. A return value
+     *         of '1' represents success and that the setup was successful.
+     */
+    public static native int initPoll(int pin);
+ 
+    /**
+     * <p>
+     * This method is used to release the resources related to listening to the 
+     * selected GPIO pin.
      * </p>
      * 
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
 
      * @return A return value of a negative number represents an error. A return value of '0'
-     *         represents success and that no existing monitor was previously running. A return
-     *         value of '1' represents success and that an existing monitoring thread was stopped
-     *         for the requested GPIO pin number.
+     *         represents success and that the resources were free alread. A return value of '1' 
+     *         represents success and that the resources were freed.
      */
-    public static native int disablePinStateChangeCallback(int pin);
-
-    /**
-     * <p>
-     * This method is provided as the callback handler for the Pi4J native library to invoke when a
-     * GPIO interrupt is detected. This method should not be called from any Java consumers. (Thus
-     * is is marked as a private method.)
-     * </p>
-     * 
-     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @param state New GPIO pin state.
-     */
-    @SuppressWarnings("unchecked")
-    private static void pinStateChangeCallback(int pin, boolean state) {
-
-        Vector<GpioInterruptListener> dataCopy;
-        dataCopy = (Vector<GpioInterruptListener>) listeners.clone();
-
-        for (int i = 0; i < dataCopy.size(); i++) {
-            GpioInterruptEvent event = new GpioInterruptEvent(listeners, pin, state);
-            (dataCopy.elementAt(i)).pinStateChange(event);
+    public static int disablePinStateChangeCallback(int pin) {
+        if (threads[pin] != null) {
+            try {
+                Thread t = threads[pin];
+                threads[pin] = null;
+                t.join();
+                return closePoll(pin);
+            } catch (InterruptedException e) {
+                return -1;
+            }
+        } else {
+            return 0;
         }
-
-        // System.out.println("GPIO PIN [" + pin + "] = " + state);
     }
 
     /**
      * <p>
-     * Java consumer code can all this method to register itself as a listener for pin state
+     * This method is used to instruct the native code to release
+     * the resources related to polling the selected GPIO pin.
+     * </p>
+     * 
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+
+     * @return A return value of a negative number represents an error. A return value of '0'
+     *         represents success and that the resources were free alread. A return value of '1' 
+     *         represents success and that the resources were freed.
+     */
+    public static native int closePoll(int pin);
+
+    /**
+     * <p>
+     * Java consumer code can call this method to register itself as a listener for pin state
      * changes.
      * </p>
      * 
@@ -163,6 +215,42 @@ public class GpioInterrupt {
         }
     }
     
+    /**
+     * <p>
+     * This method is provided as the callback handler for the Pi4J to invoke when a
+     * GPIO interrupt is detected. This method should not be called from outside. (Thus
+     * is is marked as a private method.)
+     * </p>
+     * 
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param state New GPIO pin state.
+     */
+    @SuppressWarnings("unchecked")
+    private static void pinStateChangeCallback(int pin, boolean state) {
+
+        Vector<GpioInterruptListener> dataCopy;
+        dataCopy = (Vector<GpioInterruptListener>) listeners.clone();
+
+        for (int i = 0; i < dataCopy.size(); i++) {
+            GpioInterruptEvent event = new GpioInterruptEvent(listeners, pin, state);
+            (dataCopy.elementAt(i)).pinStateChange(event);
+        }
+    }
+
+    /**
+     * Polls the given pin for a change.
+     *
+     * The pin has to be inited first with the 'initPin' method.
+     *
+     * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
+     * @param previousValue a previous value to which the new value is compared. The poll
+     *        returns when the value changes unless a timeout occurs.
+     * @param pollTimeout a timeout in millisecond.
+     * @return A negative return value indicates error. If the poll
+     *         timeouts, the 'previousValue' is returned.
+     */
+    public static native int pollPinStateChange(int pin, int previousValue, int pollTimeout);
+
     
     /**
      * <p>
