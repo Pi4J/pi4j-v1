@@ -9,7 +9,7 @@
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,8 @@
 #include <wiringPi.h>
 #include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_Gpio.h"
-#include "com_pi4j_wiringpi_GpioInterrupt.h"
+
+JavaVM *gpio_callback_jvm;
 
 /* Source for com_pi4j_wiringpi_Gpio */
 
@@ -524,4 +525,28 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_setPadDrive
   (JNIEnv *env, jclass obj, jint group, jint value)
 {
     setPadDrive(group, value);
+}
+
+/**
+ * --------------------------------------------------------
+ * JNI LIBRARY LOADED
+ * --------------------------------------------------------
+ * capture java references to be used later for callback methods
+ */
+jint Gpio_JNI_OnLoad(JavaVM *jvm)
+{
+    JNIEnv *env;
+
+    // cache the JavaVM pointer
+    gpio_callback_jvm = jvm;
+
+    // ensure that the calling environment is a supported JNI version
+    if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
+    {
+        // JNI version not supported
+        printf("NATIVE (GpioInterrupt) ERROR; JNI version not supported.\n");
+        return JNI_ERR;
+    }
+
+    return JNI_VERSION_1_2;
 }

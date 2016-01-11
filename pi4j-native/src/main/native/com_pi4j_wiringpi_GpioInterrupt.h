@@ -9,7 +9,7 @@
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,37 +37,27 @@ extern "C" {
 #endif
 /*
  * Class:     com_pi4j_wiringpi_GpioInterrupt
- * Method:    enablePinStateChangeCallback
+ * Method:    initPoll
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_enablePinStateChangeCallback
-  (JNIEnv *, jclass, jint);
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_initPoll
+(JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_pi4j_wiringpi_GpioInterrupt
- * Method:    disablePinStateChangeCallback
+ * Method:    pollPinStateChange
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_pollPinStateChange
+  (JNIEnv *, jclass, jint, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioInterrupt
+ * Method:    closePoll
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChangeCallback
-  (JNIEnv *, jclass, jint);
-
-
-/*
- * Class:     com_pi4j_wiringpi_GpioInterrupt
- * Method:    GpioInterrupt_JNI_OnLoad
- */
-jint GpioInterrupt_JNI_OnLoad(JavaVM *jvm);
-
-/*
- * Class:     com_pi4j_wiringpi_GpioInterrupt
- * Method:    GpioInterrupt_JNI_OnUnload
- */
-void GpioInterrupt_JNI_OnUnload(JavaVM *jvm);
-
-/*
- * GPIO JVM instance to perform callbacks on
- */
-JavaVM *gpio_callback_jvm;
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_closePoll
+(JNIEnv *, jclass, jint);
 
 #ifdef __cplusplus
 }
