@@ -497,7 +497,7 @@ public class Gpio {
      * 32-bit integer microseconds or approximately 71 minutes.
      *
      * Delays under 100 microseconds are timed using a hard-coded loop continually polling the system time,
-     * Delays over 100 microseconds are done using the system nanosleep() function – You may need to consider
+     * Delays over 100 microseconds are done using the system nanosleep() function - You may need to consider
      * the implications of very short delays on the overall performance of the system, especially if using
      * threads.
      * </p>
@@ -574,7 +574,7 @@ public class Gpio {
      * 
      * </p>
      *
-     * @deprecated Note: Jan 2013: The waitForInterrupt() function is deprecated – you should use the newer
+     * @deprecated Note: Jan 2013: The waitForInterrupt() function is deprecated - you should use the newer
      *             and easier to use wiringPiISR() function.
      *
      * @see <a
@@ -595,14 +595,14 @@ public class Gpio {
      * <p>
      * This function registers a function to received interrupts on the specified pin. The edgeType parameter is either
      * INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP. If it is INT_EDGE_SETUP then no
-     * initialisation of the pin will happen – it’s assumed that you have already setup the pin elsewhere
+     * initialisation of the pin will happen - it's assumed that you have already setup the pin elsewhere
      * (e.g. with the gpio program), but if you specify one of the other types, then the pin will be exported and
      * initialised as specified. This is accomplished via a suitable call to the gpio utility program, so it need to
      * be available
      * </p>
      *
      * <p>
-     * The pin number is supplied in the current mode – native wiringPi, BCM_GPIO, physical or Sys modes.
+     * The pin number is supplied in the current mode - native wiringPi, BCM_GPIO, physical or Sys modes.
      * </p>
      *
      * <p>
@@ -610,8 +610,8 @@ public class Gpio {
      * </p>
      *
      * <p>
-     * The function will be called when the interrupt triggers. When it is triggered, it’s cleared in the dispatcher
-     * before calling your function, so if a subsequent interrupt fires before you finish your handler, then it won’t
+     * The function will be called when the interrupt triggers. When it is triggered, it's cleared in the dispatcher
+     * before calling your function, so if a subsequent interrupt fires before you finish your handler, then it won't
      * be missed. (However it can only track one more interrupt, if more than one interrupt fires while one is being
      * handled then they will be ignored)
      * </p>
@@ -694,8 +694,8 @@ public class Gpio {
 
 
     /**
-     * <p> This writes the 8-bit byte supplied to the first 8 GPIO pins. It’s the fastest way to set all 8 bits at once to a particular value,
-     *     although it still takes two write operations to the Pi’s GPIO hardware.  </p>
+     * <p> This writes the 8-bit byte supplied to the first 8 GPIO pins. It's the fastest way to set all 8 bits at once to a particular value,
+     *     although it still takes two write operations to the Pi's GPIO hardware.  </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -706,8 +706,8 @@ public class Gpio {
     /**
      * <p>[PWM]</p>
      *
-     * <p> The PWM generator can run in 2 modes – “balanced” and “mark:space”. The mark:space mode is traditional, however
-     *     the default mode in the Pi is “balanced”. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
+     * <p> The PWM generator can run in 2 modes - "balanced" and "mark:space". The mark:space mode is traditional, however
+     *     the default mode in the Pi is "balanced". You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -740,7 +740,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “strength” of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
+     * <p> This sets the "strength" of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -762,7 +762,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “frequency” of a GPIO pin </p>
+     * <p> This sets the "frequency" of a GPIO pin </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
