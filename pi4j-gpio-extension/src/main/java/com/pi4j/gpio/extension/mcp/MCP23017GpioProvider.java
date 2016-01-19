@@ -107,6 +107,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         this(I2CFactory.getInstance(busNumber), address, pollingtime);
     }
 
+    public MCP23017GpioProvider(I2CBus bus, int address) throws IOException {
+        this(bus, address, DEFAULT_POLLING_TIME);
+    }
+    
     public MCP23017GpioProvider(I2CBus bus, int address, int pollingtime) throws IOException {
 
         // set reference to I2C communications bus instance
