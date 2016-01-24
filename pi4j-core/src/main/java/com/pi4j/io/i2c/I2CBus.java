@@ -45,6 +45,14 @@ public interface I2CBus {
     public static final int BUS_2 = 2;
     public static final int BUS_3 = 3;
     public static final int BUS_4 = 4;
+    public static final int BUS_10 = 10;
+    public static final int BUS_11 = 11;
+    public static final int BUS_12 = 12;
+    public static final int BUS_13 = 13;
+    public static final int BUS_14 = 14;
+    public static final int BUS_15 = 15;
+    public static final int BUS_16 = 16;
+    public static final int BUS_17 = 17;
 
     /**
      * Returns i2c device.
