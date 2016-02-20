@@ -11,7 +11,7 @@ package com.pi4j.wiringpi;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -706,8 +706,8 @@ public class Gpio {
     /**
      * <p>[PWM]</p>
      *
-     * <p> The PWM generator can run in 2 modes – “balanced” and “mark:space”. The mark:space mode is traditional, however
-     *     the default mode in the Pi is “balanced”. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
+     * <p> The PWM generator can run in 2 modes – "balanced"? and "mark:space"?. The mark:space mode is traditional, however
+     *     the default mode in the Pi is "balanced"?. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -740,7 +740,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “strength” of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
+     * <p> This sets the "strength"? of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -762,7 +762,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “frequency” of a GPIO pin </p>
+     * <p> This sets the "frequency"? of a GPIO pin </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
