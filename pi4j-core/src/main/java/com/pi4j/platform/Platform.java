@@ -32,6 +32,7 @@ package com.pi4j.platform;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CFactoryProvider;
 import com.pi4j.io.i2c.I2CFactoryProviderBanana;
+import com.pi4j.io.i2c.I2CFactoryProviderOdroid;
 import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
 import com.pi4j.system.SystemInfoProvider;
 import com.pi4j.system.impl.BananaPiSystemInfoProvider;
@@ -131,7 +132,7 @@ public enum Platform {
                 return new BananaProGpioProvider();
             }
             case ODROID: {
-                return new BananaPiGpioProvider();
+                return new OdroidGpioProvider();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
@@ -157,8 +158,7 @@ public enum Platform {
                 return new I2CFactoryProviderBanana();
             }
             case ODROID: {
-                // TODO: IMPLEMENT ODROID PROVIDER
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderOdroid();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
@@ -184,7 +184,6 @@ public enum Platform {
                 return new BananaProSystemInfoProvider();
             }
             case ODROID: {
-                // TODO: IMPLEMENT ODROID PROVIDER
                 return new OdroidSystemInfoProvider();
             }
             default: {

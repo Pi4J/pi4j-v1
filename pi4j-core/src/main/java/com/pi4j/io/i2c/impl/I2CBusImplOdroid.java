@@ -5,7 +5,7 @@ package com.pi4j.io.i2c.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CBusImplBananaPi.java  
+ * FILENAME      :  I2CBusImplOdroid.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -44,7 +44,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Daniel Sendula, Robert Savage
  *
  */
-public class I2CBusImplBananaPi extends I2CBusImpl {
+public class I2CBusImplOdroid extends I2CBusImpl {
 
     /** Singleton instance of bus 0 */
     private static I2CBus bus0 = null;
@@ -57,6 +57,9 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
 
     /** Singleton instance of bus 3 */
     private static I2CBus bus3 = null;
+
+    /** Singleton instance of bus 4 */
+    private static I2CBus bus4 = null;
 
     /**
      * to lock the creation/destruction of the bus singletons
@@ -88,14 +91,20 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
         } else if (busNumber == 2) {
             bus = bus2;
             if (bus == null) {
-                bus = new I2CBusImplBananaPi("/dev/i2c-2");
+                bus = new I2CBusImplOdroid("/dev/i2c-2");
                 bus2 = bus;
             }
         } else if (busNumber == 3) {
             bus = bus3;
             if (bus == null) {
-                bus = new I2CBusImplBananaPi("/dev/i2c-3");
+                bus = new I2CBusImplOdroid("/dev/i2c-3");
                 bus3 = bus;
+            }
+        } else if (busNumber == 4) {
+            bus = bus4;
+            if (bus == null) {
+                bus = new I2CBusImplOdroid("/dev/i2c-4");
+                bus4 = bus;
             }
         } else {
             throw new IOException("Unknown bus number " + busNumber);
@@ -111,7 +120,7 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
      *
      * @throws IOException thrown in case that file cannot be opened
      */
-    public I2CBusImplBananaPi(String filename) throws IOException {
+    public I2CBusImplOdroid(String filename) throws IOException {
         super(filename);
     }
 
@@ -135,6 +144,8 @@ public class I2CBusImplBananaPi extends I2CBusImpl {
             bus2 = null;
         } else if (this == bus3) {
             bus3 = null;
+        } else if (this == bus4) {
+            bus4 = null;
         }
         lock.unlock();
     }

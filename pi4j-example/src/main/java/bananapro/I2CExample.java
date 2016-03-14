@@ -56,7 +56,7 @@ import java.io.IOException;
  * > TSL2561 DATA 0 = 0x1e
  * > TSL2561 DATA 1 = 0x04
  * > ... powering down TSL2561
- * > Exiting bananapi.I2CExample
+ * > Exiting I2CExample
  *
  *
  * @author Robert Savage
@@ -135,6 +135,6 @@ public class I2CExample {
         device.write(TSL2561_REG_CONTROL, TSL2561_POWER_DOWN);
 
         // done
-        System.out.println("Exiting bananapi.I2CExample");
+        System.out.println("Exiting I2CExample");
     }
 }

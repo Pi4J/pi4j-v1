@@ -44,7 +44,7 @@
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
 
 // constants
-#define GPIO_FN_MAXLEN  32
+#define GPIO_FN_MAXLEN  128
 #define GPIO_POLL_TIMEOUT    30000 // 30 seconds
 #define GPIO_RDBUF_LEN       5
 
@@ -102,7 +102,7 @@ int monitorPinInterrupt(void *threadarg)
 
 	// attempt to access the pin state from the linux sysfs
 	// (each GPIO pin value is stored in file: '/sys/class/gpio/gpio#/value' )
-	snprintf(fn, GPIO_FN_MAXLEN-1, "/sys/class/gpio/gpio%d/value", edgePin);
+	snprintf(fn, GPIO_FN_MAXLEN-1, GPIO_PIN_VALUE_FILE, edgePin);
 	fd=open(fn, O_RDONLY);
 	if(fd<0)
 	{

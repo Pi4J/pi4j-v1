@@ -94,6 +94,6 @@ public class PwmExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting bananapi.PwmExample");
+        System.out.println("Exiting PwmExample");
     }
 }

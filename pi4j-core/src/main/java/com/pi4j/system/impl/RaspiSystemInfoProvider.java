@@ -5,9 +5,9 @@ package com.pi4j.system.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  RaspiSystemInfoProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  RaspiSystemInfoProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.system.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -147,7 +147,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case "0010":  // Model B Plus 512MB (Sony)
                 {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
                     if (getHardware().equalsIgnoreCase("BCM2709"))
-                        return SystemInfo.BoardType.Model2B_Rev1_0;
+                        return SystemInfo.BoardType.Model2B_Rev1_1;
                     else
                         return SystemInfo.BoardType.ModelB_Plus_Rev1_2;
                 }
@@ -172,10 +172,10 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
             }
         }
         else if (type == 4) {
-            return SystemInfo.BoardType.Model2B_Rev1_0;
+            return SystemInfo.BoardType.Model2B_Rev1_1;
         }
         else if (type == 9) {
-            return SystemInfo.BoardType.ModelZero_Rev1_0;
+            return SystemInfo.BoardType.ModelZero_Rev1_2;
         }
         else {
             return SystemInfo.BoardType.UNKNOWN;

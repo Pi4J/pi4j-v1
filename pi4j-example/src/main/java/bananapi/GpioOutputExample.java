@@ -33,8 +33,6 @@ import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 
-import java.util.EnumSet;
-
 /**
  * This example code demonstrates how to perform simple state
  * control of a GPIO pin on the BananaPi.
@@ -108,6 +106,6 @@ public class GpioOutputExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting bananapi.GpioOutputExample");
+        System.out.println("Exiting GpioOutputExample");
     }
 }

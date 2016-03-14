@@ -1,4 +1,4 @@
-package bananapi;
+package odroid;
 /*
  * #%L
  * **********************************************************************
@@ -39,7 +39,7 @@ import java.io.IOException;
 
 /**
  * This example code demonstrates how to perform simple I2C
- * communication on the BananaPi.  For this example we will
+ * communication on the Odroid-C1/C1+.  For this example we will
  * connect to a 'TSL2561' LUX sensor.
  *
  * Data Sheet:
@@ -91,15 +91,16 @@ public class I2CExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
+        // explicitly assign the platform as the Odroid platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
+        PlatformManager.setPlatform(Platform.ODROID);
 
         System.out.println("<--Pi4J--> I2C Example ... started.");
 
         // get the I2C bus to communicate on
-        // - I2CBus.BUS_2 uses header pin CON3:3 as SDA and header pin CON3:5 as SCL
+        // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
+        // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
 
         // create an I2C device for an individual device on the bus that you want to communicate with

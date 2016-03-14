@@ -37,6 +37,18 @@ extern "C" {
 #define	MAX_GPIO_PINS   46L
 
 
+#ifdef AML_GPIO
+#define GPIO_CLASS               "/sys/class/aml_gpio"
+#else
+#define GPIO_CLASS               "/sys/class/gpio"
+#endif
+#define GPIO_EXPORT_FILE        GPIO_CLASS "/export"
+#define GPIO_UNEXPORT_FILE      GPIO_CLASS "/unexport"
+#define GPIO_PIN_DIRECTORY      GPIO_CLASS "/gpio%d"
+#define GPIO_PIN_DIRECTION_FILE GPIO_PIN_DIRECTORY "/direction"
+#define GPIO_PIN_EDGE_FILE      GPIO_PIN_DIRECTORY "/edge"
+#define GPIO_PIN_VALUE_FILE     GPIO_PIN_DIRECTORY "/value"
+
 /**
  * --------------------------------------------------------
  * GET GPIO PIN INDEX

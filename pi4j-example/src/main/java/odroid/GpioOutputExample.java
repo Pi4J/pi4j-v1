@@ -1,4 +1,4 @@
-package bananapro;
+package odroid;
 /*
  * #%L
  * **********************************************************************
@@ -35,7 +35,7 @@ import com.pi4j.platform.PlatformManager;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the BananaPro.
+ * control of a GPIO pin on the Odroid C1/C1+/XU4 platform.
  *
  * @author Robert Savage
  */
@@ -46,10 +46,10 @@ public class GpioOutputExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPro platform.
+        // explicitly assign the platform as the Odroid platform.
         //
         // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPRO);
+        PlatformManager.setPlatform(Platform.ODROID);
 
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
 
@@ -58,16 +58,20 @@ public class GpioOutputExample {
 
         // ####################################################################
         //
-        // When provisioning a pin, use the BananaProPin class.
+        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
+        //    When provisioning a pin, use the OdroidC1Pin class.
+        //
+        // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
+        //    When provisioning a pin, use the OdroidXU4Pin class.
         //
         // ####################################################################
 
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
-        Pin selectedPin = BananaProPin.GPIO_01;
+        Pin selectedPin = OdroidC1Pin.GPIO_01;
         if (args.length > 0){
             int address = Integer.parseInt(args[0]);
-            selectedPin = BananaProPin.getPinByAddress(address);
+            selectedPin = OdroidC1Pin.getPinByAddress(address);
         }
 
         // provision gpio pin as an output pin and turn on

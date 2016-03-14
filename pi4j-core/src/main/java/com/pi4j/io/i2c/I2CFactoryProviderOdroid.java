@@ -1,11 +1,11 @@
-package com.pi4j.io.gpio;
+package com.pi4j.io.i2c;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  OdroidGpioProvider.java  
+ * FILENAME      :  I2CFactoryProviderOdroid.java  
  * 
  * This file is part of the Pi4J project. More information about 
  * this project can be found here:  http://www.pi4j.com/
@@ -29,35 +29,15 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-import com.pi4j.platform.Platform;
-import com.pi4j.wiringpi.GpioInterruptListener;
+import com.pi4j.io.i2c.impl.I2CBusImplBananaPi;
+import com.pi4j.io.i2c.impl.I2CBusImplOdroid;
 
-/**
- * Odroid-C1/C1+/XU4 {@link GpioProvider} implementation.
- *
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
- */
-@SuppressWarnings("unused")
-public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
+import java.io.IOException;
 
-    public static final String NAME = "Odroid GPIO Provider";
-
-    /**
-     * Default Constructor
-     */
-    public OdroidGpioProvider() {
-
-        // configure the Pi4J platform to use the "odroid" implementation
-        System.setProperty("pi4j.platform", Platform.ODROID.id());
-
-        // set wiringPi interface for internal use
-        // we will use the WiringPi pin number scheme with the wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
+public class I2CFactoryProviderOdroid implements I2CFactoryProvider
+{
+	public I2CBus getBus(int busNumber) throws IOException
+	{
+		return I2CBusImplOdroid.getBus(busNumber);
+	}
 }

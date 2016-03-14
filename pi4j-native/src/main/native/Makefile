@@ -16,7 +16,7 @@ INCLUDE	     = -I. -IwiringPi/wiringPi                         \
                -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux \
                -I/usr/local/include -I/usr/local/include/linux
 
-CFLAGS      := $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(CARGS)
+CFLAGS      := $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(CARGS) -fPIC
 
 LIBS         =  -lwiringPi -lwiringPiDev
 LIBS_STATIC  =  -LwiringPi/lib/static  $(LIBS)
