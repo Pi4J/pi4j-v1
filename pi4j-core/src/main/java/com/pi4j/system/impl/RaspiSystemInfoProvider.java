@@ -118,16 +118,41 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         // determine board type based on revision scheme
         if (scheme == 0) {
             // The following info obtained from:
-            // http://www.raspberrypi.org/archives/1929
-            // http://raspberryalphaomega.org.uk/?p=428
-            // http://www.raspberrypi.org/phpBB3/viewtopic.php?p=281039#p281039
             // http://elinux.org/RPi_HardwareHistory
+
+            // -------------------------------------------------------------------
+            // Revision	Release Date	Model	PCB Revision	Memory	Notes
+            // -------------------------------------------------------------------
+            // Beta	  Q1 2012	B (Beta)	 ?	256 MB	Beta Board
+            // 0002	  Q1 2012	B	1.0	256 MB
+            // 0003	  Q3 2012	B (ECN0001)	1.0	256 MB	Fuses mod and D14 removed
+            // 0004	  Q3 2012	B	2.0	256 MB	(Mfg by Sony)
+            // 0005	  Q4 2012	B	2.0	256 MB	(Mfg by Qisda)
+            // 0006	  Q4 2012	B	2.0	256 MB	(Mfg by Egoman)
+            // 0007	  Q1 2013	A	2.0	256 MB	(Mfg by Egoman)
+            // 0008	  Q1 2013	A	2.0	256 MB	(Mfg by Sony)
+            // 0009	  Q1 2013	A	2.0	256 MB	(Mfg by Qisda)
+            // 000d	  Q4 2012	B	2.0	512 MB	(Mfg by Egoman)
+            // 000e	  Q4 2012	B	2.0	512 MB	(Mfg by Sony)
+            // 000f	  Q4 2012	B	2.0	512 MB	(Mfg by Qisda)
+            // 0010	  Q3 2014	B+	1.0	512 MB	(Mfg by Sony)
+            // 0011	  Q2 2014	Compute Module	1.0	512 MB	(Mfg by Sony)
+            // 0012	  Q4 2014	A+	1.0	256 MB	(Mfg by Sony)
+            // 0013	  Q1 2015	B+	1.2	512 MB	 ?
+            // a01041 Q1 2015	2 Model B	1.1	1 GB	(Mfg by Sony)
+            // a21041 Q1 2015	2 Model B	1.1	1 GB	(Mfg by Embest, China)
+            // 900092 Q4 2015	Zero	1.2	512 MB	(Mfg by Sony)
+            // a02082 Q1 2016	3 Model B	1.2	1024 MB	(Mfg by Sony)
+
             switch (revision) {
+                case "Beta":  // Model B Beta
+                    return SystemInfo.BoardType.ModelB_Beta;
+
                 case "0002":  // Model B Revision 1 (Egoman)
                     return SystemInfo.BoardType.ModelB_Rev1_0;
 
                 case "0003":  // Model B Revision 1 (Egoman) + Fuses mod and D14 removed
-                    return SystemInfo.BoardType.ModelB_Rev1_1;
+                    return SystemInfo.BoardType.ModelB_Rev1_0;
 
                 case "0004":  // Model B Revision 2 256MB (Sony)
                 case "0005":  // Model B Revision 2 256MB (Qisda)
@@ -136,37 +161,45 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
 
                 case "0007":  // Model A 256MB (Egoman)
                 case "0008":  // Model A 256MB (Sony)
+                case "0009":  // Model A 256MB (Qisda)
                     return SystemInfo.BoardType.ModelA_Rev2_0;
 
-                case "0009":  // Model B Revision 2 256MB (Unknown)
                 case "000d":  // Model B Revision 2 512MB (Egoman)
                 case "000e":  // Model B Revision 2 512MB (Sony)
                 case "000f":  // Model B Revision 2 512MB (Egoman)
                     return SystemInfo.BoardType.ModelB_Rev2_0;
 
                 case "0010":  // Model B Plus 512MB (Sony)
-                {             // Model 2B, Rev 1.1, Quad Core, 1GB (Sony)
-                    if (getHardware().equalsIgnoreCase("BCM2709"))
-                        return SystemInfo.BoardType.Model2B_Rev1_1;
-                    else
-                        return SystemInfo.BoardType.ModelB_Plus_Rev1_2;
-                }
+                   return SystemInfo.BoardType.ModelB_Plus_Rev1_0;
 
                 case "0011":  // Compute Module 512MB (Sony)
-                    return SystemInfo.BoardType.Compute_Module_Rev1_2;
+                    return SystemInfo.BoardType.Compute_Module_Rev1_0;
 
                 case "0012":  // Model A Plus 512MB (Sony)
-                    return SystemInfo.BoardType.ModelA_Plus_Rev1_2;
+                    return SystemInfo.BoardType.ModelA_Plus_Rev1_0;
 
                 case "0013":  // Model B Plus 512MB (Egoman)
                     return SystemInfo.BoardType.ModelB_Plus_Rev1_2;
 
+                /* UNDOCUMENTED */
                 case "0014":  // Compute Module Rev 1.2, 512MB, (Sony)
                     return SystemInfo.BoardType.Compute_Module_Rev1_1;
 
+                /* UNDOCUMENTED */
                 case "0015":  // Model A Plus 256MB (Sony)
                     return SystemInfo.BoardType.ModelA_Plus_Rev1_1;
 
+                // new revision format
+                case "a01041":  // Model A Plus 256MB (Sony)
+                    return SystemInfo.BoardType.Model2B_Rev1_1;
+                case "a21041":  // Model A Plus 256MB (Embest, China))
+                    return SystemInfo.BoardType.Model2B_Rev1_1;
+                case "900092":  // Model A Plus 256MB (Sony)
+                    return SystemInfo.BoardType.ModelZero_Rev1_2;
+                case "a02082":  // Model A Plus 256MB (Sony)
+                    return SystemInfo.BoardType.Model3B_Rev1_2;
+
+                // unknown
                 default:
                     return SystemInfo.BoardType.UNKNOWN;
             }
