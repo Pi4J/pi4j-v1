@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.pca;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  PCA9685GpioProviderPinCache.java  
+ * FILENAME      :  PCA9685GpioProviderPinCache.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%

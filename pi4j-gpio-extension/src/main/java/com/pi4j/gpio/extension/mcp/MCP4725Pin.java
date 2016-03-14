@@ -11,9 +11,9 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP4725Pin.java  
+ * FILENAME      :  MCP4725Pin.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%

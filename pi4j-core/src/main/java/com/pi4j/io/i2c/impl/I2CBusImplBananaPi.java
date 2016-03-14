@@ -5,9 +5,9 @@ package com.pi4j.io.i2c.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CBusImplBananaPi.java  
+ * FILENAME      :  I2CBusImplBananaPi.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%

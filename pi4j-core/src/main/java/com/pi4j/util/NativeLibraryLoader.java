@@ -5,9 +5,9 @@ package com.pi4j.util;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  NativeLibraryLoader.java  
+ * FILENAME      :  NativeLibraryLoader.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -109,8 +109,8 @@ public class NativeLibraryLoader {
 	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted after exiting. Method uses String as filename because the pathname is
 	 * "abstract", not system-dependent.
 	 *
-	 * @param filename
-	 *            The filename in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 * @param path
+	 *            The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
 	 * @throws IOException
 	 *             If temporary file creation or read/write operation fails
 	 * @throws IllegalArgumentException

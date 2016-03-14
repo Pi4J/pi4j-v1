@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.ads;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  ADS1015Pin.java  
+ * FILENAME      :  ADS1015Pin.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%

@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.pcf;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  PCF8574Pin.java  
+ * FILENAME      :  PCF8574Pin.java
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
