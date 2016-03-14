@@ -192,11 +192,15 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 // new revision format
                 case "a01041":  // Model A Plus 256MB (Sony)
                     return SystemInfo.BoardType.Model2B_Rev1_1;
-                case "a21041":  // Model A Plus 256MB (Embest, China))
+                case "a21041":  // Model A Plus 256MB (Embest, China)
                     return SystemInfo.BoardType.Model2B_Rev1_1;
                 case "900092":  // Model A Plus 256MB (Sony)
                     return SystemInfo.BoardType.ModelZero_Rev1_2;
-                case "a02082":  // Model A Plus 256MB (Sony)
+                case "920092":  // Model A Plus 256MB (Sony)
+                    return SystemInfo.BoardType.ModelZero_Rev1_2;
+                case "a02082":  // Model A Plus 256MB (Embest, China)
+                    return SystemInfo.BoardType.Model3B_Rev1_2;
+                case "a22082":  // Model A Plus 256MB (Embest, China)
                     return SystemInfo.BoardType.Model3B_Rev1_2;
 
                 // unknown
