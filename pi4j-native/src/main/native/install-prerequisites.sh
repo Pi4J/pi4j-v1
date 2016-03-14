@@ -31,7 +31,28 @@
 # install prerequisites
 # ----------------------------------
 if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
-  sudo apt-get install gcc -y
-  sudo apt-get install git-core -y
-  sudo apt-get install tree -y
+
+  # GCC
+  GCC_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc|grep "install ok installed")
+  if [[ "" == "$GCC_INSTALLED" ]]; then
+    sudo apt-get --force-yes --yes install gcc
+  else
+    echo " [PREREQUISITE] 'gcc' already installed.";
+  fi
+
+  # GIT
+  GIT_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' git-core|grep "install ok installed")
+  if [[ "" == "$GIT_INSTALLED" ]]; then
+    sudo apt-get --force-yes --yes install git-core
+  else
+    echo " [PREREQUISITE] 'git-core' already installed.";
+  fi
+
+  # TREE
+  TREE_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' tree|grep "install ok installed")
+  if [[ "" == "TREE_INSTALLED" ]]; then
+    sudo apt-get --force-yes --yes install tree
+  else
+    echo " [PREREQUISITE] 'tree' already installed.";
+  fi
 fi
