@@ -162,9 +162,6 @@ WIRINGPI_PLATFORM=bananapro
 export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
 export WIRINGPI_BRANCH=bananapro
 export WIRINGPI_DIRECTORY=wiringPi
-#export WIRINGPI_REPO=https://github.com/LeMaker/WiringLMK.git
-#export WIRINGPI_BRANCH=master
-#export WIRINGPI_DIRECTORY=wiringLMK
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 
