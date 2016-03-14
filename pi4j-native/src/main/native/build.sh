@@ -50,6 +50,24 @@ if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
 fi
 
 # ------------------------------------------------------
+# JAVA_HOME ENVIRONMENT VARIABLE
+# ------------------------------------------------------
+echo
+echo "**********************************************************************"
+echo "*                                                                    *"
+echo "*           CHECKING JAVA_HOME ENVIRONMENT VARIABLE                  *"
+echo "*                                                                    *"
+echo "**********************************************************************"
+echo
+if [[ -n "$JAVA_HOME" ]]; then
+   echo "'JAVA_HOME' already defined as: $JAVA_HOME";
+else
+   export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
+   echo "'JAVA_HOME' was not defined; attempting to use: $JAVA_HOME";
+fi
+
+
+# ------------------------------------------------------
 # RASPBERRY-PI
 # ------------------------------------------------------
 echo
