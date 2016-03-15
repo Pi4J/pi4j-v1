@@ -157,14 +157,17 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
     @Override
     public void setMode(Pin pin, PinMode mode) {
+    	
         super.setMode(pin, mode);
 
+    	final MCP23017PinImpl pinImpl = getPinImpl(pin);
+        
         // determine A or B port based on pin address
         try {
-            if (pin.getAddress() < GPIO_B_OFFSET) {
-                setModeA(pin, mode);
+            if (pinImpl.getI2cAddress() < GPIO_B_OFFSET) {
+                setModeA(pinImpl, mode);
             } else {
-                setModeB(pin, mode);
+                setModeB(pinImpl, mode);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -188,9 +191,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
     }
 
-    private void setModeA(Pin pin, PinMode mode) throws IOException {
+    private void setModeA(MCP23017PinImpl pin, PinMode mode) throws IOException {
+    	
         // determine register and pin address
-        int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
+        int pinAddress = pin.getI2cAddress() - GPIO_A_OFFSET;
 
         // determine update direction value based on mode
         if (mode == PinMode.DIGITAL_INPUT) {
@@ -206,9 +210,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         device.write(REGISTER_GPINTEN_A, (byte) currentDirectionA);
     }
 
-    private void setModeB(Pin pin, PinMode mode) throws IOException {
+    private void setModeB(MCP23017PinImpl pin, PinMode mode) throws IOException {
+    	
         // determine register and pin address
-        int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
+        int pinAddress = pin.getI2cAddress() - GPIO_B_OFFSET;
 
         // determine update direction value based on mode
         if (mode == PinMode.DIGITAL_INPUT) {
@@ -231,23 +236,41 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
     @Override
     public void setState(Pin pin, PinState state) {
+    	
         super.setState(pin, state);
 
+    	final MCP23017PinImpl pinImpl = getPinImpl(pin);
+        
         try {
             // determine A or B port based on pin address
-            if (pin.getAddress() < GPIO_B_OFFSET) {
-                setStateA(pin, state);
+            if (pinImpl.getAddress() < GPIO_B_OFFSET) {
+                setStateA(pinImpl, state);
             } else {
-                setStateB(pin, state);
+                setStateB(pinImpl, state);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
+    private MCP23017PinImpl getPinImpl(Pin pin) throws RuntimeException {
+    	
+    	if (!(pin instanceof MCP23017PinImpl)) {
+    		throw new RuntimeException("Pin-objects have to be created by MCP23017Pin! "
+    				+ "The given pin is of unexpected type '"
+    				+ pin.getClass().getName()
+    				+ "'");
+    	}
+    	return (MCP23017PinImpl) pin;
+
+    }
+    
     private void setStateA(Pin pin, PinState state) throws IOException {
+    	
+    	final MCP23017PinImpl pinImpl = getPinImpl(pin);
+    	
         // determine pin address
-        int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
+        int pinAddress = pinImpl.getI2cAddress() - GPIO_A_OFFSET;
 
         // determine state value for pin bit
         if (state.isHigh()) {
@@ -261,8 +284,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     }
 
     private void setStateB(Pin pin, PinState state) throws IOException {
+    	
+    	final MCP23017PinImpl pinImpl = getPinImpl(pin);
+    	
         // determine pin address
-        int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
+        int pinAddress = pinImpl.getI2cAddress() - GPIO_B_OFFSET;
 
         // determine state value for pin bit
         if (state.isHigh()) {
@@ -277,24 +303,27 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
     @Override
     public PinState getState(Pin pin) {
+    	
         // call super method to perform validation on pin
         PinState result  = super.getState(pin);
 
+    	final MCP23017PinImpl pinImpl = getPinImpl(pin);
+        
         // determine A or B port based on pin address
-        if (pin.getAddress() < GPIO_B_OFFSET) {
-            result = getStateA(pin); // get pin state
+        if (pinImpl.getI2cAddress() < GPIO_B_OFFSET) {
+            result = getStateA(pinImpl); // get pin state
         } else {
-            result = getStateB(pin); // get pin state
+            result = getStateB(pinImpl); // get pin state
         }
 
         // return pin state
         return result;
     }
 
-    private PinState getStateA(Pin pin){
+    private PinState getStateA(MCP23017PinImpl pin){
 
         // determine pin address
-        int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
+        int pinAddress = pin.getI2cAddress() - GPIO_A_OFFSET;
 
         // determine pin state
         PinState state = (currentStatesA & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
@@ -305,10 +334,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         return state;
     }
 
-    private PinState getStateB(Pin pin){
+    private PinState getStateB(MCP23017PinImpl pin){
 
         // determine pin address
-        int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
+        int pinAddress = pin.getI2cAddress() - GPIO_B_OFFSET;
 
         // determine pin state
         PinState state = (currentStatesB & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
@@ -444,12 +473,15 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
 	                            // loop over the available pins on port B
 	                            for (Pin pin : MCP23017Pin.ALL_A_PINS) {
-	                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
+	                            	
+	                            	MCP23017PinImpl pinImpl = (MCP23017PinImpl) pin;
+	                            	
+	                                int pinAddressA = pinImpl.getI2cAddress() - GPIO_A_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
 	                                //if ((pinInterruptA & pinAddressA) > 0) {
 	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
-	                                    evaluatePinForChangeA(pin, pinInterruptState);
+	                                    evaluatePinForChangeA(pinImpl, pinInterruptState);
 	                                //}
 	                            }
 	                        }
@@ -467,12 +499,15 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
 	                            // loop over the available pins on port B
 	                            for (Pin pin : MCP23017Pin.ALL_B_PINS) {
-	                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
+	                            	
+	                            	MCP23017PinImpl pinImpl = (MCP23017PinImpl) pin;
+	                            	
+	                                int pinAddressB = pinImpl.getI2cAddress() - GPIO_B_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
 	                                //if ((pinInterruptB & pinAddressB) > 0) {
 	                                    // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");
-	                                    evaluatePinForChangeB(pin, pinInterruptState);
+	                                    evaluatePinForChangeB(pinImpl, pinInterruptState);
 	                                //}
 	                            }
 	                        }
@@ -488,10 +523,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
             }
         }
 
-        private void evaluatePinForChangeA(Pin pin, int state) {
+        private void evaluatePinForChangeA(MCP23017PinImpl pin, int state) {
+        	
             if (getPinCache(pin).isExported()) {
                 // determine pin address
-                int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
+                int pinAddress = pin.getI2cAddress() - GPIO_A_OFFSET;
 
                 if ((state & pinAddress) != (currentStatesA & pinAddress)) {
                     PinState newState = (state & pinAddress) == pinAddress ? PinState.HIGH
@@ -509,15 +545,15 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
                     // change detected for INPUT PIN
                     // System.out.println("<<< CHANGE >>> " + pin.getName() + " : " + state);
-                    dispatchPinChangeEvent(pin.getAddress(), newState);
+                    dispatchPinChangeEvent(pin.getI2cAddress(), newState);
                 }
             }
         }
 
-        private void evaluatePinForChangeB(Pin pin, int state) {
+        private void evaluatePinForChangeB(MCP23017PinImpl pin, int state) {
             if (getPinCache(pin).isExported()) {
                 // determine pin address
-                int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
+                int pinAddress = pin.getI2cAddress() - GPIO_B_OFFSET;
 
                 if ((state & pinAddress) != (currentStatesB & pinAddress)) {
                     PinState newState = (state & pinAddress) == pinAddress ? PinState.HIGH
