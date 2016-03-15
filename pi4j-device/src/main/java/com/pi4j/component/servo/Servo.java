@@ -6,7 +6,7 @@ package com.pi4j.component.servo;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  Servo.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.component.servo;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,7 +34,7 @@ import com.pi4j.component.Component;
 
 /**
  * Represents characteristics/settings of an R/C-Servo.
- * 
+ *
  * @author Christian Wehrli
  */
 public interface Servo extends Component {
@@ -65,14 +65,14 @@ public interface Servo extends Component {
     //------------------------------------------------------------------------------------------------------------------
     // Properties
     //------------------------------------------------------------------------------------------------------------------
-    /** 
+    /**
      * Integer value between 0 and 150.<br>
      *   0: no travel<br>
      * 150: max. travel (0.9ms pulse)
      */
     String PROP_END_POINT_LEFT = "endPointLeft";
 
-    /** 
+    /**
      * Integer value between 0 and 150.<br>
      *   0: no travel<br>
      * 150: max. travel (2.1ms pulse)
@@ -96,7 +96,7 @@ public interface Servo extends Component {
 
     /**
      * Sets the servos desired position by providing a percentage value.<p>
-     * E.g.: a position value of -100 would force the servo to travel to its max. left position as defined in 
+     * E.g.: a position value of -100 would force the servo to travel to its max. left position as defined in
      *       property {@link #PROP_END_POINT_LEFT}.
      * @param position value between -100 and +100 according to {@link #POS_MAX_LEFT} respectively {@link #POS_MAX_RIGHT}.
      */

@@ -7,7 +7,7 @@ package com.pi4j.component.potentiometer.microchip;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  MicrochipPotentiometerTerminalConfiguration.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -18,12 +18,12 @@ package com.pi4j.component.potentiometer.microchip;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,7 +33,7 @@ package com.pi4j.component.potentiometer.microchip;
 /**
  * The device-status concerning the channel this
  * instance of MCP45XX_MCP46XX_Potentiometer is configured for.
- * 
+ *
  * @see com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerBase
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
@@ -44,29 +44,29 @@ public class MicrochipPotentiometerTerminalConfiguration {
 	private boolean pinAEnabled;
 	private boolean pinWEnabled;
 	private boolean pinBEnabled;
-	
+
 	public MicrochipPotentiometerTerminalConfiguration(MicrochipPotentiometerChannel channel,
                                                        boolean channelEnabled, boolean pinAEnabled,
                                                        boolean pinWEnabled, boolean pinBEnabled) {
-		
+
 		if (channel == null) {
 			throw new RuntimeException("null-channel is not allowed. For devices "
 					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
-		
+
 		this.channel = channel;
 		this.channelEnabled = channelEnabled;
 		this.pinAEnabled = pinAEnabled;
 		this.pinWEnabled = pinWEnabled;
 		this.pinBEnabled = pinBEnabled;
-		
+
 	}
 
 	public MicrochipPotentiometerChannel getChannel() {
 		return channel;
 	}
-	
+
 	/**
 	 * @return Whether the entire channel is enabled or disabled
 	 */
@@ -94,10 +94,10 @@ public class MicrochipPotentiometerTerminalConfiguration {
 	public boolean isPinBEnabled() {
 		return pinBEnabled;
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
-		
+
 		if (obj == null) {
 			return false;
 		}
@@ -124,9 +124,9 @@ public class MicrochipPotentiometerTerminalConfiguration {
 			return false;
 		}
 		return true;
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 
@@ -141,5 +141,5 @@ public class MicrochipPotentiometerTerminalConfiguration {
 		return result.toString();
 
 	}
-	
+
 }

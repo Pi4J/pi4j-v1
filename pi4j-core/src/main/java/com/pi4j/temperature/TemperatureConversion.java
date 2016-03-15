@@ -6,7 +6,7 @@ package com.pi4j.temperature;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  TemperatureConversion.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.temperature;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -36,10 +36,10 @@ public class TemperatureConversion
     public static final double ABSOLUTE_ZERO_FARENHEIT = -459.67;
     public static final double ABSOLUTE_ZERO_KELVIN = 0;
     public static final double ABSOLUTE_ZERO_RANKINE = 0;
-    
+
     /**
      * Convert a temperature value from one temperature scale to another.
-     * 
+     *
      * @param from TemperatureScale
      * @param to TemperatureScale
      * @param temperature value
@@ -48,7 +48,7 @@ public class TemperatureConversion
     public static double convert(TemperatureScale from, TemperatureScale to, double temperature) {
 
         switch(from) {
-        
+
             case FARENHEIT:
                 return convertFromFarenheit(to, temperature);
             case CELSIUS:
@@ -61,19 +61,19 @@ public class TemperatureConversion
                 throw(new RuntimeException("Invalid termpature conversion"));
         }
     }
-    
+
 
     /**
      * Convert a temperature value from the Farenheit temperature scale to another.
-     * 
+     *
      * @param to TemperatureScale
      * @param temperature value in degrees Farenheit
      * @return converted temperature value in the requested to scale
      */
     public static double convertFromFarenheit (TemperatureScale to, double temperature) {
-        
+
         switch(to) {
-        
+
             case FARENHEIT:
                 return temperature;
             case CELSIUS:
@@ -89,15 +89,15 @@ public class TemperatureConversion
 
     /**
      * Convert a temperature value from another temperature scale into the Farenheit temperature scale.
-     * 
+     *
      * @param from TemperatureScale
-     * @param temperature value from other scale 
+     * @param temperature value from other scale
      * @return converted temperature value in degrees Farenheit
      */
     public static double convertToFarenheit (TemperatureScale from, double temperature) {
-        
+
         switch(from) {
-        
+
             case FARENHEIT:
                 return temperature;
             case CELSIUS:
@@ -110,18 +110,18 @@ public class TemperatureConversion
                 throw(new RuntimeException("Invalid termpature conversion"));
         }
     }
-    
+
     /**
      * Convert a temperature value from the Celsius temperature scale to another.
-     * 
+     *
      * @param to TemperatureScale
      * @param temperature value in degrees centigrade
      * @return converted temperature value in the requested to scale
-     */    
+     */
     public static double convertFromCelsius(TemperatureScale to, double temperature) {
-                
+
         switch(to) {
-        
+
             case FARENHEIT:
                 return convertCelsiusToFarenheit(temperature);
             case CELSIUS:
@@ -134,18 +134,18 @@ public class TemperatureConversion
                 throw(new RuntimeException("Invalid termpature conversion"));
         }
     }
-    
+
     /**
      * Convert a temperature value from another temperature scale into the Celsius temperature scale.
-     * 
+     *
      * @param from TemperatureScale
-     * @param temperature value from other scale 
+     * @param temperature value from other scale
      * @return converted temperature value in degrees centigrade
      */
     public static double convertToCelsius (TemperatureScale from, double temperature) {
-        
+
         switch(from) {
-        
+
             case FARENHEIT:
                 return convertFarenheitToCelsius(temperature);
             case CELSIUS:
@@ -157,19 +157,19 @@ public class TemperatureConversion
             default:
                 throw(new RuntimeException("Invalid termpature conversion"));
         }
-    }    
+    }
 
     /**
      * Convert a temperature value from the Kelvin temperature scale to another.
-     * 
+     *
      * @param to TemperatureScale
      * @param temperature value in Kelvin
      * @return converted temperature value in the requested to scale
-     */        
+     */
     public static double convertFromKelvin(TemperatureScale to, double temperature) {
-        
+
         switch(to) {
-        
+
             case FARENHEIT:
                 return convertKelvinToFarenheit(temperature);
             case CELSIUS:
@@ -185,15 +185,15 @@ public class TemperatureConversion
 
     /**
      * Convert a temperature value from another temperature scale into the Kelvin temperature scale.
-     * 
+     *
      * @param from TemperatureScale
-     * @param temperature value from other scale 
+     * @param temperature value from other scale
      * @return converted temperature value in Kelvin
-     */    
+     */
     public static double convertToKelvin(TemperatureScale from, double temperature) {
-        
+
         switch(from) {
-        
+
             case FARENHEIT:
                 return convertFarenheitToKelvin(temperature);
             case CELSIUS:
@@ -209,15 +209,15 @@ public class TemperatureConversion
 
     /**
      * Convert a temperature value from the Rankine temperature scale to another.
-     * 
+     *
      * @param to TemperatureScale
      * @param temperature value in degrees Rankine
      * @return converted temperature value in the requested to scale
-     */      
+     */
     public static double convertFromRankine(TemperatureScale to, double temperature) {
-        
+
         switch(to) {
-        
+
             case FARENHEIT:
                 return convertRankineToFarenheit(temperature);
             case CELSIUS:
@@ -233,15 +233,15 @@ public class TemperatureConversion
 
     /**
      * Convert a temperature value from another temperature scale into the Rankine temperature scale.
-     * 
+     *
      * @param from TemperatureScale
-     * @param temperature value from other scale 
+     * @param temperature value from other scale
      * @return converted temperature value in degrees Rankine
-     */    
+     */
     public static double convertToRankine(TemperatureScale from, double temperature) {
-        
+
         switch(from) {
-        
+
             case FARENHEIT:
                 return convertFarenheitToRankine(temperature);
             case CELSIUS:
@@ -254,82 +254,82 @@ public class TemperatureConversion
                 throw(new RuntimeException("Invalid termpature conversion"));
         }
     }
-    
+
     /**
      * Convert temperature from Farenheit to Celsius temperature scale
-     * 
+     *
      * FORMULA = [°C] = ([°F] − 32) × 5/9
      *
      * @param temperature value in degrees Farenheit
      * @return converted temperature value in degrees Celsius
-     */    
+     */
     public static double convertFarenheitToCelsius(double temperature) {
         return ((temperature - 32) * 5/9);
     }
 
     /**
      * Convert temperature from Farenheit to Kelvin temperature scale
-     * 
+     *
      * FORMULA = [K] = ([°F] + 459.67) × 5/9
      *
      * @param temperature value in degrees Farenheit
      * @return converted temperature value in degrees Kelvin
-     */    
+     */
     public static double convertFarenheitToKelvin(double temperature) {
         return (((temperature + 459.67) * 5) / 9);
     }
 
     /**
      * Convert temperature from Farenheit to Rankine temperature scale
-     * 
+     *
      * FORMULA = [°R] = [°F] + 459.67
      *
      * @param temperature value in degrees Farenheit
      * @return converted temperature value in degrees Rankine
-     */    
+     */
     public static double convertFarenheitToRankine(double temperature) {
         return temperature + 459.67;
     }
 
     /**
      * Convert temperature from Celsius to Farenheit temperature scale
-     * 
+     *
      * FORMULA = [°F] = [°C] × 9/5 + 32
      *
      * @param temperature value in degrees Celsius
      * @return converted temperature value in degrees Farenheit
-     */    
+     */
     public static double convertCelsiusToFarenheit(double temperature) {
         return (((temperature * 9) / 5) + 32);
     }
 
     /**
      * Convert temperature from Celsius to Kelvin temperature scale
-     * 
+     *
      * FORMULA = [K] = [°C] + 273.15
      *
      * @param temperature value in degrees Celsius
      * @return converted temperature value in degrees Kelvin
-     */    
+     */
     public static double convertCelsiusToKelvin(double temperature) {
         return (temperature - ABSOLUTE_ZERO_CELSIUS);
     }
 
     /**
      * Convert temperature from Celsius to Rankine temperature scale
-     * 
+     *
      * FORMULA = [°R] = ([°C] + 273.15) × 9/5
      *
      * @param temperature value in degrees Celsius
      * @return converted temperature value in degrees Rankine
-     */    
+     */
     public static double convertCelsiusToRankine(double temperature) {
         return (((temperature-ABSOLUTE_ZERO_CELSIUS) * 9) / 5);
     }
-    
+
     /**
      * Convert temperature from Kelvin to Celsius temperature scale
-     * 
+     *
      * FORMULA = [°C] = [K] − 273.15
      *
      * @param temperature value in degrees Kelvin
@@ -338,34 +338,34 @@ public class TemperatureConversion
     public static double convertKelvinToCelsius(double temperature) {
         return (temperature + ABSOLUTE_ZERO_CELSIUS);
     }
-    
+
     /**
      * Convert temperature from Kelvin to Farenheit temperature scale
-     * 
+     *
      * FORMULA = [°F] = [K] × 9/5 − 459.67
      *
      * @param temperature value in degrees Kelvin
      * @return converted temperature value in degrees Farenheit
      */
     public static double convertKelvinToFarenheit(double temperature) {
-        return (((temperature * 9) / 5) - 459.67); 
+        return (((temperature * 9) / 5) - 459.67);
     }
 
     /**
      * Convert temperature from Kelvin to Rankine temperature scale
-     * 
+     *
      * FORMULA = [°R] = [K] × 9/5
      *
      * @param temperature value in degrees Kelvin
      * @return converted temperature value in degrees Rankine
      */
     public static double convertKelvinToRankine(double temperature) {
-        return ((temperature * 9) / 5); 
+        return ((temperature * 9) / 5);
     }
 
     /**
      * Convert temperature from Rankine to Farenheit temperature scale
-     * 
+     *
      * FORMULA = [°F] = [°R] − 459.67
      *
      * @param temperature value in degrees Rankine
@@ -377,7 +377,7 @@ public class TemperatureConversion
 
     /**
      * Convert temperature from Rankine to Celsius temperature scale
-     * 
+     *
      * FORMULA = [°C] = ([°R] − 491.67) × 5/9
      *
      * @param temperature value in degrees Rankine
@@ -386,10 +386,10 @@ public class TemperatureConversion
     public static double convertRankineToCelsius(double temperature) {
         return (((temperature-491.67)* 5) / 9);
     }
-    
+
     /**
      * Convert temperature from Rankine to Kelvin temperature scale
-     * 
+     *
      * FORMULA = [K] = [°R] × 5/9
      *
      * @param temperature value in degrees Rankine

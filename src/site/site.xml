@@ -25,24 +25,24 @@
 			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2014 Pi4J. All Rights Reserved."/>
 			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
-			<META NAME="ROBOTS" CONTENT="ALL"/> 
+			<META NAME="ROBOTS" CONTENT="ALL"/>
 			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
 			<META NAME="AUTHOR" CONTENT="Robert Savage"/>
-			
+
 			<!-- GOOGLE ANALYTICS SCRIPT -->
 			<script type="text/javascript">
-			
+
 			  var _gaq = _gaq || [];
 			  _gaq.push(['_setAccount', 'UA-35332834-1']);
 			  _gaq.push(['_setDomainName', 'pi4j.com']);
 			  _gaq.push(['_trackPageview']);
-			
+
 			  (function() {
 			    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 			    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			  })();
-			
+
 			</script>
 		</head>
 		<links>
@@ -98,7 +98,7 @@
 		<menu name="Project Development">
 			<item name="Project Information" href="project-info.html" />
 			<item name="Project Reports" href="project-reports.html" />
-		</menu>		
+		</menu>
 <!-- 		<menu ref="reports" /> -->
 	</body>
 </project>

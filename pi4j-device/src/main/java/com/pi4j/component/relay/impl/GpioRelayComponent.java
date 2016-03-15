@@ -6,7 +6,7 @@ package com.pi4j.component.relay.impl;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  GpioRelayComponent.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.component.relay.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -40,7 +40,7 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import java.util.Timer;
 
 public class GpioRelayComponent extends RelayBase {
-    
+
     // internal class members
     GpioPinDigitalOutput pin = null;
     PinState openState = PinState.LOW;
@@ -62,9 +62,9 @@ public class GpioRelayComponent extends RelayBase {
     };
 
     /**
-     * using this constructor requires that the consumer 
-     *  define the RELAY OPEN and RELAY closed pin states 
-     *  
+     * using this constructor requires that the consumer
+     *  define the RELAY OPEN and RELAY closed pin states
+     *
      * @param pin GPIO digital output pin
      * @param openState pin state to set when relay is OPEN
      * @param closedState pin state to set when relay is CLOSED
@@ -79,7 +79,7 @@ public class GpioRelayComponent extends RelayBase {
      * default constructor; using this constructor assumes that:
      *  (1) a pin state of HIGH is RELAY CLOSED
      *  (2) a pin state of LOW  is RELAY OPEN
-     *  
+     *
      * @param pin GPIO digital output pin
      */
     public GpioRelayComponent(GpioPinDigitalOutput pin) {
@@ -88,23 +88,23 @@ public class GpioRelayComponent extends RelayBase {
     }
 
     /**
-     * Return the current relay state based on the  
+     * Return the current relay state based on the
      * GPIO digital output pin state.
-     *  
-     * @return PowerState 
+     *
+     * @return PowerState
      */
     @Override
     public RelayState getState() {
         if(pin.isState(openState))
             return RelayState.OPEN;
-        else 
+        else
             return RelayState.CLOSED;
     }
 
     /**
      * Set the current GPIO digital output pin state
      * based on the supplied power state
-     * 
+     *
      * @param state new power state to apply
      */
     @Override

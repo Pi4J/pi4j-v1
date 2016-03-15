@@ -7,7 +7,7 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  MicrochipPotentiometerDeviceStatusImpl.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -18,12 +18,12 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -36,7 +36,7 @@ import com.pi4j.component.potentiometer.microchip.MicrochipPotentiometerDeviceSt
 /**
  * The device-status concerning the channel this
  * instance of MCP45XX_MCP46XX_Potentiometer is configured for.
- * 
+ *
  * @see MicrochipPotentiometerBase
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
@@ -55,18 +55,18 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
             final boolean eepromWriteProtected,
             final MicrochipPotentiometerChannel wiperLockChannel,
             final boolean wiperLockActive) {
-		
+
 		if (wiperLockChannel == null) {
 			throw new RuntimeException("null-wiperLockChannel is not allowed. For devices "
 					+ "knowing just one wiper Channel.A is mandatory for "
 					+ "parameter 'channel'");
 		}
-		
+
 		this.eepromWriteActive = eepromWriteActive;
 		this.eepromWriteProtected = eepromWriteProtected;
 		this.wiperLockChannel = wiperLockChannel;
 		this.wiperLockActive = wiperLockActive;
-		
+
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
 	public boolean isEepromWriteProtected() {
 		return eepromWriteProtected;
 	}
-	
+
 	/**
 	 * @return The channel the wiper-lock-active status is for
 	 */
@@ -96,10 +96,10 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
 	public boolean isWiperLockActive() {
 		return wiperLockActive;
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
-		
+
 		if (obj == null) {
 			return false;
 		}
@@ -123,12 +123,12 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
 			return false;
 		}
 		return true;
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		final StringBuffer result = new StringBuffer(MicrochipPotentiometerDeviceStatus.class.getName());
 		result.append("{\n");
 		result.append("  eepromWriteActive='").append(eepromWriteActive);
@@ -137,7 +137,7 @@ public class MicrochipPotentiometerDeviceStatusImpl implements MicrochipPotentio
 		result.append("',\n  wiperLockActive='").append(wiperLockActive);
 		result.append("'\n}");
 		return result.toString();
-		
+
 	}
-	
+
 }

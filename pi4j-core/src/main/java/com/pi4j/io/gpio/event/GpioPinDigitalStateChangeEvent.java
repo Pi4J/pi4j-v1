@@ -6,7 +6,7 @@ package com.pi4j.io.gpio.event;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  GpioPinDigitalStateChangeEvent.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio.event;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -46,7 +46,7 @@ public class GpioPinDigitalStateChangeEvent extends GpioPinEvent {
 
     /**
      * Default event constructor
-     * 
+     *
      * @param obj    Ignore this parameter
      * @param pin    GPIO pin number (not header pin number; not wiringPi pin number)
      * @param state  New GPIO pin state.
@@ -58,7 +58,7 @@ public class GpioPinDigitalStateChangeEvent extends GpioPinEvent {
 
     /**
      * Get the new pin state raised in this event.
-     * 
+     *
      * @return GPIO pin state (HIGH, LOW)
      */
     public PinState getState() {

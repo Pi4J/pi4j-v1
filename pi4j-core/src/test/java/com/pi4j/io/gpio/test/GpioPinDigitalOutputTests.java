@@ -6,7 +6,7 @@ package com.pi4j.io.gpio.test;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  GpioPinDigitalOutputTests.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio.test;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -52,12 +52,12 @@ public class GpioPinDigitalOutputTests {
 
     private static GpioController gpio;
     private static GpioPinDigitalOutput pin;
-    
-    @BeforeClass 
+
+    @BeforeClass
     public static void setup() {
         // create a mock gpio provider and controller
         gpio = MockGpioFactory.getInstance();
-        
+
         // provision pin for testing
         pin = gpio.provisionDigitalOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
     }
@@ -65,46 +65,46 @@ public class GpioPinDigitalOutputTests {
     @Test
     public void testPinProvisioned()  {
         // make sure that pin is provisioned
-        Collection<GpioPin> pins = gpio.getProvisionedPins();        
+        Collection<GpioPin> pins = gpio.getProvisionedPins();
         assertTrue(pins.contains(pin));
-    }    
+    }
 
     @Test(expected=GpioPinExistsException.class)
     public void testPinDuplicatePovisioning()  {
         // make sure that pin cannot be provisioned a second time
         gpio.provisionDigitalOutputPin(MockPin.DIGITAL_OUTPUT_PIN,  "digitalOutputPin", PinState.LOW);
-    }    
-    
+    }
+
     @Test(expected=UnsupportedPinModeException.class)
     public void testPinInvalidModePovisioning() {
-        // make sure that pin cannot be provisioned that does not support DIGITAL OUTPUT 
+        // make sure that pin cannot be provisioned that does not support DIGITAL OUTPUT
         gpio.provisionDigitalOutputPin(MockPin.DIGITAL_INPUT_PIN,  "analogOutputPin");
-    }    
-    
+    }
+
     @Test(expected=InvalidPinException.class)
     public void testInvalidPin() {
         // attempt to export a pin that is not supported by the GPIO provider
         pin.getProvider().export(RaspiPin.GPIO_01, PinMode.DIGITAL_OUTPUT);
     }
-    
+
     @Test
     public void testPinProvider() {
         // verify pin provider
-        assertTrue(pin.getProvider() instanceof MockGpioProvider);                
+        assertTrue(pin.getProvider() instanceof MockGpioProvider);
     }
-    
+
     @Test
     public void testPinExport() {
         // verify is exported
         assertTrue(pin.isExported());
     }
-    
+
     @Test
     public void testPinInstance() {
         // verify pin instance
-        assertEquals(MockPin.DIGITAL_OUTPUT_PIN, pin.getPin());                
+        assertEquals(MockPin.DIGITAL_OUTPUT_PIN, pin.getPin());
     }
-    
+
     @Test
     public void testPinAddress() {
         // verify pin address
@@ -116,7 +116,7 @@ public class GpioPinDigitalOutputTests {
         // verify pin name
         assertEquals("digitalOutputPin", pin.getName());
     }
-     
+
     @Test
     public void testPinMode() {
         // verify pin mode
@@ -133,28 +133,28 @@ public class GpioPinDigitalOutputTests {
     public void testPinInvalidSupportedMode() {
         // verify invalid pin mode
         assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.DIGITAL_INPUT));
-        
-        // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));
-        
-        // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_INPUT));        
 
         // verify invalid pin mode
-        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));              
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_OUTPUT));
+
+        // verify invalid pin mode
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.ANALOG_INPUT));
+
+        // verify invalid pin mode
+        assertFalse(pin.getPin().getSupportedPinModes().contains(PinMode.PWM_OUTPUT));
     }
-    
+
     @Test
     public void testPinDirection() {
         // verify pin direction
-        assertEquals(PinDirection.OUT, pin.getMode().getDirection());                
+        assertEquals(PinDirection.OUT, pin.getMode().getDirection());
     }
 
     @Test
     public void testPinInitialState() {
         // verify pin initial state
         assertTrue(pin.isLow());
-        assertEquals(PinState.LOW, pin.getState());                
+        assertEquals(PinState.LOW, pin.getState());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(PinState.HIGH, pin.getState());                
+        assertEquals(PinState.HIGH, pin.getState());
     }
 
     @Test
@@ -172,7 +172,7 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(PinState.LOW, pin.getState());                
+        assertEquals(PinState.LOW, pin.getState());
     }
 
     @Test
@@ -181,7 +181,7 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(PinState.HIGH, pin.getState());                
+        assertEquals(PinState.HIGH, pin.getState());
     }
 
     @Test
@@ -190,7 +190,7 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(PinState.LOW, pin.getState());                
+        assertEquals(PinState.LOW, pin.getState());
     }
 
     @Test
@@ -199,7 +199,7 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        assertEquals(PinState.HIGH, pin.getState());                
+        assertEquals(PinState.HIGH, pin.getState());
     }
 
     @Test
@@ -208,20 +208,20 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin low state
         assertTrue(pin.isLow());
-        assertEquals(PinState.LOW, pin.getState());                
+        assertEquals(PinState.LOW, pin.getState());
     }
 
     @Test
     public void testPinToggle() {
         // set known start state
         pin.low();
-        
+
         // toggle hi
         pin.toggle();
 
         // verify pin hi state
         assertTrue(pin.isHigh());
-        
+
         // toggle low
         pin.toggle();
 
@@ -233,7 +233,7 @@ public class GpioPinDigitalOutputTests {
     public void testPinPulse() throws InterruptedException {
         // set known start state
         pin.low();
-        
+
         // pulse pin hi for 1/5 second
         pin.pulse(200, PinState.HIGH);
 
@@ -242,17 +242,17 @@ public class GpioPinDigitalOutputTests {
 
         // wait 1/2 second before continuing test
         Thread.sleep(500);
-        
+
         // verify pin low state
         assertTrue(pin.isLow());
     }
-    
+
     @Test
     public void testPinBlink() throws InterruptedException {
         // set known start state
         pin.low();
-        
-        // blink pin for 1 seconds with a blink rate of 1/5 second 
+
+        // blink pin for 1 seconds with a blink rate of 1/5 second
         pin.blink(200, 1000, PinState.HIGH);
 
         // verify pin hi state
@@ -266,7 +266,7 @@ public class GpioPinDigitalOutputTests {
 
         // wait before continuing test
         Thread.sleep(250);
-        
+
         // verify pin hi state
         assertTrue(pin.isHigh());
 
@@ -275,25 +275,25 @@ public class GpioPinDigitalOutputTests {
 
         // verify pin low state
         assertTrue(pin.isLow());
-        
+
         // wait before continuing test
         Thread.sleep(500);
-        
+
         // verify pin low state
         assertTrue(pin.isLow());
     }
-    
+
     @Test
     public void testPinUnexport() {
         // unexport pin
         pin.unexport();
-        
+
         // verify is not exported
         assertFalse(pin.isExported());
     }
-    
+
     @Test
-    public void testPinUnprovision() 
+    public void testPinUnprovision()
     {
         // make sure that pin is provisioned before we start
         Collection<GpioPin> pins = gpio.getProvisionedPins();
@@ -303,8 +303,8 @@ public class GpioPinDigitalOutputTests {
         gpio.unprovisionPin(pin);
 
         // make sure that pin is no longer provisioned
-        pins = gpio.getProvisionedPins();        
+        pins = gpio.getProvisionedPins();
         assertFalse(pins.contains(pin));
-    }    
-    
+    }
+
 }

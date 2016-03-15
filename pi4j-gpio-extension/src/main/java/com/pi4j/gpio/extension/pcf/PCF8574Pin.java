@@ -6,7 +6,7 @@ package com.pi4j.gpio.extension.pcf;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
  * FILENAME      :  PCF8574Pin.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.pcf;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -42,14 +42,14 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * More information about the board can be found here: *
  * http://www.ti.com/lit/ds/symlink/pcf8574.pdf
  * </p>
- * 
+ *
  * <p>
  * The PCF8574 is connected via I2C connection to the Raspberry Pi and provides
  * 8 GPIO pins that can be used for either digital input or digital output pins.
  * </p>
- * 
+ *
  * @author Robert Savage
- * 
+ *
  */
 public class PCF8574Pin {
 
@@ -64,9 +64,9 @@ public class PCF8574Pin {
 
     public static Pin[] ALL = { PCF8574Pin.GPIO_00, PCF8574Pin.GPIO_01, PCF8574Pin.GPIO_02, PCF8574Pin.GPIO_03,
                                 PCF8574Pin.GPIO_04, PCF8574Pin.GPIO_05, PCF8574Pin.GPIO_06, PCF8574Pin.GPIO_07 };
-    
+
     private static Pin createDigitalPin(int address, String name) {
-        return new PinImpl(PCF8574GpioProvider.NAME, address, name, 
+        return new PinImpl(PCF8574GpioProvider.NAME, address, name,
                     EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT));
-    }       
+    }
 }

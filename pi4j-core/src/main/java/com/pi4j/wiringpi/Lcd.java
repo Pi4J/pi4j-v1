@@ -6,7 +6,7 @@ package com.pi4j.wiringpi;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  Lcd.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -37,7 +37,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * Part of wiringPi is a library to allow access to parallel interface LCD displays (Those that use
  * the popular Hitachi HD44780U or compatible controllers)
  * </p>
- * 
+ *
  * <p>
  * The library is simple to use in your own programs, however wiring the displays up may be
  * challenging, so do take care. It is possible to wire up more than one display! In 8-bit mode, the
@@ -46,19 +46,19 @@ import com.pi4j.util.NativeLibraryLoader;
  * the code), then it's 4 more displays and 12 LCDs! However I suspect the rest of the wiring might be
  * somewhat challenging. Wiring is described at the end of the this page.
  * </p>
- * 
+ *
  * <p>
  * The LCD display can be either a 5V display or a 3,3v display, however if we are using a 5V
  * display then we must make absolutely sure the display can never write data back to the Raspberry
  * Pi, otherwise it will present 5V on the Pi's GPIO pins which will not be good. At best you'll
  * destroy the pin drivers, at worst you'll destroy your Pi.
  * </p>
- * 
+ *
  * <p>
  * So make sure you always connect the R/W pin on the display to ground to force the display to be
  * read-only to the host.
  * </p>
- * 
+ *
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
  * the following system libraries:
@@ -70,7 +70,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library/</a>
@@ -79,11 +79,11 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class Lcd {
 
-    // private constructor 
+    // private constructor
     private Lcd() {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -95,17 +95,17 @@ public class Lcd {
      * pinMode functions, but these are ignored if you have already set the modes using the gpio
      * program and want to use the wiringPiSetupSys() mechanism.
      * </p>
-     * 
+     *
      * <pre>
      * int lcdInit(int rows, int cols, int bits, int rs, int strb, int d0, int d1, int d2, int d3, int d4,
      *         int d5, int d6, int d7);
      * </pre>
-     * 
+     *
      * <p>
      * This is the main initialization function and must be called before you use any other LCD
      * functions.
      * </p>
-     * 
+     *
      * <p>
      * Rows and cols are the rows and columns on the display (e.g. 2, 16 or 4,20). Bits is the
      * number of bits wide on the interface (4 or 8). The rs and strb represent the pin numbers of
@@ -113,20 +113,20 @@ public class Lcd {
      * the 8 data pins connected from the Pi to the display. Only the first 4 are used if you are
      * running the display in 4-bit mode.
      * </p>
-     * 
+     *
      * <p>
      * The pin numbers will be either wiringPi pin numbers of GPIO pin numbers depending on which
      * wiringPiSetup function you used.
      * </p>
-     * 
+     *
      * <p>
      * The return value is the handle to be used for all subsequent calls to the lcd library when
      * dealing with that LCD, or -1 to indicate a fault. (Usually incorrect parameters)
      * </p>
-     * 
+     *
      * @see <a
      *      href="http://wiringpi.com/dev-lib/lcd-library/">http://wiringpi.com/dev-lib/lcd-library</a>
-     * 
+     *
      * @param rows number of rows
      * @param cols number of columns
      * @param bits number of bits wide on the interface (4 or 8)
@@ -245,7 +245,7 @@ public class Lcd {
 
     /**
      * <p>Write string of data to the LCD display.</p>
-     * 
+     *
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
      *
      * @see <a
@@ -257,7 +257,7 @@ public class Lcd {
 
     /**
      * <p>Write formatted string of data to the LCD display.</p>
-     * 
+     *
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 512 characters.)</p>
      *
      * @see <a

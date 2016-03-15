@@ -6,7 +6,7 @@ package com.pi4j.system;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  NetworkInfo.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.system;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,11 +38,11 @@ import java.util.List;
 
 public class NetworkInfo  {
 
-    // private constructor 
+    // private constructor
     private NetworkInfo() {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     public static String getHostname() throws IOException, InterruptedException {
         return ExecUtil.execute("hostname --short")[0];
     }
@@ -73,7 +73,7 @@ public class NetworkInfo  {
         }
         return result.toArray(new String[result.size()]);
     }
-    
+
 //    public static Map<String,NetworkInterface> getNetworkInterfaces() throws IOException, InterruptedException {
 //
 //        Map<String,NetworkInterface> interfaces = new HashMap<String, NetworkInterface>();
@@ -85,27 +85,27 @@ public class NetworkInfo  {
 //        String line = reader.readLine();
 //        String key = null;
 //        while (line != null) {
-//        
+//
 //            if (!line.isEmpty()) {
-//            
-//                // if the line does start with string data and not spaces, then 
+//
+//                // if the line does start with string data and not spaces, then
 //                // it is a new interface record
 //                if (!line.startsWith("  ")) {
-//                
+//
 //                    String[] parts = line.split(" ", 2);
 //                    key = parts[0].trim();
 //                    //interfaces.put(key, value);
 //                }
 //
 //                if (key != null && !key.isEmpty()) {
-//                
+//
 //                    String[] properties = line.split("  ");
 //                    for (String property : properties) {
 //                        String[] propparts = property.split(":",2);
-//                        
+//
 //                    }
 //                }
-//                
+//
 ////                if (split != null || split.isEmpty()) {
 ////                    result.add(line.trim());
 ////                    System.out.println(line.trim());
@@ -123,9 +123,9 @@ public class NetworkInfo  {
 //        }
 //
 //
-//        
+//
 //        //throw new RuntimeException("Invalid command: " + command);
-//        
+//
 //        return interfaces;
 //    }
 

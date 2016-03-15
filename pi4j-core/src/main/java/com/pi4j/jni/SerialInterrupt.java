@@ -6,7 +6,7 @@ package com.pi4j.jni;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  SerialInterrupt.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.jni;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * interrupts and invoke callbacks into this class. Additionally, this class provides a listener
  * registration allowing Java consumers to subscribe to serial data receive events.
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
@@ -52,9 +52,9 @@ public class SerialInterrupt {
 
     // private constructor
     private SerialInterrupt()  {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -65,7 +65,7 @@ public class SerialInterrupt {
      * This method is used to instruct the native code to setup a monitoring thread to monitor
      * interrupts that represent changes to the selected serial port.
      * </p>
-     * 
+     *
      * @param fileDescriptor the serial file descriptor/handle
      * @return A return value of a negative number represents an error. A return value of '0'
      *         represents success and that the serial port is already being monitored. A return value
@@ -119,7 +119,7 @@ public class SerialInterrupt {
      * Java consumer code can all this method to register itself as a listener for pin state
      * changes.
      * </p>
-     * 
+     *
      * @see com.pi4j.jni.SerialInterruptListener
      * @see com.pi4j.jni.SerialInterruptEvent
      *
@@ -150,8 +150,8 @@ public class SerialInterrupt {
             disableSerialDataReceiveCallback(fileDescriptor);
         }
     }
-    
-    
+
+
     /**
      * <p>
      * Returns true if the listener is already registered for event callbacks.
@@ -164,5 +164,5 @@ public class SerialInterrupt {
      */
     public static synchronized boolean hasListener(int fileDescriptor) {
         return listeners.containsKey(fileDescriptor);
-    }    
+    }
 }

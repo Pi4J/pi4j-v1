@@ -13,7 +13,7 @@ import java.util.Random;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  MCP4651.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -24,12 +24,12 @@ import java.util.Random;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,7 +38,7 @@ import java.util.Random;
 
 /**
  * Pi4J-device for MCP4651.
- * 
+ *
  * @author <a href="http://raspelikan.blogspot.co.at">Raspelikan</a>
  */
 public class MCP4651 extends MicrochipPotentiometerBase implements MicrochipPotentiometer {
@@ -46,10 +46,10 @@ public class MCP4651 extends MicrochipPotentiometerBase implements MicrochipPote
 	private static final MicrochipPotentiometerChannel[] supportedChannels = new MicrochipPotentiometerChannel[] {
 		MicrochipPotentiometerChannel.A, MicrochipPotentiometerChannel.B
 	};
-	
+
 	/**
 	 * Builds an instance which is ready to use.
-	 * 
+	 *
 	 * @param i2cBus The Pi4J-I2CBus to which the device is connected to
 	 * @param pinA0 Whether the device's address pin A0 is high (true) or low (false)
 	 * @param pinA1 Whether the device's address pin A1 (if available) is high (true) or low (false)
@@ -61,10 +61,10 @@ public class MCP4651 extends MicrochipPotentiometerBase implements MicrochipPote
 	public MCP4651(final I2CBus i2cBus, final boolean pinA0,
                    final boolean pinA1, final boolean pinA2,
                    final MicrochipPotentiometerChannel channel, final int initialValue)  throws IOException {
-		
+
 		super(i2cBus, pinA0, pinA1, pinA2,
 				channel, MicrochipPotentiometerNonVolatileMode.VOLATILE_ONLY, initialValue);
-		
+
 	}
 
 	/**
@@ -72,28 +72,28 @@ public class MCP4651 extends MicrochipPotentiometerBase implements MicrochipPote
 	 */
 	@Override
 	public boolean isCapableOfNonVolatileWiper() {
-		
+
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * @return The maximal value at which a wiper can be (256 for MCP4651)
 	 */
 	@Override
 	public int getMaxValue() {
-		
+
 		return maxValue();
-		
+
 	}
 
 	/**
 	 * @return The maximal value at which a wiper can be (256 for MCP4651)
 	 */
 	public static int maxValue() {
-		
+
 		return 256;
-		
+
 	}
 
 	/**
@@ -101,19 +101,19 @@ public class MCP4651 extends MicrochipPotentiometerBase implements MicrochipPote
 	 */
 	@Override
 	public boolean isRheostat() {
-		
+
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * @return All channels supported by the underlying device (A, B for MCP4651)
 	 */
 	@Override
 	public MicrochipPotentiometerChannel[] getSupportedChannelsByDevice() {
-		
+
 		return supportedChannels;
-		
+
 	}
 
 	/**

@@ -21,7 +21,7 @@ import java.io.IOException;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
  * FILENAME      :  OlimexAVRIOGpioProvider.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -32,12 +32,12 @@ import java.io.IOException;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,15 +50,15 @@ import java.io.IOException;
  * More information about the board can be found here: *
  * https://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * </p>
- * 
+ *
  * <p>
  * The Olimex AVR-IO board is connected via RS232 serial connection to the Raspberry Pi and provides
  * 4 electromechanical RELAYs and 4 opto-isolated INPUT pins.
  * </p>
- * 
+ *
  * @link http://www.olimex.com/Products/AVR/Development/AVR-IO-M16/
  * @author Robert Savage
- * 
+ *
  */
 public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioProvider {
 
@@ -71,23 +71,23 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     public OlimexAVRIOGpioProvider(String serialDevice) throws IOException {
         // create serial communications instance
         com = SerialFactory.createInstance();
-        
+
         // create serial data listener
         SerialExampleListener listener = new SerialExampleListener();
 
         // add/register the serial data listener
         com.addListener(listener);
-        
+
         // open serial port for communication
         com.open(serialDevice, 19200);
-        
+
         // create and start the serial command processing queue thread
         // set the delay time to 100 ms; this works well for the AVR-IO
         queue = new SerialCommandQueueProcessingThread(com, 50);
         queue.start();
         queue.put("?"); // query for current status
     }
-    
+
     @Override
     public String getName() {
         return NAME;
@@ -97,8 +97,8 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     public void setMode(Pin pin, PinMode mode) {
         // ALL PIN MODES ARE PREDEFINED
         //
-        // an exception will be throw by the base impl 
-        // if an alternate mode is selected for a pin 
+        // an exception will be throw by the base impl
+        // if an alternate mode is selected for a pin
         // instance
         super.setMode(pin, mode);
     }
@@ -106,11 +106,11 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
     @Override
     public PinMode getMode(Pin pin) {
         super.getMode(pin);
-        
+
         // return first mode found; this device has singular fixed pin modes
         for(PinMode mode : pin.getSupportedPinModes())
             return mode;
-        
+
         return null;
     }
 
@@ -134,19 +134,19 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         int bit = (int)Math.pow(2, (pin.getAddress()-1));
         int state = (currentStates & bit);
         return (state == bit) ? PinState.HIGH : PinState.LOW;
-    }    
-    
-    
+    }
+
+
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
-        
+
         // perform shutdown login in base
         super.shutdown();
-        
+
         // if a serial processing queue is running, then shut it down now
         if (queue != null) {
             // shutdown serial data processing thread
@@ -165,17 +165,17 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
         // shutdown any serial data monitoring threads
         SerialFactory.shutdown();
     }
-    
+
     /**
      * This class implements the serial data listener interface with the callback method for event
      * notifications when data is received on the serial port.
-     * 
+     *
      * @see com.pi4j.io.serial.SerialDataEventListener
      * @author Robert Savage
      */
     class SerialExampleListener implements SerialDataEventListener {
         private StringBuilder buffer = new StringBuilder();
-        
+
         public void dataReceived(SerialDataEvent event) {
 
             try {
@@ -230,8 +230,8 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
                 e.printStackTrace();
             }
         }
-        
-        
+
+
         private void evaluatePinForChange(Pin pin, int value) {
             int bit = (int)Math.pow(2, (pin.getAddress()-1));
             if ((value & bit) != (currentStates & bit)) {
@@ -240,22 +240,22 @@ public class OlimexAVRIOGpioProvider extends GpioProviderBase implements GpioPro
                 dispatchPinChangeEvent(pin.getAddress(), ((value & bit) == bit) ? PinState.HIGH : PinState.LOW);
             }
         }
-        
-        
+
+
         private void dispatchPinChangeEvent(int pinAddress, PinState state) {
             // iterate over the pin listeners map
             for (Pin pin : listeners.keySet()) {
                 //System.out.println("<<< DISPATCH >>> " + pin.getName() + " : " + state.getName());
-                
-                // dispatch this event to the listener 
+
+                // dispatch this event to the listener
                 // if a matching pin address is found
                 if (pin.getAddress() == pinAddress) {
                     // dispatch this event to all listener handlers
                     for (PinListener listener : listeners.get(pin)) {
                         listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
                     }
-                }            
-            }            
+                }
+            }
         }
-    }      
+    }
 }

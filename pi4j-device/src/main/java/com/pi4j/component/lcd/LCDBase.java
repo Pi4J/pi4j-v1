@@ -6,7 +6,7 @@ package com.pi4j.component.lcd;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  LCDBase.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.component.lcd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -41,20 +41,20 @@ public abstract class LCDBase extends ComponentBase implements LCD {
 
     @Override
     public abstract int getColumnCount();
-    
+
     @Override
     public void clear() {
 	for(int i=0; i<getRowCount(); i++) {
 		clear(i,0,getColumnCount());
 	}
     }
-    
+
     @Override
     public void clear(int row) {
         validateRowIndex(row);
         clear(row,0,getColumnCount());
     }
-    
+
     @Override
     public void clear(int row, int column, int length){
         StringBuilder sb = new StringBuilder(getColumnCount());
@@ -64,20 +64,20 @@ public abstract class LCDBase extends ComponentBase implements LCD {
         }
         write(row, column, sb.toString());
     }
-    
+
     @Override
     public void setCursorHome() {
         setCursorPosition(0);
     }
-    
+
     @Override
     public void setCursorPosition(int row) {
         validateRowIndex(row);
         setCursorPosition(row, 0);
     }
-    
+
     @Override
-    public abstract void setCursorPosition(int row, int column);    
+    public abstract void setCursorPosition(int row, int column);
 
     @Override
     public void write(String data) {
@@ -86,14 +86,14 @@ public abstract class LCDBase extends ComponentBase implements LCD {
          }
         catch(UnsupportedEncodingException e){
             throw new RuntimeException(e);
-         }           
+         }
     }
 
     @Override
     public void write(String data, Object...arguments) {
         write(String.format(data, arguments));
     }
-    
+
     @Override
     public void write(char[] data) {
         for(char c : data)
@@ -105,14 +105,14 @@ public abstract class LCDBase extends ComponentBase implements LCD {
         for(byte b : data)
             write(b);
     }
-    
+
     @Override
     public void write(char data) {
         write((byte)data);
     }
-    
+
     @Override
-    public abstract void write(byte data);  
+    public abstract void write(byte data);
 
     @Override
     public void write(int row, String data) {
@@ -124,16 +124,16 @@ public abstract class LCDBase extends ComponentBase implements LCD {
         int columnIndex = 0;
         if(alignment != LCDTextAlignment.ALIGN_LEFT && data.length() < getColumnCount()){
             int remaining = getColumnCount() - data.length();
-            if(alignment == LCDTextAlignment.ALIGN_RIGHT) {                            
+            if(alignment == LCDTextAlignment.ALIGN_RIGHT) {
                 columnIndex = remaining;
             }
-            else if(alignment == LCDTextAlignment.ALIGN_CENTER) { 
+            else if(alignment == LCDTextAlignment.ALIGN_CENTER) {
                 columnIndex = (remaining/2);
             }
         }
         write(row, columnIndex, data);
     }
-    
+
     @Override
     public void write(int row, String data, Object...arguments) {
         write(row, 0, data, arguments);
@@ -143,76 +143,76 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     public void write(int row, String data, LCDTextAlignment alignment, Object...arguments) {
         write(row, String.format(data, arguments), alignment);
     }
-    
+
     @Override
     public void write(int row, char[] data) {
         write(row, 0, data);
     }
-    
+
     @Override
     public void write(int row, byte[] data) {
         write(row, 0, data);
     }
-    
+
     @Override
     public void write(int row, char data) {
         write(row, 0, data);
     }
-    
+
     @Override
     public void write(int row, byte data) {
         write(row, 0, data);
     }
-    
+
     @Override
     public void write(int row, int column, String data){
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data);        
+        setCursorPosition(row, column);
+        write(data);
     }
 
     @Override
     public void write(int row, int column, String data, Object...arguments){
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data, arguments);        
+        setCursorPosition(row, column);
+        write(data, arguments);
     }
-    
+
     @Override
     public void write(int row, int column, char[] data) {
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data);        
+        setCursorPosition(row, column);
+        write(data);
     }
-    
+
     @Override
     public void write(int row, int column, byte[] data) {
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data);        
+        setCursorPosition(row, column);
+        write(data);
     }
-    
+
     @Override
     public void write(int row, int column, char data) {
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data);        
+        setCursorPosition(row, column);
+        write(data);
     }
-    
+
     @Override
     public void write(int row, int column, byte data) {
         validateCoordinates(row, column);
-        setCursorPosition(row, column);        
-        write(data);        
-    }    
+        setCursorPosition(row, column);
+        write(data);
+    }
 
     @Override
     public void writeln(int row, String data) {
         writeln(row, data, LCDTextAlignment.ALIGN_LEFT);
     }
-    
+
     @Override
-    public void writeln(int row, String data, LCDTextAlignment alignment) {        
+    public void writeln(int row, String data, LCDTextAlignment alignment) {
         String result = data;
         if(data.length() < this.getColumnCount()){
             if(alignment == LCDTextAlignment.ALIGN_LEFT)
@@ -224,7 +224,7 @@ public abstract class LCDBase extends ComponentBase implements LCD {
         }
         write(row, 0, result);
     }
-    
+
     @Override
     public void writeln(int row, String data, Object...arguments) {
         writeln(row, String.format(data, arguments));
@@ -234,19 +234,19 @@ public abstract class LCDBase extends ComponentBase implements LCD {
     public void writeln(int row, String data, LCDTextAlignment alignment, Object...arguments) {
         writeln(row, String.format(data, arguments), alignment);
     }
-    
+
     protected void validateCoordinates(int row, int column) {
         validateRowIndex(row);
         validateColumnIndex(column);
     }
-    
+
     protected void validateRowIndex(int row) {
         if(row >= getRowCount() || row < 0)
-            throw new RuntimeException("Invalid row index.");        
+            throw new RuntimeException("Invalid row index.");
     }
-    
+
     protected void validateColumnIndex(int column) {
         if(column >= getColumnCount() || column < 0)
-            throw new RuntimeException("Invalid column index.");        
+            throw new RuntimeException("Invalid column index.");
     }
 }

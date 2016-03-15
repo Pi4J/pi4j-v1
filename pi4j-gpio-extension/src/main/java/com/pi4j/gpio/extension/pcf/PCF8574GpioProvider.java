@@ -6,7 +6,7 @@ package com.pi4j.gpio.extension.pcf;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
  * FILENAME      :  PCF8574GpioProvider.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.pcf;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -46,14 +46,14 @@ import java.util.BitSet;
  * More information about the board can be found here: *
  * http://www.ti.com/lit/ds/symlink/pcf8574.pdf
  * </p>
- * 
+ *
  * <p>
  * The PCF8574 is connected via I2C connection to the Raspberry Pi and provides
  * 8 GPIO pins that can be used for either digital input or digital output pins.
  * </p>
- * 
+ *
  * @author Robert Savage
- * 
+ *
  */
 public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvider {
 
@@ -78,7 +78,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     public static final int PCF8574A_0x3D = 0x3D; // 101
     public static final int PCF8574A_0x3E = 0x3E; // 110
     public static final int PCF8574A_0x3F = 0x3F; // 111
-    
+
     public static final int PCF8574_MAX_IO_PINS = 8;
 
     private boolean i2cBusOwner = false;
@@ -106,8 +106,8 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
             getPinCache(pin).setState(PinState.HIGH);
             currentStates.set(pin.getAddress(), true);
         }
-        
-        // start monitoring thread            
+
+        // start monitoring thread
         monitor = new PCF8574GpioProvider.GpioStateMonitor(device);
         monitor.start();
     }
@@ -147,7 +147,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         super.setState(pin, state);
 
         try {
-            // set state value for pin bit 
+            // set state value for pin bit
             currentStates.set(pin.getAddress(), state.isHigh());
 
             // update state value
@@ -190,15 +190,15 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
         }
     }
 
-    
+
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
-     * 
+     *
      * @author Robert Savage
-     * 
+     *
      */
     private class GpioStateMonitor extends Thread {
-        
+
         private I2CDevice device;
         private boolean shuttingDown = false;
 
@@ -217,7 +217,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                     byte[] buffer = new byte[1];
                     device.read(buffer, 0, 1);
                     BitSet pinStates = BitSet.valueOf(buffer);
-                    
+
                     // determine if there is a pin state difference
                     for (int index = 0; index < PCF8574_MAX_IO_PINS; index++) {
                         if (pinStates.get(index) != currentStates.get(index)) {
@@ -227,7 +227,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
                             // cache state
                             getPinCache(pin).setState(newState);
                             currentStates.set(index, pinStates.get(index));
-                            
+
                             // only dispatch events for input pins
                             if (getMode(pin) == PinMode.DIGITAL_INPUT) {
                                 // change detected for INPUT PIN
