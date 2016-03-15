@@ -30,7 +30,11 @@ package com.pi4j.io.gpio;
  */
 
 
+import com.pi4j.system.SystemInfo;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Raspberry Pi pin definitions for (default) WiringPi pin numbering scheme.
@@ -58,22 +62,22 @@ public class RaspiPin extends PinProvider {
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15");
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
 
-    // the following GPIO pins are only available on the Raspbery Pi Model A, B (revision 2.0), B+
+    // the following GPIO pins are only available on the Raspberry Pi Model A, B (revision 2.0)
     public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_18 = createDigitalPin(18, "GPIO 18"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); // requires B rev2 or newer model (P5 header)
 
-    // the following GPIO pins are only available on the Raspbery Pi Model B+, Zero
-    public static final Pin GPIO_21 = createDigitalPin(21, "GPIO 21"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
-    public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
-    public static final Pin GPIO_23 = createDigitalAndPwmPin(23, "GPIO 23"); // requires 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM1 [ALT0]
-    public static final Pin GPIO_24 = createDigitalAndPwmPin(24, "GPIO 24"); // requires 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM1 [ALT5]
-    public static final Pin GPIO_25 = createDigitalPin(25, "GPIO 25"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
-    public static final Pin GPIO_26 = createDigitalAndPwmPin(26, "GPIO 26"); // requires 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM0 [ALT0]
-    public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
-    public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
-    public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires 2B, Zero, A+, B+ or newer model (40 pin header)
+    // the following GPIO pins are only available on the Raspberry Pi Model B+, Model 2B, Model 3B, Zero
+    public static final Pin GPIO_21 = createDigitalPin(21, "GPIO 21"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
+    public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
+    public static final Pin GPIO_23 = createDigitalAndPwmPin(23, "GPIO 23"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM1 [ALT0]
+    public static final Pin GPIO_24 = createDigitalAndPwmPin(24, "GPIO 24"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM1 [ALT5]
+    public static final Pin GPIO_25 = createDigitalPin(25, "GPIO 25"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
+    public static final Pin GPIO_26 = createDigitalAndPwmPin(26, "GPIO 26"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM0 [ALT0]
+    public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
+    public static final Pin GPIO_28 = createDigitalPin(28, "GPIO 28"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
+    public static final Pin GPIO_29 = createDigitalPin(29, "GPIO 29"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
     public static final Pin GPIO_30 = createDigitalPinNoPullDown(30, "GPIO 30");  // SDA.0 pin has a physical pull-up resistor
     public static final Pin GPIO_31 = createDigitalPinNoPullDown(31, "GPIO 31");  // SDC.0 pin has a physical pull-up resistor
 
@@ -109,4 +113,63 @@ public class RaspiPin extends PinProvider {
     // (overriding a static method is not supported in Java
     //  so this method definition will hide the subclass static method)
     public static Pin[] allPins() { return PinProvider.allPins(); }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins(SystemInfo.BoardType board) {
+        List<Pin> pins = new ArrayList<>();
+
+        // pins for all Raspberry Pi models
+        pins.add(RaspiPin.GPIO_00);
+        pins.add(RaspiPin.GPIO_01);
+        pins.add(RaspiPin.GPIO_02);
+        pins.add(RaspiPin.GPIO_03);
+        pins.add(RaspiPin.GPIO_04);
+        pins.add(RaspiPin.GPIO_05);
+        pins.add(RaspiPin.GPIO_06);
+        pins.add(RaspiPin.GPIO_07);
+        pins.add(RaspiPin.GPIO_08);
+        pins.add(RaspiPin.GPIO_09);
+        pins.add(RaspiPin.GPIO_10);
+        pins.add(RaspiPin.GPIO_11);
+        pins.add(RaspiPin.GPIO_12);
+        pins.add(RaspiPin.GPIO_13);
+        pins.add(RaspiPin.GPIO_14);
+        pins.add(RaspiPin.GPIO_15);
+        pins.add(RaspiPin.GPIO_16);
+
+        // no further pins to add for Model B Rev 1 boards
+        if(board == SystemInfo.BoardType.RaspberryPi_B_Rev1){
+            // return pins collection
+            return pins.toArray(new Pin[0]);
+        }
+
+        // add pins exclusive to Model A and Model B (Rev2)
+        if(board == SystemInfo.BoardType.RaspberryPi_A ||
+           board == SystemInfo.BoardType.RaspberryPi_B_Rev2){
+            pins.add(RaspiPin.GPIO_17);
+            pins.add(RaspiPin.GPIO_18);
+            pins.add(RaspiPin.GPIO_19);
+            pins.add(RaspiPin.GPIO_20);
+        }
+
+        // add pins exclusive to Models A+, B+, 2B, 3B, and Zero
+        else{
+            pins.add(RaspiPin.GPIO_21);
+            pins.add(RaspiPin.GPIO_22);
+            pins.add(RaspiPin.GPIO_23);
+            pins.add(RaspiPin.GPIO_24);
+            pins.add(RaspiPin.GPIO_25);
+            pins.add(RaspiPin.GPIO_26);
+            pins.add(RaspiPin.GPIO_27);
+            pins.add(RaspiPin.GPIO_28);
+            pins.add(RaspiPin.GPIO_29);
+            pins.add(RaspiPin.GPIO_30);
+            pins.add(RaspiPin.GPIO_31);
+        }
+
+        // return pins collection
+        return pins.toArray(new Pin[0]);
+    }
 }

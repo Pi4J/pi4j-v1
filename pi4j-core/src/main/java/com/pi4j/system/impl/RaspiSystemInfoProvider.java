@@ -238,7 +238,6 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
             // if the scheme bit is enabled, then use the new revision numbering scheme
             switch((int)model) {
                 case RPI_MODEL_A:       return SystemInfo.BoardType.RaspberryPi_A;
-                case RPI_MODEL_B:       return SystemInfo.BoardType.RaspberryPi_B;
                 case RPI_MODEL_A_PLUS:  return SystemInfo.BoardType.RaspberryPi_A_Plus;
                 case RPI_MODEL_B_PLUS:  return SystemInfo.BoardType.RaspberryPi_B_Plus;
                 case RPI_MODEL_2B:      return SystemInfo.BoardType.RaspberryPi_2B;
@@ -247,6 +246,13 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case RPI_MODEL_UNKNOWN: return SystemInfo.BoardType.RaspberryPi_Unknown;
                 case RPI_MODEL_3B:      return SystemInfo.BoardType.RaspberryPi_3B;
                 case RPI_MODEL_ZERO:    return SystemInfo.BoardType.RaspberryPi_Zero;
+                case RPI_MODEL_B: {
+                    // for model B, also take into consideration the revision
+                    if(pcbrev <= 1)
+                        return SystemInfo.BoardType.RaspberryPi_B_Rev1;
+                    else
+                        return SystemInfo.BoardType.RaspberryPi_B_Rev2;
+                }
             }
         }
 
@@ -284,10 +290,12 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case "Beta":  // Model B Beta
                 case "0002":  // Model B Revision 1
                 case "0003":  // Model B Revision 1 (Egoman) + Fuses mod and D14 removed
+                    return SystemInfo.BoardType.RaspberryPi_B_Rev1;
+
                 case "0004":  // Model B Revision 2 256MB (Sony)
                 case "0005":  // Model B Revision 2 256MB (Qisda)
                 case "0006":  // Model B Revision 2 256MB (Egoman)
-                    return SystemInfo.BoardType.RaspberryPi_B;
+                    return SystemInfo.BoardType.RaspberryPi_B_Rev2;
 
                 case "0007":  // Model A 256MB (Egoman)
                 case "0008":  // Model A 256MB (Sony)
@@ -297,10 +305,10 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case "000d":  // Model B Revision 2 512MB (Egoman)
                 case "000e":  // Model B Revision 2 512MB (Sony)
                 case "000f":  // Model B Revision 2 512MB (Egoman)
-                    return SystemInfo.BoardType.RaspberryPi_B;
+                    return SystemInfo.BoardType.RaspberryPi_B_Rev2;
 
                 case "0010":  // Model B Plus 512MB (Sony)
-                    return SystemInfo.BoardType.RaspberryPi_B;
+                    return SystemInfo.BoardType.RaspberryPi_B_Plus;
 
                 case "0011":  // Compute Module 512MB (Sony)
                     return SystemInfo.BoardType.RaspberryPi_ComputeModule;

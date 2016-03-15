@@ -61,7 +61,8 @@ public class SystemInfo {
         UNKNOWN,
         //------------------------
         RaspberryPi_A,
-        RaspberryPi_B,
+        RaspberryPi_B_Rev1,
+        RaspberryPi_B_Rev2,
         RaspberryPi_A_Plus,
         RaspberryPi_B_Plus,
         RaspberryPi_ComputeModule,
