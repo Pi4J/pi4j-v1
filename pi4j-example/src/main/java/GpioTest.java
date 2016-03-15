@@ -4,7 +4,7 @@
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
  * FILENAME      :  GpioTest.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -118,21 +118,18 @@ public class GpioTest {
 
         switch(PlatformManager.getPlatform()){
             case RASPBERRYPI:{
-                Pin pin1 = RaspiPin.GPIO_00; // we use this to simple construct all the static pin members
                 Pin pins[] = RaspiPin.allPins();
                 Arrays.sort(pins);
                 gpioOutputsTest(pins);
                 break;
             }
             case BANANAPI:{
-                Pin pin1 = BananaPiPin.GPIO_00; // we use this to simple construct all the static pin members
                 Pin pins[] = BananaPiPin.allPins();
                 Arrays.sort(pins);
                 gpioOutputsTest(pins);
                 break;
             }
             case BANANAPRO:{
-                Pin pin1 = BananaProPin.GPIO_00; // we use this to simple construct all the static pin members
                 Pin pins[] = BananaProPin.allPins();
                 Arrays.sort(pins);
                 gpioOutputsTest(pins);

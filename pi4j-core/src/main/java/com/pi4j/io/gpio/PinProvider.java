@@ -6,7 +6,7 @@ package com.pi4j.io.gpio;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  PinProvider.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public abstract class PinProvider {
 
-    protected static Map<String, Pin> pins = new HashMap<String, Pin>();
+    protected static final Map<String, Pin> pins = new HashMap<>();
 
     protected static Pin createDigitalPin(String providerName, int address, String name) {
         return createDigitalPin(providerName, address, name, EnumSet.allOf(PinEdge.class));
@@ -78,7 +78,6 @@ public abstract class PinProvider {
     protected static Pin createPin(String providerName, int address, String name, EnumSet<PinMode> modes,
                                    EnumSet<PinPullResistance> resistance, EnumSet<PinEdge> edges) {
         Pin pin = new PinImpl(providerName, address, name, modes, resistance, edges);
-        if (pins == null) { pins = new HashMap<String, Pin>(); }
         pins.put(name, pin);
         return pin;
     }

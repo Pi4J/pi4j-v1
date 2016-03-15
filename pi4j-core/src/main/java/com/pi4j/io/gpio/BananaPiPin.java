@@ -81,4 +81,23 @@ public class BananaPiPin extends PinProvider {
     protected static Pin createDigitalAndPwmPinNoEdge(int address, String name) {
         return createDigitalAndPwmPin(BananaPiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
     }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin getPinByName(String name) {
+        return PinProvider.getPinByName(name);
+    }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin getPinByAddress(int address) {
+        return PinProvider.getPinByAddress(address);
+    }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins() { return PinProvider.allPins(); }
 }
