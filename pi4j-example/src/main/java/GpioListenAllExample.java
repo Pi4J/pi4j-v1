@@ -1,4 +1,3 @@
-package odroid;
 /*
  * #%L
  * **********************************************************************
@@ -30,16 +29,20 @@ package odroid;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.system.SystemInfo;
 import com.pi4j.util.CommandArgumentParser;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the Odroid C1/C1+/XU4 platform.
+ * for all available GPIO pins on the RaspberryPi (by specific model).
  *
  * @author Robert Savage
  */
@@ -55,69 +58,57 @@ public class GpioListenAllExample {
      * @param args
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
+     * @throws IOException
      */
-    public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
-
-        // ####################################################################
-        //
-        // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the Odroid platform.
-        //
-        // ####################################################################
-        PlatformManager.setPlatform(Platform.ODROID);
+    public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
 
         System.out.println("<--Pi4J--> GPIO Listen (All Pins) Example ... started.");
 
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // by default we will use gpio pin PULL-UP; however, if an argument
-        // has been provided, then use the specified pull resistance
-        PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
-                PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
-                args);                      // argument array to search in
-
-        // ####################################################################
-        //
-        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidC1Pin class.
-        //
-        // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidXU4Pin class.
-        //
-        // ####################################################################
-
-        // provision gpio input pins with its internal pull down resistor set
-        GpioPinDigitalInput[] event_pins = {
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_00, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_01, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_02, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_03, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_04, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_05, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_06, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_07, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_10, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_11, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_12, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_13, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_14, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_21, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_22, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_23, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_24, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_26, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_27, pull),
-        };
-
-        // create and register gpio pin listeners
-        gpio.addListener(new GpioPinListenerDigital() {
+        // create GPIO listener
+        GpioPinListenerDigital listener  = new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
-        }, event_pins);
+        };
+
+        // by default we will use gpio pin PULL-DOWN; however, if an argument
+        // has been provided, then use the specified pull resistance
+        PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
+                PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
+                args);                      // argument array to search in
+
+        List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
+        Pin[] pins;
+
+        // get a collection of raw pins based on the board type (model)
+        SystemInfo.BoardType board = SystemInfo.getBoardType();
+        if(board == SystemInfo.BoardType.RaspberryPi_ComputeModule) {
+            // get all pins for compute module
+            pins = RCMPin.allPins();
+        }
+        else {
+            // get exclusive set of pins based on RaspberryPi model (board type)
+            pins = RaspiPin.allPins(board);
+        }
+
+        // provision GPIO input pins with its internal pull resistor set
+        for (Pin pin : RaspiPin.allPins(board)) {
+            try {
+                GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
+                provisionedPins.add(provisionedPin);
+            }
+            catch (Exception ex){
+                System.err.println(ex.getMessage());
+            }
+        }
+
+        // create and register gpio pin listeners
+        gpio.addListener(listener, provisionedPins.toArray(new GpioPinDigitalInput[0]));
 
         System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
 
@@ -131,3 +122,4 @@ public class GpioListenAllExample {
         // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller
     }
 }
+

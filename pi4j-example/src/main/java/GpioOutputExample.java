@@ -1,4 +1,3 @@
-package bananapi;
 /*
  * #%L
  * **********************************************************************
@@ -36,7 +35,7 @@ import com.pi4j.util.CommandArgumentParser;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the BananaPi.
+ * control of a GPIO pin on the RaspberryPi.
  *
  * @author Robert Savage
  */
@@ -53,32 +52,17 @@ public class GpioOutputExample {
      * @throws PlatformAlreadyAssignedException
      */
     public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException {
-
-        // ####################################################################
-        //
-        // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
-        //
-        // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
-
         System.out.println("<--Pi4J--> GPIO Control Example ... started.");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // ####################################################################
-        //
-        // When provisioning a pin, use the BananaPiPin class.
-        //
-        // ####################################################################
-
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin pin = CommandArgumentParser.getPin(
-                BananaPiPin.class,    // pin provider class to obtain pin instance from
-                BananaPiPin.GPIO_01,  // default pin if no pin argument found
-                args);                // argument array to search in
+                RaspiPin.class,    // pin provider class to obtain pin instance from
+                RaspiPin.GPIO_01,  // default pin if no pin argument found
+                args);             // argument array to search in
 
         // provision gpio pin as an output pin and turn on
         final GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(pin, "MyLED", PinState.HIGH);

@@ -1,4 +1,3 @@
-package bananapi;
 /*
  * #%L
  * **********************************************************************
@@ -37,11 +36,7 @@ import com.pi4j.util.CommandArgumentParser;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the BananaPi.
- *
- * The internal resistance is set to PULL UP by default. So when
- * connecting your GPIO pin to a ground pin, you should see the
- * GpioPinListenerDigital fire the event.
+ * for GPIO pin state changes on the RaspberryPi.
  *
  * @author Robert Savage
  */
@@ -66,35 +61,16 @@ public class GpioListenExample {
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
 
-        // ####################################################################
-        //
-        // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPi platform.
-        //
-        // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPI);
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // ####################################################################
-        //
-        // When provisioning a pin, use the BananaPiPin class.
-        //
-        // Please note that not all GPIO pins support edge triggered interrupt
-        // and thus not all pins are eligible for pin state change listeners.
-        // These pins must be polled to detect state changes.  See the
-        // 'GpioListenAllExample' for a complete example including polled
-        // pins.
-        //
-        // ####################################################################
-
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin pin = CommandArgumentParser.getPin(
-                BananaPiPin.class,    // pin provider class to obtain pin instance from
-                BananaPiPin.GPIO_01,  // default pin if no pin argument found
-                args);                // argument array to search in
+                RaspiPin.class,    // pin provider class to obtain pin instance from
+                RaspiPin.GPIO_01,  // default pin if no pin argument found
+                args);             // argument array to search in
 
         // by default we will use gpio pin PULL-UP; however, if an argument
         // has been provided, then use the specified pull resistance
@@ -102,7 +78,7 @@ public class GpioListenExample {
                 PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
                 args);                      // argument array to search in
 
-        // provision gpio pin as an input pin with its internal pull up resistor set
+        // provision gpio pin #02 as an input pin with its internal pull resistor set to UP or DOWN
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(pin, pull);
 
         System.out.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
@@ -117,7 +93,7 @@ public class GpioListenExample {
 
         });
 
-        System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
+        System.out.println(" ... complete the GPIO [" + pin.toString() + "] circuit and see the listener feedback here in the console.");
 
         // keep program running until user aborts (CTRL-C)
         while(true) {

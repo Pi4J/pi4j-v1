@@ -5,7 +5,7 @@
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
  * FILENAME      :  PwmExample.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -16,12 +16,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,6 +29,7 @@
  */
 
 import com.pi4j.io.gpio.*;
+import com.pi4j.util.CommandArgumentParser;
 
 /**
  * <p>
@@ -38,9 +39,15 @@ import com.pi4j.io.gpio.*;
  * @author Robert Savage
  */
 public class PwmExample {
+
     /**
-     * @param args the command line arguments
-     * @throws java.lang.InterruptedException
+     * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ]
+     * This example program accepts an optional argument for specifying the GPIO pin (by number)
+     * to use with this GPIO listener example. If no argument is provided, then GPIO #1 will be used.
+     * -- EXAMPLE: "--pin 4" or "-p 0".
+     *
+     * @param args
+     * @throws InterruptedException
      */
     public static void main(String[] args) throws InterruptedException {
 
@@ -48,8 +55,16 @@ public class PwmExample {
         GpioController gpio = GpioFactory.getInstance();
 
         // All Raspberry Pi models support a hardware PWM pin on GPIO_01.
-        // Raspberry Pi models A+, B+, and 2B also support hardware PWM pins: GPIO_23, GPIO_24, GPIO_26
-        GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
+        // Raspberry Pi models A+, B+, 2B, 3B also support hardware PWM pins: GPIO_23, GPIO_24, GPIO_26
+        //
+        // by default we will use gpio pin #01; however, if an argument
+        // has been provided, then lookup the pin by address
+        Pin pin = CommandArgumentParser.getPin(
+                RaspiPin.class,    // pin provider class to obtain pin instance from
+                RaspiPin.GPIO_01,  // default pin if no pin argument found
+                args);             // argument array to search in
+
+        GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(pin);
 
         // you can optionally use these wiringPi methods to further customize the PWM generator
         // see: http://wiringpi.com/reference/raspberry-pi-specifics/
