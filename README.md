@@ -41,8 +41,10 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2015-12-13 :: 1.1-SNAPSHOT
+2016-03-14 :: 1.1-SNAPSHOT
 
+  *  Added support for Raspberry Pi 3 (Model B).
+  *  Added support for Raspberry Pi Zero.
   *  Added non-privileged GPIO example code.
   *  Added support for enabling non-privileged GPIO access via the Pi4J APIs
   *  Removed 'sudo' from pi4j script when launching compiled Java applications
