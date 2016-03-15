@@ -69,7 +69,8 @@ public class GpioControllerImpl implements GpioController {
 
     @Override
     public Collection<GpioPin> getProvisionedPins() {
-        return pins;
+        // make an unmodifiable copy of the pins collection
+        return Collections.unmodifiableList(pins);
     }
 
     @Override
