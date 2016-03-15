@@ -6,7 +6,7 @@ package com.pi4j.io.gpio;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  GpioProviderBase.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,6 +39,7 @@ import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,11 +53,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("unused")
 public abstract class GpioProviderBase implements GpioProvider {
 
+    public static final int DEFAULT_CACHE_SIZE = 100;
+
     public abstract String getName();
 
     protected final Map<Pin, List<PinListener>> listeners = new ConcurrentHashMap<>();
 
-    protected GpioProviderPinCache[] cache = new GpioProviderPinCache[100]; // support up to pin address 100
+    // support up to pin address 100 by default.
+    // (dynamically expand array to accommodate cases where the pin addresses
+    //  may be higher than the default allocation capacity of 100.)
+    protected GpioProviderPinCache[] cache = new GpioProviderPinCache[DEFAULT_CACHE_SIZE];
 
     protected boolean isshutdown = false;
 
@@ -66,7 +72,22 @@ public abstract class GpioProviderBase implements GpioProvider {
     }
 
     protected GpioProviderPinCache getPinCache(Pin pin) {
-        GpioProviderPinCache pc = cache[pin.getAddress()];
+
+        int address = pin.getAddress();
+
+        // dynamically resize pin cache storage if needed based on pin address
+        if(address > cache.length){
+            // create a new array with existing contents
+            // that is 100 elements larger than the requested address
+            // (we add the extra 100 elements to provide additional overhead capacity in
+            //  an attempt to minimize further array expansion)
+            cache = Arrays.copyOf(cache, address + 100);
+        }
+
+        // get the cached pin object from the cache
+        GpioProviderPinCache pc = cache[address];
+
+        // if no pin object is found in the cache, then we need to create one at this address index in the cache array
         if(pc == null){
             pc = cache[pin.getAddress()] = new GpioProviderPinCache(pin);
         }
