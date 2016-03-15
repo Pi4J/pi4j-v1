@@ -60,11 +60,16 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23S17GpioProvider";
     public static final String DESCRIPTION = "MCP23S17 GPIO Provider";
 
-    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000]
-    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010]
-    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100]
-    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110]
-    public static final byte DEFAULT_ADDRESS = ADDRESS_0;
+    // SPI Address Register  0b[0 1 0 0 A2 A1 A0 x]
+    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000] [A0 = 0 | A1 = 0 | A2 = 0]
+    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010] [A0 = 1 | A1 = 0 | A2 = 0]
+    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100] [A0 = 0 | A1 = 1 | A2 = 0]
+    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110] [A0 = 1 | A1 = 1 | A2 = 0]
+    public static final byte ADDRESS_4 = 0b01001000; // 0x48 [0100 1000] [A0 = 0 | A1 = 0 | A2 = 1]
+    public static final byte ADDRESS_5 = 0b01001010; // 0x4A [0100 1010] [A0 = 1 | A1 = 0 | A2 = 1]
+    public static final byte ADDRESS_6 = 0b01001100; // 0x4C [0100 1100] [A0 = 0 | A1 = 1 | A2 = 1]
+    public static final byte ADDRESS_7 = 0b01001110; // 0x4E [0100 1110] [A0 = 1 | A1 = 1 | A2 = 1]
+    //    public static final byte DEFAULT_ADDRESS = ADDRESS_0;
 
     private static final byte REGISTER_IODIR_A = 0x00;
     private static final byte REGISTER_IODIR_B = 0x01;
