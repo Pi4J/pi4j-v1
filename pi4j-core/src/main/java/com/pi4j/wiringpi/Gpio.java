@@ -6,7 +6,7 @@ package com.pi4j.wiringpi;
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
  * FILENAME      :  Gpio.java
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -744,7 +744,7 @@ public class Gpio {
     /**
      * <p>[PWM]</p>
      *
-     * <p> The PWM generator can run in 2 modes – “balanced” and “mark:space”. The mark:space mode is traditional, however
+     * <p> The PWM generator can run in 2 modes – balanced and mark:space. The mark:space mode is traditional, however
      *     the default mode in the Pi is “balanced”. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
      *
      * @see <a
@@ -778,7 +778,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “strength” of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
+     * <p> This sets the strength of the pad drivers for a particular group of pins. There are 3 groups of pins and the drive strength is from 0 to 7. Do not use this unless you know what you are doing. </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
@@ -800,7 +800,7 @@ public class Gpio {
     /**
      * <p>[Hardware]</p>
      *
-     * <p> This sets the “frequency” of a GPIO pin </p>
+     * <p> This sets the frequency of a GPIO pin </p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>
