@@ -52,21 +52,18 @@ public class SpiExample {
 
         //
         // This SPI example is using the Pi4J SPI interface to communicate with
-        // the SPI hardware interface connected to a MCP23S17 I/O Expander.
+        // the SPI hardware interface connected to a MCP3002 AtoD Chip.
         //
         // Please note the following command are required to enable the SPI driver on
         // your Raspberry Pi:
         // >  sudo modprobe spi_bcm2708
         // >  sudo chown `id -u`.`id -g` /dev/spidev0.*
         //
-        // this source code was adapted from:
-        // https://github.com/thomasmacpherson/piface/blob/master/python/piface/pfio.py
-        //
         // see this blog post for additional details on SPI and WiringPi
         // http://wiringpi.com/reference/spi-library/
         //
-        // see the link below for the data sheet on the MCP23S17 chip:
-        // http://ww1.microchip.com/downloads/en/devicedoc/21952b.pdf
+        // see the link below for the data sheet on the MCP3002 chip:
+        // http://ww1.microchip.com/downloads/en/DeviceDoc/21294E.pdf
 
         System.out.println("<--Pi4J--> SPI test program using MCP3002 AtoD Chip");
 
