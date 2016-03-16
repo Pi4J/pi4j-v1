@@ -90,7 +90,7 @@ public class SerialConfig {
     /*
      * The stop bits to use for serial communication. (1,2)
      */
-    public SerialConfig dataBits(StopBits stopBits) { this.stopBits = stopBits; return this; }
+    public SerialConfig stopBits(StopBits stopBits) { this.stopBits = stopBits; return this; }
 
     /*
      * The flow control option to use for serial communication. (none, hardware, software)
@@ -101,5 +101,16 @@ public class SerialConfig {
      * The flow control option to use for serial communication. (none, hardware, software)
      */
     public SerialConfig flowControl(FlowControl flowControl) { this.flowControl = flowControl; return this; }
+
+    @Override
+    public String toString(){
+        // /dev/ttyAMA0 (38400, 8N1) [FC=NONE]
+        return device() + " (" +
+                baud().getValue() + "," +
+                dataBits().getValue() +
+                parity().toString().substring(0, 1) +
+                stopBits().getValue() + ") {" +
+                "FC:" + flowControl().toString() + "}";
+    }
 
 }

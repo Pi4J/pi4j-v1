@@ -43,4 +43,13 @@ public enum StopBits {
     public int getValue(){
         return this.stopBits;
     }
+
+    public static StopBits getInstance(int stop_bits){
+        for(StopBits sb : StopBits.values()){
+            if(sb.getValue() == stop_bits){
+                return sb;
+            }
+        }
+        return null;
+    }
 }

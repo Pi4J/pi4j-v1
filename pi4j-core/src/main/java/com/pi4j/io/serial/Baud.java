@@ -29,6 +29,8 @@ package com.pi4j.io.serial;
  * #L%
  */
 
+import java.util.Enumeration;
+
 public enum Baud {
 
     _50(com.pi4j.jni.Serial.BAUD_RATE_50),
@@ -58,5 +60,14 @@ public enum Baud {
 
     public int getValue(){
         return this.baud;
+    }
+
+    public static Baud getInstance(int baud_rate){
+        for(Baud b : Baud.values()){
+            if(b.getValue() == baud_rate){
+                return b;
+            }
+        }
+        return null;
     }
 }

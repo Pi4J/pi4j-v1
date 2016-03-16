@@ -50,4 +50,8 @@ public enum Parity {
     public int getIndex(){
         return this.index;
     }
+
+    public static Parity getInstance(String parity) {
+        return Parity.valueOf(parity.toUpperCase());
+    }
 }

@@ -33,6 +33,8 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinProvider;
 import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.serial.*;
+import javafx.scene.paint.Stop;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -85,7 +87,6 @@ public class CommandArgumentParser {
     public static PinPullResistance getPinPullResistance(PinPullResistance defaultPull, String ... args){
 
         // search all arguments for the argument option designators
-        // we skip the last argument in the array because we expect a value defined after the option designator
         for(int index = 0; index < args.length; index++){
 
             if(args[index].toLowerCase().equals("--up")){
@@ -116,5 +117,73 @@ public class CommandArgumentParser {
             }
         }
         return defaultPull;
+    }
+
+    /**
+     * This utility method searches for the following options:
+     *
+     *   "--device (device-path)"                   [DEFAULT: /dev/ttyAMA0]
+     *   "--baud (baud-rate)"                       [DEFAULT: 38400]
+     *   "--data-bits (5|6|7|8)"                    [DEFAULT: 8]
+     *   "--parity (none|odd|even)"                 [DEFAULT: none]
+     *   "--stop-bits (1|2)"                        [DEFAULT: 1]
+     *   "--flow-control (none|hardware|software)"  [DEFAULT: none]
+     *
+     * in the arguments array and returns a SerialConfig instance based on the option
+     * values detected.
+     *
+     * @param defaultConfig default serial configuration to apply if no option/arguments are found
+     * @param args the argument array to search in
+     * @return
+     */
+    public static SerialConfig getSerialConfig(SerialConfig defaultConfig, String ... args){
+
+        // search all arguments for the argument option designators
+        // we skip the last argument in the array because we expect a value defined after each option designator
+        for(int index = 0; index < (args.length-1); index++){
+
+            // "--device (device-path)"                   [DEFAULT: /dev/ttyAMA0]
+            if(args[index].toLowerCase().equals("--device")){
+                defaultConfig.device(args[index+1]);
+                index++;
+                continue;
+            }
+
+            // "--baud (baud-rate)"                       [DEFAULT: 38400]
+            if(args[index].toLowerCase().equals("--baud")){
+                defaultConfig.baud(Baud.getInstance(Integer.parseInt(args[index + 1])));
+                index++;
+                continue;
+            }
+
+            // "--data-bits (5|6|7|8)"                    [DEFAULT: 8]
+            if(args[index].toLowerCase().equals("--data-bits")){
+                defaultConfig.dataBits(DataBits.getInstance(Integer.parseInt(args[index + 1])));
+                index++;
+                continue;
+            }
+
+            // "--parity (none|odd|even)"                 [DEFAULT: none]
+            if(args[index].toLowerCase().equals("--parity")){
+                defaultConfig.parity(Parity.getInstance(args[index + 1]));
+                index++;
+                continue;
+            }
+
+            // "--stop-bits (1|2)"                        [DEFAULT: 1]
+            if(args[index].toLowerCase().equals("--stop-bits")){
+                defaultConfig.stopBits(StopBits.getInstance(Integer.parseInt(args[index + 1])));
+                index++;
+                continue;
+            }
+
+            // "--flow-control (none|hardware|software)"  [DEFAULT: none]
+            if(args[index].toLowerCase().equals("--flow-control")){
+                defaultConfig.flowControl(FlowControl.getInstance(args[index + 1]));
+                index++;
+                continue;
+            }
+        }
+        return defaultConfig;
     }
 }

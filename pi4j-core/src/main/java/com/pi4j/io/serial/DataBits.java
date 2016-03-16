@@ -45,4 +45,14 @@ public enum DataBits {
     public int getValue(){
         return this.dataBits;
     }
+
+    public static DataBits getInstance(int data_bits){
+        for(DataBits db : DataBits.values()){
+            if(db.getValue() == data_bits){
+                return db;
+            }
+        }
+        return null;
+    }
+
 }

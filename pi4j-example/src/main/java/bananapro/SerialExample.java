@@ -34,6 +34,7 @@ import com.pi4j.io.serial.*;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.CommandArgumentParser;
 
 import java.io.IOException;
 import java.util.Date;
@@ -46,6 +47,19 @@ import java.util.Date;
  */
 public class SerialExample {
 
+    /**
+     * This example program supports the following optional command arguments/options:
+     *   "--device (device-path)"                   [DEFAULT: /dev/ttyAMA0]
+     *   "--baud (baud-rate)"                       [DEFAULT: 38400]
+     *   "--data-bits (5|6|7|8)"                    [DEFAULT: 8]
+     *   "--parity (none|odd|even)"                 [DEFAULT: none]
+     *   "--stop-bits (1|2)"                        [DEFAULT: 1]
+     *   "--flow-control (none|hardware|software)"  [DEFAULT: none]
+     *
+     * @param args
+     * @throws InterruptedException
+     * @throws IOException
+     */
     public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
 
         // ####################################################################
@@ -83,16 +97,34 @@ public class SerialExample {
         });
 
         try {
-            // see 'BananaProSerial' for constant definitions for BananaPro Serial Port addresses.
-            String serialPort = BananaProSerial.DEFAULT_COM_PORT; // TX is located at CON6-08; RX is located at CON6-10
+            // create serial config object
+            SerialConfig config = new SerialConfig();
 
-            // optionally allow a CLI argument to override the serial port address.
+            // set default serial settings (device, baud rate, flow control, etc)
+            //
+            // by default, use the DEFAULT com port on the BananaPro (exposed on GPIO header)
+            // see 'BananaProSerial' for constant definitions for BananaPro Serial Port addresses.
+            //
+            // NOTE: this utility method will determine the default serial port for the
+            //       detected platform and board/model.
+            config.device(BananaProSerial.DEFAULT_COM_PORT)  // TX is located at CON6-08; RX is located at CON6-10
+                    .baud(Baud._38400)
+                    .dataBits(DataBits._8)
+                    .parity(Parity.NONE)
+                    .stopBits(StopBits._1)
+                    .flowControl(FlowControl.NONE);
+
+            // parse optional command argument options to override the default serial settings.
             if(args.length > 0){
-                serialPort = args[0];
+                config = CommandArgumentParser.getSerialConfig(config, args);
             }
 
-            // open the default serial port provided on the GPIO header
-            serial.open(serialPort, Baud._115200, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
+            // display connection details
+            System.out.println(" ... connecting to: " + config.toString());
+            System.out.println(" ... data received on serial port should be displayed below.");
+
+            // open the default serial device/port with the configuration settings
+            serial.open(config);
 
             // continuous loop to keep the program running until the user terminates the program
             while(true) {

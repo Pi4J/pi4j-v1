@@ -44,4 +44,9 @@ public enum FlowControl {
     public int getIndex(){
         return this.index;
     }
+
+    public static FlowControl getInstance(String flow_control) {
+        return FlowControl.valueOf(flow_control.toUpperCase());
+    }
+
 }
