@@ -33,11 +33,7 @@ Copyright (C) 2012-2015 Pi4J
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
-## FUTURE PLANS
 
-   *  See future enhancements here:  
-      https://github.com/Pi4J/pi4j/issues?labels=enhancement&page=1&state=open
 
 ## KNOWN ISSUES
 
@@ -46,7 +42,6 @@ Copyright (C) 2012-2015 Pi4J
   *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue.  
      A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
      (see: https://github.com/RPi-Distro/repo/issues/22)   
-     
 
 
 ## IN DEVEOPMENT

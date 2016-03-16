@@ -34,7 +34,6 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinProvider;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.serial.*;
-import javafx.scene.paint.Stop;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
