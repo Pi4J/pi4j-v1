@@ -98,7 +98,7 @@ public class SerialExample {
             while(true) {
                 try {
                     // write a formatted string to the serial transmit buffer
-                    serial.write("CURRENT TIME: %s", new Date().toString());
+                    serial.write("CURRENT TIME: " + new Date().toString());
 
                     // write a individual bytes to the serial transmit buffer
                     serial.write((byte) 13);

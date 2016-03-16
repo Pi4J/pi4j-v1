@@ -65,10 +65,9 @@ public interface Serial extends SerialDataReader, SerialDataWriter {
      *
      * @see #open(String, int)
      */
-    public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
+    public static final String DEFAULT_COM_PORT = RaspberryPiSerial.DEFAULT_COM_PORT;
     public static final String FIRST_USB_COM_PORT = "/dev/ttyUSB0";
     public static final String SECOND_USB_COM_PORT = "/dev/ttyUSB1";
-
 
     /**
      * <p>

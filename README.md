@@ -39,9 +39,19 @@ Copyright (C) 2012-2015 Pi4J
    *  See future enhancements here:  
       https://github.com/Pi4J/pi4j/issues?labels=enhancement&page=1&state=open
 
+## KNOWN ISSUES
+
+2016-03-15 :: 1.1-SNAPSHOT
+
+  *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue.  
+     A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
+     (see: https://github.com/RPi-Distro/repo/issues/22)   
+     
+
+
 ## IN DEVEOPMENT
 
-2016-03-14 :: 1.1-SNAPSHOT
+2016-03-15 :: 1.1-SNAPSHOT
 
   *  Added support for Raspberry Pi 3 (Model B).
   *  Added support for Raspberry Pi Zero.

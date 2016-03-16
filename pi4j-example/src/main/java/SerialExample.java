@@ -55,8 +55,6 @@ public class SerialExample {
         // http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/
 
         System.out.println("<--Pi4J--> Serial Communication Example ... started.");
-        System.out.println(" ... connect using settings: 38400, 8, N, 1.");
-        System.out.println(" ... data received on serial port should be displayed below.");
 
         // create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
@@ -81,13 +79,21 @@ public class SerialExample {
         });
 
         try {
-            // by default, use the DEFAULT com port on the Raspberry Pi
-            String serialPort = Serial.DEFAULT_COM_PORT;
+            // by default, use the DEFAULT com port on the Raspberry Pi (exposed on GPIO header)
+            // NOTE: this utility method will determine the default serial port for the
+            //       detected platform and board/model.  For all Raspberry Pi models
+            //       except the 3B, it will return "/dev/ttyAMA0".  For Raspberry Pi
+            //       model 3B is will return "/dev/ttyS0".
+            String serialPort = SerialPort.getDefaultPort();
 
             // optionally allow a CLI argument to override the serial port address.
             if(args.length > 0){
                 serialPort = args[0];
             }
+
+            // display connection details
+            System.out.println(" ... connect to device/port: " + serialPort);
+            System.out.println(" ... connect using settings: 38400, 8, N, 1.");
 
             // open the default serial port provided on the GPIO header
             serial.open(serialPort, Baud._38400, DataBits._8, Parity.NONE, StopBits._1, FlowControl.NONE);
@@ -96,7 +102,7 @@ public class SerialExample {
             while(true) {
                 try {
                     // write a formatted string to the serial transmit buffer
-                    serial.write("CURRENT TIME: %s", new Date().toString());
+                    serial.write("CURRENT TIME: " + new Date().toString());
 
                     // write a individual bytes to the serial transmit buffer
                     serial.write((byte) 13);
