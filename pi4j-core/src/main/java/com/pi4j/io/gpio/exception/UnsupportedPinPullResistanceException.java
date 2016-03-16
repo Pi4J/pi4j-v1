@@ -34,7 +34,7 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinPullResistance;
 
 /**
- * Unsupported pin pull up/down resistence exception.
+ * Unsupported pin pull up/down resistance exception.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
