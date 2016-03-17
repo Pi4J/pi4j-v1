@@ -44,76 +44,76 @@ public class SpiExample {
     // SPI device
     public static SpiDevice spi = null;
 
-    // SPI operations
-    public static byte INIT_CMD = (byte) 0xD0;
+    // ADC channel count
+    public static short ADC_CHANNEL_COUNT = 8;  // MCP3004=4, MCP3008=8
 
-
+    /**
+     * Sample SPI Program
+     *
+     * @param args (none)
+     * @throws InterruptedException
+     * @throws IOException
+     */
     public static void main(String args[]) throws InterruptedException, IOException {
 
         //
         // This SPI example is using the Pi4J SPI interface to communicate with
-        // the SPI hardware interface connected to a MCP3002 AtoD Chip.
+        // the SPI hardware interface connected to a MCP3004/MCP3008 AtoD Chip.
         //
-        // Please note the following command are required to enable the SPI driver on
-        // your Raspberry Pi:
-        // >  sudo modprobe spi_bcm2708
-        // >  sudo chown `id -u`.`id -g` /dev/spidev0.*
+        // Please make sure the SPI is enabled on your Raspberry Pi via the
+        // raspi-config utility under the advanced menu option.
         //
-        // see this blog post for additional details on SPI and WiringPi
-        // http://wiringpi.com/reference/spi-library/
-        //
-        // see the link below for the data sheet on the MCP3002 chip:
+        // see the link below for the data sheet on the MCP3004/MCP3008 chip:
         // http://ww1.microchip.com/downloads/en/DeviceDoc/21294E.pdf
 
-        System.out.println("<--Pi4J--> SPI test program using MCP3002 AtoD Chip");
+        System.out.println("<--Pi4J--> SPI test program using MCP3004/MCP3008 AtoD Chip");
 
         // create SPI object instance for SPI for communication
         spi = SpiFactory.getInstance(SpiChannel.CS0,
                                      SpiDevice.DEFAULT_SPI_SPEED, // default spi speed 1 MHz
                                      SpiDevice.DEFAULT_SPI_MODE); // default spi mode 0
 
-        // infinite loop
+
+        // print header
+        System.out.println(" ---------------------------------------------------------");
+        for(short channel = 0; channel < ADC_CHANNEL_COUNT; channel++){
+            System.out.print(" | CH0" + channel);
+        }
+        System.out.println(" |");
+        System.out.println(" ---------------------------------------------------------");
+
+        // infinite loop; print conversion values for each analog input channel
         while(true) {
-            read();
-            Thread.sleep(1000);
+            for(short channel = 0; channel < ADC_CHANNEL_COUNT; channel++){
+                int conversion_value = getConversionValue(channel);
+                System.out.print(String.format(" | %04d", conversion_value)); // print 4 digits with leading zeros
+            }
+            System.out.print(" |\r");
+            Thread.sleep(250);
         }
     }
 
-    public static void read() throws IOException {
+    /**
+     * Communicate to the ADC chip via SPI to get single-ended conversion value for a specified channel.
+     * @param channel analog input channel on ADC chip
+     * @return conversion value for specified analog input channel
+     * @throws IOException
+     */
+    public static int getConversionValue(short channel) throws IOException {
 
-        // send test ASCII message
-        byte packet[] = new byte[2];
-        packet[0] = INIT_CMD;  // address byte
-        packet[1] = 0x00;  // dummy
+        // create a data buffer and initialize a conversion request payload
+        byte data[] = new byte[] {
+                (byte) 0b00000001,                              // first byte, start bit
+                (byte)(0b10000000 |( ((channel & 7) << 4))),    // second byte transmitted -> (SGL/DIF = 1, D2=D1=D0=0)
+                (byte) 0b00000000                               // third byte transmitted....don't care
+        };
 
-        System.out.println("-----------------------------------------------");
-        System.out.println("[TX] " + bytesToHex(packet));
-        byte[] result = spi.write(packet);
-        System.out.println("[RX] " + bytesToHex(result));
-        System.out.println("-----------------------------------------------");
-        System.out.println( ((result[0]<<8)|result[1]) & 0x3FF );
-    }
+        // send conversion request to ADC chip via SPI channel
+        byte[] result = spi.write(data);
 
-
-    public static String bytesToBinary(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j];
-            sb.append(Integer.toBinaryString(v));
-        }
-        return sb.toString();
-    }
-
-    public static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
+        // calculate and return conversion value from result bytes
+        int value = (result[1]<< 8) & 0b1100000000; //merge data[1] & data[2] to get 10-bit result
+        value |=  (result[2] & 0xff);
+        return value;
     }
 }
