@@ -323,7 +323,7 @@ jint GpioInterrupt_JNI_OnLoad(JavaVM *jvm)
         return JNI_ERR;
     }
 
-    // search the attached java enviornment for the 'GpioInterrupt' class
+    // search the attached java environment for the 'GpioInterrupt' class
     cls = (*env)->FindClass(env, "com/pi4j/wiringpi/GpioInterrupt");
     if (cls == NULL)
     {
