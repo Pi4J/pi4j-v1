@@ -32,6 +32,12 @@ import com.pi4j.wiringpi.GpioInterruptCallback;
 
 public class WiringPiGpioInterruptExample2 {
 
+    /**
+     * Example program to demonstrate the usage of WiringPiISR()
+     *
+     * @param args
+     * @throws InterruptedException
+     */
     public static void main(String args[]) throws InterruptedException {
 
         System.out.println("<--Pi4J--> GPIO interrupt test program");
@@ -42,76 +48,61 @@ public class WiringPiGpioInterruptExample2 {
             return;
         }
 
-        Gpio.pinMode (0, Gpio.INPUT) ;
-        Gpio.pinMode (1, Gpio.INPUT) ;
-        Gpio.pinMode (2, Gpio.INPUT) ;
-        Gpio.pinMode (3, Gpio.INPUT) ;
-        Gpio.pinMode (4, Gpio.INPUT) ;
-        Gpio.pinMode (5, Gpio.INPUT) ;
-        Gpio.pinMode (6, Gpio.INPUT) ;
-        Gpio.pinMode (7, Gpio.INPUT) ;
+        // configure pins as input pins
+        Gpio.pinMode(0, Gpio.INPUT) ;
+        Gpio.pinMode(1, Gpio.INPUT) ;
+        Gpio.pinMode(2, Gpio.INPUT) ;
 
+        // configure pins with pull down resistance
         Gpio.pullUpDnControl(0, Gpio.PUD_DOWN);
         Gpio.pullUpDnControl(1, Gpio.PUD_DOWN);
         Gpio.pullUpDnControl(2, Gpio.PUD_DOWN);
-        Gpio.pullUpDnControl(3, Gpio.PUD_DOWN);
-        Gpio.pullUpDnControl(4, Gpio.PUD_DOWN);
-        Gpio.pullUpDnControl(5, Gpio.PUD_DOWN);
-        Gpio.pullUpDnControl(6, Gpio.PUD_DOWN);
-        Gpio.pullUpDnControl(7, Gpio.PUD_DOWN);
 
-        // setup a pin interrupt callback for pin 7
+        // setup a pin interrupt callback for each pin
+        //
+        // NOTE: YOU CANNOT SETUP SEPARATE ISRs FOR RISING AND FALLING,
+        // EACH GPIO PIN CAN ONLY BE CONFIGURED WITH A SINGLE EDGE TYPE AT ANY GIVEN TIME.
+        // YOU CAN USE THE 'INT_EDGE_BOTH' IF YOU WISH TO CATCH BOTH CASES IN A SINGLE CALLBACK.
+        //
+
+        // example: single callback for discrete FALLING edge for pin 0
         Gpio.wiringPiISR(0, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
             @Override
             public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
+                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED <FALLING>");
             }
         });
-        Gpio.wiringPiISR(1, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
+
+        // example: single callback for both RISING and FALLING edges for pin 1
+        Gpio.wiringPiISR(1, Gpio.INT_EDGE_BOTH, new GpioInterruptCallback() {
             @Override
             public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
+                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED <RISING|FALLING>");
             }
         });
-        Gpio.wiringPiISR(2, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
-        Gpio.wiringPiISR(3, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
-        Gpio.wiringPiISR(4, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
-        Gpio.wiringPiISR(5, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
-        Gpio.wiringPiISR(6, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
-        Gpio.wiringPiISR(7, Gpio.INT_EDGE_FALLING, new GpioInterruptCallback() {
-            @Override
-            public void callback(int pin) {
-                System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED");
-            }
-        });
+
+        // here is another approach using a custom callback class/instance instead of an anonymous method
+        SampleCallbackClass risingCallbackInstance = new SampleCallbackClass("RISING");
+
+        // setup a pin interrupt callbacks for pin 2
+        Gpio.wiringPiISR(2, Gpio.INT_EDGE_RISING, risingCallbackInstance);
 
         // wait for user to exit program
         System.console().readLine("Press <ENTER> to exit program.\r\n");
     }
-}
 
+    // sample callback class implementation
+    public static class SampleCallbackClass implements GpioInterruptCallback {
+
+        private String direction = "UKNOWN";
+
+        public SampleCallbackClass(String direction){
+            this.direction = direction;
+        }
+
+        @Override
+        public void callback(int pin) {
+            System.out.println(" ==>> GPIO PIN " + pin + " - INTERRUPT DETECTED <" + direction.toUpperCase() + ">");
+        }
+    }
+}

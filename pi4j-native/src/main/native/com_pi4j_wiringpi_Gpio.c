@@ -33,6 +33,10 @@
 #include "com_pi4j_wiringpi_Gpio.h"
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
 
+// java ISR callback variables
+jclass isr_callback_class;
+jmethodID isr_callback_method;
+
 /* Source for com_pi4j_wiringpi_Gpio */
 
 /*
@@ -237,59 +241,49 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 	return waitForInterrupt(pin, timeOut);
 }
 
-// monitoring thread data structure
-struct callback_data{
-    int pin;
-    jobject interface;
-};
-
-// monitoring thread data structure array
-struct callback_data callbacks[MAX_GPIO_PINS];
-
 void CallbackWrapperFunc(int pin)
 {
-  if(pin < MAX_GPIO_PINS)
-  {
-    // get attached JVM
+    // validate pin range
+    if(pin > MAX_GPIO_PINS){
+        printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc pin number exceeds MAX_GPIO_PINS.\n");
+        return;
+    }
+
+    // ensure that the JVM exists
+    if(gpio_callback_jvm == NULL){
+        printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc 'gpio_callback_jvm' is NULL.\n");
+        return;
+    }
+
+    // ensure the ISR callback class is available
+    if (isr_callback_class == NULL){
+        printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc 'isr_callback_class' is NULL.\n");
+        return;
+    }
+
+    // ensure the ISR callback method is available
+    if (isr_callback_method == NULL){
+        printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc 'isr_callback_class' is NULL.\n");
+        return;
+    }
+
+    // attached to JVM thread
     JNIEnv *env;
     (*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL);
 
-    // ensure that the JVM exists
-    if(gpio_callback_jvm != NULL)
-    {
-        // clear any exceptions on the stack
-        (*env)->ExceptionClear(env);
+    // clear any exceptions on the stack
+    (*env)->ExceptionClear(env);
 
-        // verify that the callback interface class still exists
-        jclass clbk_class = (*env)->GetObjectClass(env, callbacks[pin].interface);
-        if(clbk_class == NULL){
-            printf("NATIVE (wiringPiISR) ERROR; JNI 'CallbackWrapperFunc' could not find 'callback' class.\n");
-        }
-        else{
-            // verify that the callback method class still exists
-            jmethodID clbk_method = (*env)->GetMethodID(env, clbk_class, "callback", "(I)V");
-            if(clbk_method == NULL){
-                printf("NATIVE (wiringPiISR) ERROR; JNI 'CallbackWrapperFunc' could not get 'callback' method id.\n");
-            }
-            else{
-                // invoke the callback method in the callback interface
-                (*env)->CallVoidMethod(env, clbk_class, clbk_method, pin);
-            }
-        }
+    // invoke callback to java state method to notify event listeners
+    (*env)->CallStaticVoidMethod(env, isr_callback_class, isr_callback_method, (jint)pin);
 
-        // clear any user caused exceptions on the stack
-        if((*env)->ExceptionCheck(env)){
-          (*env)->ExceptionClear(env);
-        }
+    // clear any user caused exceptions on the stack
+    if((*env)->ExceptionCheck(env)){
+      (*env)->ExceptionClear(env);
     }
 
     // detach from thread
     (*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm);
-  }
-  else
-  {
-    printf("NATIVE (wiringPiISR) ERROR; CallbackWrapperFunc pin number exceeds MAX_GPIO_PINS.\n");
-  }
 }
 
 void cwf_0()  { CallbackWrapperFunc(0);  }
@@ -344,39 +338,56 @@ void cwf_48() { CallbackWrapperFunc(48); }
 void cwf_49() { CallbackWrapperFunc(49); }
 void cwf_50() { CallbackWrapperFunc(50); }
 
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
- * Method:    wiringPiISR
+ * Method:    _wiringPiISR
  * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
-  (JNIEnv *env, jclass obj, jint pin, jint mode, jobject callbackInterface)
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio__1wiringPiISR
+  (JNIEnv *env, jclass obj, jint pin, jint mode)
 {
     //printf("NATIVE (wiringPiISR) LISTEN FOR INTERRUPTS ON PIN: %d.\n", pin);
 
-    jclass clbk_class = (*env)->GetObjectClass(env, callbackInterface);
-    if(clbk_class == NULL){
-        printf("NATIVE (wiringPiISR) ERROR; JNI could not get 'callback' class.\n");
-        return -999;
-    }
-
-    jmethodID clbk_method = (*env)->GetMethodID(env, clbk_class, "callback", "(I)V");
-    if(clbk_method == NULL){
-        printf("NATIVE (wiringPiISR) ERROR; JNI could not get 'callback' method id.\n");
-        return -998;
-    }
-
-    // setup pin callback data structure
-    callbacks[pin].pin = pin;
-    callbacks[pin].interface = callbackInterface;
-
+    // ensure requested pin in in valid range
     if(pin > MAX_GPIO_PINS)
     {
         printf("NATIVE (wiringPiISR) ERROR; unsupported pin number; exceeds MAX_GPIO_PINS.\n");
         return -997;
     }
 
+    // if the ISR callback class has not previsouly been configiured, then establish it now
+    if (isr_callback_class == NULL){
+        jclass cls;
+
+        // search the attached java environment for the 'Gpio' class
+        cls = (*env)->FindClass(env, "com/pi4j/wiringpi/Gpio");
+        if (cls == NULL)
+        {
+            // expected class not found
+            printf("NATIVE (wiringPiISR) ERROR; Gpio class not found.\n");
+            return JNI_ERR;
+        }
+
+        // use weak global ref to allow C class to be unloaded
+        isr_callback_class = (*env)->NewWeakGlobalRef(env, cls);
+        if (isr_callback_class == NULL)
+        {
+    	    // unable to create weak reference to java class
+    	    printf("NATIVE (wiringPiISR) ERROR; Java class reference is NULL.\n");
+            return JNI_ERR;
+        }
+    }
+
+    // lookup and cache the static method ID for the 'isrCallback' callback
+    isr_callback_method = (*env)->GetStaticMethodID(env, isr_callback_class, "isrCallback", "(I)V");
+    if (isr_callback_method == NULL)
+    {
+    	// callback method could not be found in attached java class
+    	printf("NATIVE (wiringPiISR) ERROR; Static method 'Gpio.isrCallback(pin)' could not be found.\n");
+        return JNI_ERR;
+    }
+
+    // setup the real wiringPiISR function with explicit callback method reference
     switch(pin){
         case 0:  { return wiringPiISR(pin, mode, &cwf_0);  }
         case 1:  { return wiringPiISR(pin, mode, &cwf_1);  }

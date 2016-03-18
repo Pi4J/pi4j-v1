@@ -32,6 +32,9 @@ package com.pi4j.wiringpi;
 
 import com.pi4j.util.NativeLibraryLoader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <[>WiringPi GPIO Control</[>
  *
@@ -665,11 +668,64 @@ public class Gpio {
      * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @param edgeType The type of pin edge event to watch for: INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP.
+     * @param callback The callback interface implemented by the consumer.  The 'callback' method of this interface
+     *                 will be invoked when the wiringPiISR issues a callback signal.
      * @return The return value is -1 if an error occurred (and errno will be set appropriately), 0
      *         if it timed out, or 1 on a successful interrupt event.
      */
-    public static native int wiringPiISR(int pin, int edgeType, GpioInterruptCallback callback);
+    public static int wiringPiISR(int pin, int edgeType, GpioInterruptCallback callback){
+        // if there is not collection in the array at this pin location, then initialize an array list
+        if(isrCallbacks[pin] == null){
+            isrCallbacks[pin] = new ArrayList<>();
+        }
 
+        // add provided callback interface to ISR callbacks collection
+        isrCallbacks[pin].add(callback);
+        return _wiringPiISR(pin, edgeType);
+    }
+
+    // internal collection for use subscribed IRS callbacks
+    private static List<GpioInterruptCallback> isrCallbacks[] = new List[NUM_PINS];
+
+    // delegated native method for 'wiringPiISR'
+    private static native int _wiringPiISR(int pin, int edgeType);
+
+    /**
+     * Clear all WiringPiISR callbacks for this GPIO pin.
+     *
+     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
+     */
+    public static void wiringPiClearISR(int pin){
+        // ensure there is a callbacks at this pin location
+        if(isrCallbacks[pin] != null){
+            // remove all ISR callbacks
+            isrCallbacks[pin].clear();
+        }
+    }
+
+    /**
+     * <p>
+     * This method is provided as the callback handler for the Pi4J native library to invoke when a
+     * GPIO ISR is detected. This method should not be called from any Java consumers. (Thus
+     * is is marked as a private method.)
+     * </p>
+     *
+     * @param pin GPIO pin number
+     */
+    @SuppressWarnings("unchecked")
+    private static void isrCallback(int pin) {
+        // dispatch callback to the subscribers for this pin
+        List<GpioInterruptCallback> callbacks = isrCallbacks[pin];
+
+        // ensure callbacks collection exists for this pins number
+        if(callbacks != null && !callbacks.isEmpty()){
+            // iterate over each callback delegate and invoke the callback if the pin and edge type match
+            for(GpioInterruptCallback callback : callbacks){
+                callback.callback(pin);
+            }
+        }
+    }
 
     //    /**
     //     * --------------------------------------------------------------------------------------------

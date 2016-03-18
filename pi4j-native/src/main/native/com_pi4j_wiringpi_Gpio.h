@@ -213,10 +213,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
- * Method:    wiringPiISR
+ * Method:    _wiringPiISR
  * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
+JNIEXPORT jint JNICALL Java_com_pi4j__1wiringpi_Gpio_wiringPiISR
   (JNIEnv *, jclass, jint, jint, jobject);
 
 /*
