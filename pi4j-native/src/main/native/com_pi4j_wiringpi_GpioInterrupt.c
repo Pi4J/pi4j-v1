@@ -4,7 +4,7 @@
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
  * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -42,6 +42,7 @@
 #include <sys/stat.h>
 #include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
+#include "com_pi4j_wiringpi_GpioUtil.h"
 
 // constants
 #define GPIO_FN_MAXLEN  128
@@ -239,6 +240,21 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_enablePinStateChange
 		// only start this thread monitor if it has not already been started
 		if(gpio_monitor_data_array[index].running <= 0)
 		{
+            // get existing pin edge trigger
+            int edge;
+            edge = (int)Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection(env, class, pin);
+
+            // if pin edge trigger is not set to "both", then attempt to set it now
+            if(edge != com_pi4j_wiringpi_GpioUtil_EDGE_BOTH){
+                int retval;
+                retval = (int)Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_BOTH);
+
+                // exit if pin edge trigger configuration was not successful
+                if(retval <= 0){
+                    return -2; // unable to set edge trigger
+                }
+            }
+
 			// configure the monitor instance data
 			gpio_monitor_data_array[index].thread_id = index;
 			gpio_monitor_data_array[index].pin = pin;
@@ -280,6 +296,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChang
 		// kill the monitoring thread
 		if(gpio_monitor_data_array[index].running > 0)
 		{
+            // remove existing pin edge trigger
+            int retval;
+            retval = (int)Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_NONE);
+
+			// cancel monitoring thread
 			pthread_cancel(gpio_monitor_threads[index]);
 
             // reset running flag

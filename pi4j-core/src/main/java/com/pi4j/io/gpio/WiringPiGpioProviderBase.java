@@ -136,11 +136,6 @@ public abstract class WiringPiGpioProviderBase extends GpioProviderBase implemen
 
         // set pin mode on hardware
         com.pi4j.wiringpi.Gpio.pinMode(pin.getAddress(), mode.getValue());
-
-        // if this is an input pin, then configure edge detection
-        if (PinMode.allInputs().contains(mode) && pin.supportsPinEdges()) {
-            GpioUtil.setEdgeDetection(pin.getAddress(), PinEdge.BOTH.getValue());
-        }
     }
 
     @Override
