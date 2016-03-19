@@ -46,7 +46,28 @@ public interface GpioController {
     void export(PinMode mode, PinState defaultState, GpioPin... pin);
     void export(PinMode mode, GpioPin... pin);
     boolean isExported(GpioPin... pin);
+
+    /**
+     * Unexport a GPIO pin by Pin instance.
+     * This method will explicitly unexport any Pin whether it has been
+     * provisioned in Pi4J or not.
+     *
+     * @param pin GPIO pin instance (i.e. RaspiPin.GPIO_00)
+     */
+    void unexport(Pin... pin);
+
+    /**
+     * Unexport a GPIO pin by GpioPin instance.
+     * This method will unexport an existing provisoned pin
+     *
+     * @param pin provisioned GPIO pin instance
+     */
     void unexport(GpioPin... pin);
+
+    /**
+     * Unexport all GPIO pins that have been provisioned by Pi4J
+     * in the context of this program.
+     */
     void unexportAll();
 
     void setMode(PinMode mode, GpioPin... pin);

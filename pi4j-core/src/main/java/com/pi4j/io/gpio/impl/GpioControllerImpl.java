@@ -165,6 +165,17 @@ public class GpioControllerImpl implements GpioController {
     }
 
     @Override
+    public void unexport(Pin... pin) {
+        if (pin == null || pin.length == 0) {
+            throw new IllegalArgumentException("Missing pin argument.");
+        }
+        for (Pin p : pin) {
+            // unexport the pin
+            defaultProvider.unexport(p);
+        }
+    }
+
+    @Override
     public PinMode getMode(GpioPin pin) {
         // ensure the requested pin has been provisioned
         if (!pins.contains(pin)) {
