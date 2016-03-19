@@ -37,6 +37,8 @@ import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.CommandArgumentParser;
 
+import java.util.Arrays;
+
 /**
  * This example code demonstrates how to setup a listener
  * for GPIO pin state changes on the Odroid C1/C1+/XU4 platform.
@@ -71,6 +73,19 @@ public class GpioListenAllExample {
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
 
+        // --------------------
+        // !! ATTENTION !!
+        // --------------------
+        // The Odroid C1 only permits up to four GPIO pins to be configured with
+        // edge detection for both "rising" and "falling" edges (a.k.a., "both").
+        // Thus, you can only use a maximum of four GPIO input pins with listener
+        // events. Alternatively, you can manually poll for GPIO pin state changes.
+        //
+        // Let's first explicitly unexport all Odroid C1 pins to make sure no existing
+        // pins are already consuming the 4 available edge interrupt slots.
+        gpio.unexport(OdroidC1Pin.allPins());
+
+
         // by default we will use gpio pin PULL-UP; however, if an argument
         // has been provided, then use the specified pull resistance
         PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
@@ -87,12 +102,28 @@ public class GpioListenAllExample {
         //
         // ####################################################################
 
+        // --------------------
+        // !! ATTENTION !!
+        // --------------------
+        // The Odroid C1 only permits up to four GPIO pins to be configured with
+        // edge detection for both "rising" and "falling" edges (a.k.a., "both").
+        // Thus, you can only use a maximum of four GPIO input pins with listener
+        // events.
+
         // provision gpio input pins with its internal pull down resistor set
         GpioPinDigitalInput[] event_pins = {
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_00, pull),
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_01, pull),
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_02, pull),
-                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_03, pull),
+                gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_03, pull)
+        };
+
+        // unexport the event-based GPIO pin when program exits
+        gpio.setShutdownOptions(true, event_pins);
+
+        // we will use a manually polling approach to detect the pin state changes on the remaining pins
+        // provision gpio input pins with its internal pull down resistor set
+        GpioPinDigitalInput[] polled_pins = {
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_04, pull),
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_05, pull),
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_06, pull),
@@ -110,20 +141,42 @@ public class GpioListenAllExample {
                 gpio.provisionDigitalInputPin(OdroidC1Pin.GPIO_27, pull),
         };
 
-        // create and register gpio pin listeners
+        // unexport the polling-based GPIO pin when program exits
+        gpio.setShutdownOptions(true, polled_pins);
+
+
+        System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
+
+        // --------------------------------
+        // EVENT-BASED GPIO PIN MONITORING
+        // --------------------------------
+
+        // create and register gpio pin listeners for event pins
         gpio.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+                System.out.println(" --> GPIO PIN STATE CHANGE (EVENT): " + event.getPin() + " = " + event.getState());
             }
         }, event_pins);
 
-        System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
+        // --------------------------------
+        // POLLING-BASED GPIO PIN MONITORING
+        // --------------------------------
 
         // keep program running until user aborts (CTRL-C)
-        while(true) {
+        while (true) {
             Thread.sleep(50);
+
+            // poll pin states looking for pin state changes
+            for (GpioPinDigitalInput pin : polled_pins) {
+                if (!pin.getState().name().equals(pin.getProperty("last_known_state"))) {
+                    if(pin.getProperty("last_known_state") != null) {
+                        System.out.println(" --> GPIO PIN STATE CHANGE (POLLED): " + pin.getName() + " = " + pin.getState());
+                    }
+                    pin.setProperty("last_known_state", pin.getState().name());
+                }
+            }
         }
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
