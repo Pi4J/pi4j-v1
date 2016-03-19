@@ -430,6 +430,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 {
 	FILE *fd ;
 	char fName [128];
+	char data[RDBUF_LEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -526,6 +527,55 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 
 	// close the gpio edge file
 	fclose (fd);
+
+	// read the configured edge mode to verify it was set correctly
+    // open the gpio edge file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unable to open GPIO edge interface for pin %d: %s\n", pin, strerror (errno)) ;
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// read the data from the file into the data buffer
+	if(fgets(data, RDBUF_LEN, fd) == NULL)
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unable to open GPIO edge interface for pin %d: %s\n", pin, strerror (errno)) ;
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// close the gpio edge file
+	fclose (fd) ;
+
+	// determine active configured edge mode
+	int active_edge;
+
+	if (strncasecmp(data, "none", 4) == 0) { active_edge = EDGE_NONE; }
+	else if (strncasecmp(data, "both", 4) == 0) { active_edge = EDGE_BOTH; }
+	else if (strncasecmp(data, "rising", 6) == 0) { active_edge = EDGE_RISING; }
+	else if (strncasecmp(data, "falling", 7) == 0) { active_edge = EDGE_FALLING; }
+	else
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unrecognized mode: %s. Should be 'none', 'rising', 'falling' or 'both'.\n",data);
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// verify active edge matches requested edge
+	if(active_edge != edge){
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Failed to set GPIO edge for pin %d to [%d]; active edge is [%d]\n", pin, edge, active_edge);
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
 
 	// success
 	return (jboolean)1;
