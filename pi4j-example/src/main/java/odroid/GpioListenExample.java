@@ -78,6 +78,22 @@ public class GpioListenExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
+        // the Odroid C1 device only supports up to 4 GPIO pin edge interrupt
+        // therefore only 4 GPIO pins can be configured with GPIO input event listeners
+
+        // --------------------
+        // !! ATTENTION !!
+        // --------------------
+        // The Odroid C1 only permits up to four GPIO pins to be configured with
+        // edge detection for both "rising" and "falling" edges (a.k.a., "both").
+        // Thus, you can only use a maximum of four GPIO input pins with listener
+        // events. Alternatively, you can manually poll for GPIO pin state changes.
+        //
+        // Let's first explicitly unexport all Odroid C1 pins to make sure no existing
+        // pins are already consuming the 4 available edge interrupt slots.
+        gpio.unexport(OdroidC1Pin.allPins());
+
+
         // ####################################################################
         //
         // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
@@ -104,6 +120,9 @@ public class GpioListenExample {
         // provision gpio pin as an input pin with its internal pull up resistor set
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(pin, pull);
 
+        // unexport the GPIO pin when program exits
+        gpio.setShutdownOptions(true, myButton);
+
         System.out.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
 
         // create and register gpio pin listener
@@ -116,15 +135,13 @@ public class GpioListenExample {
 
         });
 
-        System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
+        System.out.println(" ... complete the [" + pin + "] circuit and see the listener feedback here in the console.");
+        System.out.println(" ... press the [ENTER] key to exit");
 
-        // keep program running until user aborts (CTRL-C)
-        while(true) {
-            Thread.sleep(500);
-        }
+        // keep program running until user exits
+        System.console().readLine();
 
-        // stop all GPIO activity/threads by shutting down the GPIO controller
-        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller
+        // forcefully shutdown all GPIO monitoring threads and scheduled tasks
+        gpio.shutdown();  // <--- implement this method call if you wish to terminate the Pi4J GPIO controller
     }
 }
