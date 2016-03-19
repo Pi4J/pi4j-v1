@@ -62,7 +62,7 @@ public class GpioOutputExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.ODROID);
 
-        System.out.println("<--Pi4J--> GPIO Control Example ... started.");
+        System.out.println("<--Pi4J--> GPIO Output Example ... started.");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();

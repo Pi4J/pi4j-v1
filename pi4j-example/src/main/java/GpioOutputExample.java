@@ -52,7 +52,7 @@ public class GpioOutputExample {
      * @throws PlatformAlreadyAssignedException
      */
     public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException {
-        System.out.println("<--Pi4J--> GPIO Control Example ... started.");
+        System.out.println("<--Pi4J--> GPIO Output Example ... started.");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
