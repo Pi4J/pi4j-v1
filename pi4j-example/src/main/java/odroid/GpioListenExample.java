@@ -121,7 +121,7 @@ public class GpioListenExample {
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(pin, pull);
 
         // unexport the GPIO pin when program exits
-        gpio.setShutdownOptions(true, myButton);
+        myButton.setShutdownOptions(true);
 
         System.out.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
 
