@@ -30,11 +30,11 @@ package odroid;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.AppUtil;
 import com.pi4j.util.CommandArgumentParser;
 
 import java.util.Arrays;
@@ -69,6 +69,7 @@ public class GpioListenAllExample {
         PlatformManager.setPlatform(Platform.ODROID);
 
         System.out.println("<--Pi4J--> GPIO Listen (All Pins) Example ... started.");
+        AppUtil.waitForExit();
 
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -163,9 +164,8 @@ public class GpioListenAllExample {
         // --------------------------------
         // POLLING-BASED GPIO PIN MONITORING
         // --------------------------------
-
         // keep program running until user aborts (CTRL-C)
-        while (true) {
+        while (!AppUtil.isExitPending()) {
             Thread.sleep(50);
 
             // poll pin states looking for pin state changes
@@ -181,6 +181,6 @@ public class GpioListenAllExample {
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller
+        gpio.shutdown();
     }
 }

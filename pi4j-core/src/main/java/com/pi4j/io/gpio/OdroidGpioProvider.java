@@ -29,8 +29,11 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+import com.pi4j.io.gpio.exception.InvalidPinModeException;
+import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.platform.Platform;
 import com.pi4j.wiringpi.GpioInterruptListener;
+import com.pi4j.wiringpi.GpioUtil;
 
 /**
  * Odroid-C1/C1+/XU4 {@link GpioProvider} implementation.
@@ -42,6 +45,7 @@ import com.pi4j.wiringpi.GpioInterruptListener;
 public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
 
     public static final String NAME = "Odroid GPIO Provider";
+    public static final int AIN_ADDRESS_OFFSET = 48;
 
     /**
      * Default Constructor
@@ -62,6 +66,63 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
     }
 
     @Override
+    public void export(Pin pin, PinMode mode, PinState defaultState) {
+        // no need to export an Odroid AIN pin
+        if (mode == PinMode.ANALOG_INPUT) {
+
+            // set the pin input/output mode
+            setMode(pin, mode);
+
+            return;
+        }
+
+        super.export(pin, mode, defaultState);
+    }
+
+
+    @Override
+    public boolean isExported(Pin pin) {
+        // Odroid AIN pins are not exported
+        if (getMode(pin) == PinMode.ANALOG_INPUT) {
+            return false;
+        }
+
+        return super.isExported(pin);
+    }
+
+    @Override
+    public void unexport(Pin pin) {
+        // no need to unexport an Odroid AIN pin
+        if (pin.getSupportedPinModes().contains(PinMode.ANALOG_INPUT)) {
+            return;
+        }
+
+        super.unexport(pin);
+    }
+
+    @Override
+    public void setMode(Pin pin, PinMode mode) {
+
+        // no need to export an Odroid AIN pin
+        if (mode == PinMode.ANALOG_INPUT) {
+
+            if (!pin.getSupportedPinModes().contains(mode)) {
+                throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; pin [" + pin.getName() + "] does not support this mode.");
+            }
+
+            // local pin mode cache
+            pinModeCache[pin.getAddress()] = mode;
+
+            // cache mode
+            getPinCache(pin).setMode(mode);
+
+            return;
+        }
+
+        super.setMode(pin, mode);
+    }
+
+    @Override
     public double getValue(Pin pin) {
 
         // the getMode() will validate the pin exists with the hasPin() function
@@ -70,8 +131,8 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
         // handle analog input reading for Odroid boards
         if (mode == PinMode.ANALOG_INPUT) {
             // read latest analog input value from WiringPi
-            // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - 100)
-            double value = com.pi4j.wiringpi.Gpio.analogRead(pin.getAddress()-100);
+            // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - AIN_ADDRESS_OFFSET)
+            double value = com.pi4j.wiringpi.Gpio.analogRead(pin.getAddress()-AIN_ADDRESS_OFFSET);
 
             // cache latest analog input value
             getPinCache(pin).setAnalogValue(value);

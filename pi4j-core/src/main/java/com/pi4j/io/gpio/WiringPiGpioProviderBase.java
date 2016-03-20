@@ -3,6 +3,7 @@ package com.pi4j.io.gpio;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
+import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioUtil;
@@ -133,6 +134,17 @@ public abstract class WiringPiGpioProviderBase extends GpioProviderBase implemen
 
         // local pin mode cache
         pinModeCache[pin.getAddress()] = mode;
+
+        if (!pin.getSupportedPinModes().contains(mode)) {
+            throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; pin [" + pin.getName() + "] does not support this mode.");
+        }
+
+        if (!pin.getSupportedPinModes().contains(mode)) {
+            throw new UnsupportedPinModeException(pin, mode);
+        }
+
+        // cache mode
+        getPinCache(pin).setMode(mode);
 
         // set pin mode on hardware
         com.pi4j.wiringpi.Gpio.pinMode(pin.getAddress(), mode.getValue());

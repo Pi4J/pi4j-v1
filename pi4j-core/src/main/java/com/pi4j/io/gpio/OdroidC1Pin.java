@@ -103,10 +103,10 @@ public class OdroidC1Pin extends PinProvider {
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27");
 
     // 40	ADC.AIN0  (!! 1.8 VDC MAX !!)
-    public static final Pin AIN0 = createAnalogInputPin(100, "AIN0");
+    public static final Pin AIN0 = createAnalogInputPin(0 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN0");
 
     // 37	ADC.AIN1  (!! 1.8 VDC MAX !!)
-    public static final Pin AIN1 = createAnalogInputPin(101, "AIN1");
+    public static final Pin AIN1 = createAnalogInputPin(1 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN1");
 
     private static Pin createAnalogInputPin(int address, String name) {
         return createAnalogInputPin(OdroidGpioProvider.NAME, address, name);

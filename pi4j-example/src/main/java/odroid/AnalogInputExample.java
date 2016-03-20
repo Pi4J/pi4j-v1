@@ -77,7 +77,7 @@ public class AnalogInputExample {
         // provision analog input pins
         final GpioPinAnalogInput[] inputs = {
                 gpio.provisionAnalogInputPin(OdroidC1Pin.AIN0, "Analog Input 0"),
-                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN0, "Analog Input 0")
+                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN1, "Analog Input 0")
         };
 
         // set shutdown state for this pin: unexport the pins
