@@ -117,6 +117,11 @@ public class RaspiPin extends PinProvider {
     // *override* static method from subclass
     // (overriding a static method is not supported in Java
     //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins(PinMode ... mode) { return PinProvider.allPins(mode); }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
     public static Pin[] allPins(SystemInfo.BoardType board) {
         List<Pin> pins = new ArrayList<>();
 

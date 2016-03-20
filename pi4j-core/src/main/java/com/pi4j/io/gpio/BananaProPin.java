@@ -111,4 +111,9 @@ public class BananaProPin extends PinProvider {
     // (overriding a static method is not supported in Java
     //  so this method definition will hide the subclass static method)
     public static Pin[] allPins() { return PinProvider.allPins(); }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins(PinMode ... mode) { return PinProvider.allPins(mode); }
 }

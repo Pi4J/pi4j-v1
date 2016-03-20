@@ -60,4 +60,26 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
     public String getName() {
         return NAME;
     }
+
+    @Override
+    public double getValue(Pin pin) {
+
+        // the getMode() will validate the pin exists with the hasPin() function
+        PinMode mode = getMode(pin);
+
+        // handle analog input reading for Odroid boards
+        if (mode == PinMode.ANALOG_INPUT) {
+            // read latest analog input value from WiringPi
+            // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - 100)
+            double value = com.pi4j.wiringpi.Gpio.analogRead(pin.getAddress()-100);
+
+            // cache latest analog input value
+            getPinCache(pin).setAnalogValue(value);
+
+            // return latest analog input value
+            return value;
+        }
+
+        return super.getValue(pin);
+    }
 }

@@ -4,7 +4,7 @@ package odroid;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  GpioInputAllExample.java
+ * FILENAME      :  AnalogInputExample.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -29,20 +29,20 @@ package odroid;
  */
 
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.pi4j.util.CommandArgumentParser;
 
 /**
- * This example code demonstrates how to perform simple GPIO
- * pin state reading on the Odroid C1/C1+/XU4 platform fro all pins.
+ * This example code demonstrates how to read the analog
+ * int pins values from the Odroid C1/C1+/XU4 platform.
  *
  * @author Robert Savage
  */
-public class GpioInputAllExample {
+public class AnalogInputExample {
 
     /**
      * @param args
@@ -59,7 +59,7 @@ public class GpioInputAllExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.ODROID);
 
-        System.out.println("<--Pi4J--> GPIO Input (ALL PINS) Example ... started.");
+        System.out.println("<--Pi4J--> Analog Input Example ... started.");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -73,27 +73,22 @@ public class GpioInputAllExample {
         //    When provisioning a pin, use the OdroidXU4Pin class.
         //
         // ####################################################################
-        List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
 
-        // provision all pins that support digital inputs
-        for (Pin pin : OdroidC1Pin.allPins(PinMode.DIGITAL_INPUT)) {
-            try {
-                GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin);
-                provisionedPin.setShutdownOptions(true); // unexport pin on program shutdown
-                provisionedPins.add(provisionedPin);     // add provisioned pin to collection
-            }
-            catch (Exception ex){
-                System.err.println(ex.getMessage());
-            }
-        }
+        // provision analog input pins
+        final GpioPinAnalogInput[] inputs = {
+                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN0, "Analog Input 0"),
+                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN0, "Analog Input 0")
+        };
 
-        // display pin states for all pins
+        // set shutdown state for this pin: unexport the pins
+        gpio.setShutdownOptions(true, inputs);
+
+        // display current pin values
         System.out.println();
         System.out.println("**********************************************************");
         System.out.println();
-        for(GpioPinDigitalInput pin : provisionedPins) {
-            System.out.println(" [" + pin.toString() + "] state is: " + pin.getState());
-        }
+        System.out.println(" [" + inputs[0].toString() + "] state is: " + inputs[0].getValue());
+        System.out.println(" [" + inputs[1].toString() + "] state is: " + inputs[1].getValue());
         System.out.println();
         System.out.println("**********************************************************");
         System.out.println();
@@ -102,6 +97,6 @@ public class GpioInputAllExample {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
 
-        System.out.println("Exiting GpioInputAllExample");
+        System.out.println("Exiting AnalogInputExample");
     }
 }

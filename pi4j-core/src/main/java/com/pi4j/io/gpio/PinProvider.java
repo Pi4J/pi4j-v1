@@ -32,9 +32,7 @@ package com.pi4j.io.gpio;
 
 import com.pi4j.io.gpio.impl.PinImpl;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Pi4J pin definitions
@@ -75,6 +73,16 @@ public abstract class PinProvider {
         return createDigitalAndPwmPin(providerName, address, name, EnumSet.allOf(PinEdge.class));
     }
 
+    protected static Pin createAnalogInputPin(String providerName, int address, String name) {
+        return createPin(providerName, address, name, EnumSet.of(PinMode.ANALOG_INPUT));
+    }
+
+    protected static Pin createPin(String providerName, int address, String name, EnumSet<PinMode> modes) {
+        Pin pin = new PinImpl(providerName, address, name, modes);
+        pins.put(name, pin);
+        return pin;
+    }
+
     protected static Pin createPin(String providerName, int address, String name, EnumSet<PinMode> modes,
                                    EnumSet<PinPullResistance> resistance, EnumSet<PinEdge> edges) {
         Pin pin = new PinImpl(providerName, address, name, modes, resistance, edges);
@@ -95,8 +103,30 @@ public abstract class PinProvider {
         return null;
     }
 
+    /**
+     * Get all pin instances from this provider.
+     * @return all pin instances support by this provider
+     */
     public static Pin[] allPins() {
         return pins.values().toArray(new Pin[0]);
     }
 
+    /**
+     * Get all pin instances from this provider that support one of the provided pin modes.
+     * @param mode one or more pin modes that you wish to include in the result set
+     * @return pin instances that support the provided pin modes
+     */
+    public static Pin[] allPins(PinMode ... mode) {
+        List<Pin> results = new ArrayList<>();
+        for(Pin p : pins.values()){
+            EnumSet<PinMode> supported_modes = p.getSupportedPinModes();
+            for(PinMode m : mode){
+                if(supported_modes.contains(m)){
+                    results.add(p);
+                    continue;
+                }
+            }
+        }
+        return results.toArray(new Pin[0]);
+    }
 }

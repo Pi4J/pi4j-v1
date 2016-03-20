@@ -30,6 +30,10 @@ package com.pi4j.io.gpio;
  */
 
 
+import com.pi4j.io.gpio.impl.PinImpl;
+
+import java.util.EnumSet;
+
 /**
  * Odroid-C1/C1+ pin definitions for (default) WiringPi pin numbering scheme.
  *
@@ -95,8 +99,18 @@ public class OdroidC1Pin extends PinProvider {
     // 32	GPIOX.BIT2	Export GPIO#99, Wiring Pi#26
     public static final Pin GPIO_26 = createDigitalPin(26, "GPIO 26");
 
-    // 36	GPIOX.BIT1	Export GPIO#98, Wiring Pi GPIO#27
+    // 36	GPIOX.BIT1	Wiring Pi GPIO#27
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27");
+
+    // 40	ADC.AIN0  (!! 1.8 VDC MAX !!)
+    public static final Pin AIN0 = createAnalogInputPin(100, "AIN0");
+
+    // 37	ADC.AIN1  (!! 1.8 VDC MAX !!)
+    public static final Pin AIN1 = createAnalogInputPin(101, "AIN1");
+
+    private static Pin createAnalogInputPin(int address, String name) {
+        return createAnalogInputPin(OdroidGpioProvider.NAME, address, name);
+    }
 
     protected static Pin createDigitalPin(int address, String name) {
         return createDigitalPin(OdroidGpioProvider.NAME, address, name);
@@ -124,4 +138,9 @@ public class OdroidC1Pin extends PinProvider {
     // (overriding a static method is not supported in Java
     //  so this method definition will hide the subclass static method)
     public static Pin[] allPins() { return PinProvider.allPins(); }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins(PinMode ... mode) { return PinProvider.allPins(mode); }
 }
