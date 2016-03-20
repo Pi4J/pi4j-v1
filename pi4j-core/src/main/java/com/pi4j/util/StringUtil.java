@@ -112,6 +112,10 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static String repeat(char c, int length)  {
+        return create(c, length);
+    }
+
     public static String padLeft(String data, int length)  {
         return padLeft(data, DEFAULT_PAD_CHAR, length);
     }
@@ -217,4 +221,19 @@ public class StringUtil {
         return trimRight(result, trim);
     }
 
+    public static String center(String text, int length){
+        String out = String.format("%"+length+"s%s%"+length+"s", "",text,"");
+        float mid = (out.length()/2);
+        float start = mid - (length/2);
+        float end = start + length;
+        return out.substring((int) start, (int) end);
+    }
+
+    public static String concat(String ... data)  {
+        StringBuilder sb = new StringBuilder();
+        for(String d : data){
+            sb.append(d);
+        }
+        return sb.toString();
+    }
 }
