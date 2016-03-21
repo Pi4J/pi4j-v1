@@ -1032,7 +1032,7 @@ public class GpioControllerImpl implements GpioController {
                 Boolean unexport = shutdownOptions.getUnexport();
 
                 // perform shutdown actions
-                if ((state != null) && mode == PinMode.DIGITAL_OUTPUT && (pin instanceof GpioPinDigitalOutput)) {
+                if ((state != null) && pin.isMode(PinMode.DIGITAL_OUTPUT)) {
                     ((GpioPinDigitalOutput)pin).setState(state);
                 }
                 if (resistance != null) {
