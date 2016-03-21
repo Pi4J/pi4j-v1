@@ -50,10 +50,13 @@ public class Console {
         return print(String.format(format, args));
     }
 
-    public synchronized Console println(String ... line){
-        for(String l : line) {
-            System.out.println(l);
-        }
+    public synchronized Console println(String line){
+        System.out.println(line);
+        return this;
+    }
+
+    public synchronized Console println(Object line){
+        System.out.println(line);
         return this;
     }
 
@@ -61,10 +64,13 @@ public class Console {
         return println("");
     }
 
-    public synchronized Console print(String ... text){
-        for(String t : text) {
-            System.out.print(t);
-        }
+    public synchronized Console print(Object data){
+        System.out.print(data);
+        return this;
+    }
+
+    public synchronized Console print(String data){
+        System.out.print(data);
         return this;
     }
 
@@ -142,7 +148,7 @@ public class Console {
         return print(ERASE_LINE_ESCAPE_SEQUENCE);
     }
 
-    public synchronized Console waitForExit(){
+    public synchronized Console promptForExit(){
         box(4, "PRESS CTRL-C TO EXIT");
         emptyLine();
         exiting = false;
@@ -156,17 +162,16 @@ public class Console {
         return this;
     }
 
-//    public synchronized static void waitForExitAsync(){
-//        (new Thread(new ExitRunnable())).start();
-//    }
+    public void waitForExit() throws InterruptedException {
+        while(!exiting){
+            Thread.sleep(50);
+        }
+    }
 
     public synchronized boolean exiting(){
         return exiting;
     }
-
-//    private static class ExitRunnable implements Runnable {
-//        public void run() {
-//            Console.waitForExit();
-//        }
-//    }
+    public synchronized boolean isRunning(){
+        return !exiting;
+    }
 }
