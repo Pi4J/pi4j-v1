@@ -305,17 +305,20 @@ public abstract class WiringPiGpioProviderBase extends GpioProviderBase implemen
 
     // internal
     private void updateInterruptListener(Pin pin) {
-        if (listeners.size() > 0) {
-            // setup interrupt listener native thread and enable callbacks
-            if (!com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
-                com.pi4j.wiringpi.GpioInterrupt.addListener(this);
-            }
-            com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
-        } else {
-            // remove interrupt listener, disable native thread and callbacks
-            com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
-            if (com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
-                com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
+        // only configure WiringPi interrupts for digital input pins
+        if(pinModeCache[pin.getAddress()] == PinMode.DIGITAL_INPUT) {
+            if (listeners.size() > 0) {
+                // setup interrupt listener native thread and enable callbacks
+                if (!com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
+                    com.pi4j.wiringpi.GpioInterrupt.addListener(this);
+                }
+                com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
+            } else {
+                // remove interrupt listener, disable native thread and callbacks
+                com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
+                if (com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
+                    com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
+                }
             }
         }
     }
