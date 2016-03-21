@@ -59,10 +59,6 @@ public class GpioListenAllExample {
      */
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
 
-        // create Pi4J console wrapper/helper
-        // (This is a utility class to abstract some of the boilerplate code)
-        final Console console = new Console();
-
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
@@ -71,14 +67,15 @@ public class GpioListenAllExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.ODROID);
 
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
         // print program title/header
         console.title("<-- The Pi4J Project -->", "GPIO Listen (All Pins) Example");
 
-        // wait for user to eit program using CTRL-C
-        console.waitForExit();
-
-        // prompt user to wait
-        console.println(" ... please wait; provisioning GPIO pins ...");
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -95,7 +92,6 @@ public class GpioListenAllExample {
         // pins are already consuming the 4 available edge interrupt slots.
         gpio.unexport(OdroidC1Pin.allPins());
 
-
         // by default we will use gpio pin PULL-UP; however, if an argument
         // has been provided, then use the specified pull resistance
         PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
@@ -111,6 +107,9 @@ public class GpioListenAllExample {
         //    When provisioning a pin, use the OdroidXU4Pin class.
         //
         // ####################################################################
+
+        // prompt user to wait
+        console.println(" ... please wait; provisioning GPIO pins with resistance [" + pull + "]");
 
         // --------------------
         // !! ATTENTION !!
@@ -157,7 +156,8 @@ public class GpioListenAllExample {
         // prompt user that we are ready
         console.println(" ... GPIO pins provisioned and ready for use.");
         console.emptyLine();
-        console.box("Please complete the GPIO circuit and see the", "listener feedback here in the console.");
+        console.box("Please complete the GPIO circuit and see",
+                "the listener feedback here in the console.");
         console.emptyLine();
 
         // --------------------------------
@@ -182,7 +182,8 @@ public class GpioListenAllExample {
         // POLLING-BASED GPIO PIN MONITORING
         // --------------------------------
         // keep program running until user aborts (CTRL-C)
-        while (!console.exiting()) {
+        while (console.isRunning()) {
+            // provide a little delay; we don't want to fully consume the processor
             Thread.sleep(50);
 
             // poll pin states looking for pin state changes
@@ -206,10 +207,5 @@ public class GpioListenAllExample {
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
-    }
-
-    public static String red(Object data){
-        //Esc[31m
-        return "\033[31m" + data + "\033[0m";
     }
 }

@@ -29,12 +29,10 @@ package odroid;
  */
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
-import com.pi4j.util.CommandArgumentParser;
+import com.pi4j.util.Console;
 
 /**
  * This example code demonstrates how to read the analog
@@ -59,7 +57,12 @@ public class AnalogInputExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.ODROID);
 
-        System.out.println("<--Pi4J--> Analog Input Example ... started.");
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "Analog Input Example");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -77,26 +80,50 @@ public class AnalogInputExample {
         // provision analog input pins
         final GpioPinAnalogInput[] inputs = {
                 gpio.provisionAnalogInputPin(OdroidC1Pin.AIN0, "Analog Input 0"),
-                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN1, "Analog Input 0")
+                gpio.provisionAnalogInputPin(OdroidC1Pin.AIN1, "Analog Input 1")
         };
 
         // set shutdown state for this pin: unexport the pins
         gpio.setShutdownOptions(true, inputs);
 
+        // prompt user that we are ready
+        console.println(" ... Successfully provisioned [" + inputs[0] + "]");
+        console.println(" ... Successfully provisioned [" + inputs[1] + "]");
+        console.emptyLine();
+        console.box("Below is the 10-bit conversion value (a number ",
+                    "between 0 and 1023) from the two analog input ",
+                    "pins which represents a voltage applied to each",
+                    "pin between 0VDC (Ground) and +1.8VDC.  If no ",
+                    "voltage is currently applied to the analog input",
+                    "pins then they may 'float' between a value of 0" ,
+                    "to 1023.");
+
         // display current pin values
-        System.out.println();
-        System.out.println("**********************************************************");
-        System.out.println();
-        System.out.println(" [" + inputs[0].toString() + "] state is: " + inputs[0].getValue());
-        System.out.println(" [" + inputs[1].toString() + "] state is: " + inputs[1].getValue());
-        System.out.println();
-        System.out.println("**********************************************************");
-        System.out.println();
+        console.emptyLine();
+        console.println(" [" + inputs[0].toString() + "] value is: %4.0f (%2.1f VDC)",
+                inputs[0].getValue(),
+                getVoltage(inputs[0].getValue()));
+        console.println(" [" + inputs[1].toString() + "] value is: %4.0f (%2.1f VDC)",
+                inputs[1].getValue(),
+                getVoltage(inputs[1].getValue()));
+        console.emptyLine();
+
+        // say goodbye
+        console.goodbye();
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
+    }
 
-        System.out.println("Exiting AnalogInputExample");
+    /**
+     * calculate relative analog input voltage based on the 10-bit conversion value
+     * read from the hardware
+     *
+     * @param value 10-bit conversion value for analog input pin
+     * @return relative voltage for analog input pin
+     */
+    private static double getVoltage(double value){
+        return (value / 1024) * 1.8f; // 1.8VDC maximum allowed voltage per the hardware spec
     }
 }
