@@ -76,7 +76,8 @@ public class OdroidC1Pin extends PinProvider {
     public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11");
 
     // 19   GPIOX.BIT10(MOSI)	Export GPIO#107, Wiring Pi GPIO#12, PWM1
-    public static final Pin GPIO_12 = createDigitalAndPwmPin(12, "GPIO 12");
+    // PWM not currently supported, see known issues: https://github.com/Pi4J/pi4j/issues/229
+    public static final Pin GPIO_12 = createDigitalPin(12, "GPIO 12");
 
     // 21	GPIOX.BIT9(MISO)	Export GPIO#106, Wiring Pi GPIO#13
     public static final Pin GPIO_13 = createDigitalPin(13, "GPIO 13");
@@ -91,7 +92,8 @@ public class OdroidC1Pin extends PinProvider {
     public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22");
 
     // 33	GPIOX.BIT11	Export GPIO#108, Wiring Pi GPIO#23, PWM0
-    public static final Pin GPIO_23 = createDigitalAndPwmPin(23, "GPIO 23");
+    // PWM not currently supported, see known issues: https://github.com/Pi4J/pi4j/issues/229
+    public static final Pin GPIO_23 = createDigitalPin(23, "GPIO 23");
 
     // 35	GPIOX.BIT0	Export GPIO#97, Wiring Pi GPIO#24
     public static final Pin GPIO_24 = createDigitalPin(24, "GPIO 24");

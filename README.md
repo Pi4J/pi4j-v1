@@ -48,6 +48,7 @@ Copyright (C) 2012-2015 Pi4J
 
 2016-03-15 :: 1.1-SNAPSHOT
 
+  *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Raspberry Pi 3 (Model B).
   *  Added support for Raspberry Pi Zero.
   *  Added non-privileged GPIO example code.
