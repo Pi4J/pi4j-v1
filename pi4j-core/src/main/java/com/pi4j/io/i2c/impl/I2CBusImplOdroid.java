@@ -77,11 +77,7 @@ public class I2CBusImplOdroid extends I2CBusImpl {
         I2CBus bus;
         lock.lock();
         if (busNumber == 0) {
-            bus = bus0;
-            if (bus == null) {
-                bus = new I2CBusImplBananaPi("/dev/i2c-0");
-                bus0 = bus;
-            }
+            throw new IOException("Invalid I2C bus number: 0 (no '/dev/i2c-0' available)");
         } else if (busNumber == 1) {
             bus = bus1;
             if (bus == null) {

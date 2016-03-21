@@ -108,8 +108,9 @@ public class I2CExample {
         console.promptForExit();
 
         // get the I2C bus to communicate on
-        // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
-        // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
+        // - I2CBus.BUS_1 uses 40 pin header, pin #3 as I2CA_SDA (SDA1) and pin #5 as I2CA_SCL (SCL1)
+        // - I2CBus.BUS_2 uses 40 pin header, pin #27 as I2CB_SDA (SDA2) and pin #28 as I2CB_SCL (SCL2)
+        // see GPIO PIN MAP here: http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573&tab_idx=2
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
 
         // create an I2C device for an individual device on the bus that you want to communicate with
