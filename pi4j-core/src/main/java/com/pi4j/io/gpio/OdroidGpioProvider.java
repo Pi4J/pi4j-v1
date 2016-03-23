@@ -29,9 +29,13 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
+import com.pi4j.jni.AnalogInputEvent;
+import com.pi4j.jni.AnalogInputListener;
 import com.pi4j.platform.Platform;
+import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioUtil;
 
@@ -42,7 +46,7 @@ import com.pi4j.wiringpi.GpioUtil;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
+public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener, AnalogInputListener {
 
     public static final String NAME = "Odroid GPIO Provider";
     public static final int AIN_ADDRESS_OFFSET = 48;
@@ -132,7 +136,7 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
         if (mode == PinMode.ANALOG_INPUT) {
             // read latest analog input value from WiringPi
             // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - AIN_ADDRESS_OFFSET)
-            double value = com.pi4j.wiringpi.Gpio.analogRead(pin.getAddress()-AIN_ADDRESS_OFFSET);
+            double value = com.pi4j.wiringpi.Gpio.analogRead(pin.getAddress() - AIN_ADDRESS_OFFSET);
 
             // cache latest analog input value
             getPinCache(pin).setAnalogValue(value);
@@ -142,5 +146,95 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
         }
 
         return super.getValue(pin);
+    }
+
+    @Override
+    public void pinValueChange(AnalogInputEvent event){
+        // iterate over the pin listeners map
+        for (Pin pin : listeners.keySet()) {
+            // dispatch this event to the listener
+            // if a matching pin address is found
+            if (pin.getAddress() == event.getPin()) {
+                dispatchPinAnalogValueChangeEvent(pin, event.getValue());
+            }
+        }
+    }
+
+    // internal
+    protected void updateInterruptListener(Pin pin) {
+
+        // enable or disable single static listener with the native impl
+        if (listeners.size() > 0) {
+
+            // ------------------------
+            // DIGITAL INPUT PINS
+            // ------------------------
+
+            // setup interrupt listener native thread and enable callbacks
+            if (!com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
+                com.pi4j.wiringpi.GpioInterrupt.addListener(this);
+            }
+
+            // only configure WiringPi interrupts for digital input pins
+            if(pinModeCache[pin.getAddress()] == PinMode.DIGITAL_INPUT) {
+                // enable or disable the individual pin listener
+                if(listeners.containsKey(pin) && listeners.get(pin).size() > 0) {
+                    // enable interrupt listener for this pin
+                    com.pi4j.wiringpi.GpioInterrupt.enablePinStateChangeCallback(pin.getAddress());
+                }
+                else {
+                    // disable interrupt listener for this pin
+                    com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
+                }
+            }
+
+            // ------------------------
+            // ANALOG INPUT PINS
+            // ------------------------
+
+            // setup analog input monitor/listener native thread and enable callbacks
+            if (!com.pi4j.jni.AnalogInputMonitor.hasListener(this)) {
+                com.pi4j.jni.AnalogInputMonitor.addListener(this);
+            }
+
+            // configure analog monitor for analog input pins
+            if(pinModeCache[pin.getAddress()] == PinMode.ANALOG_INPUT) {
+                // enable or disable the individual pin listener
+                if(listeners.containsKey(pin) && listeners.get(pin).size() > 0) {
+                    // enable interrupt listener for this pin
+                    com.pi4j.jni.AnalogInputMonitor.enablePinValueChangeCallback(pin.getAddress());
+                }
+                else {
+                    // disable interrupt listener for this pin
+                    com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(pin.getAddress());
+                }
+            }
+        }
+        else {
+
+            // ------------------------
+            // DIGITAL INPUT PINS
+            // ------------------------
+
+            // disable interrupt listener for this pins
+            com.pi4j.wiringpi.GpioInterrupt.disablePinStateChangeCallback(pin.getAddress());
+
+            // remove interrupt listener, disable native thread and callbacks
+            if (com.pi4j.wiringpi.GpioInterrupt.hasListener(this)) {
+                com.pi4j.wiringpi.GpioInterrupt.removeListener(this);
+            }
+
+            // ------------------------
+            // ANALOG INPUT PINS
+            // ------------------------
+
+            // disable analog input monitor/listener for this pins
+            com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(pin.getAddress());
+
+            // remove analog input monitor/listener, disable native thread and callbacks
+            if (com.pi4j.jni.AnalogInputMonitor.hasListener(this)) {
+                com.pi4j.jni.AnalogInputMonitor.removeListener(this);
+            }
+        }
     }
 }

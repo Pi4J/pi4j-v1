@@ -1,4 +1,4 @@
-package com.pi4j.wiringpi;
+package com.pi4j.jni;
 
 /*
  * #%L
@@ -109,7 +109,7 @@ public class AnalogInputMonitor {
         for (int i = 0; i < listenersClone.size(); i++) {
             AnalogInputListener listener = listenersClone.elementAt(i);
             if(listener != null) {
-                AnalogInputChangeEvent event = new AnalogInputChangeEvent(listener, pin, value);
+                AnalogInputEvent event = new AnalogInputEvent(listener, pin, value);
                 listener.pinValueChange(event);
             }
         }
@@ -122,7 +122,7 @@ public class AnalogInputMonitor {
      * </p>
      *
      * @see AnalogInputListener
-     * @see AnalogInputChangeEvent
+     * @see AnalogInputEvent
      *
      * @param listener A class instance that implements the AnalogInputListener interface.
      */
@@ -139,7 +139,7 @@ public class AnalogInputMonitor {
      * </p>
      *
      * @see AnalogInputListener
-     * @see AnalogInputChangeEvent
+     * @see AnalogInputEvent
      *
      * @param listener A class instance that implements the AnalogInputListener interface.
      */
@@ -156,7 +156,7 @@ public class AnalogInputMonitor {
      * </p>
      *
      * @see AnalogInputListener
-     * @see AnalogInputChangeEvent
+     * @see AnalogInputEvent
      *
      * @param listener A class instance that implements the AnalogInputListener interface.
      */

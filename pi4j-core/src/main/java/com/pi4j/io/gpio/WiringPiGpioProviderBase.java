@@ -304,7 +304,7 @@ public abstract class WiringPiGpioProviderBase extends GpioProviderBase implemen
     }
 
     // internal
-    private void updateInterruptListener(Pin pin) {
+    protected void updateInterruptListener(Pin pin) {
         // enable or disable single static listener with the native impl
         if (listeners.size() > 0) {
             // setup interrupt listener native thread and enable callbacks

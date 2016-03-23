@@ -1,11 +1,11 @@
-package com.pi4j.wiringpi;
+package com.pi4j.jni;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  AnalogInputChangeEvent.java
+ * FILENAME      :  AnalogInputEvent.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -51,7 +51,7 @@ import java.util.EventObject;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class AnalogInputChangeEvent extends EventObject {
+public class AnalogInputEvent extends EventObject {
 
     private static final long serialVersionUID = 1L;
     private int pin;
@@ -64,7 +64,7 @@ public class AnalogInputChangeEvent extends EventObject {
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @param value New GPIO analog input value.
      */
-    public AnalogInputChangeEvent(Object obj, int pin, double value) {
+    public AnalogInputEvent(Object obj, int pin, double value) {
         super(obj);
         this.pin = pin;
         this.value = value;

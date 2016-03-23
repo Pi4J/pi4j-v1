@@ -1,4 +1,4 @@
-package com.pi4j.wiringpi;
+package com.pi4j.jni;
 
 /*
  * #%L
@@ -38,5 +38,5 @@ package com.pi4j.wiringpi;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 public interface AnalogInputListener extends java.util.EventListener {
-    void pinValueChange(AnalogInputChangeEvent event);
+    void pinValueChange(AnalogInputEvent event);
 }
