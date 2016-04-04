@@ -536,3 +536,14 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_setPadDrive
 {
     setPadDrive(group, value);
 }
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    getAlt
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_getAlt
+  (JNIEnv *env, jclass obj, jint pin)
+{
+    return (jint) getAlt(pin);
+}
