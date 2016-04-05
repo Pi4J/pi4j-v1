@@ -84,6 +84,8 @@ Copyright (C) 2012-2015 Pi4J
   *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
   *  Overhauled wiringPi serial JNI methods to better support raw data operations
   *  Now requires Java 8 runtime.
+  *  Add Display abstraction implementation and example code.
+  *  Added PCD8544 (Nokia 3110/5110) implementation and example code.
   
 ## RELEASES
 
