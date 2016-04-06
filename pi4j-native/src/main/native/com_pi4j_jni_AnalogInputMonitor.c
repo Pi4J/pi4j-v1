@@ -1,0 +1,303 @@
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: JNI Native Library
+ * FILENAME      :  com_pi4j_jni_AnalogInputMonitor.c
+ * 
+ * This file is part of the Pi4J project. More information about
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 - 2016 Pi4J
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+#include <stdio.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <poll.h>
+#include <fcntl.h>
+#include <jni.h>
+#include <string.h>
+#include <pthread.h>
+#include <termios.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <wiringPi.h>
+#include "com_pi4j_wiringpi_GpioPin.h"
+#include "com_pi4j_wiringpi_GpioUtil.h"
+#include "com_pi4j_jni_AnalogInputMonitor.h"
+
+// constants
+#define GPIO_FN_MAXLEN  128
+#define GPIO_POLL_TIMEOUT    30000 // 30 seconds
+#define GPIO_RDBUF_LEN       5
+
+
+// java callback variables
+jclass analog_input_monitor_callback_class;
+jmethodID analog_input_monitor_callback_method;
+JavaVM *analog_input_monitor_callback_jvm;
+
+// monitoring thread data structure
+struct analog_input_monitor_data{
+   int  thread_id;
+   int  pin;
+   double  lastKnownValue;
+   int  running;
+};
+
+// monitoring thread data structure array
+struct analog_input_monitor_data analog_input_monitor_data_array[MAX_GPIO_PINS];
+
+// monitoring threads array
+pthread_t analog_input_monitor_threads[MAX_GPIO_PINS];
+
+
+/**
+ * --------------------------------------------------------
+ * GPIO ANALOG PIN MONITORING HANDLER
+ * --------------------------------------------------------
+ * This method is invoked in a new thread for each pin that
+ * is being monitored.  This way multiple pins can be
+ * monitored simultaneously and discretely.
+ */
+int analog_input_monitor_pin(void *threadarg)
+{
+	// obtain the monitoring data structure from the thread argument
+	struct analog_input_monitor_data *monitorData;
+	monitorData = (struct analog_input_monitor_data *) threadarg;
+
+	// cache a local pin value variable
+	int pin = monitorData->pin;
+
+	printf("\nNATIVE (AnalogInputMonitor) MONITORING PIN %d\n", pin);
+
+ 	// set the running state of the instance monitor data structure
+	monitorData->running = 1;
+
+	// initialize last known value and cache the value as the last known value
+	monitorData->lastKnownValue = analogRead(pin);
+
+	// continuous thread loop
+	while(monitorData->running > 0)
+	{
+		// sleep
+		delay(100); // milliseconds
+
+		// read latest analog input value
+		double compareResult = analogRead(pin);
+
+		// check for change in analog value
+		if(compareResult != monitorData->lastKnownValue)
+		{
+			// cache new last known value in the instance data structure
+			monitorData->lastKnownValue = compareResult;
+
+			// ensure the callback class and method are available
+			if (analog_input_monitor_callback_class != NULL && analog_input_monitor_callback_method != NULL)
+			{
+				// get attached JVM
+				JNIEnv *env;
+				(*analog_input_monitor_callback_jvm)->AttachCurrentThread(analog_input_monitor_callback_jvm, (void **)&env, NULL);
+
+				// ensure that the JVM exists
+				if(analog_input_monitor_callback_jvm != NULL)
+				{
+					// invoke the java callback method to notify event listeners
+					(*env)->CallStaticVoidMethod(env, analog_input_monitor_callback_class, analog_input_monitor_callback_method, (jint)pin, (jdouble)compareResult);
+				}
+
+				// detach from thread
+				(*analog_input_monitor_callback_jvm)->DetachCurrentThread(analog_input_monitor_callback_jvm);
+			}
+		}
+	}
+
+	return 0;
+}
+
+/*
+ * --------------------------------------------------------
+ * ENABLE ANALOG PIN MONITORING (for callback notifications)
+ * --------------------------------------------------------
+ * Class:     com_pi4j_jni_AnalogMonitor
+ * Method:    enablePinValueChangeCallback
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_enablePinValueChangeCallback
+  (JNIEnv *env, jclass class, jint pin)
+{
+	// get the index position for the requested pin number
+	int index = pin;
+
+	// ensure that the requested pin index is valid
+	if(index >= 0)
+	{
+		// only start this thread monitor if it has not already been started
+		if(analog_input_monitor_data_array[index].running <= 0)
+		{
+			// configure the monitor instance data
+			analog_input_monitor_data_array[index].thread_id = index;
+			analog_input_monitor_data_array[index].pin = pin;
+
+			// create monitoring instance thread
+			pthread_create(&analog_input_monitor_threads[index], NULL, (void*) analog_input_monitor_pin, (void *) &analog_input_monitor_data_array[index]);
+
+			// return '1' when a thread was actively created and started
+			return 1;
+		}
+
+		// return '0' when no action was taken;
+		// (monitor already running)
+		return 0;
+	}
+
+	// return '-1' on error; not a valid pin
+	return -1;
+}
+
+/*
+ * --------------------------------------------------------
+ * DISABLE ANALOG PIN MONITORING (for callback notifications)
+ * --------------------------------------------------------
+ * Class:     com_pi4j_jni_AnalogMonitor
+ * Method:    disablePinValueChangeCallback
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_disablePinValueChangeCallback
+  (JNIEnv *env, jclass class, jint pin)
+{
+	// get the index position for the requested pin number
+	int index = pin;
+
+	// ensure that the requested pin index is valid
+	if(index >= 0)
+	{
+		// kill the monitoring thread
+		if(analog_input_monitor_data_array[index].running > 0)
+		{
+			// cancel monitoring thread
+			pthread_cancel(analog_input_monitor_threads[index]);
+
+            // reset running flag
+            analog_input_monitor_data_array[index].running = 0;
+
+			// return '1' when a thread was actively killed
+			return 1;
+		}
+
+		// return '0' when no action was taken
+		// (monitor is not currently active/running)
+		return 0;
+	}
+
+	// return '-1' on error; not a valid pin
+	return -1;
+}
+
+
+/**
+ * --------------------------------------------------------
+ * JNI LIBRARY LOADED
+ * --------------------------------------------------------
+ * capture java references to be used later for callback methods
+ */
+jint AnalogInputMonitor_JNI_OnLoad(JavaVM *jvm)
+{
+	JNIEnv *env;
+	jclass cls;
+
+	//printf("\nNATIVE (AnalogInputMonitor) LOADING\n");
+
+	// cache the JavaVM pointer
+	analog_input_monitor_callback_jvm = jvm;
+
+	// ensure that the calling environment is a supported JNI version
+    if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
+    {
+    	// JNI version not supported
+    	printf("NATIVE (AnalogInputMonitor) ERROR; JNI version not supported.\n");
+        return JNI_ERR;
+    }
+
+    // search the attached java environment for the 'AnalogInputMonitor' class
+    cls = (*env)->FindClass(env, "com/pi4j/jni/AnalogInputMonitor");
+    if (cls == NULL)
+    {
+    	// expected class not found
+    	printf("NATIVE (AnalogInputMonitor) ERROR; AnalogInputMonitor class not found.\n");
+        return JNI_ERR;
+    }
+
+    // use weak global ref to allow C class to be unloaded
+    analog_input_monitor_callback_class = (*env)->NewWeakGlobalRef(env, cls);
+    if (analog_input_monitor_callback_class == NULL)
+    {
+    	// unable to create weak reference to java class
+    	printf("NATIVE (AnalogInputMonitor) ERROR; Java class reference is NULL.\n");
+        return JNI_ERR;
+    }
+
+    // lookup and cache the static method ID for the 'pinValueChangeCallback' callback
+    analog_input_monitor_callback_method = (*env)->GetStaticMethodID(env, cls, "pinValueChangeCallback", "(ID)V");
+    if (analog_input_monitor_callback_method == NULL)
+    {
+    	// callback method could not be found in attached java class
+    	printf("NATIVE (AnalogInputMonitor) ERROR; Static method 'AnalogInputMonitor.pinValueChangeCallback()' could not be found.\n");
+        return JNI_ERR;
+    }
+
+	// return JNI version; success
+	return JNI_VERSION_1_2;
+}
+
+
+/**
+ * --------------------------------------------------------
+ * JNI LIBRARY UNLOADED
+ * --------------------------------------------------------
+ * stop all monitoring threads and clean up references
+ */
+void AnalogInputMonitor_JNI_OnUnload(JavaVM *jvm)
+{
+	// kill all running monitor threads
+	int index = 0;
+	for(index = 0; index < MAX_GPIO_PINS; index++)
+	{
+		if(analog_input_monitor_data_array[index].running > 0){
+            // kill monitoring thread
+            pthread_cancel(analog_input_monitor_threads[index]);
+
+            // reset running flag
+            analog_input_monitor_data_array[index].running = 0;
+		}
+	}
+
+	// destroy cached java references
+	JNIEnv *env;
+    if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
+    {
+    	return;
+	}
+	(*env)->DeleteWeakGlobalRef(env, analog_input_monitor_callback_class);
+
+	return;
+}

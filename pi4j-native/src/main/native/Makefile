@@ -43,6 +43,7 @@ SRC	=   com_pi4j_jni_Exception.c      \
         com_pi4j_wiringpi_GpioPin.c   \
         com_pi4j_wiringpi_GpioUtil.c  \
         com_pi4j_wiringpi_GpioInterrupt.c \
+        com_pi4j_jni_AnalogInputMonitor.c \
         com_pi4j_jni_Loader.c
 
 OBJ =	$(SRC:.c=.o)
@@ -99,4 +100,5 @@ com_pi4j_wiringpi_SoftTone.o: com_pi4j_wiringpi_SoftTone.h
 com_pi4j_wiringpi_Spi.o: com_pi4j_wiringpi_Spi.h
 com_pi4j_wiringpi_Gertboard.o: com_pi4j_wiringpi_Gertboard.h
 com_pi4j_wiringpi_Nes.o: com_pi4j_wiringpi_Nes.h
+com_pi4j_jni_AnalogInputMonitor.o: com_pi4j_jni_AnalogInputMonitor.h
 com_pi4j_jni_Loader.o: com_pi4j_jni_Loader.h
