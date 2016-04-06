@@ -297,8 +297,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChang
 		if(gpio_monitor_data_array[index].running > 0)
 		{
             // remove existing pin edge trigger
-            int retval;
-            retval = (int)Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_NONE);
+            Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_NONE);
 
 			// cancel monitoring thread
 			pthread_cancel(gpio_monitor_threads[index]);
