@@ -46,16 +46,17 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2016-03-15 :: 1.1-SNAPSHOT
+2016-04-06 :: 1.1-SNAPSHOT
 
   *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Raspberry Pi 3 (Model B).
   *  Added support for Raspberry Pi Zero.
+  *  Added analog input support and example code for Odroid platform.
   *  Added non-privileged GPIO example code.
   *  Added support for enabling non-privileged GPIO access via the Pi4J APIs
   *  Removed 'sudo' from pi4j script when launching compiled Java applications
   *  Added support for '/dev/gpiomem' to eliminate 'root' permissions requirement for basic GPIO.
-  *  (Experimental) Added JNI/WiringPi support for Odroid platform
+  *  Added JNI/WiringPi support for Odroid platform
   *  Validated/fixed GPIO, PWM, SERIAL, I2C, and SPI on BananaPro platform
   *  Added GPIO support for BananaPro platform
   *  Added JNI/WiringPi support for BananaPro platform
