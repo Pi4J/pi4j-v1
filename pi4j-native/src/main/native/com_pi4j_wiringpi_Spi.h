@@ -35,7 +35,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /*
  * Class:     com_pi4j_wiringpi_Spi
  * Method:    wiringPiSPISetup
@@ -51,7 +50,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetupMode
   (JNIEnv *, jclass, jint, jint, jint);
-
 
 /*
  * Class:     com_pi4j_wiringpi_Spi

@@ -37,7 +37,7 @@ extern "C" {
 #endif
 /*
  * Class:     com_pi4j_jni_SerialInterrupt
- * Method:    enableSerialDataRxCallback
+ * Method:    enableSerialDataReceiveCallback
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_SerialInterrupt_enableSerialDataReceiveCallback
@@ -45,7 +45,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_SerialInterrupt_enableSerialDataReceive
 
 /*
  * Class:     com_pi4j_jni_SerialInterrupt
- * Method:    disableSerialDataRxCallback
+ * Method:    disableSerialDataReceiveCallback
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_SerialInterrupt_disableSerialDataReceiveCallback

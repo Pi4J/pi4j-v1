@@ -118,18 +118,18 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
  * Method:    isPrivilegedAccessRequired
- * Signature: (I)Z
+ * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPrivilegedAccessRequired
-(JNIEnv *, jclass);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
  * Method:    enableNonPrivilegedAccess
- * Signature: (I)V
+ * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_enableNonPrivilegedAccess
-(JNIEnv *, jclass);
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
