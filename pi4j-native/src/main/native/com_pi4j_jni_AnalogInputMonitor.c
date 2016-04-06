@@ -45,12 +45,6 @@
 #include "com_pi4j_wiringpi_GpioUtil.h"
 #include "com_pi4j_jni_AnalogInputMonitor.h"
 
-// constants
-#define GPIO_FN_MAXLEN  128
-#define GPIO_POLL_TIMEOUT    30000 // 30 seconds
-#define GPIO_RDBUF_LEN       5
-
-
 // java callback variables
 jclass analog_input_monitor_callback_class;
 jmethodID analog_input_monitor_callback_method;
