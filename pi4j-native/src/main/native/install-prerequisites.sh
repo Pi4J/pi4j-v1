@@ -50,7 +50,7 @@ if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
 
   # TREE
   TREE_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' tree|grep "install ok installed")
-  if [[ "" == "TREE_INSTALLED" ]]; then
+  if [[ "" == "$TREE_INSTALLED" ]]; then
     sudo apt-get --force-yes --yes install tree
   else
     echo " [PREREQUISITE] 'tree' already installed.";
