@@ -4,7 +4,7 @@ package odroid;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  AnalogInputExample.java
+ * FILENAME      :  AnalogListenerExample.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -114,7 +114,7 @@ public class AnalogListenerExample {
                         getVoltage(event.getValue()));
                 console.emptyLine();
             }
-        });
+        }, inputs);
 
         // wait (block) for user to exit program using CTRL-C
         console.waitForExit();
