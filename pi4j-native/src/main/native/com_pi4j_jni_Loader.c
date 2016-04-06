@@ -34,6 +34,7 @@
 
 #include "com_pi4j_jni_SerialInterrupt.h"
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
+#include "com_pi4j_jni_AnalogInputMonitor.h"
 
 /**
  * --------------------------------------------------------
@@ -71,6 +72,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
         return ret;
     }
 
+    // call the JNI_OnLoad method inside the AnalogInputMonitor class
+    ret = AnalogInputMonitor_JNI_OnLoad(jvm);
+    if(ret < 0){
+        printf("NATIVE (JNI LOADER) ERROR; AnalogInputMonitor failed to load.\n");
+        return ret;
+    }
+
 	// return JNI version; success
 	return JNI_VERSION_1_2;
 }
@@ -84,7 +92,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
  */
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 {
-
 	//printf("\nNATIVE (JNI LOADER) UNLOADING\n");
 
     // call the JNI_OnLoad method inside the serial interrupt class
@@ -92,6 +99,9 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 
     // call the JNI_OnLoad method inside the GPIO interrupt class
     GpioInterrupt_JNI_OnUnload(jvm);
+
+    // call the JNI_OnLoad method inside the AnalogInputMonitor class
+    AnalogInputMonitor_JNI_OnUnload(jvm);
 
 	return;
 }
