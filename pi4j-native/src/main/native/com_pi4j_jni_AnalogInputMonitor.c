@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <poll.h>
+#include <math.h>
 #include <fcntl.h>
 #include <jni.h>
 #include <string.h>
@@ -45,15 +46,21 @@
 #include "com_pi4j_wiringpi_GpioUtil.h"
 #include "com_pi4j_jni_AnalogInputMonitor.h"
 
+/*
+ * Analog input monitor JVM instance to perform callbacks on
+ */
+JavaVM *analog_input_monitor_callback_jvm;
+
 // java callback variables
 jclass analog_input_monitor_callback_class;
 jmethodID analog_input_monitor_callback_method;
-JavaVM *analog_input_monitor_callback_jvm;
 
 // monitoring thread data structure
 struct analog_input_monitor_data{
    int  thread_id;
    int  pin;
+   int  pollingRate;
+   double  changeThreshold;
    double  lastKnownValue;
    int  running;
 };
@@ -82,7 +89,8 @@ int analog_input_monitor_pin(void *threadarg)
 	// cache a local pin value variable
 	int pin = monitorData->pin;
 
-	printf("\nNATIVE (AnalogInputMonitor) MONITORING PIN %d\n", pin);
+	// debug
+	//printf("\nNATIVE (AnalogInputMonitor) MONITORING PIN %d\n", pin);
 
  	// set the running state of the instance monitor data structure
 	monitorData->running = 1;
@@ -94,16 +102,21 @@ int analog_input_monitor_pin(void *threadarg)
 	while(monitorData->running > 0)
 	{
 		// sleep
-		delay(100); // milliseconds
+		delay(monitorData->pollingRate); // milliseconds
 
 		// read latest analog input value
-		double compareResult = analogRead(pin);
+		double immediateValue = analogRead(pin);
+
+        //printf("\nNATIVE (AnalogInputMonitor) ANALOG VALUE (PIN %d) = %f\n", pin, compareResult);
+
+        // get absolute value of the difference between the last known analog value and the current analog value
+        double change = fabs(immediateValue - monitorData->lastKnownValue);
 
 		// check for change in analog value
-		if(compareResult != monitorData->lastKnownValue)
+		if(change > monitorData->changeThreshold)
 		{
 			// cache new last known value in the instance data structure
-			monitorData->lastKnownValue = compareResult;
+			monitorData->lastKnownValue = immediateValue;
 
 			// ensure the callback class and method are available
 			if (analog_input_monitor_callback_class != NULL && analog_input_monitor_callback_method != NULL)
@@ -116,7 +129,7 @@ int analog_input_monitor_pin(void *threadarg)
 				if(analog_input_monitor_callback_jvm != NULL)
 				{
 					// invoke the java callback method to notify event listeners
-					(*env)->CallStaticVoidMethod(env, analog_input_monitor_callback_class, analog_input_monitor_callback_method, (jint)pin, (jdouble)compareResult);
+					(*env)->CallStaticVoidMethod(env, analog_input_monitor_callback_class, analog_input_monitor_callback_method, (jint)pin, (jdouble)immediateValue);
 				}
 
 				// detach from thread
@@ -132,12 +145,12 @@ int analog_input_monitor_pin(void *threadarg)
  * --------------------------------------------------------
  * ENABLE ANALOG PIN MONITORING (for callback notifications)
  * --------------------------------------------------------
- * Class:     com_pi4j_jni_AnalogMonitor
+ * Class:     com_pi4j_jni_AnalogInputMonitor
  * Method:    enablePinValueChangeCallback
- * Signature: (I)I
+ * Signature: (I)IID
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_enablePinValueChangeCallback
-  (JNIEnv *env, jclass class, jint pin)
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogInputMonitor_enablePinValueChangeCallback
+  (JNIEnv *env, jclass class, jint pin, jint pollingRate, jdouble changeThreshold)
 {
 	// get the index position for the requested pin number
 	int index = pin;
@@ -151,6 +164,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_enablePinValueChangeCallb
 			// configure the monitor instance data
 			analog_input_monitor_data_array[index].thread_id = index;
 			analog_input_monitor_data_array[index].pin = pin;
+
+			// assign a polling rate for the monitoring thread
+			if(pollingRate < 0) pollingRate = 50; // bounds validation
+			analog_input_monitor_data_array[index].pollingRate = pollingRate;
+
+			// assign a change threshold for event notifications in the monitoring thread
+			if(changeThreshold < 0) changeThreshold = 0; // bounds validation
+			analog_input_monitor_data_array[index].changeThreshold = changeThreshold;
 
 			// create monitoring instance thread
 			pthread_create(&analog_input_monitor_threads[index], NULL, (void*) analog_input_monitor_pin, (void *) &analog_input_monitor_data_array[index]);
@@ -172,11 +193,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_enablePinValueChangeCallb
  * --------------------------------------------------------
  * DISABLE ANALOG PIN MONITORING (for callback notifications)
  * --------------------------------------------------------
- * Class:     com_pi4j_jni_AnalogMonitor
+ * Class:     com_pi4j_jni_AnalogInputMonitor
  * Method:    disablePinValueChangeCallback
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogMonitor_disablePinValueChangeCallback
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogInputMonitor_disablePinValueChangeCallback
   (JNIEnv *env, jclass class, jint pin)
 {
 	// get the index position for the requested pin number
@@ -272,6 +293,8 @@ jint AnalogInputMonitor_JNI_OnLoad(JavaVM *jvm)
  */
 void AnalogInputMonitor_JNI_OnUnload(JavaVM *jvm)
 {
+    //printf("\nNATIVE (AnalogInputMonitor) UNLOADING\n");
+
 	// kill all running monitor threads
 	int index = 0;
 	for(index = 0; index < MAX_GPIO_PINS; index++)

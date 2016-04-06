@@ -51,6 +51,76 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
     public static final String NAME = "Odroid GPIO Provider";
     public static final int AIN_ADDRESS_OFFSET = 48;
 
+    public static final int DEFAULT_ANALOG_INPUT_POLLING_RATE = 50; // milliseconds
+    public static final double DEFAULT_ANALOG_INPUT_LISTENER_CHANGE_THRESHOLD = 0.0f;
+
+    protected static int analogInputPollingRate = DEFAULT_ANALOG_INPUT_POLLING_RATE;
+    protected static double analogInputListenerChangeThreshold = DEFAULT_ANALOG_INPUT_LISTENER_CHANGE_THRESHOLD;
+
+    /**
+     * Get the analog input monitor polling rate in milliseconds.
+     * This is the rate at which the internal analog input monitoring thread will poll for analog input value changes
+     * and dispatch analog input value change event for subscribed analog input listeners.
+     *
+     * (The DEFAULT polling rate is 50 milliseconds)
+     *
+     * @return polling rate in milliseconds
+     */
+    public static int getAnalogInputPollingRate(){
+        return analogInputPollingRate;
+    }
+
+    /**
+     * Get the analog input listener change value threshold.
+     * This is the threshold delta value that the internal analog input monitoring thread must cross before
+     * dispatching a new analog input value change event.  The analog input value must change in excess of this
+     * defined value from the last event dispatched before dispatching a new analog input value change event.
+     *
+     * NOTE: This threshold value is a valuable tool to filter/limit the analog input value change events that
+     * your program may receive.
+     *
+     * (The DEFAULT change threshold value is 0)
+     *
+     * @return change threshold value (delta)
+     */
+    public static double getAnalogInputListenerChangeThreshold(){
+        return analogInputListenerChangeThreshold;
+    }
+
+    /**
+     * Set the analog input monitor polling rate in milliseconds.
+     * This is the rate at which the internal analog input monitoring thread will poll for analog input value changes
+     * and dispatch analog input value change event for subscribed analog input listeners.
+     *
+     * NOTE:  Be aware that lower polling rates can impact/increase the CPU usage for your application.
+     *
+     * (The DEFAULT polling rate is 50 milliseconds)
+     *
+     * @param milliseconds polling rate in milliseconds; this value must be a positive number
+     *                     else a default polling rate is used
+     */
+    public static void setAnalogInputPollingRate(int milliseconds){
+        if(milliseconds > 0) analogInputPollingRate = milliseconds;
+    }
+
+    /**
+     * Set the analog input listener change value threshold.
+     * This is the threshold delta value that the internal analog input monitoring thread must cross before
+     * dispatching a new analog input value change event.  The analog input value must change in excess of this
+     * defined value from the last event dispatched before dispatching a new analog input value change event.
+     *
+     * NOTE: This threshold value is a valuable tool to filter/limit the analog input value change events that
+     * your program may receive.
+     *
+     * (The DEFAULT change threshold value is 0)
+     *
+     * @param threshold change threshold value; this value must be zero or greater.  If the threshold value is set
+     *                  to zero, then any change in value will dispatch a new analog input value event.
+     */
+    public static void setAnalogInputListenerChangeThreshold(double threshold){
+        if(threshold > 0) analogInputListenerChangeThreshold = threshold;
+    }
+
     /**
      * Default Constructor
      */
@@ -150,17 +220,22 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
 
     @Override
     public void pinValueChange(AnalogInputEvent event){
+
+        // we need to re-address the pin for Odroid boards
+        int analogPinAddress = event.getPin() + AIN_ADDRESS_OFFSET;
+
         // iterate over the pin listeners map
         for (Pin pin : listeners.keySet()) {
             // dispatch this event to the listener
             // if a matching pin address is found
-            if (pin.getAddress() == event.getPin()) {
+            if (pin.getAddress() == analogPinAddress) {
                 dispatchPinAnalogValueChangeEvent(pin, event.getValue());
             }
         }
     }
 
     // internal
+    @Override
     protected void updateInterruptListener(Pin pin) {
 
         // enable or disable single static listener with the native impl
@@ -177,6 +252,7 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
 
             // only configure WiringPi interrupts for digital input pins
             if(pinModeCache[pin.getAddress()] == PinMode.DIGITAL_INPUT) {
+
                 // enable or disable the individual pin listener
                 if(listeners.containsKey(pin) && listeners.get(pin).size() > 0) {
                     // enable interrupt listener for this pin
@@ -199,19 +275,23 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
 
             // configure analog monitor for analog input pins
             if(pinModeCache[pin.getAddress()] == PinMode.ANALOG_INPUT) {
+                // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - AIN_ADDRESS_OFFSET)
+                int analogPinAddress = pin.getAddress() - AIN_ADDRESS_OFFSET;
+
                 // enable or disable the individual pin listener
                 if(listeners.containsKey(pin) && listeners.get(pin).size() > 0) {
                     // enable interrupt listener for this pin
-                    com.pi4j.jni.AnalogInputMonitor.enablePinValueChangeCallback(pin.getAddress());
+                    com.pi4j.jni.AnalogInputMonitor.enablePinValueChangeCallback(analogPinAddress,
+                                                                                 analogInputPollingRate,
+                                                                                 analogInputListenerChangeThreshold);
                 }
                 else {
                     // disable interrupt listener for this pin
-                    com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(pin.getAddress());
+                    com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(analogPinAddress);
                 }
             }
         }
         else {
-
             // ------------------------
             // DIGITAL INPUT PINS
             // ------------------------
@@ -228,8 +308,11 @@ public class OdroidGpioProvider extends WiringPiGpioProviderBase implements Gpio
             // ANALOG INPUT PINS
             // ------------------------
 
+            // we need to re-address the pin for Odroid boards (analog_address = assigned_pin_address - AIN_ADDRESS_OFFSET)
+            int analogPinAddress = pin.getAddress() - AIN_ADDRESS_OFFSET;
+
             // disable analog input monitor/listener for this pins
-            com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(pin.getAddress());
+            com.pi4j.jni.AnalogInputMonitor.disablePinValueChangeCallback(analogPinAddress);
 
             // remove analog input monitor/listener, disable native thread and callbacks
             if (com.pi4j.jni.AnalogInputMonitor.hasListener(this)) {

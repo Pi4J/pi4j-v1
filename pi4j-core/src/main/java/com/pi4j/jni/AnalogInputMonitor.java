@@ -68,12 +68,16 @@ public class AnalogInputMonitor {
      * </p>
      *
      * @param pin GPIO pin number
+     * @param pollingRate the polling rate in milliseconds for the input monitoring thread to
+     *                    read analog input values from the hardware
+     * @param changeThreshold the amount of change (delta) in the analog input value required before a new
+     *                        analog input change event is dispatched.
      * @return A return value of a negative number represents an error. A return value of '0'
      *         represents success and that the GPIO pin is already being monitored. A return value
      *         of '1' represents success and that a new monitoring thread was created to handle the
      *         requested GPIO pin number.
      */
-    public static native int enablePinValueChangeCallback(int pin);
+    public static native int enablePinValueChangeCallback(int pin, int pollingRate, double changeThreshold);
 
     /**
      * <p>

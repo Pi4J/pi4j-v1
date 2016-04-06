@@ -38,10 +38,10 @@ extern "C" {
 /*
  * Class:     com_pi4j_jni_AnalogInputMonitor
  * Method:    enablePinValueChangeCallback
- * Signature: (I)I
+ * Signature: (I)IID
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_AnalogInputMonitor_enablePinValueChangeCallback
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jint, jint, jdouble);
 
 /*
  * Class:     com_pi4j_jni_AnalogInputMonitor
@@ -63,11 +63,6 @@ jint AnalogInputMonitor_JNI_OnLoad(JavaVM *jvm);
  * Method:    AnalogInputMonitor_JNI_OnUnload
  */
 void AnalogInputMonitor_JNI_OnUnload(JavaVM *jvm);
-
-/*
- * Analog input monitor JVM instance to perform callbacks on
- */
-JavaVM *analog_input_monitor_callback_jvm;
 
 #ifdef __cplusplus
 }

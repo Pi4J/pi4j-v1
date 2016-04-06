@@ -92,9 +92,11 @@
 
 									<!-- trigger javah execution -->
 									<javahClassNames>
-										<javahClassName>com.pi4j.jni.WDT</javahClassName>
+                                        <javahClassName>com.pi4j.jni.AnalogInputMonitor</javahClassName>
+                                        <javahClassName>com.pi4j.jni.WDT</javahClassName>
 										<javahClassName>com.pi4j.jni.I2C</javahClassName>
 										<javahClassName>com.pi4j.jni.Serial</javahClassName>
+                                        <javahClassName>com.pi4j.jni.SerialInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioUtil</javahClassName>

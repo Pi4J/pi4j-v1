@@ -4,7 +4,7 @@ package odroid;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  AnalogListenerExample.java
+ * FILENAME      :  AnalogListenExample.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -28,10 +28,7 @@ package odroid;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinAnalogInput;
-import com.pi4j.io.gpio.OdroidC1Pin;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.platform.Platform;
@@ -45,7 +42,7 @@ import com.pi4j.util.Console;
  *
  * @author Robert Savage
  */
-public class AnalogListenerExample {
+public class AnalogListenExample {
 
     /**
      * @param args
@@ -69,8 +66,23 @@ public class AnalogListenerExample {
         // print program title/header
         console.title("<-- The Pi4J Project -->", "Analog Listener Example");
 
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
+
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
+
+        // <OPTIONAL>
+        // We can optionally override the default polling rate for the analog input monitoring (DEFAULT=50ms)
+        // ... this is the rate at which the internal analog input monitoring thread will poll for changes
+        OdroidGpioProvider.setAnalogInputPollingRate(100); // milliseconds
+
+        // <OPTIONAL>
+        // We can optionally override the default listener value change threshold (DEFAULT=0)
+        // ... this is the threshold delta value that the internal analog input monitoring thread must cross before
+        //     dispatching a new analog input value change event
+        // analog value must change in excess of 5 from the last event dispatched before dispatching a new change event
+        OdroidGpioProvider.setAnalogInputListenerChangeThreshold(5);
 
         // ####################################################################
         //
@@ -108,11 +120,9 @@ public class AnalogListenerExample {
             @Override
             public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
                 // display current pin value from event
-                console.emptyLine();
                 console.println(" [" + event.getPin().toString() + "] value is: %4.0f (%2.1f VDC)",
                         event.getValue(),
                         getVoltage(event.getValue()));
-                console.emptyLine();
             }
         }, inputs);
 
