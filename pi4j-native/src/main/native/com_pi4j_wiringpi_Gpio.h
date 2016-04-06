@@ -59,6 +59,18 @@ extern "C" {
 #define com_pi4j_wiringpi_Gpio_PWM_MODE_BAL 1L
 #undef com_pi4j_wiringpi_Gpio_PWM_MODE_MS
 #define com_pi4j_wiringpi_Gpio_PWM_MODE_MS 0L
+#undef com_pi4j_wiringpi_Gpio_ALT0
+#define com_pi4j_wiringpi_Gpio_ALT0 4L
+#undef com_pi4j_wiringpi_Gpio_ALT1
+#define com_pi4j_wiringpi_Gpio_ALT1 5L
+#undef com_pi4j_wiringpi_Gpio_ALT2
+#define com_pi4j_wiringpi_Gpio_ALT2 6L
+#undef com_pi4j_wiringpi_Gpio_ALT3
+#define com_pi4j_wiringpi_Gpio_ALT3 7L
+#undef com_pi4j_wiringpi_Gpio_ALT4
+#define com_pi4j_wiringpi_Gpio_ALT4 3L
+#undef com_pi4j_wiringpi_Gpio_ALT5
+#define com_pi4j_wiringpi_Gpio_ALT5 2L
 #undef com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP
 #define com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP 0L
 #undef com_pi4j_wiringpi_Gpio_INT_EDGE_FALLING
@@ -109,10 +121,10 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinMode
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
- * Method:    pinAltMode
+ * Method:    pinModeAlt
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinAltMode
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinModeAlt
   (JNIEnv *, jclass, jint, jint);
 
 /*
@@ -214,10 +226,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    _wiringPiISR
- * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
+ * Signature: (II)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j__1wiringpi_Gpio_wiringPiISR
-  (JNIEnv *, jclass, jint, jint, jobject);
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio__1wiringPiISR
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio

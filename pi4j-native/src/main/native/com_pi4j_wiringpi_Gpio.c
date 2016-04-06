@@ -182,7 +182,6 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_delay
 	delay(milliseconds);
 }
 
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    millis
@@ -193,7 +192,6 @@ JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_millis
 {
 	return millis();
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
@@ -206,7 +204,6 @@ JNIEXPORT jlong JNICALL Java_com_pi4j_wiringpi_Gpio_micros
     return micros();
 }
 
-
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    delayMicroseconds
@@ -217,7 +214,6 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_delayMicroseconds
 {
 	delayMicroseconds(howLong);
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
@@ -341,7 +337,7 @@ void cwf_50() { CallbackWrapperFunc(50); }
 /*
  * Class:     com_pi4j_wiringpi_Gpio
  * Method:    _wiringPiISR
- * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
+ * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio__1wiringPiISR
   (JNIEnv *env, jclass obj, jint pin, jint mode)
@@ -446,8 +442,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio__1wiringPiISR
     printf("NATIVE (wiringPiISR) ERROR; unsupported pin number.\n");
     return -996;
 }
-
-
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
