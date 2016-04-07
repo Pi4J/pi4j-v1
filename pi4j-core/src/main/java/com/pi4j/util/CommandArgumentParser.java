@@ -75,7 +75,7 @@ public class CommandArgumentParser {
     }
 
     /**
-     * This utility method searches for "--pull (up|down)", "--l (up|down)", "--up", or "--down" in the command
+     * This utility method searches for "--pull (up|down|off)", "--l (up|down|off)", "--up", or "--down" in the command
      * arguments array and returns a PinPullResistance instance based on the option
      * value provided.
      *
@@ -111,6 +111,9 @@ public class CommandArgumentParser {
                     }
                     else if(pull.equals("0")){
                         return PinPullResistance.PULL_DOWN;
+                    }
+                    else{
+                        return PinPullResistance.OFF;
                     }
                 }
             }
