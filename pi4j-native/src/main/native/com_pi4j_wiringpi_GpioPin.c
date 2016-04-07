@@ -27,8 +27,45 @@
  * #L%
  */
 
+#include <stdio.h>
 #include <wiringPi.h>
 #include "com_pi4j_wiringpi_GpioPin.h"
+
+#define GPIO_CLASS_DIRECTORY    "/sys/class/gpio"
+#define GPIO_EXPORT_FILE        GPIO_CLASS_DIRECTORY "/export"
+#define GPIO_UNEXPORT_FILE      GPIO_CLASS_DIRECTORY "/unexport"
+#define GPIO_PIN_DIRECTORY      GPIO_CLASS_DIRECTORY "/gpio%d"
+#define GPIO_PIN_DIRECTION_FILE GPIO_PIN_DIRECTORY "/direction"
+#define GPIO_PIN_EDGE_FILE      GPIO_PIN_DIRECTORY "/edge"
+#define GPIO_PIN_VALUE_FILE     GPIO_PIN_DIRECTORY "/value"
+
+#define ODROIDC1_GPIO_CLASS_DIRECTORY    "/sys/class/aml_gpio"
+#define ODROIDC1_GPIO_EXPORT_FILE        ODROIDC1_GPIO_CLASS_DIRECTORY "/export"
+#define ODROIDC1_GPIO_UNEXPORT_FILE      ODROIDC1_GPIO_CLASS_DIRECTORY "/unexport"
+#define ODROIDC1_GPIO_PIN_DIRECTORY      ODROIDC1_GPIO_CLASS_DIRECTORY "/gpio%d"
+#define ODROIDC1_GPIO_PIN_DIRECTION_FILE ODROIDC1_GPIO_PIN_DIRECTORY "/direction"
+#define ODROIDC1_GPIO_PIN_EDGE_FILE      ODROIDC1_GPIO_PIN_DIRECTORY "/edge"
+#define ODROIDC1_GPIO_PIN_VALUE_FILE     ODROIDC1_GPIO_PIN_DIRECTORY "/value"
+
+int wiringpi_detected_model;
+int wiringpi_detected_revision;
+int wiringpi_detected_maker;
+
+/**
+ * --------------------------------------------------------
+ * INITIALIZE THE GPIO PIN CLASS
+ * --------------------------------------------------------
+ * AUTO DETECTED THE BOARD IDENTIFICATION INFO
+ */
+void GpioPin_Init(){
+    // some wiringPi ports are old and don't support the 'piBoardId()' method; I'm looking at you LeMaker BananaPi!
+    #ifdef PI_MODEL_UNKNOWN
+    int mem, overVolted ;
+
+	// get the board identifier that we are running on
+    piBoardId (&wiringpi_detected_model, &wiringpi_detected_revision, &mem, &wiringpi_detected_maker, &overVolted) ;
+    #endif
+}
 
 /**
  * --------------------------------------------------------
@@ -51,12 +88,9 @@ int getEdgePin(int pin)
     return wpiPinToGpio(pin);
     #else
 
-    int model, rev, mem, maker, overVolted ;
-
 	// return the edge pin index
 	// (will return -1 for invalid pin)
-    piBoardId (&model, &rev, &mem, &maker, &overVolted) ;
-    if (model == PI_MODEL_CM){
+    if (wiringpi_detected_model == PI_MODEL_CM){
         return pin;
     }
     else{
@@ -89,3 +123,148 @@ int isPinValid(int pin)
 	else
 		return 0;
 }
+
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO EXPORT FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioExportFile(char *file){
+
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_EXPORT_FILE);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_EXPORT_FILE);
+}
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO UNEXPORT FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioUnexportFile(char *file){
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_UNEXPORT_FILE);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_UNEXPORT_FILE);
+}
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO PIN DIRECTORY PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinDirectory(char *file, int pin){
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTORY, pin);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_PIN_DIRECTORY, pin);
+}
+
+/**
+ * -------------------------------------------------------------
+ * GET THE GPIO PIN DIRECTION FILE PATH FOR THIS PLATFORM/BOARD
+ * -------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinDirectionFile(char *file, int pin){
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTION_FILE, pin);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_PIN_DIRECTION_FILE, pin);
+}
+
+/**
+ * ------------------------------------------------------------------
+ * GET THE GPIO PIN EDGE (TRIGGER) FILE PATH FOR THIS PLATFORM/BOARD
+ * ------------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinEdgeFile(char *file, int pin){
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_PIN_EDGE_FILE, pin);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_PIN_EDGE_FILE, pin);
+}
+
+/**
+ * --------------------------------------------------------------
+ * GET THE GPIO PIN VALUE/DATA FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinValueFile(char *file, int pin){
+    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
+    #ifdef PI_MODEL_ODROIDC
+    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
+        return sprintf(file, ODROIDC1_GPIO_PIN_VALUE_FILE, pin);
+    }
+    #endif
+
+    // all other platforms and models use default "gpio" class
+    return sprintf(file, GPIO_PIN_VALUE_FILE, pin);
+}
+

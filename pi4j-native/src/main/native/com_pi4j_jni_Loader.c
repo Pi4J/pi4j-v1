@@ -32,6 +32,7 @@
 #include <jni.h>
 #include <string.h>
 
+#include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_jni_SerialInterrupt.h"
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
 #include "com_pi4j_jni_AnalogInputMonitor.h"
@@ -47,6 +48,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 	JNIEnv *env;
 
 	//printf("\nNATIVE (JNI LOADER) LOADING\n");
+
+	// initialize GPIO pin
+	GpioPin_Init();
 
 	// ensure that the calling environment is a supported JNI version
     if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))

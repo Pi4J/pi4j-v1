@@ -32,22 +32,9 @@
 extern "C" {
 #endif
 
-
 // constants
 #define	MAX_GPIO_PINS   46L
-
-
-#ifdef AML_GPIO
-#define GPIO_CLASS               "/sys/class/aml_gpio"
-#else
-#define GPIO_CLASS               "/sys/class/gpio"
-#endif
-#define GPIO_EXPORT_FILE        GPIO_CLASS "/export"
-#define GPIO_UNEXPORT_FILE      GPIO_CLASS "/unexport"
-#define GPIO_PIN_DIRECTORY      GPIO_CLASS "/gpio%d"
-#define GPIO_PIN_DIRECTION_FILE GPIO_PIN_DIRECTORY "/direction"
-#define GPIO_PIN_EDGE_FILE      GPIO_PIN_DIRECTORY "/edge"
-#define GPIO_PIN_VALUE_FILE     GPIO_PIN_DIRECTORY "/value"
+#define GPIO_FN_MAXLEN  200
 
 /**
  * --------------------------------------------------------
@@ -56,7 +43,6 @@ extern "C" {
  */
 int getEdgePin(int);
 
-
 /**
  * --------------------------------------------------------
  * DETERMINE IF GPIO PIN IS VALID
@@ -64,6 +50,94 @@ int getEdgePin(int);
  */
 int isPinValid(int);
 
+/**
+ * --------------------------------------------------------
+ * INITIALIZE THE GPIO PIN CLASS
+ * --------------------------------------------------------
+ * AUTO DETECTED THE BOARD IDENTIFICATION INFO
+ */
+void GpioPin_Init();
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO EXPORT FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioExportFile(char *file);
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO UNEXPORT FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioUnexportFile(char *file);
+
+/**
+ * --------------------------------------------------------
+ * GET THE GPIO PIN DIRECTORY PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinDirectory(char *file, int pin);
+
+/**
+ * -------------------------------------------------------------
+ * GET THE GPIO PIN DIRECTION FILE PATH FOR THIS PLATFORM/BOARD
+ * -------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinDirectionFile(char *file, int pin);
+
+/**
+ * ------------------------------------------------------------------
+ * GET THE GPIO PIN EDGE (TRIGGER) FILE PATH FOR THIS PLATFORM/BOARD
+ * ------------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinEdgeFile(char *file, int pin);
+
+/* --------------------------------------------------------------
+ * GET THE GPIO PIN VALUE/DATA FILE PATH FOR THIS PLATFORM/BOARD
+ * --------------------------------------------------------------
+ *
+ * ARGS: file <character array pointer> to write the path to
+ *       pin <integer> the GPIO (edge) pin address
+ *
+ * RETURN VALUE: If successful, the total number of characters written is returned excluding
+ * the null-character appended at the end of the string, otherwise a negative number is
+ * returned in case of failure.
+ */
+int getGpioPinValueFile(char *file, int pin);
 
 #ifdef __cplusplus
 }

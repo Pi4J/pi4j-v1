@@ -61,11 +61,11 @@
 int getExistingPinDirection(int edgePin)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 	char data[RDBUF_LEN];
 
 	// construct the gpio direction file path
-	sprintf (fName, GPIO_PIN_DIRECTION_FILE, edgePin) ;
+	getGpioPinDirectionFile(fName, edgePin);
 
 	// open the gpio direction file
 	if ((fd = fopen (fName, "r")) == NULL)
@@ -108,7 +108,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
   (JNIEnv *env, jclass class, jint pin, jint direction)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -137,7 +137,8 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	int edgePin = getEdgePin(pin);
 
 	// validate that the export file can be accessed
-	if ((fd = fopen (GPIO_EXPORT_FILE, "w")) == NULL)
+	getGpioExportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -164,7 +165,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	if(direction != existing_direction)
 	{
         // attempt to access the gpio pin's direction file
-        sprintf (fName, GPIO_PIN_DIRECTION_FILE, edgePin) ;
+        getGpioPinDirectionFile(fName, edgePin);
         if ((fd = fopen (fName, "w")) == NULL)
         {
             // throw exception
@@ -218,6 +219,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_unexport
 (JNIEnv *env, jclass class, jint pin)
 {
 	FILE *fd ;
+	char fName [GPIO_FN_MAXLEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -233,7 +235,8 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_unexport
 	int edgePin = getEdgePin(pin);
 
 	// construct the gpio export file path
-	if ((fd = fopen (GPIO_UNEXPORT_FILE, "w")) == NULL)
+	getGpioUnexportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -256,7 +259,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isExported
   (JNIEnv *env, jclass class, jint pin)
 {
 	int result;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -272,7 +275,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isExported
 	int edgePin = getEdgePin(pin);
 
 	// construct directory path for gpio pin
-	sprintf (fName, GPIO_PIN_DIRECTORY, edgePin) ;
+	getGpioPinDirectory(fName, edgePin);
 
 	// check for exported gpio directory
 	result = access(fName, F_OK);
@@ -297,7 +300,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 (JNIEnv *env, jclass class, jint pin, jint direction)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -336,7 +339,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 	}
 
 	// attempt to access the gpio pin's direction file
-	sprintf (fName, GPIO_PIN_DIRECTION_FILE, edgePin) ;
+	getGpioPinDirectionFile(fName, edgePin);
 	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
@@ -429,7 +432,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 (JNIEnv *env, jclass class, jint pin, jint edge)
 {
 	FILE *fd ;
-	char fName [128];
+	char fName [GPIO_FN_MAXLEN];
 	char data[RDBUF_LEN];
 
 	// validate the pin number
@@ -459,7 +462,8 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	int edgePin = getEdgePin(pin);
 
 	// export gpio pin
-	if ((fd = fopen (GPIO_EXPORT_FILE, "w")) == NULL)
+	getGpioExportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -482,7 +486,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
     usleep(100000);
 
 	// access the pin direction file and force the pin direction to IN
-	sprintf (fName, GPIO_PIN_DIRECTION_FILE, edgePin) ;
+	getGpioPinDirectionFile(fName, edgePin);
 	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
@@ -499,7 +503,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	fclose (fd) ;
 
 	// construct the gpio edge file path
-	sprintf (fName, GPIO_PIN_EDGE_FILE, edgePin) ;
+	getGpioPinEdgeFile(fName, edgePin);
 
 	// open the gpio edge file
 	if ((fd = fopen (fName, "w")) == NULL)
@@ -590,7 +594,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection
 (JNIEnv *env, jclass class, jint pin)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 	char data[RDBUF_LEN];
 
 	// validate the pin number
@@ -607,7 +611,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection
 	int edgePin = getEdgePin(pin);
 
 	// construct the gpio edge file path
-	sprintf (fName, GPIO_PIN_EDGE_FILE, edgePin) ;
+	getGpioPinEdgeFile(fName, edgePin);
 
 	// open the gpio edge file
 	if ((fd = fopen (fName, "r")) == NULL)
@@ -672,6 +676,7 @@ int isPrivilegedAccessRequired()
 {
     int gpiomem_fd;
     FILE *export_fd;
+    char fName [GPIO_FN_MAXLEN] ;
 
     // check for read/write access to the the /dev/gpiomem' device
     // this device will only exist if the 'bcm2835_gpiomem' kernel model is loaded
@@ -683,7 +688,8 @@ int isPrivilegedAccessRequired()
 	close (gpiomem_fd);
 
 	// validate that the export file can be accessed
-	if ((export_fd = fopen (GPIO_EXPORT_FILE, "w")) == NULL)
+	getGpioExportFile(fName);
+	if ((export_fd = fopen (fName, "w")) == NULL)
 	{
 	  return 1; // Privileged access is required
 	}
