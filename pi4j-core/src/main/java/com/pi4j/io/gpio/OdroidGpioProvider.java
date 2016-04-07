@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
 import com.pi4j.jni.AnalogInputEvent;
 import com.pi4j.jni.AnalogInputListener;
 import com.pi4j.platform.Platform;
+import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioUtil;
@@ -49,7 +50,10 @@ import com.pi4j.wiringpi.GpioUtil;
 public class OdroidGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener, AnalogInputListener {
 
     public static final String NAME = "Odroid GPIO Provider";
-    public static final int AIN_ADDRESS_OFFSET = 48;
+
+    // analog input pin addresses are assigned in a virtual range starting above the
+    // maximum number of physical pins supported by WiringPi
+    public static final int AIN_ADDRESS_OFFSET = Gpio.NUM_PINS + 1;
 
     public static final int DEFAULT_ANALOG_INPUT_POLLING_RATE = 50; // milliseconds
     public static final double DEFAULT_ANALOG_INPUT_LISTENER_CHANGE_THRESHOLD = 0.0f;

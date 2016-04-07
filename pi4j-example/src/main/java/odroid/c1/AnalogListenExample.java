@@ -37,7 +37,7 @@ import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.Console;
 
 /**
- * This example code demonstrates how to monitor analog
+ * This example code demonstrates how to monitor 10-bit analog
  * int pins value changes on the Odroid C1/C1+/C2 platform.
  *
  * @author Robert Savage
@@ -139,6 +139,7 @@ public class AnalogListenExample {
      * @return relative voltage for analog input pin
      */
     private static double getVoltage(double value){
+        // 10-bit == range between 0 and 1023 (1024 possible values)
         return (value / 1024) * 1.8f; // 1.8VDC maximum allowed voltage per the hardware spec
     }
 }

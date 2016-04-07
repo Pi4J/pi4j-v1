@@ -71,7 +71,7 @@ public class OdroidXU4Pin extends PinProvider {
     public static final Pin AIN0 = createAnalogInputPin(0 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN0");
 
     // 23	ADC_0.AIN3  (!! 1.8 VDC MAX !!)
-    public static final Pin AIN3 = createAnalogInputPin(3 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN3");
+    public static final Pin AIN3 = createAnalogInputPin(1 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN3");
 
     private static Pin createAnalogInputPin(int address, String name) {
         return createAnalogInputPin(OdroidGpioProvider.NAME, address, name);

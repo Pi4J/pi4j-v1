@@ -37,7 +37,7 @@ import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.Console;
 
 /**
- * This example code demonstrates how to monitor analog
+ * This example code demonstrates how to monitor 12-bit analog
  * int pins value changes on the Odroid XU4 platform.
  *
  * @author Robert Savage
@@ -104,13 +104,13 @@ public class AnalogListenExample {
         console.println(" ... Successfully provisioned [" + inputs[0] + "]");
         console.println(" ... Successfully provisioned [" + inputs[1] + "]");
         console.emptyLine();
-        console.box("Below is the 10-bit conversion value (a number ",
-                    "between 0 and 1023) from the two analog input ",
+        console.box("Below is the 12-bit conversion value (a number ",
+                    "between 0 and 4095) from the two analog input ",
                     "pins which represents a voltage applied to each",
                     "pin between 0VDC (Ground) and +1.8VDC.  If no ",
                     "voltage is currently applied to the analog input",
                     "pins then they may 'float' between a value of 0" ,
-                    "to 1023.");
+                    "to 4095.");
 
         // add analog value change event listener
         gpio.addListener(new GpioPinListenerAnalog() {
@@ -135,10 +135,11 @@ public class AnalogListenExample {
      * calculate relative analog input voltage based on the 10-bit conversion value
      * read from the hardware
      *
-     * @param value 10-bit conversion value for analog input pin
+     * @param value 12-bit conversion value for analog input pin
      * @return relative voltage for analog input pin
      */
     private static double getVoltage(double value){
-        return (value / 1024) * 1.8f; // 1.8VDC maximum allowed voltage per the hardware spec
+        // 12-bit == range between 0 and 4095 (4096 possible values)
+        return (value / 4096) * 1.8f; // 1.8VDC maximum allowed voltage per the hardware spec
     }
 }

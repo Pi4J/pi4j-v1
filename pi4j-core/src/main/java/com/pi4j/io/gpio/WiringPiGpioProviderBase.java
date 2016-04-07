@@ -4,6 +4,7 @@ import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
 import com.pi4j.io.gpio.exception.InvalidPinModeException;
 import com.pi4j.io.gpio.exception.UnsupportedPinModeException;
+import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioInterruptEvent;
 import com.pi4j.wiringpi.GpioInterruptListener;
 import com.pi4j.wiringpi.GpioUtil;
@@ -46,10 +47,14 @@ import com.pi4j.wiringpi.GpioUtil;
 @SuppressWarnings("unused")
 public abstract class WiringPiGpioProviderBase extends GpioProviderBase implements GpioProvider, GpioInterruptListener {
 
+    // the pin cache should support the maximum number of pins supported by wiringPi plus some
+    // additional overhead for virtual analog input pins used by providers like Odroid C1/C1+/C2/XU4
+    protected static short MAX_PIN_CACHE = Gpio.NUM_PINS + 5;
+
     // need enough space in array for maximum number of pins.
     // Currently the Computer module supports the highest number of pins.
-    protected static short pinSupportedCache[] = new short[50];
-    protected static PinMode pinModeCache[] = new PinMode[50];
+    protected static short pinSupportedCache[] = new short[MAX_PIN_CACHE];
+    protected static PinMode pinModeCache[] = new PinMode[MAX_PIN_CACHE];
 
     public abstract String getName();
 
