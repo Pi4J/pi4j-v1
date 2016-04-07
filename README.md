@@ -37,54 +37,62 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-03-15 :: 1.1-SNAPSHOT
+2016-04-07 :: 1.1-SNAPSHOT
 
-  *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue.  
+  *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue. 
      A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
-     (see: https://github.com/RPi-Distro/repo/issues/22)   
+     (see: https://github.com/RPi-Distro/repo/issues/22)
+
+  *  The Odroid C1/C1+/C2 only permits up to four GPIO pins to be configured with edge detection for both "rising"
+     and "falling" edges (a.k.a., "both"). Thus, you can only use a maximum of four GPIO input pins with listener
+     events.  
+    (see: https://github.com/Pi4J/pi4j/issues/229 & http://odroid.com/dokuwiki/doku.php?id=en:c1_hardware_irq)
+
+  *  PWM is not supported in the Hardkernel Odroid WiringPi port.  TThus PWM is not currently supported by Pi4J for 
+     the Odroid boards (C1/C1+/C2). There is no PWM function on the 30pin GPIO header on the XU3/XU4.   
+    (see: https://github.com/Pi4J/pi4j/issues/229)
+
+  *  SPI modes (other than the default SPI MODE 0) are not supported in the Hardkernel Odroid WiringPi port. 
+     Thus the Odroid C1/C1+/C2/XU4 only support SPI mode 0.  
+    (see: https://github.com/Pi4J/pi4j/issues/229)
 
 
 ## IN DEVEOPMENT
 
-2016-04-06 :: 1.1-SNAPSHOT
+2016-04-07 :: 1.1-SNAPSHOT
 
+  *  Added support for Odroid XU4 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Raspberry Pi 3 (Model B).
   *  Added support for Raspberry Pi Zero.
-  *  Added analog input support and example code for Odroid platform.
+  *  Added support for BananaPi platform
+  *  Added support for BananaPro platform
   *  Added non-privileged GPIO example code.
   *  Added support for enabling non-privileged GPIO access via the Pi4J APIs
-  *  Removed 'sudo' from pi4j script when launching compiled Java applications
   *  Added support for '/dev/gpiomem' to eliminate 'root' permissions requirement for basic GPIO.
-  *  Added JNI/WiringPi support for Odroid platform
-  *  Validated/fixed GPIO, PWM, SERIAL, I2C, and SPI on BananaPro platform
-  *  Added GPIO support for BananaPro platform
-  *  Added JNI/WiringPi support for BananaPro platform
-  *  Validated/fixed GPIO, PWM, SERIAL, I2C, and SPI on BananaPi platform
-  *  Added GPIO support for BananaPi platform
-  *  Added JNI/WiringPi support for BananaPi platform
   *  Added PWM examples
   *  Added I2C examples
-  *  Fixed #180; WiringPiISR() callback causing native crash (NPE)
   *  Added support for native Watchdog.
   *  Added W1 (1 wire) support.
   *  Added MCP3204 ADC implementation and example code.
   *  Added MCP3208 ADC implementation and example code.
   *  Added MCP3004 ADC implementation and example code.
-  *  Updated MCP3008 ADC implementation and example code.
-  *  Updated MCP4725 DAC implementation and example code. 
-  *  Added ADC change background monitoring thread and event notifications.  
-  *  Fixed SPI issue where internal buffer was limited to 2048 bytes.  Dynamically allocated now.
   *  Added optimizations for GPIO state change latency
   *  Added Gpio.pinModeAlt() method to the WiringPi wrappers to set pins to any ALT mode.
   *  Added cross-compiler support in Maven build
   *  Added cross-compiler shell script
+  *  Added ADC change background monitoring thread and event notifications.  
+  *  Added new Serial JNI implementation to support more advanced serial configuration/operations
+  *  Updated Serial interface to extend from AutoCloseable. 
+  *  Updated MCP3008 ADC implementation and example code.
+  *  Updated MCP4725 DAC implementation and example code. 
+  *  Fixed #180; WiringPiISR() callback causing native crash (NPE)
+  *  Fixed SPI issue where internal buffer was limited to 2048 bytes.  Dynamically allocated now.
+  *  Fixed the Pi4J Serial interface to use the new Serial JNI implementation
+  *  Fixed wiringPi serial JNI methods to better support raw data operations
   *  Cleanup for WiringPi native build
   *  Cleanup for Pi4J native build
-  *  Added new Serial JNI implementation to support more advanced serial configuration/operations
-  *  Overhauled the Pi4J Serial interface to use the new Serial JNI implementation
-  *  Overhauled wiringPi serial JNI methods to better support raw data operations
-  *  Now requires Java 8 runtime.
+  *  Now requires Java 7 runtime.
   
 ## RELEASES
 
