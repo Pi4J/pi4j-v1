@@ -53,6 +53,12 @@ public class GpioInputExample {
      * to use with this GPIO listener example. If no argument is provided, then GPIO #1 will be used.
      * -- EXAMPLE: "--pin 4" or "-p 0".
      *
+     * [ARGUMENT/OPTION "--pull (up|down)" | "-u (up|down)" | "--up" | "--down" ]
+     * This example program accepts an optional argument for specifying pin pull resistance.
+     * Supported values: "up|down" (or simply "1|0").   If no value is specified in the command
+     * argument, then the pin pull resistance will be set to PULL_UP by default.
+     * -- EXAMPLES: "--pull up", "-pull down", "--up", "--down", "-pull 0", "--pull 1", "-u up", "-u down.
+     *
      * @param args
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
@@ -97,14 +103,20 @@ public class GpioInputExample {
                 OdroidC1Pin.GPIO_01,  // default pin if no pin argument found
                 args);                // argument array to search in
 
+        // by default we will use gpio pin PULL-UP; however, if an argument
+        // has been provided, then use the specified pull resistance
+        PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
+                PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
+                args);                      // argument array to search in
+
         // provision gpio pin as an output pin and turn on
-        final GpioPinDigitalInput input = gpio.provisionDigitalInputPin(pin, "MyInput");
+        final GpioPinDigitalInput input = gpio.provisionDigitalInputPin(pin, "MyInput", pull);
 
         // set shutdown state for this pin: unexport the pin
         input.setShutdownOptions(true);
 
         // prompt user that we are ready
-        console.println(" ... Successfully provisioned input pin: " + input.toString());
+        console.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
         console.emptyLine();
         console.box("The GPIO input pin states will be displayed below.");
         console.emptyLine();

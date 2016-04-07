@@ -31,6 +31,7 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.CommandArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,12 @@ import java.util.List;
 public class GpioInputAllExample {
 
     /**
+     * [ARGUMENT/OPTION "--pull (up|down)" | "-u (up|down)" | "--up" | "--down" ]
+     * This example program accepts an optional argument for specifying pin pull resistance.
+     * Supported values: "up|down" (or simply "1|0").   If no value is specified in the command
+     * argument, then the pin pull resistance will be set to PULL_UP by default.
+     * -- EXAMPLES: "--pull up", "-pull down", "--up", "--down", "-pull 0", "--pull 1", "-u up", "-u down.
+     *
      * @param args
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
@@ -55,12 +62,18 @@ public class GpioInputAllExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
+        // by default we will use gpio pin PULL-UP; however, if an argument
+        // has been provided, then use the specified pull resistance
+        PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
+                PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
+                args);                      // argument array to search in
+
         List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
 
         // provision GPIO input pins
         for (Pin pin : RaspiPin.allPins()) {
             try {
-                GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin);
+                GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
                 provisionedPin.setShutdownOptions(true); // unexport pin on program shutdown
                 provisionedPins.add(provisionedPin);     // add provisioned pin to collection
             }
