@@ -1,4 +1,4 @@
-package odroid;
+package odroid.xu4;
 /*
  * #%L
  * **********************************************************************
@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * This example code demonstrates how to perform simple GPIO
- * pin state reading on the Odroid C1/C1+/XU4 platform fro all pins.
+ * pin state reading on the Odroid XU4 platform fro all pins.
  *
  * @author Robert Savage
  */
@@ -89,9 +89,6 @@ public class GpioInputAllExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidC1Pin class.
-        //
         // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidXU4Pin class.
         //
@@ -99,7 +96,7 @@ public class GpioInputAllExample {
         List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
 
         // provision all pins that support digital inputs
-        for (Pin pin : OdroidC1Pin.allPins(PinMode.DIGITAL_INPUT)) {
+        for (Pin pin : OdroidXU4Pin.allPins(PinMode.DIGITAL_INPUT)) {
             try {
                 GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
                 provisionedPin.setShutdownOptions(true); // unexport pin on program shutdown

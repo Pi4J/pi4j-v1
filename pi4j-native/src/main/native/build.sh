@@ -211,7 +211,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DAML_GPIO' $@
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 echo
 echo "=============================================="
@@ -219,7 +219,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DAML_GPIO' $@
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
 
 
 echo

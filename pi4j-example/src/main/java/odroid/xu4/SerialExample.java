@@ -1,4 +1,4 @@
-package odroid;
+package odroid.xu4;
 
 /*
  * #%L
@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * This example code demonstrates how to perform serial communications using the Odroid C1/c1+/C2/XU4.
- * (see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU3/XU4 Serial Port addresses.)
+ * This example code demonstrates how to perform serial communications using the Odroid C1/C1+/C2/XU4.
+ * (see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU4 Serial Port addresses.)
  *
  * @author Robert Savage
  */
@@ -110,7 +110,7 @@ public class SerialExample {
             // set default serial settings (device, baud rate, flow control, etc)
             //
             // by default, use the DEFAULT com port on the Odroid C1/C1+/C2 (exposed on GPIO header)
-            // see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU3/XU4 Serial Port addresses.
+            // see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU4 Serial Port addresses.
             //
             // NOTE: this utility method will determine the default serial port for the
             //       detected platform and board/model.

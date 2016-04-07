@@ -1,4 +1,4 @@
-package odroid;
+package odroid.c1;
 /*
  * #%L
  * **********************************************************************
@@ -36,7 +36,7 @@ import com.pi4j.util.Console;
 
 /**
  * This example code demonstrates how to read the analog
- * int pins values from the Odroid C1/C1+/XU4 platform.
+ * int pins values from the Odroid C1/C1+/C2 platform.
  *
  * @author Robert Savage
  */
@@ -69,11 +69,8 @@ public class AnalogInputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
+        // IF YOU ARE USING AN ODROID C1/C1+/C2 PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidC1Pin class.
-        //
-        // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidXU4Pin class.
         //
         // ####################################################################
 

@@ -1,4 +1,4 @@
-package odroid;
+package odroid.xu4;
 /*
  * #%L
  * **********************************************************************
@@ -36,12 +36,9 @@ import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.util.ConsoleColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This example code demonstrates how to perform simple GPIO
- * pin state reading on the Odroid C1/C1+/XU4 platform.
+ * pin state reading on the Odroid XU4 platform.
  *
  * @author Robert Savage
  */
@@ -88,9 +85,6 @@ public class GpioInputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidC1Pin class.
-        //
         // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidXU4Pin class.
         //
@@ -99,8 +93,8 @@ public class GpioInputExample {
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin pin = CommandArgumentParser.getPin(
-                OdroidC1Pin.class,    // pin provider class to obtain pin instance from
-                OdroidC1Pin.GPIO_01,  // default pin if no pin argument found
+                OdroidXU4Pin.class,    // pin provider class to obtain pin instance from
+                OdroidXU4Pin.GPIO_01,  // default pin if no pin argument found
                 args);                // argument array to search in
 
         // by default we will use gpio pin PULL-UP; however, if an argument

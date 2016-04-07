@@ -1,4 +1,4 @@
-package odroid;
+package odroid.xu4;
 /*
  * #%L
  * **********************************************************************
@@ -40,7 +40,7 @@ import java.io.IOException;
 
 /**
  * This example code demonstrates how to perform simple I2C
- * communication on the Odroid-C1/C1+.  For this example we will
+ * communication on the Odroid-C1/C1+/C2/XU4.  For this example we will
  * connect to a 'TSL2561' LUX sensor.
  *
  * Data Sheet:

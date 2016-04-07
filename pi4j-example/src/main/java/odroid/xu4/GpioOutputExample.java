@@ -1,4 +1,4 @@
-package odroid;
+package odroid.xu4;
 /*
  * #%L
  * **********************************************************************
@@ -42,7 +42,7 @@ import java.util.concurrent.Future;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Odroid C1/C1+/XU4 platform.
+ * control of a GPIO pin on the Odroid XU4 platform.
  *
  * @author Robert Savage
  */
@@ -83,9 +83,6 @@ public class GpioOutputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
-        //    When provisioning a pin, use the OdroidC1Pin class.
-        //
         // IF YOU ARE USING AN ODROID XU4 PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidXU4Pin class.
         //
@@ -94,9 +91,9 @@ public class GpioOutputExample {
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin pin = CommandArgumentParser.getPin(
-                OdroidC1Pin.class,    // pin provider class to obtain pin instance from
-                OdroidC1Pin.GPIO_01,  // default pin if no pin argument found
-                args);                // argument array to search in
+                OdroidXU4Pin.class,    // pin provider class to obtain pin instance from
+                OdroidXU4Pin.GPIO_01,  // default pin if no pin argument found
+                args);                 // argument array to search in
 
         // provision gpio pin as an output pin and turn on
         final GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(pin, "My Output", PinState.HIGH);

@@ -1,4 +1,4 @@
-package odroid;/*
+package odroid.xu4;/*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J

@@ -40,6 +40,7 @@ import java.util.EnumSet;
  */
 public class OdroidXU4Pin extends PinProvider {
 
+    // (!! 1.8 VDC MAX ON ALL GPIO PINS !!)
     public static final Pin GPIO_00 = createDigitalPin(0,  "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(1,  "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(2,  "GPIO 2");
@@ -64,6 +65,17 @@ public class OdroidXU4Pin extends PinProvider {
     public static final Pin GPIO_27 = createDigitalPin(27, "GPIO 27");
     public static final Pin GPIO_30 = createDigitalPin(30, "GPIO 30");
     public static final Pin GPIO_31 = createDigitalPin(31, "GPIO 31");
+
+    // (!! 1.8 VDC MAX ON ALL AIN PINS !!)
+    // 03	ADC_0.AIN0  (!! 1.8 VDC MAX !!)
+    public static final Pin AIN0 = createAnalogInputPin(0 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN0");
+
+    // 23	ADC_0.AIN3  (!! 1.8 VDC MAX !!)
+    public static final Pin AIN3 = createAnalogInputPin(3 + OdroidGpioProvider.AIN_ADDRESS_OFFSET, "AIN3");
+
+    private static Pin createAnalogInputPin(int address, String name) {
+        return createAnalogInputPin(OdroidGpioProvider.NAME, address, name);
+    }
 
     protected static Pin createDigitalPin(int address, String name) {
         return createDigitalPin(OdroidGpioProvider.NAME, address, name);
