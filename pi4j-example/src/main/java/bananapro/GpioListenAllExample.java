@@ -45,11 +45,11 @@ import com.pi4j.util.CommandArgumentParser;
 public class GpioListenAllExample {
 
     /**
-     * [ARGUMENT/OPTION "--pull (up|down)" | "-u (up|down)" | "--up" | "--down" ]
+     * [ARGUMENT/OPTION "--pull (up|down|off)" | "-l (up|down|off)" | "--up" | "--down" ]
      * This example program accepts an optional argument for specifying pin pull resistance.
      * Supported values: "up|down" (or simply "1|0").   If no value is specified in the command
      * argument, then the pin pull resistance will be set to PULL_UP by default.
-     * -- EXAMPLES: "--pull up", "-pull down", "--up", "--down", "-pull 0", "--pull 1", "-u up", "-u down.
+     * -- EXAMPLES: "--pull up", "-pull down", "--pull off", "--up", "--down", "-pull 0", "--pull 1", "-l up", "-l down".
      *
      * @param args
      * @throws InterruptedException
