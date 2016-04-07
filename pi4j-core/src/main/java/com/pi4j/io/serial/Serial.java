@@ -30,6 +30,7 @@ package com.pi4j.io.serial;
  */
 
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,7 +59,7 @@ import java.io.OutputStream;
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 @SuppressWarnings("unused")
-public interface Serial extends SerialDataReader, SerialDataWriter {
+public interface Serial extends SerialDataReader, SerialDataWriter, AutoCloseable {
 
     /**
      * The default hardware COM port provided via the Raspberry Pi GPIO header.
