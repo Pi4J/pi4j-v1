@@ -35,6 +35,8 @@ import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.system.SystemInfo;
 import com.pi4j.util.CommandArgumentParser;
+import com.pi4j.util.Console;
+import com.pi4j.util.ConsoleColor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,19 +64,18 @@ public class GpioListenAllExample {
      */
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
 
-        System.out.println("<--Pi4J--> GPIO Listen (All Pins) Example ... started.");
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "GPIO Listen (All Pins) Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
-
-        // create GPIO listener
-        GpioPinListenerDigital listener  = new GpioPinListenerDigital() {
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-            }
-        };
 
         // by default we will use gpio pin PULL-DOWN; however, if an argument
         // has been provided, then use the specified pull resistance
@@ -82,6 +83,10 @@ public class GpioListenAllExample {
                 PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
                 args);                      // argument array to search in
 
+        // prompt user to wait
+        console.println(" ... please wait; provisioning GPIO pins with resistance [" + pull + "]");
+
+        // create pins collection to store provisioned pin instances
         List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
         Pin[] pins;
 
@@ -101,25 +106,46 @@ public class GpioListenAllExample {
             try {
                 GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
                 provisionedPins.add(provisionedPin);
+
+                // unexport the provisioned GPIO pins when program exits
+                provisionedPin.setShutdownOptions(true);
             }
             catch (Exception ex){
                 System.err.println(ex.getMessage());
             }
         }
 
-        // create and register gpio pin listeners
-        gpio.addListener(listener, provisionedPins.toArray(new GpioPinDigitalInput[0]));
+        // prompt user that we are ready
+        console.println(" ... GPIO pins provisioned and ready for use.");
+        console.emptyLine();
+        console.box("Please complete the GPIO circuit and see",
+                "the listener feedback here in the console.");
+        console.emptyLine();
 
-        System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
+        // --------------------------------
+        // EVENT-BASED GPIO PIN MONITORING
+        // --------------------------------
 
-        // keep program running until user aborts (CTRL-C)
-        while(true) {
-            Thread.sleep(50);
-        }
+        // create and register gpio pin listeners for event pins
+        gpio.addListener(new GpioPinListenerDigital() {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                // display pin state on console
+                console.println(" --> GPIO PIN STATE CHANGE (EVENT): " + event.getPin() + " = " +
+                        ConsoleColor.conditional(
+                                event.getState().isHigh(), // conditional expression
+                                ConsoleColor.GREEN,        // positive conditional color
+                                ConsoleColor.RED,          // negative conditional color
+                                event.getState()));        // text to display
+            }
+        }, provisionedPins.toArray(new GpioPinDigitalInput[0]));
+
+        // wait (block) for user to exit program using CTRL-C
+        console.waitForExit();
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller
+        gpio.shutdown();
     }
 }
 

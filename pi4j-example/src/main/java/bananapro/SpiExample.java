@@ -33,6 +33,7 @@ import com.pi4j.io.spi.SpiFactory;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.Console;
 
 import java.io.IOException;
 
@@ -47,9 +48,12 @@ public class SpiExample {
     // SPI device
     public static SpiDevice spi = null;
 
-    // SPI operations
-    public static byte INIT_CMD = (byte) 0xD0;
+    // ADC channel count
+    public static short ADC_CHANNEL_COUNT = 8;  // MCP3004=4, MCP3008=8
 
+    // create Pi4J console wrapper/helper
+    // (This is a utility class to abstract some of the boilerplate code)
+    protected static final Console console = new Console();
 
     public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
 
@@ -61,9 +65,15 @@ public class SpiExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPRO);
 
-        //
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "SPI test program using MCP3004/MCP3008 AtoD Chip");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
+
         // This SPI example is using the Pi4J SPI interface to communicate with
-        // the SPI hardware interface connected to a MCP3002 AtoD chip.
+        // the SPI hardware interface connected to a MCP3004/MCP3008 AtoD Chip.
         //
         // Please note the following command are required to enable the SPI driver on
         // your BananaPro:
@@ -72,58 +82,57 @@ public class SpiExample {
         // see this blog post for additional details on SPI and WiringPi
         // http://wiringpi.com/reference/spi-library/
         //
-        // see the link below for the data sheet on the MCP3002 chip:
+        // see the link below for the data sheet on the MCP3004/MCP3008 chip:
         // http://ww1.microchip.com/downloads/en/DeviceDoc/21294E.pdf
-
-        System.out.println("<--Pi4J--> SPI test program using MCP3002 AtoD Chip");
 
         // create SPI object instance for SPI for communication
         spi = SpiFactory.getInstance(SpiChannel.CS0,
-                                     SpiDevice.DEFAULT_SPI_SPEED, // default spi speed 1 MHz
-                                     SpiDevice.DEFAULT_SPI_MODE); // default spi mode 0
+                SpiDevice.DEFAULT_SPI_SPEED, // default spi speed 1 MHz
+                SpiDevice.DEFAULT_SPI_MODE); // default spi mode 0
 
-        // infinite loop
-        while(true) {
+        // continue running program until user exits using CTRL-C
+        while(console.isRunning()) {
             read();
             Thread.sleep(1000);
         }
+        console.emptyLine();
     }
 
-    public static void read() throws IOException {
-
-        // send test ASCII message
-        byte packet[] = new byte[2];
-        packet[0] = INIT_CMD;  // address byte
-        packet[1] = 0x00;  // dummy
-
-        System.out.println("-----------------------------------------------");
-        System.out.println("[TX] " + bytesToHex(packet));
-        byte[] result = spi.write(packet);
-        System.out.println("[RX] " + bytesToHex(result));
-        System.out.println("-----------------------------------------------");
-        System.out.println( ((result[0]<<8)|result[1]) & 0x3FF );
-    }
-
-
-    public static String bytesToBinary(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j];
-            sb.append(Integer.toBinaryString(v));
+    /**
+     * Read data via SPI bus from MCP3002 chip.
+     * @throws IOException
+     */
+    public static void read() throws IOException, InterruptedException {
+        for(short channel = 0; channel < ADC_CHANNEL_COUNT; channel++){
+            int conversion_value = getConversionValue(channel);
+            console.print(String.format(" | %04d", conversion_value)); // print 4 digits with leading zeros
         }
-        return sb.toString();
+        console.print(" |\r");
+        Thread.sleep(250);
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
+
+    /**
+     * Communicate to the ADC chip via SPI to get single-ended conversion value for a specified channel.
+     * @param channel analog input channel on ADC chip
+     * @return conversion value for specified analog input channel
+     * @throws IOException
+     */
+    public static int getConversionValue(short channel) throws IOException {
+
+        // create a data buffer and initialize a conversion request payload
+        byte data[] = new byte[] {
+                (byte) 0b00000001,                              // first byte, start bit
+                (byte)(0b10000000 |( ((channel & 7) << 4))),    // second byte transmitted -> (SGL/DIF = 1, D2=D1=D0=0)
+                (byte) 0b00000000                               // third byte transmitted....don't care
+        };
+
+        // send conversion request to ADC chip via SPI channel
+        byte[] result = spi.write(data);
+
+        // calculate and return conversion value from result bytes
+        int value = (result[1]<< 8) & 0b1100000000; //merge data[1] & data[2] to get 10-bit result
+        value |=  (result[2] & 0xff);
+        return value;
     }
 }

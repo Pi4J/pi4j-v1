@@ -34,6 +34,8 @@ import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.CommandArgumentParser;
+import com.pi4j.util.Console;
+import com.pi4j.util.ConsoleColor;
 
 /**
  * This example code demonstrates how to setup a listener
@@ -64,7 +66,6 @@ public class GpioListenExample {
      * @throws PlatformAlreadyAssignedException
      */
     public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
-        System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
 
         // ####################################################################
         //
@@ -73,6 +74,16 @@ public class GpioListenExample {
         //
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPI);
+
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "GPIO Listen Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -108,25 +119,32 @@ public class GpioListenExample {
         // unexport the GPIO pin when program exits
         myButton.setShutdownOptions(true);
 
-        System.out.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
+        // prompt user that we are ready
+        console.println(" ... Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
+        console.emptyLine();
+        console.box("Please complete the [" + pin + "] circuit and see",
+                "the listener feedback here in the console.");
+        console.emptyLine();
 
         // create and register gpio pin listener
         myButton.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+                console.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " +
+                        ConsoleColor.conditional(
+                                event.getState().isHigh(), // conditional expression
+                                ConsoleColor.GREEN,        // positive conditional color
+                                ConsoleColor.RED,          // negative conditional color
+                                event.getState()));        // text to display
             }
 
         });
 
-        System.out.println(" ... complete the [" + pin + "] circuit and see the listener feedback here in the console.");
-        System.out.println(" ... press the [ENTER] key to exit");
-
-        // keep program running until user exits
-        System.console().readLine();
+        // wait (block) for user to exit program using CTRL-C
+        console.waitForExit();
 
         // forcefully shutdown all GPIO monitoring threads and scheduled tasks
-        gpio.shutdown();  // <--- implement this method call if you wish to terminate the Pi4J GPIO controller
+        gpio.shutdown();
     }
 }

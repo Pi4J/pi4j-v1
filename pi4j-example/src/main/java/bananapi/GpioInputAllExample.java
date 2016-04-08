@@ -33,6 +33,8 @@ import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.CommandArgumentParser;
+import com.pi4j.util.Console;
+import com.pi4j.util.ConsoleColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,15 @@ public class GpioInputAllExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPI);
 
-        System.out.println("<--Pi4J--> GPIO Input (ALL PINS) Example ... started.");
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "GPIO Input (ALL PINS) Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -97,21 +107,23 @@ public class GpioInputAllExample {
             }
         }
 
+        // prompt user that we are ready
+        console.println(" ... Successfully provisioned all GPIO input pins");
+        console.emptyLine();
+        console.box("The GPIO input pins states will be displayed below.");
+        console.emptyLine();
+
         // display pin states for all pins
-        System.out.println();
-        System.out.println("**********************************************************");
-        System.out.println();
-        for(GpioPinDigitalInput pin : provisionedPins) {
-            System.out.println(" [" + pin.toString() + "] state is: " + pin.getState());
+        for(GpioPinDigitalInput input : provisionedPins) {
+            console.println(" [" + input.toString() + "] digital state is: " + ConsoleColor.conditional(
+                    input.getState().isHigh(), // conditional expression
+                    ConsoleColor.GREEN,        // positive conditional color
+                    ConsoleColor.RED,          // negative conditional color
+                    input.getState()));
         }
-        System.out.println();
-        System.out.println("**********************************************************");
-        System.out.println();
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
-
-        System.out.println("Exiting GpioInputAllExample");
     }
 }

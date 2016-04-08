@@ -34,6 +34,7 @@ import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.Console;
 
 import java.io.IOException;
 
@@ -69,14 +70,14 @@ public class I2CExample {
     //public static final int TSL2561_ADDR = 0x49; // address pin connected to VDD
 
     // TSL2561 registers
-    public static final byte TSL2561_REG_ID = (byte)0x8A;
-    public static final byte TSL2561_REG_DATA_0 = (byte)0x8C;
-    public static final byte TSL2561_REG_DATA_1 = (byte)0x8E;
-    public static final byte TSL2561_REG_CONTROL = (byte)0x80;
+    public static final byte TSL2561_REG_ID = (byte) 0x8A;
+    public static final byte TSL2561_REG_DATA_0 = (byte) 0x8C;
+    public static final byte TSL2561_REG_DATA_1 = (byte) 0x8E;
+    public static final byte TSL2561_REG_CONTROL = (byte) 0x80;
 
     // TSL2561 power control values
-    public static final byte TSL2561_POWER_UP = (byte)0x03;
-    public static final byte TSL2561_POWER_DOWN = (byte)0x00;
+    public static final byte TSL2561_POWER_UP = (byte) 0x03;
+    public static final byte TSL2561_POWER_DOWN = (byte) 0x00;
 
     /**
      * Program Main Entry Point
@@ -96,7 +97,15 @@ public class I2CExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPRO);
 
-        System.out.println("<--Pi4J--> I2C Example ... started.");
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "I2C Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // get the I2C bus to communicate on
         // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
@@ -109,12 +118,12 @@ public class I2CExample {
 
         // next, lets perform am I2C READ operation to the TSL2561 chip
         // we will read the 'ID' register from the chip to get its part number and silicon revision number
-        System.out.println("... reading ID register from TSL2561");
+        console.println("... reading ID register from TSL2561");
         int response = device.read(TSL2561_REG_ID);
-        System.out.println("TSL2561 ID = " + String.format("0x%02x", response) + " (should be 0x50)");
+        console.println("TSL2561 ID = " + String.format("0x%02x", response) + " (should be 0x50)");
 
         // next we want to start taking light measurements, so we need to power up the sensor
-        System.out.println("... powering up TSL2561");
+        console.println("... powering up TSL2561");
         device.write(TSL2561_REG_CONTROL, TSL2561_POWER_UP);
 
         // wait while the chip collects data
@@ -122,19 +131,16 @@ public class I2CExample {
 
         // now we will perform our first I2C READ operation to retrieve raw integration
         // results from DATA_0 and DATA_1 registers
-        System.out.println("... reading DATA registers from TSL2561");
+        console.println("... reading DATA registers from TSL2561");
         int data0 = device.read(TSL2561_REG_DATA_0);
         int data1 = device.read(TSL2561_REG_DATA_1);
 
         // print raw integration results from DATA_0 and DATA_1 registers
-        System.out.println("TSL2561 DATA 0 = " + String.format("0x%02x", data0));
-        System.out.println("TSL2561 DATA 1 = " + String.format("0x%02x", data1));
+        console.println("TSL2561 DATA 0 = " + String.format("0x%02x", data0));
+        console.println("TSL2561 DATA 1 = " + String.format("0x%02x", data1));
 
         // before we exit, lets not forget to power down light sensor
-        System.out.println("... powering down TSL2561");
+        console.println("... powering down TSL2561");
         device.write(TSL2561_REG_CONTROL, TSL2561_POWER_DOWN);
-
-        // done
-        System.out.println("Exiting I2CExample");
     }
 }

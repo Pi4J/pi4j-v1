@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.pi4j.util.Console;
 
 /**
  * <p>
@@ -59,6 +60,16 @@ public class PwmExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPI);
 
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "PWM Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
+
         // create GPIO controller instance
         GpioController gpio = GpioFactory.getInstance();
 
@@ -73,27 +84,25 @@ public class PwmExample {
 
         // set the PWM rate to 500
         pwm.setPwm(500);
-        System.out.println("PWM rate is: " + pwm.getPwm());
+        console.println("PWM rate is: " + pwm.getPwm());
 
-        System.out.println("Press ENTER to set the PWM to a rate of 250");
+        console.println("Press ENTER to set the PWM to a rate of 250");
         System.console().readLine();
 
         // set the PWM rate to 250
         pwm.setPwm(250);
-        System.out.println("PWM rate is: " + pwm.getPwm());
+        console.println("PWM rate is: " + pwm.getPwm());
 
 
-        System.out.println("Press ENTER to set the PWM to a rate to 0 (stop PWM)");
+        console.println("Press ENTER to set the PWM to a rate to 0 (stop PWM)");
         System.console().readLine();
 
         // set the PWM rate to 0
         pwm.setPwm(0);
-        System.out.println("PWM rate is: " + pwm.getPwm());
+        console.println("PWM rate is: " + pwm.getPwm());
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
-
-        System.out.println("Exiting PwmExample");
     }
 }

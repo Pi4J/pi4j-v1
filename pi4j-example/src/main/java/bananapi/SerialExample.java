@@ -35,6 +35,7 @@ import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.CommandArgumentParser;
+import com.pi4j.util.Console;
 
 import java.io.IOException;
 import java.util.Date;
@@ -70,7 +71,15 @@ public class SerialExample {
         // ####################################################################
         PlatformManager.setPlatform(Platform.BANANAPI);
 
-        System.out.println("<--Pi4J--> Serial Communication Example ... started.");
+        // create Pi4J console wrapper/helper
+        // (This is a utility class to abstract some of the boilerplate code)
+        final Console console = new Console();
+
+        // print program title/header
+        console.title("<-- The Pi4J Project -->", "Serial Communication Example");
+
+        // allow for user to exit program using CTRL-C
+        console.promptForExit();
 
         // create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
@@ -86,8 +95,8 @@ public class SerialExample {
 
                 // print out the data received to the console
                 try {
-                    System.out.println("[HEX DATA]   " + event.getHexByteString());
-                    System.out.println("[ASCII DATA] " + event.getAsciiString());
+                    console.println("[HEX DATA]   " + event.getHexByteString());
+                    console.println("[ASCII DATA] " + event.getAsciiString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -118,14 +127,16 @@ public class SerialExample {
             }
 
             // display connection details
-            System.out.println(" ... connecting to: " + config.toString());
-            System.out.println(" ... data received on serial port should be displayed below.");
+            console.box(" Connecting to: " + config.toString(),
+                    " We are sending ASCII data on the serial port every 1 second.",
+                    " Data received on serial port will be displayed below.");
+
 
             // open the default serial device/port with the configuration settings
             serial.open(config);
 
             // continuous loop to keep the program running until the user terminates the program
-            while(true) {
+            while(console.isRunning()) {
                 try {
                     // write a formatted string to the serial transmit buffer
                     serial.write("CURRENT TIME: " + new Date().toString());
@@ -154,7 +165,7 @@ public class SerialExample {
 
         }
         catch(IOException ex) {
-            System.out.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
+            console.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
             return;
         }
     }
