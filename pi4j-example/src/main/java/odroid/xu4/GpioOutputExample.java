@@ -62,6 +62,16 @@ public class GpioOutputExample {
 
         // ####################################################################
         //
+        // !!!!! ATTENTION !!!!!  ALL GPIO PINS ON ODROID-XU4 ARE 1.8VDC.
+        //
+        // THIS MEANS THAT YOU MUST USE A LEVEL SHIFTER IF USING WITH A 3.3VDC/5VDC CIRCUIT.
+        // YOU CAN USE THE OPTIONAL ODROID XU4-SHIFTER SHIELD TO PERFORM THE LEVEL SHIFTING:
+        //  http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143556253995
+        //
+        // ####################################################################
+
+        // ####################################################################
+        //
         // since we are not using the default Raspberry Pi platform, we should
         // explicitly assign the platform as the Odroid platform.
         //

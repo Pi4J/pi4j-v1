@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * This example code demonstrates how to perform serial communications using the Odroid C1/C1+/C2/XU4.
- * (see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU4 Serial Port addresses.)
+ * This example code demonstrates how to perform serial communications using the Odroid XU4.
+ * (see 'OdroidSerial' for constant definitions for Odroid XU4 Serial Port addresses.)
  *
  * @author Robert Savage
  */
@@ -62,6 +62,17 @@ public class SerialExample {
      * @throws IOException
      */
     public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
+
+        // ####################################################################
+        //
+        // !!!!! ATTENTION !!!!!  ALL GPIO PINS ON ODROID-XU4 ARE 1.8VDC.
+        //                        INCLUDING THE SERIAL/UART PINS
+        //
+        // THIS MEANS THAT YOU MUST USE A LEVEL SHIFTER IF USING WITH A 3.3VDC/5VDC CIRCUIT.
+        // YOU CAN USE THE OPTIONAL ODROID XU4-SHIFTER SHIELD TO PERFORM THE LEVEL SHIFTING:
+        //  http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143556253995
+        //
+        // ####################################################################
 
         // ####################################################################
         //
@@ -109,12 +120,12 @@ public class SerialExample {
 
             // set default serial settings (device, baud rate, flow control, etc)
             //
-            // by default, use the DEFAULT com port on the Odroid C1/C1+/C2 (exposed on GPIO header)
-            // see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU4 Serial Port addresses.
+            // by default, use the DEFAULT com port on the Odroid XU4 (exposed on GPIO header)
+            // see 'OdroidSerial' for constant definitions for Odroid XU4 Serial Port addresses.
             //
             // NOTE: this utility method will determine the default serial port for the
             //       detected platform and board/model.
-            config.device(OdroidSerial.DEFAULT_COM_PORT_C1)
+            config.device(OdroidSerial.DEFAULT_COM_PORT_XU)
                     .baud(Baud._38400)
                     .dataBits(DataBits._8)
                     .parity(Parity.NONE)

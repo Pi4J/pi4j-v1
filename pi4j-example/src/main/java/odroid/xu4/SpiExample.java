@@ -38,12 +38,11 @@ import com.pi4j.util.Console;
 import java.io.IOException;
 
 /**
- * This example code demonstrates how to perform basic SPI communications using the Odroid C1/C1+/C2/XU4.
+ * This example code demonstrates how to perform basic SPI communications using the Odroid XU4.
  * Only CS0 (chip-select) is supported for SPI0 out of the box.
  *
- * Don't forget to load the SPI kernel modules to provide access to device "/dev/spidev0.0"
- * > sudo modprobe spicc
- * > sudo modprobe spidev
+ * You must follow these instructions to configure the board for SPI usage:
+ * http://odroid.com/dokuwiki/doku.php?id=en:xu3_hardware_spi
  *
  * @author Robert Savage
  */
@@ -60,6 +59,17 @@ public class SpiExample {
     protected static final Console console = new Console();
 
     public static void main(String args[]) throws InterruptedException, IOException, PlatformAlreadyAssignedException {
+
+        // ####################################################################
+        //
+        // !!!!! ATTENTION !!!!!  ALL GPIO PINS ON ODROID-XU4 ARE 1.8VDC.
+        //                        INCLUDING THE SPI PINS
+        //
+        // THIS MEANS THAT YOU MUST USE A LEVEL SHIFTER IF USING WITH A 3.3VDC/5VDC CIRCUIT.
+        // YOU CAN USE THE OPTIONAL ODROID XU4-SHIFTER SHIELD TO PERFORM THE LEVEL SHIFTING:
+        //  http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143556253995
+        //
+        // ####################################################################
 
         // ####################################################################
         //

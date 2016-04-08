@@ -42,7 +42,7 @@ import java.util.Date;
 
 /**
  * This example code demonstrates how to perform serial communications using the Odroid C1/c1+/C2/XU4.
- * (see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2/XU4 Serial Port addresses.)
+ * (see 'OdroidSerial' for constant definitions for Odroid C1/C1+/C2 Serial Port addresses.)
  *
  * @author Robert Savage
  */

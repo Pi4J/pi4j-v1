@@ -38,7 +38,7 @@ import com.pi4j.util.Console;
 import java.io.IOException;
 
 /**
- * This example code demonstrates how to perform basic SPI communications using the Odroid C1/C1+/C2/XU4.
+ * This example code demonstrates how to perform basic SPI communications using the Odroid C1/C1+/C2.
  * Only CS0 (chip-select) is supported for SPI0 out of the box.
  *
  * Don't forget to load the SPI kernel modules to provide access to device "/dev/spidev0.0"

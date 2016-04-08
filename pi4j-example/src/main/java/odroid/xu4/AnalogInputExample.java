@@ -54,6 +54,13 @@ public class AnalogInputExample {
 
         // ####################################################################
         //
+        // !!!!! ATTENTION !!!!!  ALL ADC/AIN PINS ON ODROID-XU4 ARE 1.8VDC.
+        //          DO NOT APPLY A HIGHER VOLTAGE THAN 1.8VDC TO THESE PINS.
+        //
+        // ####################################################################
+
+        // ####################################################################
+        //
         // since we are not using the default Raspberry Pi platform, we should
         // explicitly assign the platform as the Odroid platform.
         //

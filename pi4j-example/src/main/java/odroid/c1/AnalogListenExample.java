@@ -53,6 +53,13 @@ public class AnalogListenExample {
 
         // ####################################################################
         //
+        // !!!!! ATTENTION !!!!!  ALL ADC/AIN PINS ON ODROID-C1/C1+/C2 ARE 1.8VDC.
+        //          DO NOT APPLY A HIGHER VOLTAGE THAN 1.8VDC TO THESE PINS.
+        //
+        // ####################################################################
+
+        // ####################################################################
+        //
         // since we are not using the default Raspberry Pi platform, we should
         // explicitly assign the platform as the Odroid platform.
         //

@@ -40,7 +40,7 @@ import java.io.IOException;
 
 /**
  * This example code demonstrates how to perform simple I2C
- * communication on the Odroid-C1/C1+/C2/XU4.  For this example we will
+ * communication on the Odroid-XU4.  For this example we will
  * connect to a 'TSL2561' LUX sensor.
  *
  * Data Sheet:
@@ -107,11 +107,27 @@ public class I2CExample {
         // allow for user to exit program using CTRL-C
         console.promptForExit();
 
+        // ####################################################################
+        //
+        // !!!!! ATTENTION !!!!!  ALL GPIO PINS ON ODROID-XU4 ARE 1.8VDC.
+        //                        INCLUDING THE I2C PINS
+        //
+        // THIS MEANS THAT YOU MUST USE A LEVEL SHIFTER IF CONVERTING TO USE I2C WITH A 3.3VDC CIRCUIT/CHIP
+        // YOU CAN USE THE OPTIONAL ODROID XU4-SHIFTER SHIELD TO PERFORM THE LEVEL SHIFTING:
+        //  http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143556253995
+        //
+        // ---VIA CON10--- "HW-I2C-3(/dev/i2c-3)"
+        // - I2CBus.BUS_3 uses 30 pin header <CON10>, pin #16 as I2C_1.SDA (GPIO #209) and pin #14 as I2C_1.SCL (GPIO #210)
+        // see GPIO PIN MAP here: http://odroid.com/dokuwiki/doku.php?id=en:xu3_hardware_i2c
+
+        // ---VIA CON11--- "HW-HSI2C(/dev/i2c-1)"
+        // - I2CBus.BUS_1 uses 12 pin header <CON11>, pin #4 as I2C_5.SDA (GPIO #187) and pin #6 as I2C_5.SCL (GPIO #188)
+        // see GPIO PIN MAP here: http://odroid.com/dokuwiki/doku.php?id=en:xu4_hardware_hsi2c
+        //
+        // ####################################################################
+
         // get the I2C bus to communicate on
-        // - I2CBus.BUS_1 uses 40 pin header, pin #3 as I2CA_SDA (SDA1) and pin #5 as I2CA_SCL (SCL1)
-        // - I2CBus.BUS_2 uses 40 pin header, pin #27 as I2CB_SDA (SDA2) and pin #28 as I2CB_SCL (SCL2)
-        // see GPIO PIN MAP here: http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573&tab_idx=2
-        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
+        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_3);
 
         // create an I2C device for an individual device on the bus that you want to communicate with
         // in this example we will use the default address for the TSL2561 chip which is 0x39.
