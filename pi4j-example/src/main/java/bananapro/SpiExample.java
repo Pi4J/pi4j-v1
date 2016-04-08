@@ -1,4 +1,5 @@
-package bananapro;/*
+package bananapro;
+/*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
