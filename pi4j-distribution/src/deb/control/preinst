@@ -11,7 +11,7 @@ mkdir -p /opt/pi4j/examples/odroid
 mkdir -p /opt/pi4j/examples/odroid/c1
 mkdir -p /opt/pi4j/examples/odroid/xu4
 
-# SET PERMISSIONS
+# SET READ+WRITE PERMISSIONS FOR EXAMPLES DIRECTORY
 chmod -f -R a+rw /opt/pi4j/examples
 
 

@@ -203,7 +203,7 @@
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/distro-contents/examples</outputDirectory>
-									<includes>**/*.java,**/build</includes>
+									<includes>**/*.java,**/build,**/run</includes>
 								</artifactItem>
 							</artifactItems>
 							<includes>**/*.java</includes>
@@ -351,6 +351,70 @@
                                 <filemode>755</filemode>
                             </mapper>
                         </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/odroid/c1/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/odroid/c1/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/odroid/xu4/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/odroid/xu4/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/bananapi/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/bananapi/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/bananapro/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/bananapro/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/odroid/c1/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/odroid/c1/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/odroid/xu4/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/odroid/xu4/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+
                     </dataSet>
                 </configuration>
 			</plugin>
