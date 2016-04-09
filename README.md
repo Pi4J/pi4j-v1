@@ -37,7 +37,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-04-07 :: 1.1-SNAPSHOT
+2016-04-08 :: 1.1-SNAPSHOT
 
   *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue. 
      A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
