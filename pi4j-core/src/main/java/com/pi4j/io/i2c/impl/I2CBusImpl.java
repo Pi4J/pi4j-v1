@@ -53,6 +53,30 @@ public class I2CBusImpl implements I2CBus {
     /** Singleton instance of bus 1 */
     private static I2CBus bus1 = null;
 
+    /** Singleton instance of bus 10 */
+    private static I2CBus bus10 = null;
+
+    /** Singleton instance of bus 11 */
+    private static I2CBus bus11 = null;
+
+    /** Singleton instance of bus 12 */
+    private static I2CBus bus12 = null;
+
+    /** Singleton instance of bus 13 */
+    private static I2CBus bus13 = null;
+
+    /** Singleton instance of bus 14 */
+    private static I2CBus bus14 = null;
+
+    /** Singleton instance of bus 15 */
+    private static I2CBus bus15 = null;
+
+    /** Singleton instance of bus 16 */
+    private static I2CBus bus16 = null;
+
+    /** Singleton instance of bus 17 */
+    private static I2CBus bus17 = null;
+
     /** to lock the creation/destruction of the bus singletons */
     private final static Lock lock = new ReentrantLock( true );
 
@@ -66,19 +90,78 @@ public class I2CBusImpl implements I2CBus {
     public static I2CBus getBus(int busNumber) throws IOException {
         I2CBus bus;
         lock.lock();
-        if (busNumber == 0) {
+        switch (busNumber) {
+        case 0:
             bus = bus0;
             if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-0");
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
                 bus0 = bus;
             }
-        } else if (busNumber == 1) {
+            break;
+        case 1:
             bus = bus1;
             if (bus == null) {
-                bus = new I2CBusImpl("/dev/i2c-1");
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
                 bus1 = bus;
             }
-        } else {
+            break;
+        case 10:
+            bus = bus10;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus10 = bus;
+            }
+            break;
+        case 11:
+            bus = bus11;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus11 = bus;
+            }
+            break;
+        case 12:
+            bus = bus12;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus12 = bus;
+            }
+            break;
+        case 13:
+            bus = bus13;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus13 = bus;
+            }
+            break;
+        case 14:
+            bus = bus14;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus14 = bus;
+            }
+            break;
+        case 15:
+            bus = bus15;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus15 = bus;
+            }
+            break;
+        case 16:
+            bus = bus16;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus16 = bus;
+            }
+            break;
+        case 17:
+            bus = bus17;
+            if (bus == null) {
+                bus = new I2CBusImpl("/dev/i2c-" + busNumber);
+                bus17 = bus;
+            }
+            break;
+        default:
             throw new IOException("Unknown bus number " + busNumber);
         }
         lock.unlock();
@@ -136,6 +219,22 @@ public class I2CBusImpl implements I2CBus {
             bus0 = null;
         } else if (this == bus1) {
             bus1 = null;
+        } else if (this == bus10) {
+            bus10 = null;
+        } else if (this == bus11) {
+            bus11 = null;
+        } else if (this == bus12) {
+            bus12 = null;
+        } else if (this == bus13) {
+            bus13 = null;
+        } else if (this == bus14) {
+            bus14 = null;
+        } else if (this == bus15) {
+            bus15 = null;
+        } else if (this == bus16) {
+            bus16 = null;
+        } else if (this == bus17) {
+            bus17 = null;
         }
         lock.unlock();
     }
