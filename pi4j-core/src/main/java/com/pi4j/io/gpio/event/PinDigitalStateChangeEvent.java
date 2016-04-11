@@ -31,6 +31,7 @@ package com.pi4j.io.gpio.event;
 
 
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinEdge;
 import com.pi4j.io.gpio.PinState;
 
 
@@ -44,6 +45,7 @@ public class PinDigitalStateChangeEvent extends PinEvent {
 
     private static final long serialVersionUID = -7643355305429082626L;
     private final PinState state;
+    private final PinEdge edge;
 
     /**
      * Default event constructor
@@ -55,6 +57,9 @@ public class PinDigitalStateChangeEvent extends PinEvent {
     public PinDigitalStateChangeEvent(Object obj, Pin pin, PinState state) {
         super(obj, pin, PinEventType.DIGITAL_STATE_CHANGE);
         this.state = state;
+
+        // set pin edge caused by the state change
+        this.edge = (state == PinState.HIGH) ? PinEdge.RISING : PinEdge.FALLING;
     }
 
     /**
@@ -64,5 +69,15 @@ public class PinDigitalStateChangeEvent extends PinEvent {
      */
     public PinState getState() {
         return state;
+    }
+
+
+    /**
+     * Get the pin edge for the state change caused by this event.
+     *
+     * @return
+     */
+    public PinEdge getEdge() {
+        return this.edge;
     }
 }

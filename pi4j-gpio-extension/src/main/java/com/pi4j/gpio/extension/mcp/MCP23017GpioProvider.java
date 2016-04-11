@@ -146,10 +146,10 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         // set all default pin pull up resistors
         device.write(REGISTER_GPPU_A, (byte) currentPullupA);
         device.write(REGISTER_GPPU_B, (byte) currentPullupB);
-        
+
         // set pollingtime
         this.pollingTime = pollingTime;
-        
+
         i2cBusOwner = true;
     }
 

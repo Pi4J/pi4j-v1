@@ -1,11 +1,10 @@
 package com.pi4j.gpio.extension.mcp;
 
-import java.util.EnumSet;
-
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.impl.PinImpl;
+import java.util.EnumSet;
 
 /*
  * #%L
@@ -51,7 +50,7 @@ import com.pi4j.io.gpio.impl.PinImpl;
  * @author Robert Savage
  *
  */
-public class MCP23S17Pin {
+public class MCP23S17Pin extends MCP23X17Pin {
 
     public static final Pin GPIO_A0 = createDigitalPin(1, "GPIO A0");
     public static final Pin GPIO_A1 = createDigitalPin(2, "GPIO A1");
