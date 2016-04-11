@@ -141,7 +141,7 @@ public class SoftPwm {
      * </p>
      *
      * @see <a
-     *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>     *
+     *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/>     *
      * @param pin The GPIO pin to use as a PWM pin.
      */
     public static native void softPwmStop(int pin);

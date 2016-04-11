@@ -33,7 +33,7 @@ package com.pi4j.io.serial;
  * This class simply exposed the available UART/serial port
  * address (device file paths) that are exposed on the Odroid C1/C1+/C2.
  *
- * @see http://odroid.com/dokuwiki/doku.php?id=en:c1_hardware_uart
+ * SEE: http://odroid.com/dokuwiki/doku.php?id=en:c1_hardware_uart
  */
 public class OdroidSerial {
 
@@ -71,7 +71,4 @@ public class OdroidSerial {
     // - TX is located at CON10, pin #8
     public static final String UART0_COM_PORT_XU = "/dev/ttySAC0";
     public static final String DEFAULT_COM_PORT_XU = UART0_COM_PORT_XU;
-
-
-
 }

@@ -52,7 +52,7 @@ public class CommandArgumentParser {
      * @param pinProviderClass pin provider class to get pin instance from
      * @param defaultPin default pin instance to use if no --pin argument is found
      * @param args the argument array to search in
-     * @return
+     * @return GPIO pin instance
      */
     public static Pin getPin(Class<? extends PinProvider> pinProviderClass, Pin defaultPin, String ... args){
         // search all arguments for the "--pin" or "-p" option
@@ -81,7 +81,7 @@ public class CommandArgumentParser {
      *
      * @param defaultPull default pin pull resistance to apply if no option/argument is found
      * @param args the argument array to search in
-     * @return
+     * @return pill pull resistance enum
      */
     public static PinPullResistance getPinPullResistance(PinPullResistance defaultPull, String ... args){
 
@@ -136,7 +136,7 @@ public class CommandArgumentParser {
      *
      * @param defaultConfig default serial configuration to apply if no option/arguments are found
      * @param args the argument array to search in
-     * @return
+     * @return serial config object
      */
     public static SerialConfig getSerialConfig(SerialConfig defaultConfig, String ... args){
 
