@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-		</dependency>		
+		</dependency>
 	</dependencies>
 
 	<!-- BUILD INSTRUCTIONS -->
@@ -41,7 +41,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
-			</resource>			
+			</resource>
 		</resources>
 
 		<plugins>
@@ -98,8 +98,8 @@
                     		com.pi4j.io.gpio.service.GpioService,
                     		com.pi4j.system.service.NetworkInformationService,
                     		com.pi4j.system.service.SystemInformationService
-                    	</Export-Service>	
-                    	<Activator></Activator>						
+                    	</Export-Service>
+                    	<Activator></Activator>
 					</instructions>
 				</configuration>
 			</plugin>

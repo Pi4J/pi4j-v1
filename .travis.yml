@@ -24,7 +24,7 @@
 # You should have received a copy of the GNU General Lesser Public
 # License along with this program.  If not, see
 # <http://www.gnu.org/licenses/lgpl-3.0.html>.
-# 
+#
 ###
 
 # ----------------------------------------------------------------------------------
@@ -43,22 +43,22 @@ os:
 # toolchain from github and then add the arm cross-compiler tools to the path and
 # export the build architecture and compiler prefix environment variables.
 # ----------------------------------------------------------------------------------
-install:  
+install:
   - export PROJECT_DIR=$PWD
   - sudo apt-get update -qq
-  - sudo apt-get install -qq tree  
+  - sudo apt-get install -qq tree
   - cd $HOME
   - git clone https://github.com/raspberrypi/tools rpi-tools
   - export PATH=$PATH:$HOME/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-  - export ARCH=arm 
+  - export ARCH=arm
   - export CCPREFIX=$HOME/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
-  - export CC=arm-linux-gnueabihf-gcc 
+  - export CC=arm-linux-gnueabihf-gcc
   - export RPI_CROSS_COMPILE=true
   - cd $PROJECT_DIR
 
 # ----------------------------------------------------------------------------------
-# Build the project including the 
-# 'pi4j-native' project using the cross-compiler profile.  
+# Build the project including the
+# 'pi4j-native' project using the cross-compiler profile.
 #  ... Skip all tests.
 #  ... Skip javadoc.
 # ----------------------------------------------------------------------------------

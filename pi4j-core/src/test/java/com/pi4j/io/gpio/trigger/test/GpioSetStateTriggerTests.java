@@ -28,12 +28,10 @@ package com.pi4j.io.gpio.trigger.test;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
@@ -54,8 +52,8 @@ public class GpioSetStateTriggerTests {
     private static GpioSetStateTrigger triggerHigh;
     private static GpioSetStateTrigger triggerLow;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -73,8 +71,8 @@ public class GpioSetStateTriggerTests {
         inputPin.addTrigger(triggerLow);
     }
 
-    @AfterClass
-    public static void teardown() {
+    @After
+    public void teardown() {
         // remove triggers
         inputPin.removeTrigger(triggerHigh);
         inputPin.removeTrigger(triggerLow);

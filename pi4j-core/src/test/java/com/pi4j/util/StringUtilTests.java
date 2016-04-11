@@ -32,14 +32,9 @@ package com.pi4j.util;
 
 import static org.junit.Assert.*;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class StringUtilTests {
-
-    @BeforeClass
-    public static void setup() {
-    }
 
     @Test
     public void testIsNullOrEmpty() {

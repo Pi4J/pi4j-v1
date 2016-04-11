@@ -32,17 +32,12 @@ package com.pi4j.temperature.test;
 
 import static org.junit.Assert.*;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.pi4j.temperature.TemperatureConversion;
 import com.pi4j.temperature.TemperatureScale;
 
 public class TemperatureConversionTests {
-
-    @BeforeClass
-    public static void setup() {
-    }
 
     // **********************************************
     // FARENHEIT CONVERSION TESTS

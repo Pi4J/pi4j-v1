@@ -801,7 +801,7 @@ public class Gpio {
      * <p>[PWM]</p>
      *
      * <p> The PWM generator can run in 2 modes – balanced and mark:space. The mark:space mode is traditional, however
-     *     the default mode in the Pi is “balanced”. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
+     *     the default mode in the Pi is balanced. You can switch modes by supplying the parameter: PWM_MODE_BAL or PWM_MODE_MS.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/raspberry-pi-specifics/">http://wiringpi.com/reference/raspberry-pi-specifics/</a>

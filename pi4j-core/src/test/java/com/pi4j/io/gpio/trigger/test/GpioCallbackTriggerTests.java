@@ -28,14 +28,12 @@ package com.pi4j.io.gpio.trigger.test;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-
 import static org.junit.Assert.*;
 
 import java.util.concurrent.Callable;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
@@ -54,8 +52,8 @@ public class GpioCallbackTriggerTests {
     private static GpioCallbackTrigger trigger;
     private static int callbackCounter = 0;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -76,8 +74,8 @@ public class GpioCallbackTriggerTests {
         inputPin.addTrigger(trigger);
     }
 
-    @AfterClass
-    public static void teardown() {
+    @After
+    public void teardown() {
         // remove trigger
         inputPin.removeTrigger(trigger);
     }

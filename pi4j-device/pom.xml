@@ -105,12 +105,12 @@
 								<if>
 									<equals arg1="${pi.transfer.dev}" arg2="true" />
 									<then>
-									
+
 										<!-- ensure the target directory exists on the Raspberry Pi -->
 										<sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
 											password="${pi.password.dev}" trust="true" failonerror="false"
 											verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
-												
+
 										<!-- copy the JAR file to the Raspberry Pi -->
 										<scp
 											file="${project.build.directory}/${project.build.finalName}.jar"

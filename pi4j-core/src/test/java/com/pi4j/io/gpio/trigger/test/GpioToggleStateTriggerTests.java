@@ -11,7 +11,7 @@ package com.pi4j.io.gpio.trigger.test;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2015 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,12 +28,10 @@ package com.pi4j.io.gpio.trigger.test;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.pi4j.io.gpio.GpioController;
@@ -53,8 +51,8 @@ public class GpioToggleStateTriggerTests {
     private static GpioPinDigitalOutput outputPin;
     private static GpioToggleStateTrigger trigger;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         // create a mock gpio provider and controller
         provider = MockGpioFactory.getMockProvider();
         gpio = MockGpioFactory.getInstance();
@@ -70,8 +68,8 @@ public class GpioToggleStateTriggerTests {
         inputPin.addTrigger(trigger);
     }
 
-    @AfterClass
-    public static void teardown() {
+    @After
+    public void teardown() {
         // remove trigger
         inputPin.removeTrigger(trigger);
     }
