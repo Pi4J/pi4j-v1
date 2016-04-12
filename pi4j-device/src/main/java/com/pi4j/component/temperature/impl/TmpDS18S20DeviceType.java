@@ -52,9 +52,9 @@ import com.pi4j.temperature.TemperatureScale;
  *
  * @author Peter Schuebl
  */
-public class TmpDS18B20DeviceType implements W1DeviceType {
+public class TmpDS18S20DeviceType implements W1DeviceType {
 
-    public static final int FAMILY_CODE = 0x28;
+    public static final int FAMILY_CODE = 0x10;
 
     @Override
     public int getDeviceFamilyCode() {
@@ -63,12 +63,12 @@ public class TmpDS18B20DeviceType implements W1DeviceType {
 
     @Override
     public Class<? extends W1Device> getDeviceClass() {
-        return TmpDS18B20.class;
+        return TmpDS18S20.class;
     }
 
     @Override
-    public TmpDS18B20 create(final File deviceDir) {
-        return new TmpDS18B20(deviceDir);
+    public TmpDS18S20 create(final File deviceDir) {
+        return new TmpDS18S20(deviceDir);
     }
 
     /*
@@ -83,9 +83,9 @@ public class TmpDS18B20DeviceType implements W1DeviceType {
     }
     */
 
-    static class TmpDS18B20 extends TemperatureSensorBase implements TemperatureSensor, W1Device {
+    static class TmpDS18S20 extends TemperatureSensorBase implements TemperatureSensor, W1Device {
 
-        private final Logger log = Logger.getLogger(TmpDS18B20.class.getName());
+        private final Logger log = Logger.getLogger(TmpDS18S20.class.getName());
 
         private final String id;
 
@@ -101,7 +101,7 @@ public class TmpDS18B20DeviceType implements W1DeviceType {
             return id;
         }
 
-        public TmpDS18B20(final File deviceDir) {
+        public TmpDS18S20(final File deviceDir) {
             String deviceName;
             try {
                 deviceName = new String(Files.readAllBytes(new File(deviceDir, "name").toPath()));
