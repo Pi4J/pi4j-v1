@@ -32,27 +32,25 @@ package com.pi4j.io.i2c;
 import java.io.IOException;
 
 /**
- * This is abstraction of i2c bus. This interface allows bus to return i2c device.
+ * This is abstraction of i2c bus. This interface allows the bus to return i2c device.
  *
- * @author Daniel Sendula
- *
+ * @author Daniel Sendula, refactored by <a href="http://raspelikan.blogspot.co.at">RasPelikan</a>
  */
-
 public interface I2CBus {
 
-    public static final int BUS_0 = 0;
-    public static final int BUS_1 = 1;
-    public static final int BUS_2 = 2;
-    public static final int BUS_3 = 3;
-    public static final int BUS_4 = 4;
-    public static final int BUS_10 = 10;
-    public static final int BUS_11 = 11;
-    public static final int BUS_12 = 12;
-    public static final int BUS_13 = 13;
-    public static final int BUS_14 = 14;
-    public static final int BUS_15 = 15;
-    public static final int BUS_16 = 16;
-    public static final int BUS_17 = 17;
+    int BUS_0 = 0;
+    int BUS_1 = 1;
+    int BUS_2 = 2;
+    int BUS_3 = 3;
+    int BUS_4 = 4;
+    int BUS_10 = 10;
+    int BUS_11 = 11;
+    int BUS_12 = 12;
+    int BUS_13 = 13;
+    int BUS_14 = 14;
+    int BUS_15 = 15;
+    int BUS_16 = 16;
+    int BUS_17 = 17;
 
     /**
      * Returns i2c device.
@@ -63,9 +61,10 @@ public interface I2CBus {
      */
     I2CDevice getDevice(int address) throws IOException;
 
-    String getFileName();
-
-    int getFileDescriptor();
+    /**
+     * @return The bus' number
+     */
+    int getBusNumber();
 
     /**
      * Closes this bus. This usually means closing underlying file.

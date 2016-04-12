@@ -48,228 +48,231 @@ import java.util.logging.Logger;
  */
 public class W1Master {
 
-	private final Logger log = Logger.getLogger(W1Master.class.getName());
+    private final Logger log = Logger.getLogger(W1Master.class.getName());
 
-	private final List<W1DeviceType> deviceTypes = new ArrayList<>();
+    private final List<W1DeviceType> deviceTypes = new ArrayList<>();
 
-	private final Map<String, W1DeviceType> deviceTypeMap = new LinkedHashMap<>();
+    private final Map<String, W1DeviceType> deviceTypeMap = new LinkedHashMap<>();
 
-	private File masterDir = new File("/sys/bus/w1/devices");
+    private File masterDir = new File("/sys/bus/w1/devices");
 
-	private final List<W1Device> devices = new CopyOnWriteArrayList<>();
+    private final List<W1Device> devices = new CopyOnWriteArrayList<>();
 
-	/**
-	 * Create an instance of the W1 master. Typically there should only be one master.
-	 * <p/>
-	 * java.util.ServiceLoader is used to add device support for individual devices.
-	 */
-	public W1Master() {
-		init(null);
-	}
+    /**
+     * Create an instance of the W1 master. Typically there should only be one master.
+     * <p/>
+     * java.util.ServiceLoader is used to add device support for individual devices.
+     */
+    public W1Master() {
+        init(null);
+    }
 
-	/**
-	 * Create an instance of the W1 master. Typically there should only be one master.
-	 * <p/>
-	 * java.util.ServiceLoader is used to add device support for individual devices.
-	 *
-	 * @param classloader
-	 *            This ClassLoader will be used for the ServiceLoader to determine supported device types.
-	 */
-	public W1Master(final ClassLoader classloader) {
-		init(classloader);
-	}
+    /**
+     * Create an instance of the W1 master. Typically there should only be one master.
+     * <p/>
+     * java.util.ServiceLoader is used to add device support for individual devices.
+     *
+     * @param classloader This ClassLoader will be used for the ServiceLoader to determine supported device types.
+     */
+    public W1Master(final ClassLoader classloader) {
+        init(classloader);
+    }
 
-	/**
-	 * Create a master with a different default dir e.g. for tests.
-	 *
-	 * @param masterDir
-	 */
-	public W1Master(final String masterDir) {
-		this.masterDir = new File(masterDir);
-		init(null);
-	}
+    /**
+     * Create a master with a different default dir e.g. for tests.
+     *
+     * @param masterDir
+     */
+    public W1Master(final String masterDir) {
+        this.masterDir = new File(masterDir);
+        init(null);
+    }
 
-	/**
-	 * Create a master with a different default dir e.g. for tests.
-	 *
-	 * @param masterDir
-	 * @param classloader
-	 *            This ClassLoader will be used for the ServiceLoader to determine supported device types.
-	 */
-	public W1Master(final String masterDir, final ClassLoader classloader) {
-		this.masterDir = new File(masterDir);
-		init(classloader);
-	}
+    /**
+     * Create a master with a different default dir e.g. for tests.
+     *
+     * @param masterDir
+     * @param classloader This ClassLoader will be used for the ServiceLoader to determine supported device types.
+     */
+    public W1Master(final String masterDir, final ClassLoader classloader) {
+        this.masterDir = new File(masterDir);
+        init(classloader);
+    }
 
-	private void init(final ClassLoader classloader) {
-		final ServiceLoader<W1DeviceType> w1DeviceTypes = classloader == null ? ServiceLoader.load(W1DeviceType.class)
-				: ServiceLoader.load(W1DeviceType.class, classloader);
-		final Iterator<W1DeviceType> w1DeviceTypeIterator = w1DeviceTypes.iterator();
-		while (w1DeviceTypeIterator.hasNext()) {
-			final W1DeviceType w1DeviceType = w1DeviceTypeIterator.next();
-			deviceTypes.add(w1DeviceType);
-			final String deviceFamily = Integer.toHexString(w1DeviceType.getDeviceFamilyCode()).toUpperCase();
-			deviceTypeMap.put(deviceFamily, w1DeviceType);
-		}
-		devices.addAll(readDevices());
-	}
+    private void init(final ClassLoader classloader) {
+        final ServiceLoader<W1DeviceType> w1DeviceTypes = classloader == null ? ServiceLoader.load(W1DeviceType.class) : ServiceLoader.load(W1DeviceType.class, classloader);
+        final Iterator<W1DeviceType> w1DeviceTypeIterator = w1DeviceTypes.iterator();
+        while (w1DeviceTypeIterator.hasNext()) {
+            final W1DeviceType w1DeviceType = w1DeviceTypeIterator.next();
+            deviceTypes.add(w1DeviceType);
+            final String deviceFamily = Integer.toHexString(w1DeviceType.getDeviceFamilyCode()).toUpperCase();
+            deviceTypeMap.put(deviceFamily, w1DeviceType);
+        }
+        devices.addAll(readDevices());
+    }
 
-	public void checkDeviceChanges() {
-		final List<W1Device> refreshedDevices = new ArrayList<>();
-		final List<W1Device> removedDevices = new ArrayList<>();
+    public void checkDeviceChanges() {
+        final List<W1Device> refreshedDevices = new ArrayList<>();
+        final List<W1Device> removedDevices = new ArrayList<>();
 
-		refreshedDevices.addAll(readDevices());
+        refreshedDevices.addAll(readDevices());
 
-		for (final W1Device device : devices) {
-			if (!refreshedDevices.contains(device)) {
-				removedDevices.add(device);
-			}
-		}
-		refreshedDevices.removeAll(devices);
+        for (final W1Device device : devices) {
+            if (!refreshedDevices.contains(device)) {
+                removedDevices.add(device);
+            }
+        }
+        refreshedDevices.removeAll(devices);
 
-		final int newCount = refreshedDevices.size();
-		final int removedCount = removedDevices.size();
-		if (newCount > 0) {
-			log.fine("found " + newCount + " new device(s): " + refreshedDevices);
-		}
+        final int newCount = refreshedDevices.size();
+        final int removedCount = removedDevices.size();
+        if (newCount > 0) {
+            log.fine("found " + newCount + " new device(s): " + refreshedDevices);
+        }
 
-		if (removedCount > 0) {
-			log.fine("removed " + removedCount + " device(s): " + removedDevices);
-		}
+        if (removedCount > 0) {
+            log.fine("removed " + removedCount + " device(s): " + removedDevices);
+        }
 
-		devices.addAll(refreshedDevices);
-		devices.removeAll(removedDevices);
+        devices.addAll(refreshedDevices);
+        devices.removeAll(removedDevices);
+    }
 
-	}
+    /**
+     * Gets a list of the available device types.
+     *
+     * @return
+     */
+    public Collection<W1DeviceType> getDeviceTypes() {
+        return deviceTypes;
+    }
 
-	/**
-	 * Gets a list of the available device types.
-	 *
-	 * @return
-	 */
-	public Collection<W1DeviceType> getDeviceTypes() {
-		return deviceTypes;
-	}
+    public Map<String, W1DeviceType> getDeviceTypeMap() {
+        return deviceTypeMap;
+    }
 
-	private List<File> getDeviceDirs() {
-		final File[] slaveDevices = masterDir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(final File dir, final String name) {
-				return !name.contains("w1_bus_master");
-			}
-		});
-		if (slaveDevices != null) {
-			return Arrays.asList(slaveDevices);
-		}
-		return Collections.emptyList();
-	}
+    private List<File> getDeviceDirs() {
+        final File[] slaveDevices = masterDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(final File dir, final String name) {
+                return !name.contains("w1_bus_master");
+            }
+        });
+        if (slaveDevices != null) {
+            return Arrays.asList(slaveDevices);
+        }
+        return Collections.emptyList();
+    }
 
-	/**
-	 * Gets a list of all registered slave device ids.
-	 *
-	 * @return list of slave ids, can be empty, never null.
-	 */
-	public List<String> getDeviceIDs() {
-		final List<String> ids = new ArrayList<>();
-		for (final File deviceDir : getDeviceDirs()) {
-			ids.add(deviceDir.getName());
-		}
-		/*
-		//for (final W1Device device: devices) {
-		        ids.add(device.getId());
-		 */
-		return ids;
-	}
+    /**
+     * Gets a list of all registered slave device ids.
+     *
+     * @return list of slave ids, can be empty, never null.
+     */
+    public List<String> getDeviceIDs() {
+        final List<String> ids = new ArrayList<>();
+        for (final File deviceDir : getDeviceDirs()) {
+            ids.add(deviceDir.getName());
+        }
+        /*
+         * //for (final W1Device device: devices) { ids.add(device.getId());
+         */
+        return ids;
+    }
 
-	/**
-	 * Get the list of available devices.
-	 *
-	 * @return returns an unmodifiable list of W1Devices.
-	 */
-	public List<W1Device> getDevices() {
-		return Collections.unmodifiableList(devices);
-	}
+    /**
+     * Get the list of available devices.
+     *
+     * @return returns an unmodifiable list of W1Devices.
+     */
+    public List<W1Device> getDevices() {
+        return Collections.unmodifiableList(devices);
+    }
 
-	public <T extends W1Device> List<T> getDevices(final int deviceFamilyId) {
-		final List<W1Device> filteredDevices = new ArrayList<>();
-		for (final W1Device device : devices) {
-			if (deviceFamilyId == device.getFamilyId()) {
-				filteredDevices.add(device);
-			}
-		}
-		return (List<T>) filteredDevices;
-	}
+    @SuppressWarnings("unchecked")
+    public <T extends W1Device> List<T> getDevices(final int deviceFamilyId) {
+        final List<W1Device> filteredDevices = new ArrayList<>();
+        for (final W1Device device : devices) {
+            if (deviceFamilyId == device.getFamilyId()) {
+                filteredDevices.add(device);
+            }
+        }
+        return (List<T>) filteredDevices;
+    }
 
-	<T extends W1Device> List<T> readDevices() {
-		final List<W1Device> devices = new ArrayList<>();
-		for (final File deviceDir : getDeviceDirs()) {
-			final String id = deviceDir.getName().substring(0, 2).toUpperCase();
-			final W1DeviceType w1DeviceType = deviceTypeMap.get(id);
-			if (w1DeviceType != null) {
-				final W1Device w1Device = w1DeviceType.create(deviceDir);
-				devices.add(w1Device);
-			} else {
-				log.info("no device type for [" + id + "] found - ignoring");
-			}
-		}
-		return (List<T>) devices;
-	}
+    @SuppressWarnings("unchecked")
+    <T extends W1Device> List<T> readDevices() {
+        final List<W1Device> devices = new ArrayList<>();
+        for (final File deviceDir : getDeviceDirs()) {
+            final String id = deviceDir.getName().substring(0, 2).toUpperCase();
+            final W1DeviceType w1DeviceType = deviceTypeMap.get(id);
+            if (w1DeviceType != null) {
+                final W1Device w1Device = w1DeviceType.create(deviceDir);
+                devices.add(w1Device);
+            } else {
+                log.info("no device type for [" + id + "] found - ignoring");
+            }
+        }
+        return (List<T>) devices;
+    }
 
-	/*
-	public <T extends W1Device> List<T> getDevices(final String deviceFamilyId) {
-	    List<W1Device> devices = new ArrayList<>();
-	    for (W1Device device : readDevices()) {
+    /*
+    public <T extends W1Device> List<T> getDevices(final String deviceFamilyId) {
+        List<W1Device> devices = new ArrayList<>();
+        for (W1Device device : readDevices()) {
 
-	        if (deviceFamilyId == null || deviceFamilyId.toUpperCase().equals(device.getId())) {
-	            devices.add(device);
-	        }
-	    }
-	    return (List<T>) devices;
-	}
-	 */
+            if (deviceFamilyId == null || deviceFamilyId.toUpperCase().equals(device.getId())) {
+                devices.add(device);
+            }
+        }
+        return (List<T>) devices;
+    }
+     */
 
-	/**
-	 * Get a list of devices that implement a certain interface.
-	 *
-	 * @param type
-	 * @param <T>
-	 * @return
-	 */
-	public <T> List<T> getDevices(final Class<T> type) {
-		final List<W1Device> allDevices = getDevices();
-		final List<T> filteredDevices = new ArrayList<>();
-		for (final W1Device device : allDevices) {
-			if (type.isAssignableFrom(device.getClass())) {
-				filteredDevices.add((T) device);
-			}
-		}
-		return filteredDevices;
-	}
+    /**
+     * Get a list of devices that implement a certain interface.
+     *
+     * @param type
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getDevices(final Class<T> type) {
+        final List<W1Device> allDevices = getDevices();
+        final List<T> filteredDevices = new ArrayList<>();
+        for (final W1Device device : allDevices) {
+            if (type.isAssignableFrom(device.getClass())) {
+                filteredDevices.add((T) device);
+            }
+        }
+        return filteredDevices;
+    }
 
-	public <T extends W1Device> List<T> getW1Devices(final Class<T> type) {
-		for (final W1DeviceType deviceType : deviceTypes) {
-			if (deviceType.getDeviceClass().equals(type)) {
-				return (List<T>) getDevices(deviceType.getDeviceFamilyCode());
-			}
-		}
-		return Collections.emptyList();
-	}
+    @SuppressWarnings("unchecked")
+    public <T extends W1Device> List<T> getW1Devices(final Class<T> type) {
+        for (final W1DeviceType deviceType : deviceTypes) {
+            if (deviceType.getDeviceClass().equals(type)) {
+                return (List<T>) getDevices(deviceType.getDeviceFamilyCode());
+            }
+        }
+        return Collections.emptyList();
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("W1 Master: ").append(masterDir).append("\n");
-		builder.append("Device Types: \n");
-		for (final W1DeviceType deviceType : deviceTypeMap.values()) {
-			builder.append(" - ").append(Integer.toHexString(deviceType.getDeviceFamilyCode()));
-			builder.append(" = ").append(deviceType.getDeviceClass());
-			builder.append("\n");
-		}
-		builder.append("Devices:\n");
-		for (final W1Device device : getDevices()) {
-			builder.append(" - ").append(device.getId()).append(": ").append(device.getName());
-			builder.append(" = ").append(device.getClass().getName()).append("\n");
-		}
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("W1 Master: ").append(masterDir).append("\n");
+        builder.append("Device Types: \n");
+        for (final W1DeviceType deviceType : deviceTypeMap.values()) {
+            builder.append(" - ").append(Integer.toHexString(deviceType.getDeviceFamilyCode()));
+            builder.append(" = ").append(deviceType.getDeviceClass());
+            builder.append("\n");
+        }
+        builder.append("Devices:\n");
+        for (final W1Device device : getDevices()) {
+            builder.append(" - ").append(device.getId()).append(": ").append(device.getName());
+            builder.append(" = ").append(device.getClass().getName()).append("\n");
+        }
+        return builder.toString();
+    }
 }

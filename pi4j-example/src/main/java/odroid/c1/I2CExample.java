@@ -28,15 +28,16 @@ package odroid.c1;
  * #L%
  */
 
+import java.io.IOException;
+
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.Console;
-
-import java.io.IOException;
 
 /**
  * This example code demonstrates how to perform simple I2C
@@ -86,8 +87,9 @@ public class I2CExample {
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
      * @throws IOException
+     * @throws UnsupportedBusNumberException
      */
-    public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
+    public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException, IOException, UnsupportedBusNumberException {
 
         // ####################################################################
         //

@@ -30,25 +30,8 @@ package com.pi4j.system;
  */
 
 
-import com.pi4j.io.i2c.I2CFactoryProviderBanana;
-import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
-import com.pi4j.platform.Platform;
-import com.pi4j.platform.PlatformManager;
-import com.pi4j.util.ExecUtil;
-import com.pi4j.util.StringUtil;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SystemInfo {
 

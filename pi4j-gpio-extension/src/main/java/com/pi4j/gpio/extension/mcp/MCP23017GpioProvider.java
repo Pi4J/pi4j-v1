@@ -1,6 +1,13 @@
 package com.pi4j.gpio.extension.mcp;
 
-import com.pi4j.io.gpio.*;
+import java.io.IOException;
+
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
@@ -8,8 +15,7 @@ import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-
-import java.io.IOException;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /*
  * #%L
@@ -97,12 +103,12 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private final I2CDevice device;
     private GpioStateMonitor monitor = null;
 
-    public MCP23017GpioProvider(int busNumber, int address) throws IOException {
+    public MCP23017GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
         this(busNumber, address, DEFAULT_POLLING_TIME);
     }
 
-    public MCP23017GpioProvider(int busNumber, int address, int pollingTime) throws IOException {
+    public MCP23017GpioProvider(int busNumber, int address, int pollingTime) throws IOException, UnsupportedBusNumberException {
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address, pollingTime);
     }

@@ -29,11 +29,15 @@ package com.pi4j.platform;
  * #L%
  */
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.BananaPiGpioProvider;
+import com.pi4j.io.gpio.BananaProGpioProvider;
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.OdroidGpioProvider;
+import com.pi4j.io.gpio.RaspiGpioProvider;
 import com.pi4j.io.i2c.I2CFactoryProvider;
-import com.pi4j.io.i2c.I2CFactoryProviderBanana;
-import com.pi4j.io.i2c.I2CFactoryProviderOdroid;
-import com.pi4j.io.i2c.I2CFactoryProviderRaspberry;
+import com.pi4j.io.i2c.impl.I2CFactoryProviderBananaPi;
+import com.pi4j.io.i2c.impl.I2CFactoryProviderOdroid;
+import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
 import com.pi4j.system.SystemInfoProvider;
 import com.pi4j.system.impl.BananaPiSystemInfoProvider;
 import com.pi4j.system.impl.BananaProSystemInfoProvider;
@@ -65,7 +69,7 @@ public enum Platform {
      * @param platformId
      * @param label
      */
-    private Platform(String platformId, String label){
+    private Platform(String platformId, String label) {
         this.platformId = platformId;
         this.label = label;
     }
@@ -74,7 +78,7 @@ public enum Platform {
      * Get the platform's friendly string name/label.
      * @return label of platform
      */
-    public String getLabel(){
+    public String getLabel() {
         return this.label;
     }
 
@@ -82,7 +86,7 @@ public enum Platform {
      * Get the platform's friendly string name/label.
      * @return label of platform
      */
-    public String label(){
+    public String label() {
         return getLabel();
     }
 
@@ -90,7 +94,7 @@ public enum Platform {
      * Get the platform's unique identifier string.
      * @return platform id string
      */
-    public String getId(){
+    public String getId() {
         return platformId;
     }
 
@@ -98,7 +102,7 @@ public enum Platform {
      * Get the platform's unique identifier string.
      * @return platform id string
      */
-    public String id(){
+    public String id() {
         return getId();
     }
 
@@ -106,8 +110,8 @@ public enum Platform {
      * Lookup a platform enumeration by the platform's unique identifier string.
      * @return platform enumeration
      */
-    public static Platform fromId(String platformId){
-        for(Platform platform : Platform.values()){
+    public static Platform fromId(String platformId) {
+        for(Platform platform : Platform.values()) {
             if(platform.id().equalsIgnoreCase(platformId))
                 return platform;
         }
@@ -115,7 +119,7 @@ public enum Platform {
     }
 
 
-    public GpioProvider getGpioProvider(){
+    public GpioProvider getGpioProvider() {
         return getGpioProvider(this);
     }
 
@@ -141,37 +145,37 @@ public enum Platform {
         }
     }
 
-    public I2CFactoryProvider getI2CFactoryProvider(){
+    public I2CFactoryProvider getI2CFactoryProvider() {
         return getI2CFactoryProvider(this);
     }
 
-    public static I2CFactoryProvider getI2CFactoryProvider(Platform platform){
+    public static I2CFactoryProvider getI2CFactoryProvider(Platform platform) {
         // return the I2C provider based on the provided platform
         switch(platform) {
             case RASPBERRYPI: {
-                return new I2CFactoryProviderRaspberry();
+                return new I2CFactoryProviderRaspberryPi();
             }
             case BANANAPI: {
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderBananaPi();
             }
             case BANANAPRO: {
-                return new I2CFactoryProviderBanana();
+                return new I2CFactoryProviderBananaPi();
             }
             case ODROID: {
                 return new I2CFactoryProviderOdroid();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
-                return new I2CFactoryProviderRaspberry();
+                return new I2CFactoryProviderRaspberryPi();
             }
         }
     }
 
-    public SystemInfoProvider getSystemInfoProvider(){
+    public SystemInfoProvider getSystemInfoProvider() {
         return getSystemInfoProvider(this);
     }
 
-    public static SystemInfoProvider getSystemInfoProvider(Platform platform){
+    public static SystemInfoProvider getSystemInfoProvider(Platform platform) {
         // return the system info provider based on the provided platform
         switch(platform) {
             case RASPBERRYPI: {

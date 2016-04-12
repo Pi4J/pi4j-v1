@@ -36,6 +36,7 @@ import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -87,7 +88,7 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     private GpioStateMonitor monitor = null;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
 
-    public PCF8574GpioProvider(int busNumber, int address) throws IOException {
+    public PCF8574GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);
         i2cBusOwner = true;

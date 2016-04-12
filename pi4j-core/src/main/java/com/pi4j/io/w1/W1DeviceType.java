@@ -29,7 +29,6 @@ package com.pi4j.io.w1;
  * #L%
  */
 
-
 import java.io.File;
 
 /**

@@ -35,11 +35,10 @@ package com.pi4j.io.w1;
  */
 public class W1MasterWatcher {
 
+    @SuppressWarnings("unused")
     private W1Master w1Master;
 
     public W1MasterWatcher(final W1Master w1Master) {
         this.w1Master = w1Master;
     }
-
-
 }

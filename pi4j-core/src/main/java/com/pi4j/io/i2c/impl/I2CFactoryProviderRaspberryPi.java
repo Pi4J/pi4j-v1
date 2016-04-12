@@ -1,11 +1,11 @@
-package com.pi4j.io.i2c;
+package com.pi4j.io.i2c.impl;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  I2CFactoryProviderRaspberry.java
+ * FILENAME      :  I2CFactoryProviderRaspberryPi.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -29,15 +29,16 @@ package com.pi4j.io.i2c;
  * #L%
  */
 
-import com.pi4j.io.i2c.impl.I2CBusImpl;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
-import java.io.IOException;
+public class I2CFactoryProviderRaspberryPi extends I2CProviderImpl {
 
-public class I2CFactoryProviderRaspberry implements I2CFactoryProvider
-{
+    @Override
+    protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
+        if ((busNumber < 0) || (busNumber > 3 && busNumber < 10) || (busNumber > 17)) {
+            throw new UnsupportedBusNumberException();
+        }
 
-	public I2CBus getBus(int busNumber) throws IOException
-	{
-		return I2CBusImpl.getBus(busNumber);
-	}
+        return "/dev/i2c-" + busNumber;
+    }
 }

@@ -30,10 +30,11 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
+import java.io.IOException;
+
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.i2c.I2CBus;
-
-import java.io.IOException;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
@@ -80,7 +81,7 @@ public class ADS1115GpioProvider extends ADS1x15GpioProvider implements GpioProv
     protected static final int ADS1115_CONVERSIONDELAY       = 0x08;
 
 
-    public ADS1115GpioProvider(int busNumber, int address) throws IOException {
+    public ADS1115GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // call super constructor in abstract class
         super(busNumber, address);
 

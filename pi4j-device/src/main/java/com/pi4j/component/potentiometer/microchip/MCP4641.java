@@ -1,11 +1,12 @@
 package com.pi4j.component.potentiometer.microchip;
 
+import java.io.IOException;
+import java.util.Random;
+
 import com.pi4j.component.potentiometer.microchip.impl.MicrochipPotentiometerBase;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-
-import java.io.IOException;
-import java.util.Random;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /*
  * #%L
@@ -145,7 +146,7 @@ public class MCP4641 extends MicrochipPotentiometerBase implements MicrochipPote
 	 * @param args no parameters expected
 	 * @throws IOException If anything goes wrong
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws UnsupportedBusNumberException, IOException {
 
 		// initialize bus
 		final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);

@@ -30,14 +30,19 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
-import com.pi4j.io.gpio.*;
+import java.io.IOException;
+
+import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-
-import java.io.IOException;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
@@ -194,7 +199,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     // this value defines the sleep time between value reads by the event monitoring thread
     protected int monitorInterval = DEFAULT_MONITOR_INTERVAL;
 
-    public ADS1x15GpioProvider(int busNumber, int address) throws IOException {
+    public ADS1x15GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
 
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);

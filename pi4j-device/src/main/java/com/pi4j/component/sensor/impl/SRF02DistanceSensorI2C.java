@@ -33,6 +33,7 @@ import com.pi4j.component.sensor.DistanceSensorBase;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 import java.io.IOException;
 
@@ -64,7 +65,7 @@ public class SRF02DistanceSensorI2C extends DistanceSensorBase{
      * @param device_address the I2C device address of the chip
      * @throws IOException
      */
-    public SRF02DistanceSensorI2C(int i2c_bus_number, int device_address) throws IOException {
+    public SRF02DistanceSensorI2C(int i2c_bus_number, int device_address) throws UnsupportedBusNumberException, IOException {
         this.address = device_address;
         bus = I2CFactory.getInstance(i2c_bus_number);
         device = bus.getDevice(device_address);
