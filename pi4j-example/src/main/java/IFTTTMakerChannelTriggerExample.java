@@ -100,22 +100,22 @@ public class IFTTTMakerChannelTriggerExample {
                         // {
                         //    "pin": {
                         //        "name": "MyInputPin",
-                        //                "address": "0",
-                        //                "provider": "RaspberryPi GPIO Provider",
-                        //                "mode": "input",
-                        //                "direction": "IN",
-                        //                "pull": "down"
+                        //        "address": "0",
+                        //        "provider": "RaspberryPi GPIO Provider",
+                        //        "mode": "input",
+                        //        "direction": "IN",
+                        //        "pull": "down"
                         //    },
                         //    "state": {
                         //        "name": "HIGH",
-                        //                "value": "1",
-                        //                "is-high": "true",
-                        //                "is-low": "false"
+                        //        "value": "1",
+                        //        "is-high": "true",
+                        //        "is-low": "false"
                         //    },
                         //    "timestamp": "2016-04-15T17:32:49.666-0400"
                         //}
                         //
-                        // However, you can override any of these default in this callback listener by
+                        // However, you can override any of these defaults in your callback listener by
                         // applying new string values via the 'setValueX()' methods on the event object.
                         //
                         // Example:
