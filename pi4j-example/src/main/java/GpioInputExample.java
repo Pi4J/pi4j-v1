@@ -77,9 +77,9 @@ public class GpioInputExample {
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
         Pin pin = CommandArgumentParser.getPin(
-                OdroidC1Pin.class,    // pin provider class to obtain pin instance from
-                OdroidC1Pin.GPIO_01,  // default pin if no pin argument found
-                args);                // argument array to search in
+                RaspiPin.class,    // pin provider class to obtain pin instance from
+                RaspiPin.GPIO_01,  // default pin if no pin argument found
+                args);             // argument array to search in
 
         // by default we will use gpio pin PULL-UP; however, if an argument
         // has been provided, then use the specified pull resistance
@@ -87,7 +87,7 @@ public class GpioInputExample {
                 PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
                 args);                      // argument array to search in
 
-        // provision gpio pin as an output pin and turn on
+        // provision gpio pin as an input pin
         final GpioPinDigitalInput input = gpio.provisionDigitalInputPin(pin, "MyInput", pull);
 
         // set shutdown state for this pin: unexport the pin

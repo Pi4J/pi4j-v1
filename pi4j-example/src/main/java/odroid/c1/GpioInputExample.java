@@ -106,7 +106,7 @@ public class GpioInputExample {
                 PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
                 args);                      // argument array to search in
 
-        // provision gpio pin as an output pin and turn on
+        // provision gpio pin as an input pin
         final GpioPinDigitalInput input = gpio.provisionDigitalInputPin(pin, "MyInput", pull);
 
         // set shutdown state for this pin: unexport the pin
