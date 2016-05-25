@@ -37,7 +37,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-04-08 :: 1.1-SNAPSHOT
+2016-05-25 :: 1.1-SNAPSHOT
 
   *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue. 
      A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
@@ -59,7 +59,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2016-04-07 :: 1.1-SNAPSHOT
+2016-05-25 :: 1.1-SNAPSHOT
 
   *  Added support for Odroid XU4 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
@@ -86,6 +86,7 @@ Copyright (C) 2012-2015 Pi4J
   *  Updated Serial interface to extend from AutoCloseable. 
   *  Updated MCP3008 ADC implementation and example code.
   *  Updated MCP4725 DAC implementation and example code. 
+  *  Fixed #135; Serial communication using 7 Data Bits not working. 
   *  Fixed #180; WiringPiISR() callback causing native crash (NPE)
   *  Fixed SPI issue where internal buffer was limited to 2048 bytes.  Dynamically allocated now.
   *  Fixed the Pi4J Serial interface to use the new Serial JNI implementation
