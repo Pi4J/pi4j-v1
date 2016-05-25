@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_Spi.c  
+ * FILENAME      :  com_pi4j_wiringpi_Spi.c
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,8 +27,10 @@
  * #L%
  */
 #include <jni.h>
+#include <stdlib.h>
 #include <wiringPiSPI.h>
 #include "com_pi4j_wiringpi_Spi.h"
+#include "com_pi4j_jni_Exception.h"
 
 /* Source for com_pi4j_wiringpi_Spi */
 
@@ -51,13 +53,28 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIGetFd
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__ILjava_lang_String_2I
   (JNIEnv *env, jclass class, jint channel, jstring data, jint length)
 {
-	char buffer[2048];
-	int len = (*env)->GetStringUTFLength(env, data);
-	(*env)->GetStringUTFRegion(env, data, 0, len, buffer);
-	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, length);
+	char *buffer;
+
+    // get the number of total possible bytes in the UTF string
+	int bufferSize = (*env)->GetStringUTFLength(env, data);
+
+	// dynamically allocate buffer size
+    buffer = malloc(bufferSize);
+
+	// copy UTF string bytes to buffer
+	(*env)->GetStringUTFRegion(env, data, 0, length, buffer);
+
+	// SPI transfer (read/write) the data buffer
+	jint result = wiringPiSPIDataRW(channel, (unsigned char *)buffer, bufferSize);
+
+	// create a return string from the data buffer returned after SPI transfer (read/write)
 	jstring returnString = (*env)->NewStringUTF(env, buffer);
     data = returnString;
 
+    // free allocated buffer memory
+    free(buffer);
+
+    // return success/failure
 	return result;
 }
 
@@ -70,7 +87,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 (JNIEnv *env, jclass class, jint channel, jbyteArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes from the data array argument into a native unsigned character buffer
     jbyte *body = (*env)->GetByteArrayElements(env, data, 0);
@@ -86,6 +106,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3BI
 	}
 	(*env)->ReleaseByteArrayElements(env, data, body, 0);
 
+    // free allocated buffer memory
+    free(buffer);
+
 	return result;
 }
 
@@ -98,7 +121,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 (JNIEnv *env, jclass class, jint channel, jshortArray data, jint length)
 {
     int i;
-    unsigned char buffer[2048];
+	unsigned char *buffer;
+
+	// dynamically allocate buffer size
+    buffer = malloc(length);
 
 	// copy the bytes (short values) from the data array argument into a native unsigned character buffer
 	jshort *body = (*env)->GetShortArrayElements(env, data, 0);
@@ -114,6 +140,9 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPIDataRW__I_3SI
 		body[i] = buffer[i];
 	}
 	(*env)->ReleaseShortArrayElements(env, data, body, 0);
+
+    // free allocated buffer memory
+    free(buffer);
 
 	return result;
 }
@@ -137,5 +166,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetup
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Spi_wiringPiSPISetupMode
   (JNIEnv *env, jclass class, jint channel, jint speed, jint mode)
 {
+	#ifdef WIRINGPI_SPI_SETUP_MODE_UNSUPPORTED
+	throwUnsupportedOperationException(env,
+	    "This implementation of WiringPi does not support method 'wiringPiSPISetupMode'.");
+	return -1;
+	#else
 	return wiringPiSPISetupMode(channel, speed, mode);
+	#endif
 }

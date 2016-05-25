@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_Serial.h  
+ * FILENAME      :  com_pi4j_wiringpi_Serial.h
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,11 +61,19 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialFlush
 
 /*
  * Class:     com_pi4j_wiringpi_Serial
- * Method:    serialPutchar
- * Signature: (IC)V
+ * Method:    serialPutByte
+ * Signature: (IB)V
  */
-JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutchar
-  (JNIEnv *, jclass, jint, jchar);
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutByte
+  (JNIEnv *, jclass, jint, jbyte);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialPutBytes
+ * Signature: (I[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPutBytes
+  (JNIEnv *, jclass, jint, jbyteArray, jint);
 
 /*
  * Class:     com_pi4j_wiringpi_Serial
@@ -81,6 +89,30 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Serial_serialPuts
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Serial_serialDataAvail
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetByte
+ * Signature: (I)B
+ */
+JNIEXPORT jbyte JNICALL Java_com_pi4j_wiringpi_Serial_serialGetByte
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetBytes
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetBytes
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Serial
+ * Method:    serialGetAvailableBytes
+ * Signature: (I)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_pi4j_wiringpi_Serial_serialGetAvailableBytes
   (JNIEnv *, jclass, jint);
 
 /*

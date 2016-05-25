@@ -4,13 +4,16 @@
 ######################################
 
 # CHECK FOR MISSING CLI ARGUMENTS
-if [ $# -eq 0 ]
-  then
-    echo
-    echo "No arguments supplied!"
-    echo "Use 'pi4j --help' to display command options."
-    echo
-    exit 1;
+if [ $# -eq 0 ]; then
+  echo
+  echo "------------------------------"
+  echo "Pi4J Utility Script"
+  echo "------------------------------"
+  echo
+  echo "No arguments supplied!"
+  echo "Use 'pi4j --help' to display command options."
+  echo
+  exit 1;
 fi
 
 # HANDLE OPTIONAL ARGS
@@ -70,6 +73,9 @@ case $1 in
    -update) ;&
    --update)
       shift
+      echo "--------------------------------------------"
+      echo "Pi4J - UPDATE"
+      echo "--------------------------------------------"
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install pi4j
       ;;
@@ -77,10 +83,12 @@ case $1 in
    -uninstall) ;&
    --uninstall)
       shift
+      echo "--------------------------------------------"
+      echo "Pi4J - UNINSTALL"
+      echo "--------------------------------------------"
       read -p "Are you sure you want to uninstall Pi4J? <y/n> " -n 1 -r
       echo    # (optional) move to a new line
-      if [[ $REPLY =~ ^[Yy]$ ]]
-      then
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
         sudo apt-get remove pi4j -y
       fi
       ;;
@@ -88,10 +96,12 @@ case $1 in
    -reinstall) ;&
    --reinstall)
       shift
+      echo "--------------------------------------------"
+      echo "Pi4J - REINSTALL"
+      echo "--------------------------------------------"
       read -p "Are you sure you want to reinstall Pi4J? <y/n> " -n 1 -r
       echo    # (optional) move to a new line
-      if [[ $REPLY =~ ^[Yy]$ ]]
-      then
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
         sudo apt-get remove pi4j -y
         sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
         sudo apt-get install pi4j -y
@@ -101,6 +111,9 @@ case $1 in
    -compile) ;&
    --compile)
       shift
+      echo "--------------------------------------------"
+      echo "Pi4J - Compiling: $1"
+      echo "--------------------------------------------"
       set -x #echo on
       javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $@
       ;;
@@ -108,17 +121,79 @@ case $1 in
    -run) ;&
    --run)
       shift
+      PROGRAMNAME=$1; shift;
+      echo "--------------------------------------------"
+      echo "Pi4J - Launching: $PROGRAMNAME"
+      echo "--------------------------------------------"
       set -x #echo on
-      sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
+      java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' ${PROGRAMNAME/.java/} $@
       ;;
    *)
-      if [[ $1 == *.java ]]
-      then
+      if [[ $1 == *.java ]]; then
+        # COMPILE SOURCE FILE
+        echo "--------------------------------------------"
+        echo "Pi4J - Compiling: $1"
+        echo "--------------------------------------------"
         set -x #echo on
-        javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $@
+        javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $1
+        set +x #echo off
+
+        # CHECK FOR STATIC MAIN PROGRAM ENTRY IN SOURCE FILE
+        if grep --quiet -F -i -m 1 'static void main' $1; then
+
+          PACKAGE_NAME=;
+          CLASS_NAME=;
+
+          # CHECK FOR PACKAGE NAME IN SOURCE FILE
+          if grep --quiet -F -i -m 1 'package' $1; then
+
+            # GET PACKAGE NAME
+            PACKAGE_NAME=`grep -F -i -m 1 'package' $1`
+
+            # REMOVE PACKAGE DECLARATION
+            PACKAGE_NAME=${PACKAGE_NAME#'package'}
+
+            # REMOVE PACKAGE SEMICOLON (if exists)
+            PACKAGE_NAME=${PACKAGE_NAME%';'}
+
+            # TRIM SPACES
+            PACKAGE_NAME="${PACKAGE_NAME#"${PACKAGE_NAME%%[![:space:]]*}"}"   # remove leading whitespace characters
+            PACKAGE_NAME="${PACKAGE_NAME%"${PACKAGE_NAME##*[![:space:]]}"}"   # remove trailing whitespace characters
+
+            # APPEND DOT SUFFIX CHARACTER
+            PACKAGE_NAME="${PACKAGE_NAME}."
+          fi
+
+          # CHECK FOR CLASS NAME IN SOURCE FILE
+          if grep --quiet -F -i -m 1 'public class' $1; then
+
+            # GET CLASS NAME
+            CLASS_NAME=`grep -F -i -m 1 'public class' $1`
+
+            # REMOVE CLASS DECLARATION
+            CLASS_NAME=${CLASS_NAME#'public class'}
+
+            # REMOVE CLASS OPEN BRACE (if exists)
+            CLASS_NAME=${CLASS_NAME%'{'}
+
+            # TRIM SPACES
+            CLASS_NAME="${CLASS_NAME#"${CLASS_NAME%%[![:space:]]*}"}"   # remove leading whitespace characters
+            CLASS_NAME="${CLASS_NAME%"${CLASS_NAME##*[![:space:]]}"}"   # remove trailing whitespace characters
+
+            # SHIFT FIRST CLI ARG OUT
+            shift
+
+            # LAUNCH COMPILED PROGRAM
+            echo "--------------------------------------------"
+            echo "Pi4J - Launching: $PACKAGE_NAME$CLASS_NAME"
+            echo "--------------------------------------------"
+            set -x #echo on
+            java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $PACKAGE_NAME$CLASS_NAME $@
+          fi
+        fi
       else
         set -x #echo on
-        sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
+        java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
       fi
-      ;;
+   ;;
 esac

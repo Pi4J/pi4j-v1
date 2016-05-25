@@ -5,9 +5,9 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SoftPwm.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  SoftPwm.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -37,7 +37,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * WiringPi includes a software-driven PWM handler capable of outputting a PWM signal on any of the
  * Raspberry Pi's GPIO pins.
  * </p>
- * 
+ *
  * <p>
  * There are some limitations. To maintain a low CPU usage, the minimum pulse width is 100uS. That
  * combined with the default suggested range of 100 gives a PWM frequency of 100Hz. You can lower
@@ -47,21 +47,21 @@ import com.pi4j.util.NativeLibraryLoader;
  * that CPU usage will rise dramatically, and controlling more than one pin will be almost
  * impossible.
  * </p>
- * 
+ *
  * <p>
  * Also note that while the routines run themselves at a higher and real-time priority, Linux can
  * still affect the accuracy of the generated signal.
  * </p>
- * 
+ *
  * <p>
  * However, within these limitations, control of a light/LED or a motor is very achievable.
  * </p>
- * 
+ *
  * <p>
  * <b> You must initialize wiringPi with one of wiringPiSetup() or wiringPiSetupGpio() functions
  * beforehand. wiringPiSetupSys() is not fast enough, so you must run your programs with sudo. </b>
  * </p>
- * 
+ *
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
  * the following system libraries:
@@ -74,7 +74,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
@@ -83,11 +83,11 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class SoftPwm {
 
-    // private constructor 
+    // private constructor
     private SoftPwm() {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -95,7 +95,7 @@ public class SoftPwm {
 
     /**
      * <p>int softPwmCreate (int pin, int initialValue, int pwmRange);</p>
-     * 
+     *
      * <p>
      * This creates a software controlled PWM pin. You can use any GPIO pin and the pin numbering
      * will be that of the wiringPiSetup function you used. Use 100 for the pwmRange, then the value
@@ -104,7 +104,7 @@ public class SoftPwm {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
-     * 
+     *
      * @param pin The GPIO pin to use as a PWM pin.
      *            </p>
      * @param value The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
@@ -117,7 +117,7 @@ public class SoftPwm {
 
     /**
      * <p>void softPwmWrite (int pin, int value);</p>
-     * 
+     *
      * <p>
      * This updates the PWM value on the given pin. The value is checked to be in-range and pins
      * that haven't previously been initialized via softPwmCreate will be silently ignored.
@@ -131,4 +131,18 @@ public class SoftPwm {
      *            on)</i>)
      */
     public static native void softPwmWrite(int pin, int value);
+
+    /**
+     /**
+     * <p>void softPwmStop (int pin);</p>
+     *
+     * <p>
+     * This stops the software emulated PWM driver/thread for the given pin.
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/>     *
+     * @param pin The GPIO pin to use as a PWM pin.
+     */
+    public static native void softPwmStop(int pin);
 }

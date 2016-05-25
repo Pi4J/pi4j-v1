@@ -1,6 +1,13 @@
 package com.pi4j.gpio.extension.mcp;
 
-import com.pi4j.io.gpio.*;
+import java.io.IOException;
+
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.gpio.exception.InvalidPinException;
@@ -8,17 +15,16 @@ import com.pi4j.io.gpio.exception.UnsupportedPinPullResistanceException;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-
-import java.io.IOException;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP23017GpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP23017GpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -28,12 +34,12 @@ import java.io.IOException;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -61,6 +67,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23017GpioProvider";
     public static final String DESCRIPTION = "MCP23017 GPIO Provider";
     public static final int DEFAULT_ADDRESS = 0x20;
+    public static final int DEFAULT_POLLING_TIME = 50;
 
     private static final int REGISTER_IODIR_A = 0x00;
     private static final int REGISTER_IODIR_B = 0x01;
@@ -89,18 +96,28 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
     private int currentPullupA = 0;
     private int currentPullupB = 0;
 
+    private int pollingTime = DEFAULT_POLLING_TIME;
+
     private boolean i2cBusOwner = false;
     private final I2CBus bus;
     private final I2CDevice device;
     private GpioStateMonitor monitor = null;
 
-    public MCP23017GpioProvider(int busNumber, int address) throws IOException {
+    public MCP23017GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
-        this(I2CFactory.getInstance(busNumber), address);
-        i2cBusOwner = true;
+        this(busNumber, address, DEFAULT_POLLING_TIME);
+    }
+
+    public MCP23017GpioProvider(int busNumber, int address, int pollingTime) throws IOException, UnsupportedBusNumberException {
+        // create I2C communications bus instance
+        this(I2CFactory.getInstance(busNumber), address, pollingTime);
     }
 
     public MCP23017GpioProvider(I2CBus bus, int address) throws IOException {
+        this(bus, address, DEFAULT_POLLING_TIME);
+    }
+
+    public MCP23017GpioProvider(I2CBus bus, int address, int pollingTime) throws IOException {
 
         // set reference to I2C communications bus instance
         this.bus = bus;
@@ -135,6 +152,11 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         // set all default pin pull up resistors
         device.write(REGISTER_GPPU_A, (byte) currentPullupA);
         device.write(REGISTER_GPPU_B, (byte) currentPullupB);
+
+        // set pollingtime
+        this.pollingTime = pollingTime;
+
+        i2cBusOwner = true;
     }
 
     @Override
@@ -408,6 +430,9 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
         }
     }
 
+    public void setPollingTime(int pollingTime) {
+        this.pollingTime = pollingTime;
+    }
 
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
@@ -481,7 +506,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
                     // ... lets take a short breather ...
                     Thread.currentThread();
-                    Thread.sleep(50);
+                    Thread.sleep(pollingTime);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

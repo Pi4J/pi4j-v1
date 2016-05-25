@@ -5,9 +5,9 @@ package com.pi4j.io.spi.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SpiDeviceImpl.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  SpiDeviceImpl.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.io.spi.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -62,7 +62,14 @@ public class SpiDeviceImpl implements SpiDevice {
         this.channel = channel;
         this.mode = mode;
         try {
-            int fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
+            int fd;
+            if(mode == SpiMode.MODE_0){
+                // using this hack because the Odroid port of WiringPi does not currently support 'wiringPiSPISetupMode'
+                fd = Spi.wiringPiSPISetup(channel.getChannel(), speed);
+            }
+            else{
+                fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
+            }
             if (fd <= -1) {
                 throw new IOException("SPI port setup failed, wiringPiSPISetupMode returned " + fd);
             }

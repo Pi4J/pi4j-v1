@@ -16,9 +16,9 @@ import java.io.IOException;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  MCP23S17GpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  MCP23S17GpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -28,12 +28,12 @@ import java.io.IOException;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -46,24 +46,29 @@ import java.io.IOException;
  * More information about the board can be found here: *
  * http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
  * </p>
- * 
+ *
  * <p>
  * The MCP23S17 is connected via SPI connection to the Raspberry Pi and provides 16 GPIO pins that
  * can be used for either digital input or digital output pins.
  * </p>
- * 
+ *
  * @author Robert Savage
- * 
+ *
  */
 public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvider {
 
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23S17GpioProvider";
     public static final String DESCRIPTION = "MCP23S17 GPIO Provider";
 
-    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000]
-    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010]
-    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100]
-    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110]
+    // SPI Address Register  0b[0 1 0 0 A2 A1 A0 x]
+    public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000] [A0 = 0 | A1 = 0 | A2 = 0]
+    public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010] [A0 = 1 | A1 = 0 | A2 = 0]
+    public static final byte ADDRESS_2 = 0b01000100; // 0x44 [0100 0100] [A0 = 0 | A1 = 1 | A2 = 0]
+    public static final byte ADDRESS_3 = 0b01000110; // 0x46 [0100 0110] [A0 = 1 | A1 = 1 | A2 = 0]
+    public static final byte ADDRESS_4 = 0b01001000; // 0x48 [0100 1000] [A0 = 0 | A1 = 0 | A2 = 1]
+    public static final byte ADDRESS_5 = 0b01001010; // 0x4A [0100 1010] [A0 = 1 | A1 = 0 | A2 = 1]
+    public static final byte ADDRESS_6 = 0b01001100; // 0x4C [0100 1100] [A0 = 0 | A1 = 1 | A2 = 1]
+    public static final byte ADDRESS_7 = 0b01001110; // 0x4E [0100 1110] [A0 = 1 | A1 = 1 | A2 = 1]
     public static final byte DEFAULT_ADDRESS = ADDRESS_0;
 
     private static final byte REGISTER_IODIR_A = 0x00;
@@ -107,11 +112,11 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
     private GpioStateMonitor monitor = null;
     private final SpiDevice spi;
-    
-    public static final int SPI_SPEED = 1000000;    
+
+    public static final int SPI_SPEED = 1000000;
     public static final byte WRITE_FLAG = 0b00000000;    // 0x00
     public static final byte READ_FLAG  = 0b00000001;    // 0x01
-    
+
     public MCP23S17GpioProvider(byte spiAddress, int spiChannel) throws IOException {
         this(spiAddress, spiChannel, SPI_SPEED);
     }
@@ -267,7 +272,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
         // (include the '& 0xFF' to ensure the bits in the unsigned byte are cast properly)
         return result[2] & 0xFF;
     }
-    
+
     @Override
     public String getName() {
         return NAME;
@@ -410,45 +415,45 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     public PinState getState(Pin pin) {
         // call super method to perform validation on pin
         PinState result  = super.getState(pin);
-        
-        // determine A or B port based on pin address 
+
+        // determine A or B port based on pin address
         if (pin.getAddress() < GPIO_B_OFFSET) {
             result = getStateA(pin); // get pin state
         } else {
             result = getStateB(pin); // get pin state
         }
-        
+
         // return pin state
         return result;
     }
-    
+
     private PinState getStateA(Pin pin){
-        
+
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_A_OFFSET;
-        
+
         // determine pin state
         PinState state = (currentStatesA & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
 
         // cache state
         getPinCache(pin).setState(state);
-        
+
         return state;
     }
-    
+
     private PinState getStateB(Pin pin){
-        
+
         // determine pin address
         int pinAddress = pin.getAddress() - GPIO_B_OFFSET;
-        
+
         // determine pin state
         PinState state = (currentStatesB & pinAddress) == pinAddress ? PinState.HIGH : PinState.LOW;
 
         // cache state
         getPinCache(pin).setState(state);
-        
+
         return state;
-    }  
+    }
 
     @Override
     public void setPullResistance(Pin pin, PinPullResistance resistance) {
@@ -509,32 +514,32 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     public PinPullResistance getPullResistance(Pin pin) {
         return super.getPullResistance(pin);
     }
-    
-    
+
+
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
-        
+
         // perform shutdown login in base
         super.shutdown();
-        
+
         // if a monitor is running, then shut it down now
         if (monitor != null) {
             // shutdown monitoring thread
             monitor.shutdown();
             monitor = null;
         }
-    }   
+    }
 
-    
+
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
-     * 
+     *
      * @author Robert Savage
-     * 
+     *
      */
     private class GpioStateMonitor extends Thread {
         private MCP23S17GpioProvider provider;
@@ -564,7 +569,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_A_PINS) {
                                 int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
-                                
+
                                 // is there an interrupt flag on this pin?
                                 //if ((pinInterruptA & pinAddressA) > 0) {
                                     // System.out.println("INTERRUPT ON PIN [" + pin.getName() + "]");

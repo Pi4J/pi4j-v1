@@ -7,9 +7,9 @@ import com.pi4j.component.ObserveableComponent;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  DimmableLight.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  DimmableLight.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -19,12 +19,12 @@ import com.pi4j.component.ObserveableComponent;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,19 +33,19 @@ import com.pi4j.component.ObserveableComponent;
 
 
 public interface DimmableLight extends ObserveableComponent {
-    
+
     void setLevel(int level);
     int getLevel();
     float getLevelPercentage();
     float getLevelPercentage(int level);
     int getMinLevel();
-    int getMaxLevel();   
-    
+    int getMaxLevel();
+
     void on();
     void off();
     boolean isOn();
     boolean isOff();
-    
+
     void addListener(DimmableLightListener... listener);
-    void removeListener(DimmableLightListener... listener);     
+    void removeListener(DimmableLightListener... listener);
 }

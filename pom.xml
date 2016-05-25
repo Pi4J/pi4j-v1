@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pi4j</groupId>
 	<artifactId>pi4j-parent</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>Pi4J :: Parent POM</name>
 	<description>Parent Maven POM for the Pi4J Project</description>
 	<url>http://www.pi4j.com</url>
@@ -110,7 +110,7 @@
 		<pi.password>raspberry</pi.password>
 
 		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
-		<pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
+		<pi.dirBuildTemp>pi4j-temp</pi.dirBuildTemp>
 
 		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
 		<pi.transfer.dev>false</pi.transfer.dev>
@@ -118,7 +118,7 @@
 		<pi.port.dev>${pi.port}</pi.port.dev>
 		<pi.user.dev>${pi.user}</pi.user.dev>
 		<pi.password.dev>${pi.password}</pi.password.dev>
-		<pi.dirCopyTo.dev>/home/pi/pi4j-dev</pi.dirCopyTo.dev>
+		<pi.dirCopyTo.dev>pi4j-dev</pi.dirCopyTo.dev>
 
 		<!-- PROJECT ENCODING PROPERTIES -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -138,6 +138,7 @@
         <ant-contrib.version>20020829</ant-contrib.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
+        <powermock.version>1.5.2</powermock.version>
 
         <!-- PLUGIN VERSIONS -->
         <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
@@ -208,6 +209,18 @@
                 <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+            	<version>${powermock.version}</version>
+            	<scope>test</scope>
+			</dependency>
+            <dependency>
+            	<groupId>org.powermock</groupId>
+            	<artifactId>powermock-api-mockito</artifactId>
+            	<version>${powermock.version}</version>
+            	<scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -266,7 +279,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>				
+					</plugin>
 				</plugins>
 			</build>
 			<repositories>
@@ -373,7 +386,7 @@
                         <target>${jdk.target.version}</target>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <verbose>true</verbose>
+                        <verbose>false</verbose>
                     </configuration>
                 </plugin>
 
@@ -679,6 +692,21 @@
 				<inherited>false</inherited>
 			</plugin>
 
+            <!-- REMOVE TRAILING WHITESPACE AUTOMATICALLY -->
+            <plugin>
+                <artifactId>whitespace-maven-plugin</artifactId>
+                <groupId>com.github.dantwining.whitespace-maven-plugin</groupId>
+                <version>1.0.4</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>trim</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 			<!-- GENERATE SITE DOCUMENTATION -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -738,7 +766,7 @@
                     <reportSet>
                         <id>non-aggregate</id>
                         <configuration>
-                            <verbose>true</verbose>
+                            <verbose>false</verbose>
                             <linksource>true</linksource>
                             <name>JavaDocs</name>
                             <description>JavaDoc API documentation</description>

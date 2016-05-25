@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.pca;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  PCA9685Pin.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PCA9685Pin.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.pca;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,8 +35,8 @@ import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.impl.PinImpl;
 
 /**
- * Represents all of the 16 PWM channels provided by the PCA9685 I2C 12-bit PWM LED/Servo controller. 
- * 
+ * Represents all of the 16 PWM channels provided by the PCA9685 I2C 12-bit PWM LED/Servo controller.
+ *
  * @author Christian Wehrli
  * @see PCA9685GpioProvider
  */

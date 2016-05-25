@@ -5,9 +5,9 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  GpioController.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  GpioController.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.io.gpio;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -46,11 +46,32 @@ public interface GpioController {
     void export(PinMode mode, PinState defaultState, GpioPin... pin);
     void export(PinMode mode, GpioPin... pin);
     boolean isExported(GpioPin... pin);
+
+    /**
+     * Unexport a GPIO pin by Pin instance.
+     * This method will explicitly unexport any Pin whether it has been
+     * provisioned in Pi4J or not.
+     *
+     * @param pin GPIO pin instance (i.e. RaspiPin.GPIO_00)
+     */
+    void unexport(Pin... pin);
+
+    /**
+     * Unexport a GPIO pin by GpioPin instance.
+     * This method will unexport an existing provisoned pin
+     *
+     * @param pin provisioned GPIO pin instance
+     */
     void unexport(GpioPin... pin);
+
+    /**
+     * Unexport all GPIO pins that have been provisioned by Pi4J
+     * in the context of this program.
+     */
     void unexportAll();
 
     void setMode(PinMode mode, GpioPin... pin);
-    PinMode getMode(GpioPin pin);    
+    PinMode getMode(GpioPin pin);
     boolean isMode(PinMode mode, GpioPin... pin);
 
     void setPullResistance(PinPullResistance resistance, GpioPin... pin);
@@ -62,15 +83,15 @@ public interface GpioController {
 
     void low(GpioPinDigitalOutput... pin);
     boolean isLow(GpioPinDigital... pin);
-    
+
     void setState(PinState state, GpioPinDigitalOutput... pin);
     void setState(boolean state, GpioPinDigitalOutput... pin);
     boolean isState(PinState state, GpioPinDigital... pin);
     PinState getState(GpioPinDigital pin);
-    
+
     void toggle(GpioPinDigitalOutput... pin);
     void pulse(long milliseconds, GpioPinDigitalOutput... pin);
-    
+
     void setValue(double value, GpioPinAnalogOutput... pin);
     double getValue(GpioPinAnalog pin);
 
@@ -79,10 +100,10 @@ public interface GpioController {
     void removeListener(GpioPinListener listener, GpioPinInput... pin);
     void removeListener(GpioPinListener[] listeners, GpioPinInput... pin);
     void removeAllListeners();
-    
+
     void addTrigger(GpioTrigger trigger, GpioPinInput... pin);
     void addTrigger(GpioTrigger[] triggers, GpioPinInput... pin);
-    void removeTrigger(GpioTrigger trigger, GpioPinInput... pin);    
+    void removeTrigger(GpioTrigger trigger, GpioPinInput... pin);
     void removeTrigger(GpioTrigger[] triggers, GpioPinInput... pin);
     void removeAllTriggers();
 
@@ -94,7 +115,7 @@ public interface GpioController {
     GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, PinMode mode, PinPullResistance resistance);
     GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, String name, PinMode mode);
     GpioPinDigitalMultipurpose provisionDigitalMultipurposePin(Pin pin, PinMode mode);
-    
+
     GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, String name, PinPullResistance resistance);
     GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, PinPullResistance resistance);
     GpioPinDigitalInput provisionDigitalInputPin(GpioProvider provider, Pin pin, String name);
@@ -113,11 +134,11 @@ public interface GpioController {
     GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin, String name);
     GpioPinDigitalOutput provisionDigitalOutputPin(Pin pin);
 
-    GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin, String name);    
+    GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin, String name);
     GpioPinAnalogInput provisionAnalogInputPin(GpioProvider provider, Pin pin);
-    GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);    
-    GpioPinAnalogInput provisionAnalogInputPin(Pin pin);    
-    
+    GpioPinAnalogInput provisionAnalogInputPin(Pin pin, String name);
+    GpioPinAnalogInput provisionAnalogInputPin(Pin pin);
+
     GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, double defaultValue);
     GpioPinAnalogOutput provisionAnalogOutputPin(GpioProvider provider, Pin pin, String name);
@@ -136,6 +157,15 @@ public interface GpioController {
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin, String name);
     GpioPinPwmOutput provisionPwmOutputPin(Pin pin);
 
+    GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, String name, int defaultValue);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, int defaultValue);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin, String name);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(GpioProvider provider, Pin pin);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, String name, int defaultValue);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, int defaultValue);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin, String name);
+    GpioPinPwmOutput provisionSoftPwmOutputPin(Pin pin);
+
     GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState);
     GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode);
     GpioPin provisionPin(GpioProvider provider, Pin pin, PinMode mode);
@@ -147,9 +177,11 @@ public interface GpioController {
     void setShutdownOptions(Boolean unexport, PinState state, GpioPin... pin);
     void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, GpioPin... pin);
     void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance, PinMode mode, GpioPin... pin);
-    
+
     Collection<GpioPin> getProvisionedPins();
-    
+    GpioPin getProvisionedPin(Pin pin);
+    GpioPin getProvisionedPin(String name);
+
     void unprovisionPin(GpioPin... pin);
     boolean isShutdown();
     void shutdown();

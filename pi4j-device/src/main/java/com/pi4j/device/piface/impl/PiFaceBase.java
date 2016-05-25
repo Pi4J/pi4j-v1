@@ -5,9 +5,9 @@ package com.pi4j.device.piface.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PiFaceBase.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PiFaceBase.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.device.piface.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -49,7 +49,7 @@ import com.pi4j.io.spi.SpiChannel;
 import java.io.IOException;
 
 public abstract class PiFaceBase extends DeviceBase implements PiFace {
-    
+
     private final GpioController gpio = GpioFactory.getInstance();
     private PiFaceGpioProvider gpioProvider;
     private GpioPinDigitalInput inputPins[];
@@ -65,11 +65,11 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
 
     // default constructor
     public PiFaceBase(byte spiAddress, SpiChannel spiChannel) throws IOException {
-    
+
         // create Pi-Face GPIO provider
         gpioProvider = new PiFaceGpioProvider(spiAddress, spiChannel);
 
-        // provision gpio input pins for the Pi-Face board 
+        // provision gpio input pins for the Pi-Face board
         inputPins = new GpioPinDigitalInput[] {
                                   gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_00),
                                   gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_01),
@@ -79,8 +79,8 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
                                   gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_05),
                                   gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_06),
                                   gpio.provisionDigitalInputPin(gpioProvider, PiFacePin.INPUT_07) };
-        
-        // provision gpio output pins for the Pi-Face board    
+
+        // provision gpio output pins for the Pi-Face board
         outputPins = new GpioPinDigitalOutput[] {
                                   gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_00),
                                   gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_01),
@@ -90,7 +90,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
                                   gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_05),
                                   gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_06),
                                   gpio.provisionDigitalOutputPin(gpioProvider, PiFacePin.OUTPUT_07) };
-        
+
         // create relay components for the first two output pins on the Pi-Face board
         relays = new Relay[] {    new GpioRelayComponent(outputPins[0]),
                                   new GpioRelayComponent(outputPins[1]) };
@@ -100,7 +100,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
                                   new GpioSwitchComponent(inputPins[1], PinState.HIGH, PinState.LOW),
                                   new GpioSwitchComponent(inputPins[2], PinState.HIGH, PinState.LOW),
                                   new GpioSwitchComponent(inputPins[3], PinState.HIGH, PinState.LOW) };
-        
+
         // create LED components for the eight output pins on the Pi-Face board
         leds = new LED[] {        new GpioLEDComponent(outputPins[0]),
                                   new GpioLEDComponent(outputPins[1]),
@@ -142,7 +142,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public GpioPinDigitalInput getInputPin(int index) {
         return inputPins[index];
     }
-    
+
     /**
      * @return the outputPins
      */
@@ -158,7 +158,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public GpioPinDigitalOutput getOutputPin(int index) {
         return outputPins[index];
     }
-    
+
     /**
      * @return the relays
      */
@@ -182,7 +182,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public Relay getRelay(PiFaceRelay relay) {
         return relays[relay.getIndex()];
     }
-    
+
     /**
      * @return the switches
      */
@@ -206,7 +206,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public Switch getSwitch(PiFaceSwitch switchValue) {
         return switches[switchValue.getIndex()];
     }
-    
+
     /**
      * @return the leds
      */
@@ -214,7 +214,7 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public LED[] getLeds() {
         return leds;
     }
-    
+
     /**
      * @return a led
      */
@@ -222,12 +222,12 @@ public abstract class PiFaceBase extends DeviceBase implements PiFace {
     public LED getLed(int index) {
         return leds[index];
     }
-    
+
     /**
      * @return a led
      */
     @Override
     public LED getLed(PiFaceLed led) {
         return leds[led.getIndex()];
-    }    
+    }
 }

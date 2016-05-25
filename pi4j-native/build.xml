@@ -3,63 +3,59 @@
 
     <!-- this target is used when building maven project remotely from your workstation -->
     <target name="build-libpi4j.so-remote">
-    
+
         <echo message="Building native libpi4j shared library"/>
-    
+
 		<!-- ensure the target directory is empty on the Raspberry Pi -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
 			password="${pi-password}" trust="true" failonerror="true"
 			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
-	
+
 		<!-- ensure the target directory exists on the Raspberry Pi -->
 		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
 			password="${pi-password}" trust="true" failonerror="false"
 			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}" />
-	
+
 		<!-- copy all the necessary source files to the Raspberry Pi -->
 		<scp todir="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}"
 			port="${pi-port}" trust="true" verbose="true" failonerror="true">
 			<fileset dir="src/main/native" />
 		</scp>
 
-        <!-- download and install development prerequisites on the Raspberry Pi platform -->
+        <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
         <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
                  password="${pi-password}" trust="true" failonerror="true"
-                 verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x install-prerequisites.sh; ./install-prerequisites.sh" />
+                 verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x build.sh; ./build.sh" />
 
-		<!-- download and compile the 'wiringPi.a' native static library on the Raspberry 
-			Pi platform -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="true"
-			verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x wiringpi-build.sh; ./wiringpi-build.sh" />
+        <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
+        <scp
+                file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/lib/**"
+                todir="${project-build-directory}/native/lib" port="${pi-port}" trust="true"
+                verbose="true" failonerror="true">
+        </scp>
 
-		<!-- compile the 'lib4j.so' JNI native shared library on the Raspberry 
-			Pi platform -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="true"
-			verbose="true" command="cd ${pi-dirBuildTemp}; make clean; make all" />
-	
-		<!-- copy the compiled 'lib4j.so' JNI native shared library back -->
-		<scp
-			file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/libpi4j.so"
-			todir="${project-build-directory}/libpi4j.so" port="${pi-port}" trust="true"
-			verbose="true" failonerror="true">
-		</scp>
-	
-		<!-- remove the temporary target directory from the Raspberry Pi -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="true"
-			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
-		
+        <!-- remove the temporary target directory from the Raspberry Pi -->
+        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
+                 password="${pi-password}" trust="true" failonerror="true"
+                 verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
     </target>
 
     <!-- this target is used when building maven project directly on the Raspberry Pi -->
     <target name="build-libpi4j.so-local">
         <echo message="Building native libpi4j shared library"/>
-        <exec command="sudo chmod +x build-local.sh" />
+        <exec command="chmod +x build-local.sh" />
         <exec executable="/bin/sh">
             <arg line="build-local.sh"/>
         </exec>
     </target>
+
+	<!-- this target is used when building maven project using the RPi cross-compiler -->
+	<target name="build-libpi4j.so-cross-compile">
+		<echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
+		<exec command="chmod +x build-local.sh" />
+		<exec executable="/bin/sh">
+			<arg line="build-local-cross-compile.sh"/>
+		</exec>
+	</target>
 
 </project>

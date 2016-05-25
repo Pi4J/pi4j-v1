@@ -5,9 +5,9 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  RCMPin.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  RCMPin.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,22 +17,18 @@ package com.pi4j.io.gpio;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-
-import com.pi4j.io.gpio.impl.PinImpl;
-
-import java.util.EnumSet;
 
 /**
  * Raspberry Pi Compute Module pin definitions.
@@ -43,24 +39,24 @@ import java.util.EnumSet;
  *  For PWM pin definitions see: http://elinux.org/RPi_BCM2835_GPIOs
  */
 @SuppressWarnings("unused")
-public class RCMPin {
-    
-    public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0"); 
+public class RCMPin extends PinProvider {
+
+    public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
     public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");
-    public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2"); 
-    public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3"); 
-    public static final Pin GPIO_04 = createDigitalPin(4, "GPIO 4"); 
-    public static final Pin GPIO_05 = createDigitalPin(5, "GPIO 5"); 
-    public static final Pin GPIO_06 = createDigitalPin(6, "GPIO 6"); 
-    public static final Pin GPIO_07 = createDigitalPin(7, "GPIO 7"); 
-    public static final Pin GPIO_08 = createDigitalPin(8, "GPIO 8"); 
-    public static final Pin GPIO_09 = createDigitalPin(9, "GPIO 9"); 
-    public static final Pin GPIO_10 = createDigitalPin(10, "GPIO 10"); 
-    public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11"); 
+    public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");
+    public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");
+    public static final Pin GPIO_04 = createDigitalPin(4, "GPIO 4");
+    public static final Pin GPIO_05 = createDigitalPin(5, "GPIO 5");
+    public static final Pin GPIO_06 = createDigitalPin(6, "GPIO 6");
+    public static final Pin GPIO_07 = createDigitalPin(7, "GPIO 7");
+    public static final Pin GPIO_08 = createDigitalPin(8, "GPIO 8");
+    public static final Pin GPIO_09 = createDigitalPin(9, "GPIO 9");
+    public static final Pin GPIO_10 = createDigitalPin(10, "GPIO 10");
+    public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11");
     public static final Pin GPIO_12 = createDigitalAndPwmPin(12, "GPIO 12"); // supports PWM0 [ALT0]
     public static final Pin GPIO_13 = createDigitalAndPwmPin(13, "GPIO 13"); // supports PWM1 [ALT0]
-    public static final Pin GPIO_14 = createDigitalPin(14, "GPIO 14"); 
-    public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15"); 
+    public static final Pin GPIO_14 = createDigitalPin(14, "GPIO 14");
+    public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15");
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
     public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17");
     public static final Pin GPIO_18 = createDigitalAndPwmPin(18, "GPIO 18"); // supports PWM0 [ALT5]
@@ -92,15 +88,30 @@ public class RCMPin {
     public static final Pin GPIO_44 = createDigitalPin(44, "GPIO 44");
     public static final Pin GPIO_45 = createDigitalAndPwmPin(45, "GPIO 45"); // supports PWM1 [ALT0]
 
-    private static Pin createDigitalPin(int address, String name) {
-        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
-                    EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-                    PinPullResistance.all());
+    protected static Pin createDigitalPin(int address, String name) {
+        return createDigitalPin(RaspiGpioProvider.NAME, address, name);
     }
 
-    private static Pin createDigitalAndPwmPin(int address, String name) {
-        return new PinImpl(RaspiGpioProvider.NAME, address, name, 
-                           EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT, PinMode.PWM_OUTPUT),
-                           PinPullResistance.all());
+    protected static Pin createDigitalAndPwmPin(int address, String name) {
+        return createDigitalAndPwmPin(RaspiGpioProvider.NAME, address, name);
     }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin getPinByName(String name) {
+        return PinProvider.getPinByName(name);
+    }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin getPinByAddress(int address) {
+        return PinProvider.getPinByAddress(address);
+    }
+
+    // *override* static method from subclass
+    // (overriding a static method is not supported in Java
+    //  so this method definition will hide the subclass static method)
+    public static Pin[] allPins() { return PinProvider.allPins(); }
 }

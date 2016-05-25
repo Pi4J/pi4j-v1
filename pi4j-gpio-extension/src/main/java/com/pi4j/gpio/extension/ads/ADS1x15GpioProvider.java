@@ -5,9 +5,9 @@ package com.pi4j.gpio.extension.ads;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: GPIO Extension
- * FILENAME      :  ADS1x15GpioProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  ADS1x15GpioProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.gpio.extension.ads;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,43 +30,48 @@ package com.pi4j.gpio.extension.ads;
  */
 
 
-import com.pi4j.io.gpio.*;
+import java.io.IOException;
+
+import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioProvider;
+import com.pi4j.io.gpio.GpioProviderBase;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-
-import java.io.IOException;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * <p>
  * This GPIO provider implements the TI ADS1x15 analog to digital converter chip as native Pi4J GPIO pins.
- * 
+ *
  * More information about the board can be found here: *
- * 
+ *
  * >> ADS1115
  * http://www.ti.com/lit/ds/symlink/ads1115.pdf
  * http://adafruit.com/datasheets/ads1115.pdf
- * 
+ *
  * >> ADS1015
  * http://www.ti.com/lit/ds/symlink/ads1015.pdf
  * http://adafruit.com/datasheets/ads1015.pdf
- * 
+ *
  * </p>
- * 
+ *
  * <p>
  * The ADS1x15 is connected via I2C connection to the Raspberry Pi and provides
  * 2 GPIO pins that can be used for analog input pins.
  * </p>
- * 
- * TODO: Add support for ALARM pin using a GPIO to notify for events. 
- *       This would be more efficient than constantly polling each  
+ *
+ * TODO: Add support for ALARM pin using a GPIO to notify for events.
+ *       This would be more efficient than constantly polling each
  *       ADB pin in the monitoring thread.
- * 
- * 
+ *
+ *
  * @author Robert Savage
- * 
+ *
  */
 public abstract class ADS1x15GpioProvider extends GpioProviderBase implements GpioProvider {
 
@@ -80,7 +85,13 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     protected Pin[] allPins = null;
     protected int conversionDelay = 0;
     protected short bitShift = 0;
-    
+
+    // minimum allowed background monitoring interval in milliseconds
+    public static int MIN_MONITOR_INTERVAL = 1;
+
+    // default background monitoring interval in milliseconds
+    public static int DEFAULT_MONITOR_INTERVAL = 100;
+
     // =======================================================================
     // POINTER REGISTER
     // =======================================================================
@@ -120,7 +131,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     protected static final int  ADS1x15_REG_CONFIG_MODE_CONTIN  = 0x0000;  // Continuous conversion mode
     protected static final int  ADS1x15_REG_CONFIG_MODE_SINGLE  = 0x0100;  // Power-down single-shot mode (default)
 
-    protected static final int  ADS1x15_REG_CONFIG_DR_MASK      = 0x00E0;  
+    protected static final int  ADS1x15_REG_CONFIG_DR_MASK      = 0x00E0;
     protected static final int  ADS1x15_REG_CONFIG_DR_128SPS    = 0x0000;  // 128 samples per second
     protected static final int  ADS1x15_REG_CONFIG_DR_250SPS    = 0x0020;  // 250 samples per second
     protected static final int  ADS1x15_REG_CONFIG_DR_490SPS    = 0x0040;  // 490 samples per second
@@ -146,7 +157,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     protected static final int  ADS1x15_REG_CONFIG_CQUE_2CONV   = 0x0001;  // Assert ALERT/RDY after two conversions
     protected static final int  ADS1x15_REG_CONFIG_CQUE_4CONV   = 0x0002;  // Assert ALERT/RDY after four conversions
     protected static final int  ADS1x15_REG_CONFIG_CQUE_NONE    = 0x0003;  // Disable the comparator and put ALERT/RDY in high state (default)
-    
+
 
     public enum ProgrammableGainAmplifierValue{
         PGA_6_144V(6.144,ADS1x15_REG_CONFIG_PGA_6_144V),  // +/-6.144V range
@@ -154,25 +165,25 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         PGA_2_048V(2.048,ADS1x15_REG_CONFIG_PGA_2_048V),  // +/-2.048V range (default)
         PGA_1_024V(1.024,ADS1x15_REG_CONFIG_PGA_1_024V),  // +/-1.024V range
         PGA_0_512V(0.512,ADS1x15_REG_CONFIG_PGA_0_512V),  // +/-0.512V range
-        PGA_0_256V(0.256,ADS1x15_REG_CONFIG_PGA_0_256V);   // +/-0.256V range     
-        
+        PGA_0_256V(0.256,ADS1x15_REG_CONFIG_PGA_0_256V);   // +/-0.256V range
+
         private double voltage = 6.144;
         private int configValue = ADS1x15_REG_CONFIG_PGA_6_144V;
-        
+
         private ProgrammableGainAmplifierValue(double voltage, int configValue){
           this.voltage = voltage;
           this.configValue = configValue;
-        }       
-        
+        }
+
         public double getVoltage(){
             return this.voltage;
         }
-        
+
         public int getConfigValue(){
             return this.configValue;
         }
     }
-    
+
     // defines the PGA used when reading the analog input value
     protected ProgrammableGainAmplifierValue[] pga = { ProgrammableGainAmplifierValue.PGA_6_144V,
                                                        ProgrammableGainAmplifierValue.PGA_6_144V,
@@ -184,11 +195,11 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
 
     // this cache value is used to track last known pin values for raising event
     protected double[] cachedValue = { 0, 0, 0, 0 };
-    
+
     // this value defines the sleep time between value reads by the event monitoring thread
-    protected int monitorInterval = 100;
-    
-    public ADS1x15GpioProvider(int busNumber, int address) throws IOException {
+    protected int monitorInterval = DEFAULT_MONITOR_INTERVAL;
+
+    public ADS1x15GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
 
         // create I2C communications bus instance
         this(I2CFactory.getInstance(busNumber), address);
@@ -203,41 +214,41 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         // create I2C device instance
         device = bus.getDevice(address);
 
-        // The first byte sent by the master should be the ADS1113/4/5 address followed  
+        // The first byte sent by the master should be the ADS1113/4/5 address followed
         // by a bit that instructs the ADS1113/4/5 to listen for a subsequent byte.
         // The second byte is the register pointer.
-        // The third and fourth bytes sent from the master are written to the 
+        // The third and fourth bytes sent from the master are written to the
         // register indicated in the second byte.
-        
+
         // Write to Config register:
         // - First byte: 0b10010000 (first 7-bit I2C address followed by a low read/write bit)
         // - Second byte: 0b00000001 (points to Config register)
         // - Third byte: 0b10000100 (MSB of the Config register to be written)
         // - Fourth byte: 0b10000011 (LSB of the Config register to be written)
-        
+
         // Write to Pointer register:
         // - First byte: 0b10010000 (first 7-bit I2C address followed by a low read/write bit)
         // - Second byte: 0b00000000 (points to Conversion Register)
-        
+
         // Read Conversion register:
         // - First byte: 0b10010001 (first 7-bit I2C address followed by a high read/write bit)
-        // - Second byte: the ADS1113/4/5 response with the MSB of the Conversion register 
-        // - Third byte: the ADS1113/4/5 response with the LSB of the Conversion register        
-        
+        // - Second byte: the ADS1113/4/5 response with the MSB of the Conversion register
+        // - Third byte: the ADS1113/4/5 response with the LSB of the Conversion register
+
 
         // set all default pin cache states to match documented chip power up states
         //for (Pin pin : allPins) {
           //  getPinCache(pin).setState(PinState.HIGH);
             //currentStates.set(pin.getAddress(), true);
         //}
-        
-        // start monitoring thread            
+
+        // start monitoring thread
         monitor = new ADS1x15GpioProvider.ADCMonitor(device);
         monitor.start();
     }
 
 
-    
+
     public ProgrammableGainAmplifierValue getProgrammableGainAmplifier(Pin pin){
         return pga[pin.getAddress()];
     }
@@ -245,7 +256,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     public ProgrammableGainAmplifierValue getProgrammableGainAmplifier(GpioPin pin){
         return getProgrammableGainAmplifier(pin.getPin());
     }
-    
+
     public void setProgrammableGainAmplifier(ProgrammableGainAmplifierValue pga, Pin...pin){
         for(Pin p : pin){
             this.pga[p.getAddress()] = pga;
@@ -257,7 +268,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
             this.pga[p.getPin().getAddress()] = pga;
         }
     }
-    
+
     public double getEventThreshold(Pin pin){
         return threshold[pin.getAddress()];
     }
@@ -265,7 +276,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     public double getEventThreshold(GpioPin pin){
         return getEventThreshold(pin.getPin());
     }
-    
+
     public void setEventThreshold(double threshold, Pin...pin){
         for(Pin p : pin){
             this.threshold[p.getAddress()] = threshold;
@@ -276,16 +287,16 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         for(GpioPin p : pin){
             setEventThreshold(threshold, p.getPin());
         }
-    }    
+    }
 
     public int getMonitorInterval(){
         return monitorInterval;
     }
-    
+
     public void setMonitorInterval(int monitorInterval){
         this.monitorInterval = monitorInterval;
-        if(monitorInterval < 50)
-            monitorInterval = 50;
+        if(monitorInterval < MIN_MONITOR_INTERVAL)
+            monitorInterval = DEFAULT_MONITOR_INTERVAL;
     }
 
     @Override
@@ -293,7 +304,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
 
 
     public double getImmediateValue(Pin pin) throws IOException {
-        
+
         // Start with default values
         int config = ADS1x15_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
                      ADS1x15_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
@@ -334,27 +345,27 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
                 Thread.sleep(conversionDelay);
             }
         }
-        catch (InterruptedException e) { 
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         // read the conversion results
         int value = readRegister(ADS1x15_REG_POINTER_CONVERT);
-        
+
         getPinCache(pin).setAnalogValue(value);
-        return value;   
-        
+        return value;
+
     };
-    
+
     // Writes 16-bits to the specified destination register
     protected void writeRegister(int register, int value) throws IOException {
-      
+
         // create packet in data buffer
         byte packet[] = new byte[3];
         packet[0] = (byte)(register);     // register byte
-        packet[1] = (byte)(value>>8);     // value MSB 
-        packet[2] = (byte)(value & 0xFF); // value LSB 
-        
+        packet[1] = (byte)(value>>8);     // value MSB
+        packet[2] = (byte)(value & 0xFF); // value LSB
+
         // write data to I2C device
         device.write(packet, 0, 3);
     }
@@ -363,7 +374,7 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     protected int readRegister(int register) throws IOException {
 
         device.write((byte)register);
-        
+
         // create data buffer for receive data
         byte buffer[] = new byte[2];  // receive 16 bits (2 bytes)
         int byteCount = 0;
@@ -377,28 +388,28 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         }
 
         if(byteCount == 2){
-            
+
             //System.out.println("-----------------------------------------------");
             //System.out.println("[RX] " + bytesToHex(buffer));
-            //System.out.println("-----------------------------------------------");            
+            //System.out.println("-----------------------------------------------");
             short value = getShort(buffer, 0);
-            
+
             // Shift 12-bit results right 4 bits for the ADS1015
             // No-shift required for the ADS1115
             if(bitShift > 0){
                 value = (short) (value >> bitShift);
             }
 
-            return value;  
+            return value;
         }
         else{
             return 0;
         }
-    }    
-    
+    }
+
     protected static short getShort(byte[] arr, int off) {
         return (short) (arr[off]<<8 &0xFF00 | arr[off+1]&0xFF);
-    } 
+    }
 
     protected static String bytesToHex(byte[] bytes) {
         final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
@@ -410,18 +421,18 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }
         return new String(hexChars);
-    }      
-    
+    }
+
     @Override
     public void shutdown() {
-        
+
         // prevent reentrant invocation
         if(isShutdown())
             return;
-        
+
         // perform shutdown login in base
         super.shutdown();
-        
+
         try {
             // if a monitor is running, then shut it down now
             if (monitor != null) {
@@ -438,17 +449,17 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }   
+    }
 
-    
+
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
-     * 
+     *
      * @author Robert Savage
-     * 
+     *
      */
     private class ADCMonitor extends Thread {
-        
+
         private I2CDevice device;
         private boolean shuttingDown = false;
 
@@ -466,40 +477,40 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
                     // read device pins state
                     byte[] buffer = new byte[1];
                     device.read(buffer, 0, 1);
-                    
+
                     // determine if there is a pin state difference
                     if(allPins != null && allPins.length > 0){
                         for (Pin pin : allPins) {
-                            
-                            try{                        
+
+                            try{
                                 // get current cached value
                                 double oldValue = cachedValue[pin.getAddress()];
-                                
+
                                 // get actual value from ADC chip
                                 double newValue = getImmediateValue(pin);
-        
+
                                 // check to see if the pin value exceeds the event threshold
                                 if(Math.abs(oldValue - newValue) > threshold[pin.getAddress()]){
-        
+
                                     // cache new value (both in local event comparison cache variable and pin state cache)
                                     cachedValue[pin.getAddress()] = newValue;
                                     getPinCache(pin).setAnalogValue(newValue);
-                                
+
                                     // only dispatch events for analog input pins
                                     if (getMode(pin) == PinMode.ANALOG_INPUT) {
                                         dispatchPinChangeEvent(pin.getAddress(), newValue);
                                     }
                                 }
-                                
+
                                 // Wait for the conversion to complete
                                 try{
                                     if(conversionDelay > 0){
                                         Thread.sleep(conversionDelay);
                                     }
                                 }
-                                catch (InterruptedException e) { 
+                                catch (InterruptedException e) {
                                     e.printStackTrace();
-                                }                            
+                                }
                             }
                             catch(IOException ex){
                                 // I2C read error

@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.pi4j</groupId>
         <artifactId>pi4j-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <artifactId>pi4j-temp</artifactId>
     <name>Pi4J :: Temporary Placeholder</name>
@@ -79,12 +79,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
 
-            <!-- GENERATE LICENSE HEADERS IN SOURCE FILES -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-            </plugin>
-
             <!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASPBERRY PI -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -104,12 +98,10 @@
                                 <if>
                                     <equals arg1="${pi.transfer.dev}" arg2="true" />
                                     <then>
-                                    
                                         <!-- ensure the target directory exists on the Raspberry Pi -->
                                         <sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
                                             password="${pi.password.dev}" trust="true" failonerror="false"
                                             verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
-                                                
                                         <!-- copy the JAR file to the Raspberry Pi -->
                                         <scp
                                             file="${project.build.directory}/${project.build.finalName}.jar"

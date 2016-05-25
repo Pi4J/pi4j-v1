@@ -5,9 +5,9 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  Spi.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  Spi.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -47,13 +47,13 @@ import com.pi4j.util.NativeLibraryLoader;
  * will allocate a 100KB buffer. (You should rarely need this though, the default is more than enough
  * for most applications).
  * </p>
- * 
+ *
  * <p>
  * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com</a>)
  * </blockquote>
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com</a>
  * @see <a
  *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
@@ -69,12 +69,12 @@ public class Spi {
     public static int MODE_1 = 1;
     public static int MODE_2 = 2;
     public static int MODE_3 = 3;
-    
-    // private constructor 
+
+    // private constructor
     private Spi()  {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -128,7 +128,7 @@ public class Spi {
 
     /**
      * <p>wiringPiSPIGetFd:</p>
-     * 
+     *
      * <p>
      * Return the file-descriptor for the given channel
      * </p>
@@ -142,7 +142,7 @@ public class Spi {
 
     /**
      * <p>wiringPiSPIDataRW:</p>
-     * 
+     *
      * <p>
      * This performs a simultaneous write/read transaction over the selected SPI bus. Data that was in your buffer is
      * overwritten by data returned from the SPI bus.
@@ -156,7 +156,29 @@ public class Spi {
      *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
      * @param channel SPI channel</p>
      * @param data string data payload
-     * @param len length of characters in string
+     * @return return -1 on error
+     */
+    public static int wiringPiSPIDataRW(int channel, String data){
+        return wiringPiSPIDataRW(channel, data, data.length());
+    }
+
+    /**
+     * <p>wiringPiSPIDataRW:</p>
+     *
+     * <p>
+     * This performs a simultaneous write/read transaction over the selected SPI bus. Data that was in your buffer is
+     * overwritten by data returned from the SPI bus.
+     * </p>
+     *
+     * <p>
+     * (ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)
+     * </p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
+     * @param channel SPI channel</p>
+     * @param data string data payload
+     * @param len length of characters in string (must be total string length, not a substring)
      * @return return -1 on error
      */
     public static native int wiringPiSPIDataRW(int channel, String data, int len);

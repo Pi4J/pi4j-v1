@@ -5,9 +5,9 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  SoftTone.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  SoftTone.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -59,7 +59,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/software-tone-library/">http://wiringpi.com/reference/software-tone-library/</a>
@@ -70,9 +70,9 @@ public class SoftTone {
 
     // private constructor
     private SoftTone() {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -80,7 +80,7 @@ public class SoftTone {
 
     /**
      * <p>int softToneCreate (int pin)</p>
-     * 
+     *
      * <p>
      * This creates a software controlled tone pin. You can use any GPIO pin and the pin numbering will be that of
      * the wiringPiSetup() function you used.
@@ -88,7 +88,7 @@ public class SoftTone {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/software-tone-library/">http://wiringpi.com/reference/software-tone-library/</a>
-     * 
+     *
      * @param pin The GPIO pin to use as a PWM pin.
      *            </p>
      * @return The return value is 0 for success. Anything else and you should check the global

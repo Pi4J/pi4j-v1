@@ -1,3 +1,4 @@
+#!/bin/bash -e
 ###
 # #%L
 # **********************************************************************
@@ -34,33 +35,12 @@ echo "-------------------------------------------"
 # ----------------------------------
 # COPY SOURCES TO TARGET FOLDER
 # ----------------------------------
+mkdir -p target/native
 cp -R src/main/native target
 cd target/native
 
-echo "-------------------------------------------"
-echo " -- INSTALLING PREREQUISITES"
-echo "-------------------------------------------"
-sudo chmod +x install-prerequisites.sh
-./install-prerequisites.sh
-
-echo "-------------------------------------------"
-echo " -- BUILDING LATEST WIRINGPI"
-echo "-------------------------------------------"
-sudo chmod +x wiringpi-build.sh
-./wiringpi-build.sh
-
-
-echo "-------------------------------------------"
-echo " -- COMPILING LIBPI4J.SO JNI NATIVE LIBRARY"
-echo "-------------------------------------------"
-make clean
-make all
-
-echo "-------------------------------------------"
-echo " -- COPYING FINAL LIBPI4J.SO TO TARGET"
-echo "-------------------------------------------"
-cp libpi4j.so ../libpi4j.so
-
-echo "-------------------------------------------"
-echo " -- DONE BUILDING Pi4J NATIVE LIBRARY"
-echo "-------------------------------------------"
+# ----------------------------------
+# LAUNCH BUILD FROM TARGET FOLDER
+# ----------------------------------
+chmod +x build.sh
+./build.sh $@

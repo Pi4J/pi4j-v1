@@ -5,9 +5,9 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  DeviceControllerDeviceStatus.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  DeviceControllerDeviceStatus.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,12 +33,12 @@ package com.pi4j.component.potentiometer.microchip.impl;
  * The device's status
  */
 class DeviceControllerDeviceStatus {
-	
+
 	private boolean eepromWriteActive;
 	private boolean eepromWriteProtected;
 	private boolean channelALocked;
 	private boolean channelBLocked;
-	
+
 	public DeviceControllerDeviceStatus(boolean eepromWriteActive, boolean eepromWriteProtected,
                                         boolean channelALocked, boolean channelBLocked) {
 		this.eepromWriteActive = eepromWriteActive;
@@ -51,7 +51,7 @@ class DeviceControllerDeviceStatus {
 	 * Writing to EEPROM takes a couple of cycles. During this time
 	 * any actions taken on non-volatile wipers fail due to active
 	 * writing.
-	 * 
+	 *
 	 * @return Whether writing to EEPROM is active
 	 */
 	public boolean isEepromWriteActive() {
@@ -78,5 +78,5 @@ class DeviceControllerDeviceStatus {
 	public boolean isChannelBLocked() {
 		return channelBLocked;
 	}
-	
+
 }

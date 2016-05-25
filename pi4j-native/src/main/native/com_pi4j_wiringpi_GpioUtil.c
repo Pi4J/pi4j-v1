@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_GpioUtil.c  
+ * FILENAME      :  com_pi4j_wiringpi_GpioUtil.c
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,6 +39,8 @@
 #include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_GpioUtil.h"
 
+#define ENVIRON_GPIOMEM          "WIRINGPI_GPIOMEM"
+#define ENVIRON_GPIOMEM_ENABLED  "1"
 
 /* Source for com_pi4j_wiringpi_GpioUtil */
 
@@ -56,30 +58,46 @@
 #define EDGE_RISING 2
 #define EDGE_FALLING 3
 
-/*
- * changeOwner:
- *	Change the ownership of the file to the real userId of the calling
- *	program so we can access it.
- *********************************************************************************
- */
-static void changeOwner (char *file)
+int getExistingPinDirection(int edgePin)
 {
-  uid_t uid = getuid () ;
-  uid_t gid = getgid () ;
+	FILE *fd ;
+	char fName [GPIO_FN_MAXLEN] ;
+	char data[RDBUF_LEN];
 
-  if (chown (file, uid, gid) != 0)
-  {
-    if (errno == ENOENT)	// Warn that it's not there
-    {
-      fprintf (stderr, "Warning: File not present: %s\n", file) ;
-    }
-    else
-    {
-      fprintf (stderr, "Unable to change ownership of %s: %s\n", file, strerror (errno)) ;
-    }
-  }
+	// construct the gpio direction file path
+	getGpioPinDirectionFile(fName, edgePin);
+
+	// open the gpio direction file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		return -1;
+	}
+
+	// read the data from the file into the data buffer
+	if(fgets(data, RDBUF_LEN, fd) == NULL)
+	{
+        // close the gpio direction file
+  	    fclose (fd) ;
+		return -2;
+	}
+
+	// close the gpio direction file
+	fclose (fd) ;
+
+	// determine direction mode
+	if (strncasecmp(data, "in", 2) == 0)
+	{
+		return DIRECTION_IN;
+	}
+	else if (strncasecmp(data, "out", 3) == 0)
+	{
+		return DIRECTION_OUT;
+	}
+	else
+	{
+		return -3;
+	}
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -90,7 +108,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
   (JNIEnv *env, jclass class, jint pin, jint direction)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -119,7 +137,8 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	int edgePin = getEdgePin(pin);
 
 	// validate that the export file can be accessed
-	if ((fd = fopen ("/sys/class/gpio/export", "w")) == NULL)
+	getGpioExportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -135,11 +154,18 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	// get the pin direction
 	int existing_direction = getExistingPinDirection(edgePin);
 
+    // wait 100 milliseconds
+    // for some reason we need to wait a short time after exporting the pin
+    // before we can access the direction file; probably to allow for the
+    // 'bcm2835_gpiomem' kernel driver enough time to apply the udev rules
+    // to grant permisisons to the /sys/class/gpio/gpio%d/* interface files.
+    usleep(100000);
+
 	// set direction if its not already configured with the same direction value
 	if(direction != existing_direction)
 	{
         // attempt to access the gpio pin's direction file
-        sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+        getGpioPinDirectionFile(fName, edgePin);
         if ((fd = fopen (fName, "w")) == NULL)
         {
             // throw exception
@@ -181,13 +207,6 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_export
 	    // close the direction file
 	    fclose (fd) ;
     }
-
-	// change ownership so the current user can actually use it!
-	sprintf (fName, "/sys/class/gpio/gpio%d/value", edgePin) ;
-	changeOwner (fName) ;
-
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin) ;
-	changeOwner (fName) ;
 }
 
 
@@ -200,6 +219,7 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_unexport
 (JNIEnv *env, jclass class, jint pin)
 {
 	FILE *fd ;
+	char fName [GPIO_FN_MAXLEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -214,7 +234,9 @@ JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_unexport
 	// get the edge pin number
 	int edgePin = getEdgePin(pin);
 
-	if ((fd = fopen ("/sys/class/gpio/unexport", "w")) == NULL)
+	// construct the gpio export file path
+	getGpioUnexportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -237,7 +259,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isExported
   (JNIEnv *env, jclass class, jint pin)
 {
 	int result;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -253,7 +275,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isExported
 	int edgePin = getEdgePin(pin);
 
 	// construct directory path for gpio pin
-	sprintf (fName, "/sys/class/gpio/gpio%d", edgePin) ;
+	getGpioPinDirectory(fName, edgePin);
 
 	// check for exported gpio directory
 	result = access(fName, F_OK);
@@ -278,7 +300,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 (JNIEnv *env, jclass class, jint pin, jint direction)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -317,7 +339,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 	}
 
 	// attempt to access the gpio pin's direction file
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+	getGpioPinDirectionFile(fName, edgePin);
 	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
@@ -353,7 +375,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 		char errstr[255];
 		sprintf (errstr, "Unsupported DIRECTION [%d] for GPIO pin [%d]\n", direction, pin) ;
 		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
-		return;
+		return JNI_FALSE;
 	}
 
 	// close the direction file
@@ -362,7 +384,6 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setDirection
 	// success
 	return (jboolean)1;
 }
-
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -401,44 +422,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
 	return direction;
 }
 
-int getExistingPinDirection(int edgePin)
-{
-	FILE *fd ;
-	char fName [128] ;
-	char data[RDBUF_LEN];
-
-	// construct the gpio direction file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
-
-	// open the gpio direction file
-	if ((fd = fopen (fName, "r")) == NULL)
-	{
-		return -1;
-	}
-
-	// read the data from the file into the data buffer
-	if(fgets(data, RDBUF_LEN, fd) == NULL)
-	{
-		return -2;
-	}
-
-	// close the gpio direction file
-	fclose (fd) ;
-
-	// determine direction mode
-	if (strncasecmp(data, "in", 2) == 0)
-	{
-		return DIRECTION_IN;
-	}
-	else if (strncasecmp(data, "out", 3) == 0)
-	{
-		return DIRECTION_OUT;
-	}
-	else
-	{
-		return -3;
-	}
-}
 
 /*
  * Class:     com_pi4j_wiringpi_GpioUtil
@@ -449,7 +432,8 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 (JNIEnv *env, jclass class, jint pin, jint edge)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN];
+	char data[RDBUF_LEN];
 
 	// validate the pin number
 	if(isPinValid(pin) <= 0)
@@ -477,8 +461,9 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	// get the edge pin number
 	int edgePin = getEdgePin(pin);
 
-	// Export the pin and set direction to input
-	if ((fd = fopen ("/sys/class/gpio/export", "w")) == NULL)
+	// export gpio pin
+	getGpioExportFile(fName);
+	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
 		char errstr[255];
@@ -493,8 +478,15 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	// close the export file
 	fclose (fd) ;
 
+    // wait 100 milliseconds
+    // for some reason we need to wait a short time after exporting the pin
+    // before we can access the direction file; probably to allow for the
+    // 'bcm2835_gpiomem' kernel driver enough time to apply the udev rules
+    // to grant permisisons to the /sys/class/gpio/gpio%d/* interface files.
+    usleep(100000);
+
 	// access the pin direction file and force the pin direction to IN
-	sprintf (fName, "/sys/class/gpio/gpio%d/direction", edgePin) ;
+	getGpioPinDirectionFile(fName, edgePin);
 	if ((fd = fopen (fName, "w")) == NULL)
 	{
 		// throw exception
@@ -511,7 +503,7 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 	fclose (fd) ;
 
 	// construct the gpio edge file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin) ;
+	getGpioPinEdgeFile(fName, edgePin);
 
 	// open the gpio edge file
 	if ((fd = fopen (fName, "w")) == NULL)
@@ -537,15 +529,57 @@ JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection
 		return (jboolean)0;
 	}
 
-	// Change ownership of the value and edge files, so the current user can actually use it!
-	sprintf (fName, "/sys/class/gpio/gpio%d/value", edgePin);
-	changeOwner(fName);
-
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin);
-	changeOwner(fName);
-
 	// close the gpio edge file
 	fclose (fd);
+
+	// read the configured edge mode to verify it was set correctly
+    // open the gpio edge file
+	if ((fd = fopen (fName, "r")) == NULL)
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unable to open GPIO edge interface for pin %d: %s\n", pin, strerror (errno)) ;
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// read the data from the file into the data buffer
+	if(fgets(data, RDBUF_LEN, fd) == NULL)
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unable to open GPIO edge interface for pin %d: %s\n", pin, strerror (errno)) ;
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// close the gpio edge file
+	fclose (fd) ;
+
+	// determine active configured edge mode
+	int active_edge;
+
+	if (strncasecmp(data, "none", 4) == 0) { active_edge = EDGE_NONE; }
+	else if (strncasecmp(data, "both", 4) == 0) { active_edge = EDGE_BOTH; }
+	else if (strncasecmp(data, "rising", 6) == 0) { active_edge = EDGE_RISING; }
+	else if (strncasecmp(data, "falling", 7) == 0) { active_edge = EDGE_FALLING; }
+	else
+	{
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Unrecognized mode: %s. Should be 'none', 'rising', 'falling' or 'both'.\n",data);
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
+
+	// verify active edge matches requested edge
+	if(active_edge != edge){
+		// throw exception
+		char errstr[255];
+		sprintf(errstr, "Failed to set GPIO edge for pin %d to [%d]; active edge is [%d]\n", pin, edge, active_edge);
+		(*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+		return -1;
+	}
 
 	// success
 	return (jboolean)1;
@@ -560,7 +594,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection
 (JNIEnv *env, jclass class, jint pin)
 {
 	FILE *fd ;
-	char fName [128] ;
+	char fName [GPIO_FN_MAXLEN] ;
 	char data[RDBUF_LEN];
 
 	// validate the pin number
@@ -577,7 +611,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection
 	int edgePin = getEdgePin(pin);
 
 	// construct the gpio edge file path
-	sprintf (fName, "/sys/class/gpio/gpio%d/edge", edgePin) ;
+	getGpioPinEdgeFile(fName, edgePin);
 
 	// open the gpio edge file
 	if ((fd = fopen (fName, "r")) == NULL)
@@ -627,5 +661,82 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
 {
 	// validate the pin number
 	return isPinValid(pin);
+}
+
+/*
+ * This method will return a value of '1' if Privileged access is required.
+ * This method will return a value of '0' if Privileged access is NOT required.
+ * Privileged access is required if any of the the following conditions are not met:
+ *    - You are running with Linux kernel version 4.1.7 or greater
+ *    - The Device Tree is enabled
+ *    - The 'bcm2835_gpiomem' kernel module loaded.
+ *    - Udev rules are configured to permit write access to '/sys/class/gpio/'
+ */
+int isPrivilegedAccessRequired()
+{
+    int gpiomem_fd;
+    FILE *export_fd;
+    char fName [GPIO_FN_MAXLEN] ;
+
+    // check for read/write access to the the /dev/gpiomem' device
+    // this device will only exist if the 'bcm2835_gpiomem' kernel model is loaded
+    if ((gpiomem_fd = open ("/dev/gpiomem", O_RDWR | O_SYNC | O_CLOEXEC) ) < 0){
+      return 1; // Privileged access is required
+    }
+
+	// close the gpiomem device file
+	close (gpiomem_fd);
+
+	// validate that the export file can be accessed
+	getGpioExportFile(fName);
+	if ((export_fd = fopen (fName, "w")) == NULL)
+	{
+	  return 1; // Privileged access is required
+	}
+
+	// close export file
+	fclose (export_fd) ;
+
+    // Privileged access is NOT required
+    return 0;
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    isPrivilegedAccessRequired
+ * Signature: (I)Z
+ *
+ * This method will return a value of 'true' if Privileged access is required.
+ * This method will return a value of 'false' if Privileged access is NOT required.
+ * Privileged access is required if any of the the following conditions are not met:
+ *    - You are running with Linux kernel version 4.1.7 or greater
+ *    - The Device Tree is enabled
+ *    - The 'bcm2835_gpiomem' kernel module loaded.
+ *    - Udev rules are configured to permit write access to '/sys/class/gpio/'
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPrivilegedAccessRequired
+(JNIEnv *env, jclass class)
+{
+    return (jboolean)isPrivilegedAccessRequired();
+}
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    enableNonPrivilegedAccess
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_enableNonPrivilegedAccess
+(JNIEnv *env, jclass class)
+{
+   // first check to see if priviliged access is required
+   if(isPrivilegedAccessRequired()){
+	  // throw exception
+	  char errstr[255];
+	  sprintf(errstr, "ERROR; Access to GPIO pins on this system requires priviliged access.") ;
+	  (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeException"), errstr);
+   }
+
+   // next set the environment variable ''
+   setenv(ENVIRON_GPIOMEM, ENVIRON_GPIOMEM_ENABLED, 1);
 }
 

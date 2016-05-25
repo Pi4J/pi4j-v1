@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_Gpio.h  
+ * FILENAME      :  com_pi4j_wiringpi_Gpio.h
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,6 +59,18 @@ extern "C" {
 #define com_pi4j_wiringpi_Gpio_PWM_MODE_BAL 1L
 #undef com_pi4j_wiringpi_Gpio_PWM_MODE_MS
 #define com_pi4j_wiringpi_Gpio_PWM_MODE_MS 0L
+#undef com_pi4j_wiringpi_Gpio_ALT0
+#define com_pi4j_wiringpi_Gpio_ALT0 4L
+#undef com_pi4j_wiringpi_Gpio_ALT1
+#define com_pi4j_wiringpi_Gpio_ALT1 5L
+#undef com_pi4j_wiringpi_Gpio_ALT2
+#define com_pi4j_wiringpi_Gpio_ALT2 6L
+#undef com_pi4j_wiringpi_Gpio_ALT3
+#define com_pi4j_wiringpi_Gpio_ALT3 7L
+#undef com_pi4j_wiringpi_Gpio_ALT4
+#define com_pi4j_wiringpi_Gpio_ALT4 3L
+#undef com_pi4j_wiringpi_Gpio_ALT5
+#define com_pi4j_wiringpi_Gpio_ALT5 2L
 #undef com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP
 #define com_pi4j_wiringpi_Gpio_INT_EDGE_SETUP 0L
 #undef com_pi4j_wiringpi_Gpio_INT_EDGE_FALLING
@@ -105,6 +117,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupPhys
  * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinMode
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_Gpio
+ * Method:    pinModeAlt
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_Gpio_pinModeAlt
   (JNIEnv *, jclass, jint, jint);
 
 /*
@@ -205,11 +225,11 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_waitForInterrupt
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio
- * Method:    wiringPiISR
- * Signature: (IILcom/pi4j/wiringpi/GpioInterruptCallback;)I
+ * Method:    _wiringPiISR
+ * Signature: (II)I
  */
-JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiISR
-  (JNIEnv *, jclass, jint, jint, jobject);
+JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio__1wiringPiISR
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     com_pi4j_wiringpi_Gpio

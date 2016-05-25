@@ -1,8 +1,66 @@
+###
+#
+# **********************************************************************
+# ORGANIZATION  :  Pi4J
+# PROJECT       :  Pi4J :: The Pi4J Project
+# FILENAME      :  .travis.yml
+#
+# This file is part of the Pi4J project. More information about
+# this project can be found here:  http://www.pi4j.com/
+# **********************************************************************
+# %%
+# Copyright (C) 2012 - 2015 Pi4J
+# %%
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Lesser Public License for more details.
+#
+# You should have received a copy of the GNU General Lesser Public
+# License along with this program.  If not, see
+# <http://www.gnu.org/licenses/lgpl-3.0.html>.
+#
+###
+
+# ----------------------------------------------------------------------------------
+# This is a Java program with a minimum requirment of JDK7.
+# This build should be performed on a Linux platform.
+# ----------------------------------------------------------------------------------
 language: java
 jdk:
   - oraclejdk7
 os:
   - linux
 
-install: true
-script: "mvn clean install -Dmaven.javadoc.skip=false -DskipTests=true --projects pi4j-core,pi4j-example,pi4j-device,pi4j-service"
+# ----------------------------------------------------------------------------------
+# Before maven build, we need to setup cross-compiler environment for native
+# gcc/make builds for ARM platform.  First we will download the cross-compiler
+# toolchain from github and then add the arm cross-compiler tools to the path and
+# export the build architecture and compiler prefix environment variables.
+# ----------------------------------------------------------------------------------
+install:
+  - export PROJECT_DIR=$PWD
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq tree
+  - cd $HOME
+  - git clone https://github.com/raspberrypi/tools rpi-tools
+  - export PATH=$PATH:$HOME/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+  - export ARCH=arm
+  - export CCPREFIX=$HOME/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
+  - export CC=arm-linux-gnueabihf-gcc
+  - export RPI_CROSS_COMPILE=true
+  - cd $PROJECT_DIR
+
+# ----------------------------------------------------------------------------------
+# Build the project including the
+# 'pi4j-native' project using the cross-compiler profile.
+#  ... Skip all tests.
+#  ... Skip javadoc.
+# ----------------------------------------------------------------------------------
+script:
+  - mvn clean install -Pnative -Pcross-compile -Dmaven.javadoc.skip=false -DskipTests=true

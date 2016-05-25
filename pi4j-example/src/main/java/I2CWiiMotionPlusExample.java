@@ -3,9 +3,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  I2CWiiMotionPlusExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  I2CWiiMotionPlusExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -45,48 +45,48 @@ public class I2CWiiMotionPlusExample {
      */
     public static void main(String[] args) throws Exception {
         System.out.println("Starting:");
-        
+
         // get I2C bus instance
         final I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-        
+
         WiiMotionPlus wiiMotionPlus = new WiiMotionPlus(bus);
         wiiMotionPlus.init();
-        
+
         int iteration = 0;
-        
+
         makeBackup("log.txt");
-        
+
         FileWriter logFile = new FileWriter("log.txt");
         BufferedWriter bw = new BufferedWriter(logFile, 2048);
         PrintWriter log = new PrintWriter(bw);
-        
+
         try {
             while (true) {
                 long now = System.currentTimeMillis();
                 ThreeAxis threeAxis = wiiMotionPlus.read();
                 long lasted = System.currentTimeMillis() - now;
-                
+
                 System.out.print(formatInt(iteration));
                 System.out.print(' ');
-                
+
                 System.out.print(formatLong(lasted));
                 System.out.print(' ');
-                
+
                 System.out.print(formatInt(threeAxis.x));
                 System.out.print(' ');
-    
+
                 System.out.print(formatInt(threeAxis.y));
                 System.out.print(' ');
-    
+
                 System.out.print(formatInt(threeAxis.z));
                 System.out.print(' ');
-    
+
                 // System.out.print('\r');
                 System.out.println();
-                
+
                 log.println(formatInt(iteration) + "," + formatLong(lasted) + "," + formatInt(threeAxis.x) + "," + formatInt(threeAxis.y) + "," + formatInt(threeAxis.z));
                 //log.flush();
-                
+
                 Thread.sleep(500);
                 iteration = iteration + 1;
             }
@@ -96,7 +96,7 @@ public class I2CWiiMotionPlusExample {
             logFile.close();
         }
     }
-    
+
     public static void makeBackup(String filename) {
         int i = 1;
         File f = new File(filename + "." + i);
@@ -113,29 +113,29 @@ public class I2CWiiMotionPlusExample {
             from.renameTo(to);
         }
     }
-    
+
     public static String formatInt(int i) {
         String x = "         " + Integer.toString(i);
         x = x.substring(x.length() - 6, x.length());
         return x;
     }
-    
+
     public static String formatLong(long i) {
         String x = "         " + Long.toString(i);
         x = x.substring(x.length() - 6, x.length());
         return x;
     }
-    
+
     public static class WiiMotionPlus {
-        
+
         private I2CDevice initDevice;
         private I2CDevice device;
-        
+
         public WiiMotionPlus(I2CBus bus) throws IOException {
             initDevice = bus.getDevice(0x53);
             device = bus.getDevice(0x52);
         }
-        
+
         public void init() {
             try {
                 initDevice.write(0xfe, (byte)0x04);
@@ -143,7 +143,7 @@ public class I2CWiiMotionPlusExample {
                 ignore.printStackTrace();
             }
         }
-        
+
         public ThreeAxis read() throws IOException {
             byte[] buf = new byte[256];
             int res = device.read(0, buf, 0, 6);
@@ -152,9 +152,9 @@ public class I2CWiiMotionPlusExample {
                 throw new RuntimeException("Read failure - got only " + res + " bytes from WiiMotionPlus");
             }
 
-            
+
             ThreeAxis ret = new ThreeAxis();
-            
+
             ret.x = asInt(buf[0]);
             ret.y = asInt(buf[1]);
             ret.z = asInt(buf[2]);
@@ -170,13 +170,13 @@ public class I2CWiiMotionPlusExample {
             if (i < 0) { i = i + 256; }
             return i;
         }
-    
+
     }
-    
+
     public static class ThreeAxis {
-        
+
         public int x;
         public int y;
         public int z;
-    }    
+    }
 }

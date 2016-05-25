@@ -5,9 +5,9 @@ package com.pi4j.component.servo.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  PCA9685GpioServoDriver.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PCA9685GpioServoDriver.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.component.servo.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,6 +31,7 @@ package com.pi4j.component.servo.impl;
 
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.pi4j.component.servo.ServoDriver;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
@@ -45,7 +46,7 @@ public class PCA9685GpioServoDriver implements ServoDriver {
     private Pin pin;
     private int position;
     private int resolution;
-    
+
     public PCA9685GpioServoDriver(PCA9685GpioProvider provider, Pin pin) {
         setProvider(provider);
         setPin(pin);
@@ -82,7 +83,7 @@ public class PCA9685GpioServoDriver implements ServoDriver {
     public int getServoPulseResolution() {
         return resolution;
     }
-    
+
     protected void updateResolution() {
         resolution = new BigDecimal(4096).divide(getProvider().getFrequency(), BigDecimal.ROUND_HALF_DOWN).intValue();
     }

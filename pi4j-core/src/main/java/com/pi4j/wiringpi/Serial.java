@@ -5,9 +5,9 @@ package com.pi4j.wiringpi;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  Serial.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  Serial.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.wiringpi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,14 +38,14 @@ import com.pi4j.util.NativeLibraryLoader;
  * or any USB serial device with no special distinctions between them. You just specify the device
  * name in the initial open function.
  * </p>
- * 
+ *
  * <p>
  * Note: The file descriptor (fd) returned is a standard Linux filehandle. You can use the standard
  * read(), write(), etc. system calls on this filehandle as required. E.g. you may wish to write a
  * larger block of binary data where the serialPutchar() or serialPuts() function may not be the
  * most appropriate function to use, in which case, you can use write() to send the data.
  * </p>
- * 
+ *
  * <p>
  * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
  * the following system libraries:
@@ -57,7 +57,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
- * 
+ *
  * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
@@ -68,16 +68,16 @@ public class Serial {
 
     /**
      * The default hardware COM port provided via the Raspberry Pi GPIO header.
-     * 
+     *
      * @see #serialOpen(String,int)
      */
     public static final String DEFAULT_COM_PORT = "/dev/ttyAMA0";
 
-    // private constructor 
+    // private constructor
     private Serial() {
-        // forbid object construction 
+        // forbid object construction
     }
-    
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -85,22 +85,22 @@ public class Serial {
 
     /**
      * <p>int serialOpen (char *device, int baud);</p>
-     * 
+     *
      * <p>
      * This opens and initializes the serial device and sets the baud rate. It sets the port into
      * raw mode (character at a time and no translations), and sets the read timeout to 10 seconds.
      * The return value is the file descriptor or -1 for any error, in which case errno will be set
      * as appropriate.
      * </p>
-     * 
+     *
      * <p>
      * (ATTENTION: the 'device' argument can only be a maximum of 128 characters.)
      * </p>
-     * 
+     *
      * @see #DEFAULT_COM_PORT
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
-     * 
+     *
      * @param device The device address of the serial port to access. You can use constant
      *            'DEFAULT_COM_PORT' if you wish to access the default serial port provided via the
      *            GPIO header.
@@ -108,11 +108,11 @@ public class Serial {
      * @return The return value is the file descriptor or -1 for any error, in which case errno will
      *         be set as appropriate.
      */
-    public static native int serialOpen(String device, int baud);
+    public synchronized static native int serialOpen(String device, int baud);
 
     /**
      * <p>void serialClose (int fd);</p>
-     * 
+     *
      * <p>
      * Closes the device identified by the file descriptor given.
      * </p>
@@ -122,36 +122,80 @@ public class Serial {
      *            The file descriptor of the serial port.
      *            </p>
      */
-    public static native void serialClose(int fd);
+    public synchronized static native void serialClose(int fd);
 
     /**
      * <h1>void serialFlush (int fd);</h1>
-     * 
+     *
      * <p>This discards all data received, or waiting to be send down the given device.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
      */
-    public static native void serialFlush(int fd);
+    public synchronized static native void serialFlush(int fd);
 
     /**
-     * <p>void serialPutchar (int fd, unsigned char c);</p>
-     * 
+     * <p>void serialPutByte (int fd, unsigned char c);</p>
+     *
      * <p>Sends the single byte to the serial device identified by the given file descriptor.</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
-     * @param data The character to transmit to the serial port.
+     * @param data The byte to transmit to the serial port.
      */
-    public static native void serialPutchar(int fd, char data);
+    public synchronized static native void serialPutByte(int fd, byte data);
+
+    /**
+     * <p>void serialPutchar (int fd, char c);</p>
+     *
+     * <p>Sends a single character () to the serial device identified by the given file descriptor.</p>
+     *
+     * @deprecated Use the serialPutByte() method instead.
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte to transmit to the serial port.
+     */
+    @Deprecated
+    public synchronized static void serialPutchar(int fd, char data){
+        serialPutByte(fd, (byte)data);
+    }
+
+    /**
+     * <p>void serialPutBytes (int fd, byte[] data);</p>
+     *
+     * <p>Sends any array of bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte array to transmit to the serial port.
+     * @param length The number of bytes from the byte array to transmit to the serial port.
+     */
+    public synchronized static native void serialPutBytes(int fd, byte[] data, int length);
+
+    /**
+     * <p>void serialPutBytes (int fd, byte[] data);</p>
+     *
+     * <p>Sends any array of bytes to the serial device identified by the given file descriptor.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param data The byte array to transmit to the serial port.
+     */
+    public synchronized static void serialPutBytes(int fd, byte ... data){
+        serialPutBytes(fd, data, data.length);
+    }
 
     /**
      * <p>void serialPuts (int fd, char *s);</p>
-     * 
+     *
      * <p>Sends the nul-terminated string to the serial device identified by the given file descriptor.</p>
-     * 
+     *
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
      *
      * @see <a
@@ -159,16 +203,16 @@ public class Serial {
      * @param fd The file descriptor of the serial port.
      * @param data The data string to transmit to the serial port.
      */
-    public static native void serialPuts(int fd, String data);
+    public synchronized static native void serialPuts(int fd, String data);
 
     /**
      * <p>void serialPuts (int fd, String data, String...arguments);</p>
-     * 
+     *
      * <p>
      * Sends the nul-terminated formatted string to the serial device identified by the given file
      * descriptor.
      * </p>
-     * 
+     *
      * <p>(ATTENTION: the 'data' argument can only be a maximum of 1024 characters.)</p>
      *
      * @see <a
@@ -177,13 +221,13 @@ public class Serial {
      * @param data The formatted data string to transmit to the serial port.
      * @param args Arguments to the format string.
      */
-    public static void serialPuts(int fd, String data, String... args) {
+    public synchronized static void serialPuts(int fd, String data, String... args) {
         serialPuts(fd, String.format(data, (Object[]) args));
     }
 
     /**
      * <p>int serialDataAvail (int fd);</p>
-     * 
+     *
      * Returns the number of characters available for reading, or -1 for any error condition, in
      * which case errno will be set appropriately.
      *
@@ -193,19 +237,62 @@ public class Serial {
      * @return Returns the number of characters available for reading, or -1 for any error
      *         condition, in which case errno will be set appropriately.
      */
-    public static native int serialDataAvail(int fd);
+    public synchronized static native int serialDataAvail(int fd);
 
     /**
-     * <p>int serialGetchar (int fd);</p>
-     * 
-     * <p>Returns the next character available on the serial device. This call will block for up to 10
+     * <p>byte serialGetByte (int fd);</p>
+     *
+     * <p>Returns the next byte available on the serial device. This call will block for up to 10
      * seconds if no data is available (when it will return -1)</p>
      *
      * @see <a
      *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
      * @param fd The file descriptor of the serial port.
-     * @return Returns the next character available on the serial device. This call will block for
+     * @return Returns the next byte available on the serial device. This call will block for
+     *         up to 10 seconds if no data is available (when it will return NULL)
+     */
+    public synchronized static native byte serialGetByte(int fd);
+
+    /**
+     * <p>int serialGetBytes (int fd, int length);</p>
+     *
+     * <p>Returns the length of bytes available on the serial device.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @param length The number of bytes to get from the serial port.  This number must not be higher than the number of available bytes.
+     * @return Returns the length of byte available on the serial device.
+     */
+    public synchronized static native byte[] serialGetBytes(int fd, int length);
+
+    /**
+     * <p>int serialGetAvailableBytes (int fd);</p>
+     *
+     * <p>Returns on array of bytes currently available on the serial device.</p>
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the current bytes available on the serial device.
+     */
+    public synchronized static native byte[] serialGetAvailableBytes(int fd);
+
+    /**
+     * <p>int serialGetchar (int fd);</p>
+     *
+     * <p>Returns the next byte available on the serial device. This call will block for up to 10
+     * seconds if no data is available (when it will return -1)</p>
+     *
+     * @deprecated Use the serialGetByte() method instead.
+     *
+     * @see <a
+     *      href="http://wiringpi.com/reference/serial-library/">http://wiringpi.com/reference/serial-library/</a>
+     * @param fd The file descriptor of the serial port.
+     * @return Returns the next byte available on the serial device. This call will block for
      *         up to 10 seconds if no data is available (when it will return -1)
      */
-    public static native int serialGetchar(int fd);
+    @Deprecated
+    public synchronized static native int serialGetchar(int fd);
+
 }

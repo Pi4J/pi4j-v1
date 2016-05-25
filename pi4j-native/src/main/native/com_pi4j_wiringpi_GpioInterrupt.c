@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c  
+ * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,20 +42,20 @@
 #include <sys/stat.h>
 #include "com_pi4j_wiringpi_GpioPin.h"
 #include "com_pi4j_wiringpi_GpioInterrupt.h"
+#include "com_pi4j_wiringpi_GpioUtil.h"
 
 // constants
-#define GPIO_FN_MAXLEN  32
-#define POLL_TIMEOUT    10000
-#define RDBUF_LEN       5
+#define GPIO_POLL_TIMEOUT    30000 // 30 seconds
+#define GPIO_RDBUF_LEN       5
 
 
 // java callback variables
-jclass callback_class;
-jmethodID callback_method;
-JavaVM *callback_jvm;
+jclass gpio_callback_class;
+jmethodID gpio_callback_method;
+JavaVM *gpio_callback_jvm;
 
 // monitoring thread data structure
-struct monitor_data{
+struct gpio_monitor_data{
    int  thread_id;
    int  pin;
    int  edgePin;
@@ -64,10 +64,10 @@ struct monitor_data{
 };
 
 // monitoring thread data structure array
-struct monitor_data monitor_data_array[MAX_GPIO_PINS];
+struct gpio_monitor_data gpio_monitor_data_array[MAX_GPIO_PINS];
 
 // monitoring threads array
-pthread_t threads[MAX_GPIO_PINS];
+pthread_t gpio_monitor_threads[MAX_GPIO_PINS];
 
 
 /**
@@ -81,8 +81,8 @@ pthread_t threads[MAX_GPIO_PINS];
 int monitorPinInterrupt(void *threadarg)
 {
 	// obtain the monitoring data structure from the thread argument
-	struct monitor_data *monitorData;
-	monitorData = (struct monitor_data *) threadarg;
+	struct gpio_monitor_data *monitorData;
+	monitorData = (struct gpio_monitor_data *) threadarg;
 
 	// cache a local pin value variable
 	int pin = monitorData->pin;
@@ -94,15 +94,15 @@ int monitorPinInterrupt(void *threadarg)
 	char fn[GPIO_FN_MAXLEN];
 	int fd,ret;
 	struct pollfd pfd;
-	char rdbuf[RDBUF_LEN];
+	char rdbuf[GPIO_RDBUF_LEN];
 
 	// allocate memory
-	memset(rdbuf, 0x00, RDBUF_LEN);
+	memset(rdbuf, 0x00, GPIO_RDBUF_LEN);
 	memset(fn, 0x00, GPIO_FN_MAXLEN);
 
 	// attempt to access the pin state from the linux sysfs
 	// (each GPIO pin value is stored in file: '/sys/class/gpio/gpio#/value' )
-	snprintf(fn, GPIO_FN_MAXLEN-1, "/sys/class/gpio/gpio%d/value", edgePin);
+	getGpioPinValueFile(fn, edgePin);
 	fd=open(fn, O_RDONLY);
 	if(fd<0)
 	{
@@ -117,7 +117,7 @@ int monitorPinInterrupt(void *threadarg)
 	pfd.events=POLLPRI; // High priority data may be read.
 
 	// attempt to read the pin state from the linux sysfs
-	ret=read(fd, rdbuf, RDBUF_LEN-1);
+	ret=read(fd, rdbuf, GPIO_RDBUF_LEN-1);
 	if(ret<0)
 	{
 		// return error; unable to read the data file
@@ -139,14 +139,14 @@ int monitorPinInterrupt(void *threadarg)
 	for(;;)
 	{
 		// clear/reset the data buffer
-		memset(rdbuf, 0x00, RDBUF_LEN);
+		memset(rdbuf, 0x00, GPIO_RDBUF_LEN);
 
 		// seek to the fist position in the data file
 		lseek(fd, 0, SEEK_SET);
 
 		// wait for data to be written to the GPIO value file
 		// (timeout every 10 seconds and restart)
-		ret=poll(&pfd, 1, POLL_TIMEOUT);
+		ret=poll(&pfd, 1, GPIO_POLL_TIMEOUT);
 
 		// if the return value is less than '0' then
 		// an error was thrown; bail out of the thread
@@ -170,7 +170,7 @@ int monitorPinInterrupt(void *threadarg)
 		else
 		{
 			// read the data from the file into the data buffer
-			ret=read(fd, rdbuf, RDBUF_LEN-1);
+			ret=read(fd, rdbuf, GPIO_RDBUF_LEN-1);
 			if(ret<0)
 			{
 				// data read error
@@ -189,24 +189,24 @@ int monitorPinInterrupt(void *threadarg)
 				monitorData->lastKnownState = compareResult;
 
 				// ensure the callback class and method are available
-				if (callback_class != NULL && callback_method != NULL)
+				if (gpio_callback_class != NULL && gpio_callback_method != NULL)
 				{
 					// get attached JVM
 					JNIEnv *env;
-					(*callback_jvm)->AttachCurrentThread(callback_jvm, (void **)&env, NULL);
+					(*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL);
 
 					// ensure that the JVM exists
-					if(callback_jvm != NULL)
+					if(gpio_callback_jvm != NULL)
 					{
 						// invoke callback to java state method to notify event listeners
 						if(compareResult == 0)
-							(*env)->CallStaticVoidMethod(env, callback_class, callback_method, (jint)pin, (jboolean)1);
+							(*env)->CallStaticVoidMethod(env, gpio_callback_class, gpio_callback_method, (jint)pin, (jboolean)1);
 						else
-							(*env)->CallStaticVoidMethod(env, callback_class, callback_method, (jint)pin, (jboolean)0);
+							(*env)->CallStaticVoidMethod(env, gpio_callback_class, gpio_callback_method, (jint)pin, (jboolean)0);
 					}
 
                     // detach from thread
-                    (*callback_jvm)->DetachCurrentThread(callback_jvm);
+                    (*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm);
 				}
 			}
 		}
@@ -237,15 +237,30 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_enablePinStateChange
 	if(index >= 0 && edgePin >= 0)
 	{
 		// only start this thread monitor if it has not already been started
-		if(monitor_data_array[index].running <= 0)
+		if(gpio_monitor_data_array[index].running <= 0)
 		{
+            // get existing pin edge trigger
+            int edge;
+            edge = (int)Java_com_pi4j_wiringpi_GpioUtil_getEdgeDetection(env, class, pin);
+
+            // if pin edge trigger is not set to "both", then attempt to set it now
+            if(edge != com_pi4j_wiringpi_GpioUtil_EDGE_BOTH){
+                int retval;
+                retval = (int)Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_BOTH);
+
+                // exit if pin edge trigger configuration was not successful
+                if(retval <= 0){
+                    return -2; // unable to set edge trigger
+                }
+            }
+
 			// configure the monitor instance data
-			monitor_data_array[index].thread_id = index;
-			monitor_data_array[index].pin = pin;
-			monitor_data_array[index].edgePin = edgePin;
+			gpio_monitor_data_array[index].thread_id = index;
+			gpio_monitor_data_array[index].pin = pin;
+			gpio_monitor_data_array[index].edgePin = edgePin;
 
 			// create monitoring instance thread
-			pthread_create(&threads[index], NULL, (void*) monitorPinInterrupt, (void *) &monitor_data_array[index]);
+			pthread_create(&gpio_monitor_threads[index], NULL, (void*) monitorPinInterrupt, (void *) &gpio_monitor_data_array[index]);
 
 			// return '1' when a thread was actively created and started
 			return 1;
@@ -278,12 +293,16 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChang
 	if(index >= 0)
 	{
 		// kill the monitoring thread
-		if(monitor_data_array[index].running > 0)
+		if(gpio_monitor_data_array[index].running > 0)
 		{
-			pthread_cancel(threads[index]);
+            // remove existing pin edge trigger
+            Java_com_pi4j_wiringpi_GpioUtil_setEdgeDetection(env, class, pin, com_pi4j_wiringpi_GpioUtil_EDGE_NONE);
+
+			// cancel monitoring thread
+			pthread_cancel(gpio_monitor_threads[index]);
 
             // reset running flag
-            monitor_data_array[index].running = 0;
+            gpio_monitor_data_array[index].running = 0;
 
 			// return '1' when a thread was actively killed
 			return 1;
@@ -305,7 +324,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioInterrupt_disablePinStateChang
  * --------------------------------------------------------
  * capture java references to be used later for callback methods
  */
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
+jint GpioInterrupt_JNI_OnLoad(JavaVM *jvm)
 {
 	JNIEnv *env;
 	jclass cls;
@@ -313,7 +332,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 	//printf("\nNATIVE (GpioInterrupt) LOADING\n");
 
 	// cache the JavaVM pointer
-	callback_jvm = jvm;
+	gpio_callback_jvm = jvm;
 
 	// ensure that the calling environment is a supported JNI version
     if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
@@ -323,7 +342,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
         return JNI_ERR;
     }
 
-    // search the attached java enviornment for the 'GpioInterrupt' class
+    // search the attached java environment for the 'GpioInterrupt' class
     cls = (*env)->FindClass(env, "com/pi4j/wiringpi/GpioInterrupt");
     if (cls == NULL)
     {
@@ -333,8 +352,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     }
 
     // use weak global ref to allow C class to be unloaded
-    callback_class = (*env)->NewWeakGlobalRef(env, cls);
-    if (callback_class == NULL)
+    gpio_callback_class = (*env)->NewWeakGlobalRef(env, cls);
+    if (gpio_callback_class == NULL)
     {
     	// unable to create weak reference to java class
     	printf("NATIVE (GpioInterrupt) ERROR; Java class reference is NULL.\n");
@@ -342,8 +361,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     }
 
     // lookup and cache the static method ID for the 'pinStateChangeCallback' callback
-    callback_method = (*env)->GetStaticMethodID(env, cls, "pinStateChangeCallback", "(IZ)V");
-    if (callback_method == NULL)
+    gpio_callback_method = (*env)->GetStaticMethodID(env, cls, "pinStateChangeCallback", "(IZ)V");
+    if (gpio_callback_method == NULL)
     {
     	// callback method could not be found in attached java class
     	printf("NATIVE (GpioInterrupt) ERROR; Static method 'GpioInterrupt.pinStateChangeCallback()' could not be found.\n");
@@ -361,14 +380,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
  * --------------------------------------------------------
  * stop all monitoring threads and clean up references
  */
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
+void GpioInterrupt_JNI_OnUnload(JavaVM *jvm)
 {
 	// kill all running monitor threads
 	int index = 0;
 	for(index = 0; index < MAX_GPIO_PINS; index++)
 	{
-		if(monitor_data_array[index].running > 0)
-			pthread_cancel(threads[index]);
+		if(gpio_monitor_data_array[index].running > 0)
+			pthread_cancel(gpio_monitor_threads[index]);
 	}
 
 	// destroy cached java references
@@ -377,7 +396,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
     {
     	return;
 	}
-	(*env)->DeleteWeakGlobalRef(env, callback_class);
+	(*env)->DeleteWeakGlobalRef(env, gpio_callback_class);
 
 	return;
 }

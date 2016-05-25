@@ -6,9 +6,9 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  ListenMultipleGpioExample.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  ListenMultipleGpioExample.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -18,12 +18,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -40,16 +40,16 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the Raspberry Pi.  
- * 
+ * for GPIO pin state changes on the Raspberry Pi.
+ *
  * @author Robert Savage
  */
 public class ListenMultipleGpioExample {
-    
+
     public static void main(String args[]) throws InterruptedException {
-        
+
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
-        
+
         // create GPIO controller
         final GpioController gpio = GpioFactory.getInstance();
 
@@ -59,9 +59,9 @@ public class ListenMultipleGpioExample {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-            }        
+            }
         };
-        
+
         // provision gpio input pins with its internal pull down resistor enabled
         GpioPinDigitalInput[] pins = {
                 gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_DOWN),
@@ -76,17 +76,17 @@ public class ListenMultipleGpioExample {
 
         // create and register gpio pin listener
         gpio.addListener(listener, pins);
-        
+
         System.out.println(" ... complete the GPIO circuit and see the listener feedback here in the console.");
-        
+
         // keep program running until user aborts (CTRL-C)
-        for (;;) {
+        while(true) {
             Thread.sleep(500);
         }
-        
+
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
+        // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller
     }
 }
 

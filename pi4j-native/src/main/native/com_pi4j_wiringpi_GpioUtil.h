@@ -3,13 +3,13 @@
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
- * FILENAME      :  com_pi4j_wiringpi_GpioUtil.h  
+ * FILENAME      :  com_pi4j_wiringpi_GpioUtil.h
  * 
- * This file is part of the Pi4J project. More information about 
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -114,6 +114,22 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_getDirection
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPinSupported
   (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    isPrivilegedAccessRequired
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_pi4j_wiringpi_GpioUtil_isPrivilegedAccessRequired
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_pi4j_wiringpi_GpioUtil
+ * Method:    enableNonPrivilegedAccess
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_pi4j_wiringpi_GpioUtil_enableNonPrivilegedAccess
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

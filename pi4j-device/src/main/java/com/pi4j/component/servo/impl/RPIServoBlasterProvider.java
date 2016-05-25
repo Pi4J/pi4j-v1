@@ -5,9 +5,9 @@ package com.pi4j.component.servo.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Device Abstractions
- * FILENAME      :  RPIServoBlasterProvider.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  RPIServoBlasterProvider.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.component.servo.impl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -49,7 +49,7 @@ import com.pi4j.io.gpio.RaspiPin;
 
 /**
  * Implementation of https://github.com/richardghirst/PiBits/tree/master/ServoBlaster
- * 
+ *
  *
  * @author Daniel Sendula
  */
@@ -90,7 +90,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
 
     public static Map<Pin, String> PIN_MAP;
     public static Map<String, Pin> REVERSE_PIN_MAP;
-    
+
     static {
         PIN_MAP = new HashMap<Pin, String>();
         REVERSE_PIN_MAP = new HashMap<String, Pin>();
@@ -120,20 +120,20 @@ public class RPIServoBlasterProvider implements ServoProvider {
         PIN_MAP.put(pin, s);
         REVERSE_PIN_MAP.put(s, pin);
     }
-    
+
     public static final String SERVO_BLASTER_DEV = "/dev/servoblaster";
     public static final String SERVO_BLASTER_DEV_CFG = "/dev/servoblaster-cfg";
-    
+
     protected File servoBlasterDev;
     protected File servoBlasterDevCfg;
-    
+
     protected Writer writer;
-    
+
     protected Map<Pin, RPIServoBlasterServoDriver> allocatedDrivers = new HashMap<Pin, RPIServoBlasterServoDriver>();
-    
+
     /**
      * Constructor. It checks if /dev/servoblaster file exists.
-     * 
+     *
      * @throws IOException thrown in case file /dev/servoblaster does not exist.
      */
     public RPIServoBlasterProvider() throws IOException {
@@ -147,9 +147,9 @@ public class RPIServoBlasterProvider implements ServoProvider {
             throw new FileNotFoundException("File " + SERVO_BLASTER_DEV_CFG + " is not present." +
                     " Please check https://github.com/richardghirst/PiBits/tree/master/ServoBlaster for details.");
         }
-        
+
     }
-    
+
     public List<Pin> getDefinedServoPins() throws IOException {
         List<Pin> servoPins = new ArrayList<Pin>();
         FileReader in = new FileReader(servoBlasterDevCfg);
@@ -159,7 +159,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
             @SuppressWarnings("unused")
             String p5pins = null;
             boolean mappingStarted = false;
-            
+
             @SuppressWarnings("resource")
             BufferedReader reader = new BufferedReader(in);
 
@@ -174,7 +174,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
                             String pin = line.substring(i + 4).trim();
                             i = pin.indexOf(' ');
                             pin = pin.substring(0, i);
-                            
+
                             Pin gpio = REVERSE_PIN_MAP.get(pin);
                             if (gpio != null) {
                                 if (index == servoPins.size()) {
@@ -190,7 +190,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
                             } else {
                                 System.err.println("Unrecognised pin " + pin);
                             }
-                            
+
                         } catch (NumberFormatException ignore) { }
                     }
                 } else {
@@ -214,10 +214,10 @@ public class RPIServoBlasterProvider implements ServoProvider {
         }
         return servoPins;
     }
-    
+
     /**
      * Returns new instance of {@link RPIServoBlasterServoDriver}.
-     * 
+     *
      * @param servoPin servo pin.
      * @return instance of {@link RPIServoBlasterServoDriver}.
      */
@@ -233,7 +233,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
             driver = new RPIServoBlasterServoDriver(servoPin, index, PIN_MAP.get(servoPin), this);
             ensureWriterIsCreated();
         }
-        
+
         return driver;
     }
 
@@ -243,7 +243,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
             writer = new FileWriter(servoBlasterDev);
         }
     }
-    
+
     protected synchronized void updateServo(String pinName, int value) {
         StringBuilder b = new StringBuilder();
         b.append(pinName).append('=').append(Integer.toString(value)).append('\n');

@@ -5,9 +5,9 @@ package com.pi4j.util;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  NativeLibraryLoader.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  NativeLibraryLoader.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
@@ -17,12 +17,12 @@ package com.pi4j.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -86,7 +86,12 @@ public class NativeLibraryLoader {
 
 		loadedLibraries.add(fileName);
 
-		String path = "/lib/" + fileName;
+        //
+        // path = /lib/{platform}/{linking:static|dynamic}/{filename}
+        //
+        String platform = System.getProperty("pi4j.platform", "raspberrypi");
+        String linking = System.getProperty("pi4j.linking", "static");
+		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
 		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 		try {
 			loadLibraryFromClasspath(path);
@@ -100,12 +105,12 @@ public class NativeLibraryLoader {
 
 	/**
 	 * Loads library from classpath
-	 * 
+	 *
 	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted after exiting. Method uses String as filename because the pathname is
 	 * "abstract", not system-dependent.
-	 * 
-	 * @param filename
-	 *            The filename in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 *
+	 * @param path
+	 *            The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
 	 * @throws IOException
 	 *             If temporary file creation or read/write operation fails
 	 * @throws IllegalArgumentException
