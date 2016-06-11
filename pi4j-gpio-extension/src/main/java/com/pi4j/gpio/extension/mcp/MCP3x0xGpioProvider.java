@@ -97,8 +97,7 @@ public abstract class MCP3x0xGpioProvider extends AdcGpioProviderBase implements
 	 * This method will perform an immediate data acquisition directly to the ADC chip to get the requested pin's input
 	 * conversion value.
 	 *
-	 * @param pin
-	 *            requested input pin to acquire conversion value
+	 * @param pin requested input pin to acquire conversion value
 	 * @return conversion value for requested analog input pin
 	 * @throws IOException
 	 */

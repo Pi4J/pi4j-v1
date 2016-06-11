@@ -53,7 +53,7 @@ public interface AdcGpioProvider extends GpioProvider {
     int DEFAULT_THRESHOLD = 5;
 
 	// this value is returned for any invalid analog input conversion value
-    int INVALID_VALUE = -1;
+    int INVALID_VALUE = Integer.MIN_VALUE;
 
     // ------------------------------------------------------------------------------------------
     // PUBLIC METHODS
