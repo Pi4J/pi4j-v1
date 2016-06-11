@@ -195,7 +195,7 @@ public class I2CBusImpl implements I2CBus {
         return runActionOnExclusivLockedBus(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                return I2C.i2cWriteByteDirect(data, device.getAddress(), data);
+                return I2C.i2cWriteByteDirect(fd, device.getAddress(), data);
             }
         });
     }
