@@ -44,8 +44,7 @@ import java.util.EnumSet;
  * </p>
  *
  * <p>
- * The MCP3424 is connected via I2C connection to the Raspberry Pi and provides 4 input channels that can be used
- * for analog input pins.
+ * The MCP3424 is connected via I2C connection to the Raspberry Pi and provides 4 analog input channels.
  * </p>
  *
  * @author Alexander Falkenstern
