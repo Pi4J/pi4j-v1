@@ -29,14 +29,9 @@ package com.pi4j.gpio.extension.base;
  * #L%
  */
 
-import com.pi4j.gpio.extension.mcp.MCP3008Pin;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
-import com.pi4j.io.spi.SpiChannel;
-import com.pi4j.io.spi.SpiDevice;
-import com.pi4j.io.spi.SpiFactory;
-import com.pi4j.io.spi.SpiMode;
 
 import java.io.IOException;
 
