@@ -98,6 +98,7 @@ public abstract class MCP3x0xGpioProvider extends AdcGpioProviderBase implements
 	 * conversion value.
 	 *
 	 * @param pin requested input pin to acquire conversion value
+	 *
 	 * @return conversion value for requested analog input pin
 	 * @throws IOException
 	 */
