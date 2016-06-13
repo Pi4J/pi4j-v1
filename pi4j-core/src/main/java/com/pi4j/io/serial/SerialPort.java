@@ -33,6 +33,7 @@ import com.pi4j.io.gpio.exception.UnsupportedBoardType;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.system.SystemInfo;
 
+import java.io.File;
 import java.io.IOException;
 
 public class SerialPort {
@@ -77,7 +78,12 @@ public class SerialPort {
             // RASPBERRY PI MODEL 3B
             // ------------------------
             case RaspberryPi_3B: {
-                return RaspberryPiSerial.S0_COM_PORT;
+                // if the /dev/ttyS0 port exists, then use it as the default serial port
+                File s0ComPort = new File(RaspberryPiSerial.S0_COM_PORT);
+                if((s0ComPort.exists())){
+                    return RaspberryPiSerial.S0_COM_PORT;
+                }
+                return RaspberryPiSerial.DEFAULT_COM_PORT;
             }
 
             // ------------------------
