@@ -94,6 +94,31 @@ PlatformManager.setPlatform(Platform.ODROID);
 
  {{{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/odroid/c1}View Odroid C1/C1+/C2 Examples}}
 
+* Known Issues
+
+  * <<GPIO Listener Events>> (edge triggered interrupts) [APPLIES ONLY TO C1/C1+/C2]
+
+  Pi4J uses edge detection for GPIO pin state change events. The Odroid C1/C1+/C2 only permit up to four GPIO pins
+  to be configured with edge detection for both "rising" and "falling" edges (a.k.a., "both"). Thus, you can
+  only use a maximum of four GPIO input pins with listener events. Alternatively, you can manually poll for GPIO
+  pin state changes. The included sample code demonstrates both the event listener and polling for pin state
+  changes: \
+  {{{https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/odroid/GpioListenAllExample.java}GpioListenAllExample}}
+
+  * <<PWM>>
+
+  PWM is not supported in the Hardkernel Odroid WiringPi port. Thus PWM is not currently supported by Pi4J for the
+  Odroid C1/C1+/C2 boards.
+
+
+  * <<WiringPi SoftPWM>>
+
+  SoftPWM is not supported on all Odroid GPIO pins on the C1/C1+/C2/XU4. This limitation is due to a GPIO pin
+  mapping issue in the WiringPi port for Odroid by Hardkernel.
+
+  * <<SPI>>
+
+  SPI modes (other than the default SPI MODE 0) are not supported in the Hardkernel Odroid WiringPi port.
 
 * Additional Resources
 
