@@ -65,6 +65,7 @@
             <item name="Installation" href="install.html" />
 			<item name="Download" href="download.html" />
 			<item name="Usage" href="usage.html" />
+            <item name="Pin Numbering Scheme" href="pin-numbering-scheme.html" />
 			<item name="JavaDoc" href="apidocs/index.html" target="pi4j-javadoc"/>
 		</menu>
         <menu name="Pin Numbering">
@@ -75,6 +76,8 @@
             <item name="Raspberry Pi - Model B+" href="pins/model-b-plus.html" />
             <item name="Raspberry Pi - Compute Module" href="pins/model-cm-rev1.html" />
             <item name="Raspberry Pi 2 - Model B" href="pins/model-2b-rev1.html" />
+            <item name="Raspberry Pi 3 - Model B" href="pins/model-3b-rev1.html" />
+            <item name="Raspberry Pi Zero" href="pins/model-zero-rev1.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />

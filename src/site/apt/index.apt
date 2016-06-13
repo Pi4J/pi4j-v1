@@ -32,14 +32,14 @@ Welcome to Pi4J!
   breaking changes where they may no longer be backwards compatible with prior versions.
 
 * Project Status
-  
+
   Please note that this project is continually under development but has been very stable for well over a year.  The
   functionality is very stable but improvements and bug fixes are continually committed into the '{{{https://github.com/Pi4J/pi4j/tree/develop}develop}}' branch in
   the Pi4J GitHub repository and SNAPSHOT builds are published in the {{{./download.html#Maven_Repository}Sonatype OSS repository}}.
-  
+
   You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
   or ugly.  <(Well maybe keep the ugly feedback to a minimum.)>
-  
+
   Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.
 
 * Supported Hardware
@@ -58,39 +58,42 @@ Welcome to Pi4J!
 
   * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
 
+  * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+
+  * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
 
 * Features
 
   * Export & unexport GPIO pins
-   
+
   * Configure GPIO pin direction
-   
+
   * Configure GPIO pin edge detection
-   
-  * Control/write GPIO pin states 
-    
+
+  * Control/write GPIO pin states
+
   * Pulse GPIO pin state
-   
+
   * Read GPIO pin states
-  
+
   * Listen for GPIO pin state changes (interrupt-based; not polling)
-  
+
   * Automatically set GPIO states on program termination (GPIO shutdown)
-      
+
   * Triggers for automation based on pin state changes
-  
-  * Send & receive data via RS232 serial communication 
 
-  * I2C Communication 
+  * Send & receive data via RS232 serial communication
 
-  * SPI Communication 
+  * I2C Communication
 
-  * Extensible GPIO Provider interface to add GPIO capacity via expansion boards     
-  
-  * Access system information and network information from the Raspberry Pi   
-          
+  * SPI Communication
+
+  * Extensible GPIO Provider interface to add GPIO capacity via expansion boards
+
+  * Access system information and network information from the Raspberry Pi
+
   * Wrapper classes for direct access to WiringPi Library from Java
-  
+
 * Getting Started
 
   The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
@@ -105,16 +108,16 @@ Welcome to Pi4J!
 * Examples
 
   Review each of the following examples to explore the functionality provided by the Pi4j library.
-  
+
   * {{{./example/control.html}Control GPIO}}
-    
+
   * {{{./example/listener.html}Listen for GPIO Events}}
-    
+
   * {{{./example/shutdown.html}Shutdown GPIO}}
-    
+
   * {{{./example/trigger.html}Trigger GPIO on Events}}
-    
+
   * {{{./example/serial.html}Serial Communication}}
-  
-  * {{{./example/system-info.html}System/Network Information}}  
+
+  * {{{./example/system-info.html}System/Network Information}}
 

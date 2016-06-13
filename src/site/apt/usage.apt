@@ -13,44 +13,43 @@ Usage
 
 * Import Pi4J Packages
 
-  To implement Pi4J, you will need to include a number of Pi4J packages into your project classes.  The following list includes the majority of the Pi4J imports that you would need.  You probably will not require all of these imports in your project, you can remove any unused imports. 
-  
-%{snippet|id=usage-import-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
+  To implement Pi4J, you will need to include a number of Pi4J packages into your project classes.  The following list includes the majority of the Pi4J imports that you would need.  You probably will not require all of these imports in your project, you can remove any unused imports.
+
+%{snippet|id=usage-import-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
 =====================
 
 * Create Controller Instance
 
-  Before interacting with Pi4J, you must first create a new GPIO controller instance.  The <GpioFactory> includes a <createInstance> method to create the GPIO controller.  Your project should only instantiate a single GPIO controller instance and that instance should be shared across your project.  
+  Before interacting with Pi4J, you must first create a new GPIO controller instance.  The <GpioFactory> includes a <createInstance> method to create the GPIO controller.  Your project should only instantiate a single GPIO controller instance and that instance should be shared across your project.
 
-%{snippet|id=usage-create-controller-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java} 
- 
+%{snippet|id=usage-create-controller-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
+
 =====================
 
 * Pin Numbering
 
-  * <<For Models A, B, and B+>>
+  * <<For Models A, A+, B, B+, 2B, 3B, and Zero>>
 
-    \
     Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
     P14J implements the same pin number scheme as the Wiring Pi project.
     More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
-  
+
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
 
   * <<For the Compute Module>>
 
-    \
     Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> enumeration that is used to manage the accessible GPIO pins for the Compute Module.
 
   * <<Pin Numbering Diagrams>>
 
-    \
     The available GPIO pins differ between Raspberry Pi models and board revisions.
     Please select your model/revision below to see the GPIO pinout for your board.
 
        * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+
+       * {{{./pins/model-a-plus.html}Raspberry Pi - Model A+}}
 
        * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
 
@@ -60,8 +59,24 @@ Usage
 
        * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
 
+       * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
+
+       * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+
+       * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+
     \
     {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
+    \
+
+  * << Broadcom Pin Numbering Scheme>> (ALTERNATIVE PIN NUMBERING)
+
+    While the WiringPi pin numbering scheme is the default pin numbering scheme used by Pi4J, Pi4J also includes
+    support for using the Broadcom Pin Numbering Scheme.
+    Please see this page for more details on how to configure Pi4J to use the Broadcom Pin Numbering Scheme.
+    \
+    >> {{{./pin-numbering-scheme.html}Broadcom Pin Numbering Scheme}}
+
 
 =====================
 
@@ -69,13 +84,13 @@ Usage
 
   To access a GPIO pin, you must first provision the pin.\
   Provisioning configures the pin based on how you intend to use it.  Provisioning can automatically export the pin, set its direction, and setup any edge detection for interrupt based events.
-  
-  The following example demonstrates how to provision an INPUT pin.  Input pins are pins that your program will monitor for state change or interrogate state when needed.  Input pins are used for switches, sensors, etc.    
+
+  The following example demonstrates how to provision an INPUT pin.  Input pins are pins that your program will monitor for state change or interrogate state when needed.  Input pins are used for switches, sensors, etc.
 
 %{snippet|id=usage-provision-input-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
   The following example demonstrates how to provision an OUTPUT pin.\
-  Output pins are pins that your program will control state changes.  Output pins are used for controlling relays, LEDs, transistors, etc.    
+  Output pins are pins that your program will control state changes.  Output pins are used for controlling relays, LEDs, transistors, etc.
 
 %{snippet|id=usage-provision-output-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
@@ -86,7 +101,7 @@ Usage
 * Control Pin State
 
   P14J provides a number of convenience method for controlling or writing a state to a GPIO pin.\
-  The examples below demonstrate a few of the controlling methods you can invoke on a GPIO pin.  
+  The examples below demonstrate a few of the controlling methods you can invoke on a GPIO pin.
 
 %{snippet|id=usage-control-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
@@ -97,7 +112,7 @@ Usage
 * Read Pin State
 
   P14J provides a number of convenience method for reading/interrogating the current state to a GPIO pin.\
-  The examples below demonstrate a few of the reading methods you can invoke on a GPIO pin.  
+  The examples below demonstrate a few of the reading methods you can invoke on a GPIO pin.
 
 %{snippet|id=usage-read-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
@@ -106,9 +121,9 @@ Usage
 * Listen for Pin Changes
 
   Pi4J provides an implementation for monitoring GPIO pin interrupts.  This is a far more efficient method for actively monitoring pin states versus constantly polling and interrogating the pin state.
-  
+
   You must create a class that implements the <GpioListener> interface.  This interface simply contain a single method <pinStateChanged(GpioPinStateChangeEvent event)> that is used to notify the listener class when a pin change event has occurred.\
-  The following snippet demonstrates a simple listener implementation:      
+  The following snippet demonstrates a simple listener implementation:
 
 %{snippet|id=usage-listener-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
@@ -122,10 +137,10 @@ Usage
 
 * Pin Shutdown
 
-  Pi4J provides an implementation to automatically set GPIO pin states when the application is terminated.  This is useful to ensure that the GPIO pins states are not active or leaving some activity engaged if the program is shutdown. 
-  
+  Pi4J provides an implementation to automatically set GPIO pin states when the application is terminated.  This is useful to ensure that the GPIO pins states are not active or leaving some activity engaged if the program is shutdown.
+
   You can simply use the <setShutdownOptions> method on the <GpioPin> instance to configure the desired shutdown behavior to be applied.
-  The following snippet demonstrates a simple GPIO pin shutdown configuration implementation:      
+  The following snippet demonstrates a simple GPIO pin shutdown configuration implementation:
 
 %{snippet|id=usage-shutdown-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
 
@@ -135,14 +150,14 @@ Usage
 
 * Pin Triggers
 
-  P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\     
-  The following snippet demonstrates a simple ''follow-me' trigger implementation:      
+  P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\
+  The following snippet demonstrates a simple ''follow-me' trigger implementation:
 
 %{snippet|id=usage-trigger-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
- 
+
   A complete example project demonstrating the GPIO pin triggers is provided {{{./example/trigger.html}here}}.\
   (This example includes all available provided triggers.)
-  
+
 =====================
 
 * Serial Communication
@@ -150,7 +165,7 @@ Usage
   P14J provides a simplified API to send and receive data using a serial port of the Raspberry's Pi.\
   The following example project demonstrates implementing serial communication:\
   {{{./example/serial.html}Serial Communication Example}}.
-  
+
 =====================
 
 * System Information
@@ -158,4 +173,4 @@ Usage
   P14J provides an API to access system and network information from the Raspberry's Pi.\
   The following example project demonstrates accessing system and network information:\
   {{{./example/system-info.html}System Information Example}}.
-  
+

@@ -1,0 +1,102 @@
+            ------
+            Pin Numbering Schemes
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering Schemes
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+=====================
+
+* WiringPi Pin Numbering Scheme (Default)
+
+  By default, Pi4J uses the WiringPi pin numbering scheme for all supported Raspberry Pi models except the Compute Module.
+  The WiringPi pin numbering scheme is an abstract pin numbering scheme to help insulate software from hardware changes.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  * <<For Models A, A+, B, B+, 2B, 3B, and Zero>>
+
+    Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+    P14J implements the same pin number scheme as the Wiring Pi project.
+    More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+    Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
+
+  * <<For the Compute Module>>
+
+    Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
+    Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> enumeration that is used to manage the accessible GPIO pins for the Compute Module.
+
+  * <<Pin Numbering Diagrams>>
+
+    The available GPIO pins differ between Raspberry Pi models and board revisions.
+    Please select your model/revision below to see the GPIO pinout for your board.
+
+       * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+
+       * {{{./pins/model-a-plus.html}Raspberry Pi - Model A+}}
+
+       * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
+
+       * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2.0)}}
+
+       * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+
+       * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
+
+       * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
+
+       * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+
+       * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+
+    \
+    {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
+    \
+
+=====================
+
+* Broadcom Pin Numbering Scheme
+
+  While the WiringPi pin numbering scheme is the default pin numbering scheme used by Pi4J, Pi4J also includes
+  support for using the Broadcom Pin Numbering Scheme.  There may be special circumstances or perhaps just personal
+  preference where you may want or need to use the Broadcom Pin numbering scheme.  Please be aware that, while a rare occurrence,
+  the Broadcom pins numbers can change physical locations where they are mapped/connected on the GPIO header on
+  different models/board revisions.
+
+  Before provisioning any GPIO pins, you must first configure the Pi4J library to use the Broadcom Pin Numbering scheme.
+  The sample code below configures the default GPIO provider in the Pi4J library to use the Broadcom Pin Numbering scheme.
+
+----------------------------------------
+// in order to use the Broadcom GPIO pin numbering scheme, we need to configure the
+// GPIO factory to use a custom configured Raspberry Pi GPIO provider
+GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
+----------------------------------------
+
+  After Pi4J is configured to use the Broadcom GPIO pin numbering scheme you can then create the GpioController instance
+  and start provisioning GPIO pins.
+
+  To access a GPIO pin, you must first provision the pin.\
+  Provisioning configures the pin based on how you intend to use it.  Provisioning can automatically export the pin, set its direction, and setup any edge detection for interrupt based events.
+
+  Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiBcmPin.html}RaspiBcmPin}}>>> enumeration that is
+  used to manage the accessible GPIO pins for the Broadcom GPIO pin numbering scheme.
+
+  The following code snippet demonstrates creating the GPIO controller instance and provisioning a GPIO output pin
+  for Broadcom pin #2.
+
+----------------------------------------
+// create gpio controller
+final GpioController gpio = GpioFactory.getInstance();
+
+// provision broadcom gpio pin #02 as an output pin and turn on
+final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiBcmPin.GPIO_02, "MyLED", PinState.HIGH);
+----------------------------------------
+
+  A complete example is included in the Pi4J examples project:
+  <<<{{{https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/BroadcomPinNumberingGpioExample.java}RaspiBcmPin}}>>>
+
+

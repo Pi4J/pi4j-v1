@@ -1,11 +1,11 @@
             ------
-            Pin Numbering - Raspberry Pi Model A+
+            Pin Numbering - Raspberry Pi 3 Model B
             ------
             ------
              YYYY-MM-DD
             ------
 
-Pin Numbering - Raspberry Pi Model A+
+Pin Numbering - Raspberry Pi 3 Model B
 
 %{toc|section=0|fromDepth=2|toDepth=3}
 
@@ -25,24 +25,24 @@ Pin Numbering - Raspberry Pi Model A+
 
 * Expansion Header
 
-  The Raspberry Pi Model A+ board contains a single 40-pin expansion header labeled as 'J8' providing access to 26 GPIO pins.\
+  The Raspberry Pi 3 Model B board contains a single 40-pin expansion header labeled as 'J8' providing access to 26 GPIO pins.\
   (Pins 1, 2, 39 & 40 are also labeled below.)
 
-[../images/j8header-photo-a-plus.png]
+[../images/j8header-photo.png]
 
 * J8 Pinout (40-pin Header)
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
 
-[../images/j8header-a-plus.png]
+[../images/j8header-3b.png]
 
-  {{{../images/j8header-a-plus-large.png}(click here for hi-resolution image)}}
+  {{{../images/j8header-3b-large.png}(click here for hi-resolution image)}}
 
 
 * Additional Resources
 
    * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
 
-   * {{{http://www.raspberrypi.org/products/model-a-plus/}Click here for more information on the J8 header.}}
+   * {{{http://www.raspberrypi.org/products/raspberry-pi-3-model-b/}Click here for more information on the J8 header.}}
 
    * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}
