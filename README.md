@@ -43,7 +43,7 @@ Copyright (C) 2012-2015 Pi4J
      communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
      header.  Instead, a new serial port "/dev/ttyS0" has been provided which is implemented with a software-based UART 
      (miniUART).  This software-based UART ("/dev/ttyS0") does not support PARITY and some have experienced some 
-     stability issues using this port at higher speeds.  If you don't need the Bluetooth model functionality, you can 
+     stability issues using this port at higher speeds.  If you don't need the Bluetooth modem functionality, you can 
      disable the BT modem and configure the RPi to use a device-tree overlay to re-map the hardware-based serial UART
      ("/dev/ttyAMA0") back to the GPIO header pins for TX/RX.  See the instructions on this page for details on how to 
      configure the device-tree overlay and disable the bluetooth modem/service: 

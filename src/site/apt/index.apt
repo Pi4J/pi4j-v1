@@ -14,27 +14,47 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2015-04-18]
+  [2016-06-15]
 
-  Version 1.0 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
+  Version 1.1 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
 
-  Please note that with this release the project has changed licensing from the Apache Software License, Version 2 to
-  the GNU LGPL license, Version 3.0.  This change was necessary because the Pi4J release binaries are embedding the
-  WiringPi project (Pi4J now statically compiles against the WiringPi library) which is under GNU LGPL licensing.
-  Per the terms of Apache licensing, the licensed project cannot include components under LGPL licensing.
-  (<http://www.apache.org/legal/resolved.html>)
+  New Feature Highlights:
 
-  New development and bug fixes will now be provided via the 1.1-SNAPSHOT builds and the latest development codebase
-  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/develop}develop}}' branch.
+    * Added support for {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
 
-  In addtition to maintenance and bug fixes, the 1.1-SNAPSHOT build also includes a completely overhauled Serial
-  communication API and implementation.  Please note that to add these serial API enhancements some APIs required
-  breaking changes where they may no longer be backwards compatible with prior versions.
+    * Added support for {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+
+    * Added support for {{{./pins/lemaker-bananapi.html}BananaPi platform}}
+
+    * Added support for {{{./pins/lemaker-bananapro.html}BananaPro platform}}
+
+    * Added support for {{{./pins/odroid-c1.html}Odroid C1/C1+/C2}}
+
+    * Added support for {{{./pins/odroid-xu4.html}Odroid XU4}}
+
+    * Updated to Java 7 runtime
+
+    * Added support for enabling non-privileged GPIO access via the Pi4J APIs (no 'sudo' required) \
+    (see: {{{http://www.savagehomeautomation.com/projects/pi4j-now-supports-non-privileged-access-no-more-rootsudo.html}Pi4J GPIO Non-Privileged Access}})
+
+    * Added optimizations for GPIO state change latency
+
+    * Added cross-compiler support in Maven build
+
+    * Added new Serial JNI implementation to support advanced serial configuration/operations
+
+  In addition to maintenance and bug fixes, the 1.1 release includes a completely overhauled Serial communication API
+  and implementation.  Please note that to add these serial API enhancements some APIs required breaking changes where
+  they may no longer be backwards compatible with prior versions.
+
+  New development and bug fixes will now be provided via the 1.2-SNAPSHOT builds and the latest development codebase
+  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch.
+
 
 * Project Status
 
-  Please note that this project is continually under development but has been very stable for well over a year.  The
-  functionality is very stable but improvements and bug fixes are continually committed into the '{{{https://github.com/Pi4J/pi4j/tree/develop}develop}}' branch in
+  Please note that this project is continually under development but has been very stable for several years.  The
+  functionality is very stable but improvements and bug fixes are continually committed into the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch in
   the Pi4J GitHub repository and SNAPSHOT builds are published in the {{{./download.html#Maven_Repository}Sonatype OSS repository}}.
 
   You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
@@ -61,6 +81,14 @@ Welcome to Pi4J!
   * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
 
   * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+
+  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPi}}
+
+  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPro}}
+
+  * {{{./pins/odroid-c1.html}Odroid C1/C1+/C2}}
+
+  * {{{./pins/odroid-xu4.html}Odroid XU4}}
 
 * Features
 

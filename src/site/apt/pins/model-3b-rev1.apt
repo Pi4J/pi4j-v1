@@ -25,7 +25,7 @@ Pin Numbering - Raspberry Pi 3 Model B
 
 * Expansion Header
 
-  The Raspberry Pi 3 Model B board contains a single 40-pin expansion header labeled as 'J8' providing access to 26 GPIO pins.\
+  The Raspberry Pi 3 Model B board contains a single 40-pin expansion header labeled as 'J8' providing access to 28 GPIO pins.\
   (Pins 1, 2, 39 & 40 are also labeled below.)
 
 [../images/j8header-photo.png]
@@ -37,6 +37,18 @@ Pin Numbering - Raspberry Pi 3 Model B
 [../images/j8header-3b.png]
 
   {{{../images/j8header-3b-large.png}(click here for hi-resolution image)}}
+
+* Known Issues
+
+  On the Raspberry Pi Model 3B the hardware-based serial/UART device /dev/ttyAMA0 has been re-purposed to
+  communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the
+  GPIO header.  Instead, a new serial port "/dev/ttyS0" has been provided which is implemented with a
+  software-based UART (miniUART). This software-based UART ("/dev/ttyS0") does not support PARITY and some
+  have experienced some stability issues using this port at higher speeds. If you don't need Bluetooth
+  functionality, you can disable the BT modem and configure the RPi to use a device-tree overlay to re-map the
+  hardware-based serial UART ("/dev/ttyAMA0") back to the GPIO header pins for TX/RX. See the instructions on
+  this page for details on how to configure the device-tree overlay and disable the bluetooth modem/service: \
+  {{{https://openenergymonitor.org/emon/node/12311}Disable Bluetooth Modem}}
 
 
 * Additional Resources

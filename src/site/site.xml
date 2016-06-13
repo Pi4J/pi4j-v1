@@ -24,10 +24,30 @@
 			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2014 Pi4J. All Rights Reserved."/>
-			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
+			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io, odroid, bananapi"/>
 			<META NAME="ROBOTS" CONTENT="ALL"/>
 			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
 			<META NAME="AUTHOR" CONTENT="Robert Savage"/>
+
+            <!-- FAVICONS -->
+            <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png"/>
+            <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png"/>
+            <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png"/>
+            <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png"/>
+            <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png"/>
+            <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png"/>
+            <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png"/>
+            <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png"/>
+            <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"/>
+            <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192"/>
+            <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"/>
+            <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16"/>
+            <link rel="manifest" href="/manifest.json"/>
+            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"/>
+            <meta name="msapplication-TileColor" content="#da532c"/>
+            <meta name="msapplication-TileImage" content="/mstile-144x144.png"/>
+            <meta name="theme-color" content="#ffffff"/>
 
 			<!-- GOOGLE ANALYTICS SCRIPT -->
 			<script type="text/javascript">
@@ -78,6 +98,10 @@
             <item name="Raspberry Pi 2 - Model B" href="pins/model-2b-rev1.html" />
             <item name="Raspberry Pi 3 - Model B" href="pins/model-3b-rev1.html" />
             <item name="Raspberry Pi Zero" href="pins/model-zero-rev1.html" />
+            <item name="Lemaker BananaPi" href="pins/lemaker-bananapi.html" />
+            <item name="Lemaker BananaPro" href="pins/lemaker-bananapro.html" />
+            <item name="Odroid C1/C1+/C2" href="pins/odroid-c1.html" />
+            <item name="Odroid XU4" href="pins/odroid-xu4.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />
@@ -88,6 +112,7 @@
         <menu name="Other Examples">
 			<item name="Serial Communication" href="example/serial.html" />
 			<item name="System/Network Information" href="example/system-info.html" />
+            <item name="More Pi4J Examples" href="example/more.html" />
 		</menu>
         <menu name="Utilities">
             <item name="Pi4J Utility Script" href="utility/pi4j.html" />

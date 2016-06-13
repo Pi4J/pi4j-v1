@@ -1,0 +1,25 @@
+            ------
+            Pin Numbering - Odroid C1/C1+/C2
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering - Odroid C1/C1+/C2
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Platform Configuration
+
+  TBD
+
+* Numbering Scheme
+
+  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+  P14J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/OdroidC1Pin.html}OdroidC1Pin}} enumeration that is used to manage the accessible GPIO pins.
+
+
+PLACEHOLDER - NEEDS TO BE UPDATED!
