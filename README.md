@@ -37,18 +37,24 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-05-25 :: 1.1-SNAPSHOT
+2016-06-13 :: 1.1-SNAPSHOT
 
-  *  Serial/UART device `/dev/ttyAMA0` on Raspberry Pi 3B is not working properly due to a clock timing issue. 
-     A workaround is to configure `force_turbo=1` in `/boot/config.txt`  
-     (see: https://github.com/RPi-Distro/repo/issues/22)
+  *  On the Raspberry Pi Model 3B the hardware-based serial/UART device `/dev/ttyAMA0` has been re-purposed to   
+     communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
+     header.  Instead, a new serial port "/dev/ttyS0" has been provided which is implemented with a software-based UART 
+     (miniUART).  This software-based UART ("/dev/ttyS0") does not support PARITY and some have experienced some 
+     stability issues using this port at higher speeds.  If you don't need the Bluetooth modem functionality, you can 
+     disable the BT modem and configure the RPi to use a device-tree overlay to re-map the hardware-based serial UART
+     ("/dev/ttyAMA0") back to the GPIO header pins for TX/RX.  See the instructions on this page for details on how to 
+     configure the device-tree overlay and disable the bluetooth modem/service: 
+     https://openenergymonitor.org/emon/node/12311
 
   *  The Odroid C1/C1+/C2 only permits up to four GPIO pins to be configured with edge detection for both "rising"
      and "falling" edges (a.k.a., "both"). Thus, you can only use a maximum of four GPIO input pins with listener
-     events.  
+     events.  You can, however, implement a polling strategy to read a pin state if you need more than 4 input pins.
     (see: https://github.com/Pi4J/pi4j/issues/229 & http://odroid.com/dokuwiki/doku.php?id=en:c1_hardware_irq)
 
-  *  PWM is not supported in the Hardkernel Odroid WiringPi port.  TThus PWM is not currently supported by Pi4J for 
+  *  PWM is not supported in the Hardkernel Odroid WiringPi port.  Thus PWM is not currently supported by Pi4J for 
      the Odroid boards (C1/C1+/C2). There is no PWM function on the 30pin GPIO header on the XU3/XU4.   
     (see: https://github.com/Pi4J/pi4j/issues/229)
 
@@ -59,7 +65,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2016-05-25 :: 1.1-SNAPSHOT
+2016-06-13 :: 1.1-SNAPSHOT
 
   *  Added support for Odroid XU4 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)

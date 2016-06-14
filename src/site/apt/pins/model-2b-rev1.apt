@@ -11,16 +11,21 @@ Pin Numbering - Raspberry Pi 2 Model B
 
 * Numbering Scheme
 
-  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+  Pi4J (by default) uses an abstract pin numbering scheme to help insulate software from hardware changes.\
   P14J implements the same pin number scheme as the Wiring Pi project.
   More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
 
   Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
 
+  (NOTE:  Pi4J also can be configured to use the Broadcom Pin numbering scheme.)
+
+  Please see this page for more information on both the WiringPi and Broadcom pin numbering schemes: \
+  >> {{{../pin-numbering-scheme.html}Pin Numbering Schemes}}
+
 
 * Expansion Header
 
-  The Raspberry Pi 2 Model B board contains a single 40-pin expansion header labeled as 'J8' providing access to 26 GPIO pins.\
+  The Raspberry Pi 2 Model B board contains a single 40-pin expansion header labeled as 'J8' providing access to 28 GPIO pins.\
   (Pins 1, 2, 39 & 40 are also labeled below.)
 
 [../images/j8header-photo.png]

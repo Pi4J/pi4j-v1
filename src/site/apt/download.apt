@@ -6,7 +6,7 @@
             ------
 
 Download
-  
+
   You can use any of the following methods to download the Pi4J library.
 
 %{toc|section=0|fromDepth=2|toDepth=3}
@@ -17,15 +17,15 @@ Download
 
   <<RELEASE BUILDS>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.0.deb}pi4j-1.0.deb}} <<<Debian Installer Package>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.1.deb}pi4j-1.1.deb}} <<<Debian Installer Package>>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.0.zip}pi4j-1.0.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.1.zip}pi4j-1.1.zip}} <<<Compressed ZIP Archive>>>
 
   <<LATEST SNAPSHOT BUILDS>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.deb}pi4j-1.1-SNAPSHOT.deb}} <<<Debian Installer Package>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.2-SNAPSHOT.deb}pi4j-1.2-SNAPSHOT.deb}} <<<Debian Installer Package>>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.1-SNAPSHOT.zip}pi4j-1.1-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.2-SNAPSHOT.zip}pi4j-1.2-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
@@ -39,7 +39,7 @@ Download
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.0</version>
+   <version>1.1</version>
 </dependency>
 +---------------------
 
@@ -47,26 +47,25 @@ Download
   <<SNAPSHOT BUILDS>>
 
   Snapshots will be hosted in the following Sonatype OSS repository.\
-  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.1-SNAPSHOT~~}}
-  
+  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.2-SNAPSHOT~~}}
+
   To download SNAPSHOT builds in your Maven project, you must include the following repository definition in your POM.XML file.
-    
+
 %{snippet|id=maven-repository-snippet|file=pi4j-example/pom.xml}
 
   The following dependency is all that is needed to include Pi4J (core library) in your Maven project.
-  
+
 +---------------------
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.1-SNAPSHOT</version>
+   <version>1.2-SNAPSHOT</version>
 </dependency>
 +---------------------
 
 
-* Source Repository 
+* Source Repository
 
   This project is provided as open source software and is hosted at GitHub:\
   {{https://github.com/Pi4J/pi4j}}
 
-  

@@ -1,0 +1,46 @@
+            ------
+            More Pi4J Examples
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+More Pi4J Examples
+
+  The Pi4J project includes many more comprehensive examples included both when installed locally and available in
+  the Pi4J Exmaples project at GitHub.
+
+
+* Examples on GitHub
+
+  The Pi4J Examples project can be found on GitHub at this location:
+  {{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java}}
+
+
+* Locally Installed Examples
+
+    When Pi4J is installed using the Debian package installer, Pi4J will also include all examples in the
+    "/opt/pi4j/examples" path on your local file system.
+
+    If you have not already downloaded and installed the Pi4J library on the RaspberryPi, then view this page for instructions on where to download and how to install Pi4J: \
+    {{{../install.html}Download & Install Pi4J}}
+
+* Compile
+
+    Next, use the following command to compile any of the example programs:
+
+    <<<javac -classpath .:classes:/opt/pi4j/lib/'*' -d . __ExampleName__.java>>>
+
+    or
+
+    <<<sudo pi4j --compile __ExampleName__.java>>>
+
+* Execute
+
+    The following command will run the compiled example program:
+
+    <<<sudo java -classpath .:classes:/opt/pi4j/lib/'*' __ExampleName__>>>
+
+    or
+
+    <<<sudo pi4j --run __ExampleName__>>>

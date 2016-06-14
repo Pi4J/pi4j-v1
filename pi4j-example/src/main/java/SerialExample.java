@@ -112,7 +112,8 @@ public class SerialExample {
             // NOTE: this utility method will determine the default serial port for the
             //       detected platform and board/model.  For all Raspberry Pi models
             //       except the 3B, it will return "/dev/ttyAMA0".  For Raspberry Pi
-            //       model 3B is will return "/dev/ttyS0".
+            //       model 3B may return "/dev/ttyS0" or "/dev/ttyAMA0" depending on
+            //       environment configuration.
             config.device(SerialPort.getDefaultPort())
                   .baud(Baud._38400)
                   .dataBits(DataBits._8)

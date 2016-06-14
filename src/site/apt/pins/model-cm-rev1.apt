@@ -40,6 +40,10 @@ Pin Numbering - Raspberry Pi Compute Module
 
   {{{../images/j6header-large.png}(click here for hi-resolution image)}}
 
+* Examples/Sample Code
+
+   * {{{https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/ComputeModuleGpioExample.java}ComputeModuleGpioExample.java}}
+
 * Additional Resources
 
    * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.

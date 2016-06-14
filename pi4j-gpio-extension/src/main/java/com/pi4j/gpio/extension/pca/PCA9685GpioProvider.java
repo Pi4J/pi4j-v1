@@ -87,7 +87,7 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
     private int periodDurationMicros;
 
     // custom pin cache
-    protected PCA9685GpioProviderPinCache[] cache = new PCA9685GpioProviderPinCache[15]; // support up to pin address 15
+    protected PCA9685GpioProviderPinCache[] cache = new PCA9685GpioProviderPinCache[16]; // support up to pin address 15 (16 pins)
 
     public PCA9685GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
