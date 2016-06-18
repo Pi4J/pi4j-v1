@@ -17,15 +17,15 @@ Pin Numbering - Odroid C1 / C1+ / C2
 
   There are three methods to configure the platform.  You are free to use any of these three methods.
 
-  * Method 1 : Environment Variable
+  * <<Method 1 : Environment Variable>>
 
   You can set the "PI4J_PLATFORM" environment variable to a value of "odroid".
 
-  * Method 2 : Java System Property
+  * <<Method 2 : Java System Property>>
 
   You can configure a Java system property named "pi4j.platform" to a value of "odroid".
 
-  * Method 3 : Inline Java Code
+  * <<Method 3 : Inline Java Code>>
 
   You can configure the platform in your Java code before you instantiate the Pi4J controller instance.
 
@@ -53,6 +53,10 @@ PlatformManager.setPlatform(Platform.ODROID);
 
   The Odroid C1 / C1+ / C2 board contains a 40-pin GPIO expansion header providing access to 19 GPIO pins and 2 AIN
   (analog input) pins. \
+
+  <<WARNING:  The two AIN (Analog Input) pins use 1.8VDC.  Do not attempt to connect 3.3VDC or 5VDC to
+  these header pins.>>
+
   (The GPIO header is illustrated below)
 
 [../images/odroid-c1-gpio-header.png]
@@ -61,6 +65,10 @@ PlatformManager.setPlatform(Platform.ODROID);
 * GPIO Pinout (40-pin Header)
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
+
+  <<WARNING:  The two AIN (Analog Input) pins use 1.8VDC.  Do not attempt to connect 3.3VDC or 5VDC to
+  these header pins.>>
+
 
 [../images/odroid-c1-gpio-pinout.png]
 

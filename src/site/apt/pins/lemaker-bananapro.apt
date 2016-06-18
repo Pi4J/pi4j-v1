@@ -17,15 +17,15 @@ Pin Numbering - LeMaker BananaPro
 
   There are three methods to configure the platform.  You are free to use any of these three methods.
 
-  * Method 1 : Environment Variable
+  * <<Method 1 : Environment Variable>>
 
   You can set the "PI4J_PLATFORM" environment variable to a value of "bananapro".
 
-  * Method 2 : Java System Property
+  * <<Method 2 : Java System Property>>
 
   You can configure a Java system property named "pi4j.platform" to a value of "bananapro".
 
-  * Method 3 : Inline Java Code
+  * <<Method 3 : Inline Java Code>>
 
   You can configure the platform in your Java code before you instantiate the Pi4J controller instance.
 
