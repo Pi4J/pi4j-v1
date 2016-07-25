@@ -1,11 +1,11 @@
             ------
-            Pin Numbering - Odroid C1 / C1+ / C2
+            Pin Numbering - Odroid C1 / C1+
             ------
             ------
              YYYY-MM-DD
             ------
 
-Pin Numbering - Odroid C1 / C1+ / C2
+Pin Numbering - Odroid C1 / C1+
 
 %{toc|section=0|fromDepth=2|toDepth=3}
 
@@ -51,7 +51,7 @@ PlatformManager.setPlatform(Platform.ODROID);
 
 * Expansion Headers
 
-  The Odroid C1 / C1+ / C2 board contains a 40-pin GPIO expansion header providing access to 19 GPIO pins and 2 AIN
+  The Odroid C1 / C1+ board contains a 40-pin GPIO expansion header providing access to 19 GPIO pins and 2 AIN
   (analog input) pins. \
 
   <<WARNING:  The two AIN (Analog Input) pins use 1.8VDC.  Do not attempt to connect 3.3VDC or 5VDC to
@@ -100,7 +100,7 @@ PlatformManager.setPlatform(Platform.ODROID);
 
    *  System Info
 
- {{{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/odroid/c1}View Odroid C1/C1+/C2 Examples}}
+ {{{https://github.com/Pi4J/pi4j/tree/master/pi4j-example/src/main/java/odroid/c1}View Odroid C1/C1+ Examples}}
 
 * Known Issues
 
@@ -133,5 +133,3 @@ PlatformManager.setPlatform(Platform.ODROID);
    * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
 
    * {{{http://odroid.com/dokuwiki/doku.php?id=en:odroid-c1}Click here for more information on the Odroid C1/C1+.}}
-
-   * {{{http://odroid.com/dokuwiki/doku.php?id=en:odroid-c2}Click here for more information on the Odroid C2.}}

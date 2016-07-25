@@ -90,7 +90,7 @@ public class SpiExample {
         // the SPI hardware interface connected to a MCP3004/MCP3008 AtoD Chip.
         //
         // Please note the following command are required to enable the SPI driver on
-        // your Odroid C1/C1+/C2:
+        // your Odroid C1/C1+:
         // >  sudo modprobe spicc
         // >  sudo modprobe spidev
         //

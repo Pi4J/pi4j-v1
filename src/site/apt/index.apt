@@ -14,7 +14,7 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2016-06-15]
+  [2016-07-25]
 
   Version 1.1 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
 
@@ -28,7 +28,7 @@ Welcome to Pi4J!
 
     * Added support for {{{./pins/lemaker-bananapro.html}BananaPro platform}}
 
-    * Added support for {{{./pins/odroid-c1.html}Odroid C1/C1+/C2}}
+    * Added support for {{{./pins/odroid-c1.html}Odroid C1/C1+}}
 
     * Added support for {{{./pins/odroid-xu4.html}Odroid XU4}}
 
@@ -86,7 +86,7 @@ Welcome to Pi4J!
 
   * {{{./pins/lemaker-bananapi.html}LeMaker BananaPro}}
 
-  * {{{./pins/odroid-c1.html}Odroid C1/C1+/C2}}
+  * {{{./pins/odroid-c1.html}Odroid C1/C1+}}
 
   * {{{./pins/odroid-xu4.html}Odroid XU4}}
 

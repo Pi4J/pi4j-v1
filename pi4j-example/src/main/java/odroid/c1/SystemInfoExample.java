@@ -39,7 +39,7 @@ import java.text.ParseException;
 
 /**
  * This example code demonstrates how to access a few of the system information properties and
- * network information from the Odroid C1/C1+/C2.
+ * network information from the Odroid C1/C1+.
  *
  * @author Robert Savage
  */

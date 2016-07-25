@@ -100,7 +100,7 @@
             <item name="Raspberry Pi Zero" href="pins/model-zero-rev1.html" />
             <item name="Lemaker BananaPi" href="pins/lemaker-bananapi.html" />
             <item name="Lemaker BananaPro" href="pins/lemaker-bananapro.html" />
-            <item name="Odroid C1/C1+/C2" href="pins/odroid-c1.html" />
+            <item name="Odroid C1/C1+" href="pins/odroid-c1.html" />
             <item name="Odroid XU4" href="pins/odroid-xu4.html" />
         </menu>
 		<menu name="GPIO Examples">

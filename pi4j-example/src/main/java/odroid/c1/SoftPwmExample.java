@@ -37,7 +37,7 @@ import com.pi4j.util.Console;
 
 /**
  * <p>
- * This example code demonstrates how to setup a software emulated PWM pin using the Odroid C1/C1+/C2 GPIO pins.
+ * This example code demonstrates how to setup a software emulated PWM pin using the Odroid C1/C1+ GPIO pins.
  * </p>
  *
  * @author Robert Savage

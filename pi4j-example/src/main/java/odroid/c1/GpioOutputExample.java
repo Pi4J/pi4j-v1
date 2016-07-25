@@ -42,7 +42,7 @@ import java.util.concurrent.Future;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Odroid C1/C1+/C2 platform.
+ * control of a GPIO pin on the Odroid C1/C1+ platform.
  *
  * @author Robert Savage
  */
@@ -83,7 +83,7 @@ public class GpioOutputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+/C2 PLATFORM, THEN ...
+        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidC1Pin class.
         //
         // ####################################################################

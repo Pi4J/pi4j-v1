@@ -37,7 +37,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-06-13 :: 1.1-SNAPSHOT
+2016-07-25 :: 1.1-SNAPSHOT
 
   *  On the Raspberry Pi Model 3B the hardware-based serial/UART device `/dev/ttyAMA0` has been re-purposed to   
      communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
@@ -65,10 +65,10 @@ Copyright (C) 2012-2015 Pi4J
 
 ## IN DEVEOPMENT
 
-2016-06-13 :: 1.1-SNAPSHOT
+2016-07-25 :: 1.1-SNAPSHOT
 
   *  Added support for Odroid XU4 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
-  *  Added support for Odroid C1, C1+, C2 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
+  *  Added support for Odroid C1/C1+ (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Raspberry Pi 3 (Model B).
   *  Added support for Raspberry Pi Zero.
   *  Added support for BananaPi platform

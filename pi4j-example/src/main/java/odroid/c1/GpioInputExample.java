@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * This example code demonstrates how to perform simple GPIO
- * pin state reading on the Odroid C1/C1+/C2 platform.
+ * pin state reading on the Odroid C1/C1+ platform.
  *
  * @author Robert Savage
  */
@@ -88,7 +88,7 @@ public class GpioInputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+/C2 PLATFORM, THEN ...
+        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidC1Pin class.
         //
         // ####################################################################

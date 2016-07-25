@@ -36,7 +36,7 @@ import com.pi4j.util.Console;
 
 /**
  * This example code demonstrates how to read the 10-bit analog
- * int pins values from the Odroid C1/C1+/C2 platform.
+ * int pins values from the Odroid C1/C1+ platform.
  *
  * @author Robert Savage
  */
@@ -51,7 +51,7 @@ public class AnalogInputExample {
 
         // ####################################################################
         //
-        // !!!!! ATTENTION !!!!!  ALL ADC/AIN PINS ON ODROID-C1/C1+/C2 ARE 1.8VDC.
+        // !!!!! ATTENTION !!!!!  ALL ADC/AIN PINS ON ODROID-C1/C1+ ARE 1.8VDC.
         //          DO NOT APPLY A HIGHER VOLTAGE THAN 1.8VDC TO THESE PINS.
         //
         // ####################################################################
@@ -76,7 +76,7 @@ public class AnalogInputExample {
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+/C2 PLATFORM, THEN ...
+        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidC1Pin class.
         //
         // ####################################################################

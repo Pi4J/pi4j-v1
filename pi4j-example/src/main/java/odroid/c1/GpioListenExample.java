@@ -40,7 +40,7 @@ import com.pi4j.util.ConsoleColor;
 
 /**
  * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the Odroid C1/C1+/C2 platform.
+ * for GPIO pin state changes on the Odroid C1/C1+ platform.
  *
  * The internal resistance is set to PULL UP by default. So when
  * connecting the GPIO pin to a ground pin, you should see the
@@ -89,24 +89,24 @@ public class GpioListenExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // the Odroid C1/C1+/C2 device only supports up to 4 GPIO pin edge interrupt
+        // the Odroid C1/C1+ device only supports up to 4 GPIO pin edge interrupt
         // therefore only 4 GPIO pins can be configured with GPIO input event listeners
 
         // --------------------
         // !! ATTENTION !!
         // --------------------
-        // The Odroid C1/C1+/C2 only permits up to four GPIO pins to be configured with
+        // The Odroid C1/C1+ only permits up to four GPIO pins to be configured with
         // edge detection for both "rising" and "falling" edges (a.k.a., "both").
         // Thus, you can only use a maximum of four GPIO input pins with listener
         // events. Alternatively, you can manually poll for GPIO pin state changes.
         //
-        // Let's first explicitly unexport all Odroid C1/C1+/C2 pins to make sure no existing
+        // Let's first explicitly unexport all Odroid C1/C1+ pins to make sure no existing
         // pins are already consuming the 4 available edge interrupt slots.
         gpio.unexport(OdroidC1Pin.allPins());
 
         // ####################################################################
         //
-        // IF YOU ARE USING AN ODROID C1/C1+/C2 PLATFORM, THEN ...
+        // IF YOU ARE USING AN ODROID C1/C1+ PLATFORM, THEN ...
         //    When provisioning a pin, use the OdroidC1Pin class.
         //
         // ####################################################################

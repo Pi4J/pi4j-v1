@@ -39,7 +39,7 @@ import com.pi4j.util.Console;
 import java.io.IOException;
 
 /**
- * This example code demonstrates how to perform basic SPI communications using the Odroid C1/C1+/C2.
+ * This example code demonstrates how to perform basic SPI communications using the Odroid C1/C1+.
  * Only CS0 (chip-select) is supported for SPI0 out of the box.
  *
  * Don't forget to load the SPI kernel modules to provide access to device "/dev/spidev0.0"
@@ -80,7 +80,7 @@ public class SpiExample {
         // the SPI hardware interface connected to a MCP3004/MCP3008 AtoD Chip.
         //
         // Please note the following command are required to enable the SPI driver on
-        // your Odroid C1/C1+/C2:
+        // your Odroid C1/C1+:
         // >  sudo modprobe spicc
         // >  sudo modprobe spidev
         //
