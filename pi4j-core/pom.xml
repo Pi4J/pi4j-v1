@@ -66,7 +66,7 @@
 		</resources>
 
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -249,7 +249,10 @@
 							com.pi4j.temperature.*,
 							com.pi4j.io.serial.*,
 							com.pi4j.io.gpio.*,
-							com.pi4j.io.i2c.*
+							com.pi4j.io.i2c.*,
+                            com.pi4j.io.spi.*,
+                            com.pi4j.io.w1.*,
+                            com.pi4j.io.wdt.*
 						</Export-Package>
 						<Private-Package>
 						</Private-Package>
