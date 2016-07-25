@@ -37,7 +37,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * BananaPro platform specific implementation of the SystemInfoProvider interface.
+ * Odroid platform specific implementation of the SystemInfoProvider interface.
  */
 public class OdroidSystemInfoProvider extends DefaultSystemInfoProvider implements SystemInfoProvider {
 

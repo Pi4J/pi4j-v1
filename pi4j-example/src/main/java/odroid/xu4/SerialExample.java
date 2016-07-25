@@ -76,7 +76,7 @@ public class SerialExample {
         // ####################################################################
         //
         // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPro platform.
+        // explicitly assign the platform as the Odroid platform.
         //
         // ####################################################################
         PlatformManager.setPlatform(Platform.ODROID);
