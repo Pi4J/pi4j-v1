@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.pi4j</groupId>
         <artifactId>pi4j-parent</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </parent>
     <artifactId>pi4j-temp</artifactId>
     <name>Pi4J :: Temporary Placeholder</name>
