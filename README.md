@@ -1,7 +1,7 @@
 
  Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
-[![Build Status](https://travis-ci.org/Pi4J/pi4j.svg?branch=develop)](https://travis-ci.org/Pi4J/pi4j?branch=develop)
+[![Build Status](https://travis-ci.org/Pi4J/pi4j.svg?branch=master)](https://travis-ci.org/Pi4J/pi4j?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core)
 
 ## PROJECT INFORMATION
 
@@ -18,7 +18,7 @@ Snapshot builds are available from
    *  [Downloads] http://pi4j.com/download.html
    
  
-Copyright (C) 2012-2015 Pi4J
+Copyright (C) 2012-2016 Pi4J
 
 ## LICENSE
  
@@ -37,7 +37,7 @@ Copyright (C) 2012-2015 Pi4J
 
 ## KNOWN ISSUES
 
-2016-07-25 :: 1.1-SNAPSHOT
+2016-07-26 :: 1.1
 
   *  On the Raspberry Pi Model 3B the hardware-based serial/UART device `/dev/ttyAMA0` has been re-purposed to   
      communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
@@ -63,9 +63,9 @@ Copyright (C) 2012-2015 Pi4J
     (see: https://github.com/Pi4J/pi4j/issues/229)
 
 
-## IN DEVEOPMENT
+## RELEASES
 
-2016-07-25 :: 1.1-SNAPSHOT
+2016-07-26 :: 1.1
 
   *  Added support for Odroid XU4 (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
   *  Added support for Odroid C1/C1+ (see known issues here: https://github.com/Pi4J/pi4j/issues/229)
@@ -100,8 +100,7 @@ Copyright (C) 2012-2015 Pi4J
   *  Cleanup for WiringPi native build
   *  Cleanup for Pi4J native build
   *  Now requires Java 7 runtime.
-  
-## RELEASES
+
 
 2015-08-30 :: 1.0.1
 
