@@ -3,7 +3,7 @@
    =========================================================================
 
    Pi4J Library
-   Copyright (C) 2012-2015 Pi4J.com
+   Copyright (C) 2012-2016 Pi4J.com
 
    This product includes software developed at:
    The Pi4J Project (http://www.pi4j.com/).
@@ -13,15 +13,15 @@
    This software is licensed under the GNU LGPLv3 license.
    More information about licensing terms can be found at:
      http://pi4j.com/license.html
-                           
+
    Additional information about this project and its authors can be found at:
    - http://www.pi4j.com/
    - http://www.raspicentral.com
    - http://www.savagehomeautomation.com
-   
+
    This software compiles against libraries from the WiringPi project.
    The Wiring Pi project is provided by Gordon Henderson and is available
-   from    
+   from
      http://wiringpi.com/
 
    The WiringPi project is licensed under the GNU LGPLv3 license
@@ -30,4 +30,4 @@
    =========================================================================
    Subject to the terms of the software license, this NOTICE file must be
    included in any Derivative Works that You distribute as a readable copy.
-   (Section 4d) 
+   (Section 4d)

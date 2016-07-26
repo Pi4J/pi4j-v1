@@ -5,13 +5,13 @@ package com.pi4j.i2c.devices;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  BMP085.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  BMP085.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,11 +52,11 @@ public class BMP085 {
     private int mc;
     private int md;
     private int oss;
-        
+
     public BMP085(I2CBus bus) throws IOException {
         device = bus.getDevice(0x77);
     }
-        
+
     public void init() {
         try {
             byte[] eepromData = new byte[22];
@@ -121,7 +121,7 @@ public class BMP085 {
             throw new IOException("Cannot read pressure; r=" + r);
         }
 
-        int up = ((p[0] & 0xff) << 16) + ((p[1] & 0xff) << 8) +(p[2] & 0xff) >> (8 - oss); 
+        int up = ((p[0] & 0xff) << 16) + ((p[1] & 0xff) << 8) +(p[2] & 0xff) >> (8 - oss);
         return up;
     }
 
@@ -145,10 +145,10 @@ public class BMP085 {
         long b3 = (((ac1 * 4 + x3) << oss) + 2) >> 2;
         System.out.println("b3=" + b3);
 
-        x1 = (ac3 * b6) >> 13;  
+        x1 = (ac3 * b6) >> 13;
         System.out.println("x1=" + x1);
 
-        x2 = (b1 * ((b6 * b6) >> 12)) >> 16; 
+        x2 = (b1 * ((b6 * b6) >> 12)) >> 16;
         System.out.println("x3=" + x2);
 
         x3 = ((x1 + x2) + 2) >> 2;
@@ -209,7 +209,7 @@ public class BMP085 {
         I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_0);
 
         BMP085 bmp085 = new BMP085(bus);
-        
+
         bmp085.init();
         int t = bmp085.readTemperature();
         System.out.println("Temperature is " + t + " in 0.1C");

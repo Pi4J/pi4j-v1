@@ -5,13 +5,13 @@ package com.pi4j.i2c.devices;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: I2C Device Abstractions
- * FILENAME      :  PCF8574.java  
- * 
- * This file is part of the Pi4J project. More information about 
+ * FILENAME      :  PCF8574.java
+ *
+ * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2015 Pi4J
+ * Copyright (C) 2012 - 2016 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,7 +40,7 @@ public class PCF8574 {
 
     private I2CDevice device;
     private int lastRead;
-    
+
     public PCF8574(I2CBus bus) throws IOException {
         this.device = bus.getDevice(0x27);
     }
@@ -48,7 +48,7 @@ public class PCF8574 {
     public void write(byte b) throws IOException {
         device.write((byte)b);
     }
-    
+
     public int read() throws IOException {
         lastRead = device.read();
         return lastRead;
@@ -68,17 +68,17 @@ public class PCF8574 {
             Thread.sleep(100);
             i = io.read();
             System.out.print(" x   " + Integer.toHexString(i) + "\r");
-    
+
             Thread.sleep(1000);
-    
+
             io.write((byte)0);
             Thread.sleep(100);
-            
+
             i = io.read();
             System.out.print(" 0   " + Integer.toHexString(i) + "\r");
-            
+
             Thread.sleep(1000);
-            
+
         }
     }
 }
