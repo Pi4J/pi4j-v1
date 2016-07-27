@@ -589,11 +589,11 @@
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
-            <!--<activation>-->
-                <!--<property>-->
-                    <!--<name>release-build</name>-->
-                <!--</property>-->
-            <!--</activation>-->
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <!-- this plugin will upload the GPG public key file, the Pi4J APT
