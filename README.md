@@ -63,6 +63,12 @@ Copyright (C) 2012-2016 Pi4J
     (see: https://github.com/Pi4J/pi4j/issues/229)
 
 
+## IN DEVELOPMENT
+
+2016-07-26 :: 1.2-SNAPSHOT
+
+  *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
+
 ## RELEASES
 
 2016-07-26 :: 1.1

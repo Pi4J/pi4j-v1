@@ -50,23 +50,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-service</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-service</artifactId>
-			<version>${project.version}</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-gpio-extension</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -295,11 +278,6 @@
                             <src>${project.build.directory}/distro-contents/lib/pi4j-device.jar</src>
                             <type>file</type>
                             <dst>/opt/pi4j/lib/pi4j-device.jar</dst>
-                        </data>
-                        <data>
-                            <src>${project.build.directory}/distro-contents/lib/pi4j-service.jar</src>
-                            <type>file</type>
-                            <dst>/opt/pi4j/lib/pi4j-service.jar</dst>
                         </data>
                         <data>
                             <src>${project.build.directory}/distro-contents/lib/pi4j-gpio-extension.jar</src>
