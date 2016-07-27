@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-		<version>1.1</version>
+        <version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-distribution</artifactId>
 	<name>Pi4J :: Distribution</name>
@@ -589,11 +589,11 @@
         <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--<name>release-build</name>-->
+                <!--</property>-->
+            <!--</activation>-->
             <build>
                 <plugins>
                     <!-- this plugin will upload the GPG public key file, the Pi4J APT
