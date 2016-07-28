@@ -8,12 +8,20 @@ TARGET=libpi4j.so
 #DEBUG	     = -g -O0
 DEBUG	     = -O3
 CC	         = gcc
-INCLUDE	     = -I. -IwiringPi/wiringPi                         \
-               -IwiringPi/devLib                               \
-               -I/$(JAVA_HOME)/include                         \
-               -I/$(JAVA_HOME)/include/linux                   \
-               -I/usr/lib/jvm/jdk-7-oracle-armhf/include       \
-               -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux \
+INCLUDE	     = -I. -IwiringPi/wiringPi                           \
+               -IwiringPi/devLib                                 \
+               -I/$(JAVA_HOME)/include                           \
+               -I/$(JAVA_HOME)/include/linux                     \
+               -I/usr/lib/jvm/jdk-7-oracle-armhf/include         \
+               -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux   \
+               -I/usr/lib/jvm/java-7-openjdk-armhf/include       \
+               -I/usr/lib/jvm/java-7-openjdk-armhf/include/linux \
+               -I/usr/lib/jvm/jdk-8-oracle/include               \
+               -I/usr/lib/jvm/jdk-8-oracle/include/linux         \
+               -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include       \
+               -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include/linux \
+               -I/usr/lib/jvm/java-8-openjdk-armhf/include       \
+               -I/usr/lib/jvm/java-8-openjdk-armhf/include/linux \
                -I/usr/local/include -I/usr/local/include/linux
 
 CFLAGS      := $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(CARGS) -fPIC

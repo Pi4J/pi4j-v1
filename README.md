@@ -65,8 +65,10 @@ Copyright (C) 2012-2016 Pi4J
 
 ## IN DEVELOPMENT
 
-2016-07-26 :: 1.2-SNAPSHOT
+2016-07-27 :: 1.2-SNAPSHOT
 
+  *  Updated to Java 8 (enhancement #203) 
+  *  Updated build dependencies/plugins to latest versions.
   *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
 
 ## RELEASES
