@@ -73,100 +73,101 @@ public class I2C {
     public static native int i2cClose(int fd);
 
     /**
+     * Select the slave device to be target by the bus.
+
+     * @param fd file descriptor
+     * @param deviceAddress device address
+     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
+     */
+    public static native int i2cSlaveSelect(int fd, int deviceAddress);
+
+    /**
      * Writes one byte to i2c. It uses ioctl to define device address and then writes one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param data          byte to be written to the device
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int i2cWriteByteDirect(int fd, int deviceAddress, byte data);
+    public static native int i2cWriteByteDirect(int fd, byte data);
 
     /**
      * Writes several bytes to i2c. It uses ioctl to define device address and then writes number of bytes defined
      * in size argument.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param size          number of bytes to be written
      * @param offset        offset in buffer to read from
      * @param buffer        data buffer to be written
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int i2cWriteBytesDirect(int fd, int deviceAddress, int size, int offset, byte[] buffer);
+    public static native int i2cWriteBytesDirect(int fd, int size, int offset, byte[] buffer);
 
     /**
      * Writes one byte to i2c. It uses ioctl to define device address and then writes two bytes: address in
      * the device itself and value.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param data          byte to be written to the device
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int i2cWriteByte(int fd, int deviceAddress, int localAddress, byte data);
+    public static native int i2cWriteByte(int fd, int localAddress, byte data);
 
     /**
      * Writes several bytes to i2c. It uses ioctl to define device address and then writes number of bytes defined
      * in size argument plus one.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param size          number of bytes to be written
      * @param offset        offset in buffer to read from
      * @param buffer        data buffer to be written
      * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
-    public static native int i2cWriteBytes(int fd, int deviceAddress, int localAddress, int size, int offset, byte[] buffer);
+    public static native int i2cWriteBytes(int fd, int localAddress, int size, int offset, byte[] buffer);
 
     /**
      * Reads one byte from i2c device. It uses ioctl to define device address and then reads one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int i2cReadByteDirect(int fd, int deviceAddress);
+    public static native int i2cReadByteDirect(int fd);
 
     /**
      * Reads more bytes from i2c device. It uses ioctl to define device address and then reads
      * size number of bytes.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param size          number of bytes to be read
      * @param offset        offset in buffer to stored read data
      * @param buffer        buffer for data to be written to
      * @return number of bytes read or negative number if reading failed.
      */
-    public static native int i2cReadBytesDirect(int fd, int deviceAddress, int size, int offset, byte[] buffer);
+    public static native int i2cReadBytesDirect(int fd, int size, int offset, byte[] buffer);
 
     /**
      * Reads one byte from i2c device. It uses ioctl to define device address, writes addres in device and then reads
      * one byte.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @return positive number (or zero) to 255 if read was successful. Negative number if reading failed.
      */
-    public static native int i2cReadByte(int fd, int deviceAddress, int localAddress);
+    public static native int i2cReadByte(int fd, int localAddress);
 
     /**
      * Reads more bytes from i2c device. It uses ioctl to define device address, writes addres in device and then reads
      * size number of bytes.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param localAddress  address in the device
      * @param size          number of bytes to be read
      * @param offset        offset in buffer to stored read data
      * @param buffer        buffer for data to be written to
      * @return number of bytes read or negative number if reading failed.
      */
-    public static native int i2cReadBytes(int fd, int deviceAddress, int localAddress, int size, int offset, byte[] buffer);
+    public static native int i2cReadBytes(int fd, int localAddress, int size, int offset, byte[] buffer);
 
 
     /**
@@ -174,7 +175,6 @@ public class I2C {
      * size number of bytes.
      *
      * @param fd            file descriptor of i2c bus
-     * @param deviceAddress device address
      * @param writeSize     number of bytes to write
      * @param writeOffset   offset in write buffer to start write data
      * @param writeBuffer   buffer for data to be written from
@@ -183,5 +183,5 @@ public class I2C {
      * @param readBuffer    buffer for data read to be stored in
      * @return number of bytes read or negative number if reading failed.
      */
-    public static native int i2cWriteAndReadBytes(int fd, int deviceAddress, int writeSize, int writeOffset, byte[] writeBuffer, int readSize, int readOffset, byte[] readBuffer);
+    public static native int i2cWriteAndReadBytes(int fd, int writeSize, int writeOffset, byte[] writeBuffer, int readSize, int readOffset, byte[] readBuffer);
 }

@@ -36,12 +36,28 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <jni.h>
+#include <errno.h>
 
 #include "com_pi4j_jni_I2C.h"
 
 /* Source for com_pi4j_jni_I2C */
 
-unsigned char buf[257];	
+/*
+ * Class:     com_pi4j_jni_I2C
+ * Method:    i2cSlaveSelect
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cSlaveSelect
+ (JNIEnv *env, jclass obj, jint fd, jint deviceAddress)
+{
+   int response = ioctl(fd, I2C_SLAVE, deviceAddress);
+
+   if (response < 0) {
+       return -errno - 10000;
+   }
+
+   return response;
+}
 
 /*
  * Class:     com_pi4j_jni_I2C
@@ -51,11 +67,11 @@ unsigned char buf[257];
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cOpen
   (JNIEnv *env, jclass obj, jstring device)
 {
-	char fileName[256];
-	int len = (*env)->GetStringLength(env, device);
-	(*env)->GetStringUTFRegion(env, device, 0, len, fileName);
+    char fileName[256];
+    int len = (*env)->GetStringLength(env, device);
+    (*env)->GetStringUTFRegion(env, device, 0, len, fileName);
 
-	return open(fileName, O_RDWR);
+    return open(fileName, O_RDWR);
 }
 
 /*
@@ -66,59 +82,47 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cOpen
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cClose
   (JNIEnv *env, jclass obj, jint fd)
 {
-	return close(fd);
+    return close(fd);
 }
 
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cWriteByteDirect
- * Signature: (IIB)I
+ * Signature: (IB)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByteDirect
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jbyte b)
+  (JNIEnv *env, jclass obj, jint fd, jbyte b)
 {
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-
-    if (response < 0) {
-        return response - 10000;
-	}
-
-	buf[0] = b;
+    int response;
     
-    response = write(fd, buf, 1);
-	if (response != 1) {
-	    return response - 20000;
-	}
-	
+    response = write(fd, &b, 1);
+    if(response != 1) {
+        return -errno - 20000;
+    }
+    
     return 0;
 }
 
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cWriteBytesDirect
- * Signature: (IIII[B)I
+ * Signature: (III[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytesDirect
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint size, jint offset, jbyteArray bytes)
 {
-    int i;
-
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-	}
+    int response;
 
     jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
-    for (i = 0; i < size; i++) {
-      buf[i] = body[i + offset];
-    }
+
+    response = write(fd, body + offset, size);
+
     (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+
+    if (response != size) {
+        return -errno - 20000;
+    }
     
-    response = write(fd, buf, size);
-	if (response != size) {
-	    return response - 20000;
-	}
-	
     return 0;
 }
 
@@ -126,46 +130,44 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytesDirect
 /*
  * Class:     com_pi4j_wiringpi_I2C
  * Method:    i2cWriteByte
- * Signature: (IIIB)I
+ * Signature: (IIB)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteByte
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jbyte b)
+  (JNIEnv *env, jclass obj, jint fd, jint localAddress, jbyte b)
   
 {
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
+    int response;
+    unsigned char buf[2];
 
-    if (response < 0) {
-        return response - 10000;
-	}
-
-	buf[0] = localAddress;
-	buf[1] = b;
+    buf[0] = localAddress;
+    buf[1] = b;
     
     response = write(fd, buf, 2);
-	if (response != 2) {
-	    return response - 20000;
-	}
-	
+    if (response != 2) {
+        return -errno - 20000;
+    }
+    
     return 0;
 }
 
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cWriteBytes
- * Signature: (IIIII[B)I
+ * Signature: (IIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytes
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint localAddress, jint size, jint offset, jbyteArray bytes)
   
 {
     int i;
+    unsigned char buf[257];
+    int response;
 
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-	}
+    if(size > 256) {
+      return -E2BIG;
+    }
 
-	buf[0] = localAddress;
+    buf[0] = localAddress;
     
     jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
     for (i = 0; i < size; i++) {
@@ -174,10 +176,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytes
     (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
     
     response = write(fd, buf, size + 1);
-	if (response != size + 1) {
-	    return response - 20000;
-	}
-	
+    if (response != size + 1) {
+        return -errno - 20000;
+    }
+    
     return 0;
 }
 
@@ -185,49 +187,40 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteBytes
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cReadByteDirect
- * Signature: (II)I
+ * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByteDirect
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress)
+  (JNIEnv *env, jclass obj, jint fd)
 {
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-	}
+    unsigned char data;
+    int response;
 
-    response = read(fd, buf, 1);
+    response = read(fd, &data, 1);
     if (response != 1) {
-	    return response - 30000;
-	}
+        return -errno - 30000;
+    }
 
-    response = (int)buf[0];
-
-    return response;
+    return data;
 }
 
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cReadBytesDirect
- * Signature: (IIII[B)I
+ * Signature: (III[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint size, jint offset, jbyteArray bytes)
 {
-    int i;
-    
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
+    int response;
+
+    jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
+
+    response = read(fd, body + offset, size);
+
+    (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+
     if (response < 0) {
-        return response - 10000;
-    }
-
-    response = read(fd, buf, size);
-    if (response > 0) {
-
-        jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
-        for (i = 0; i < size; i++) {
-            body[i + offset] = buf[i];
-        }
-        (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+        return -errno - 30000;
     }
 
     return response;
@@ -237,120 +230,88 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cReadByte
- * Signature: (III)I
+ * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress)
+  (JNIEnv *env, jclass obj, jint fd, jint localAddress)
 {
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-    }
+    unsigned char data;
+    int response;
 
-    buf[0] = localAddress;												
-	
-    response = write(fd, buf, 1);
+    response = write(fd, &localAddress, 1);
     if (response != 1) {
-        return response - 20000;
-    }
-	
-    response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
+        return -errno - 20000;
     }
 
-    response = read(fd, buf, 1);
+    response = read(fd, &data, 1);
     if (response != 1) {
-	    return response - 30000;
+        return -errno - 30000;
     }
 
-    response = (int)buf[0];
-
-    return response;
+    return data;
 }
 
 /*
  * Class:     com_pi4j_jni_I2C
  * Method:    i2cReadBytes
- * Signature: (IIIII[B)I
+ * Signature: (IIII[B)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
-  (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
+  (JNIEnv *env, jclass obj, jint fd, jint localAddress, jint size, jint offset, jbyteArray bytes)
 {
-    int i;
-    
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-    }
+    int response;
 
-    buf[0] = localAddress;
-	
-    response = write(fd, buf, 1);
+    response = write(fd, &localAddress, 1);
     if (response != 1) {
-        return response - 20000;
+        return -errno - 20000;
     }
-	
-    response = ioctl(fd, I2C_SLAVE, deviceAddress);
+
+    jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
+
+    response = read(fd, body + offset, size);
+
+    (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+
     if (response < 0) {
-        return response - 10000;
-    }
-
-    response = read(fd, buf, size);
-    if (response > 0) {
-
-        jbyte *body = (*env)->GetByteArrayElements(env, bytes, 0);
-        for (i = 0; i < size; i++) {
-            body[i + offset] = buf[i];
-        }
-        (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
+        return -errno - 30000;
     }
 
     return response;
 }
-
 
 /*
 Class:     com_pi4j_jni_I2C
 Method:    i2cWriteAndReadBytes
-Signature: (IIII[BII[B)I
+Signature: (III[BII[B)I
 */
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteAndReadBytes
-(JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint writeSize, jint writeOffset, jbyteArray writeBytes, jint readSize, jint readOffset, jbyteArray readBytes)
+  (JNIEnv *env, jclass obj, jint fd, jint writeSize, jint writeOffset, jbyteArray writeBytes, jint readSize, jint readOffset, jbyteArray readBytes)
 {
-    int i;
-
-    int response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-    }
+    jbyte *body;
+    int response;
 
     // writing writeSize bytes
-    jbyte *body = (*env)->GetByteArrayElements(env, writeBytes, 0);
-    for (i = 0; i < writeSize; i++) {
-        buf[i] = body[i + writeOffset];
-    }
+    body = (*env)->GetByteArrayElements(env, writeBytes, 0);
+
+    response = write(fd, body + writeOffset, writeSize);
+
     (*env)->ReleaseByteArrayElements(env, writeBytes, body, 0);
 
-    response = write(fd, buf, writeSize);
     if (response != writeSize) {
-        return response - 20000;
+        return -errno - 20000;
     }
 
     // reading bytes
-    response = ioctl(fd, I2C_SLAVE, deviceAddress);
-    if (response < 0) {
-        return response - 10000;
-    }
+    body = (*env)->GetByteArrayElements(env, readBytes, 0);
 
-    response = read(fd, buf, readSize);
-    if (response > 0) {
-        body = (*env)->GetByteArrayElements(env, readBytes, 0);
-        for (i = 0; i < readSize; i++) {
-            body[i + readOffset] = buf[i];
-        }
-        (*env)->ReleaseByteArrayElements(env, readBytes, body, 0);
+    response = read(fd, body + readOffset, readSize);
+
+    (*env)->ReleaseByteArrayElements(env, readBytes, body, 0);
+
+    if (response < 0) {
+        return -errno - 30000;
     }
 
     return response;
 }
+
