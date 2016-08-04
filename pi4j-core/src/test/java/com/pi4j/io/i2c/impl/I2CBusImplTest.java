@@ -269,42 +269,44 @@ public class I2CBusImplTest {
 //        lock.setAccessible(true);
 //        lock.invoke(bus);
 
+        when(I2C.i2cSlaveSelect(anyInt(), anyInt())).thenReturn(0);
+
         int byteToRead = 123;
-        when(I2C.i2cReadByteDirect(anyInt(), eq(DEVICE_ADDRESS))).thenReturn(byteToRead);
+        when(I2C.i2cReadByteDirect(anyInt())).thenReturn(byteToRead);
         int readByteDirect = bus.readByteDirect(deviceImpl);
         assertEquals("Unexpected result from 'I2CBusImpl.readByteDirect(...)'", byteToRead, readByteDirect);
 
         int localAddress = 815;
-        when(I2C.i2cReadByte(anyInt(), eq(DEVICE_ADDRESS), eq(localAddress))).thenReturn(byteToRead);
+        when(I2C.i2cReadByte(anyInt(), eq(localAddress))).thenReturn(byteToRead);
         int readByte = bus.readByte(deviceImpl, localAddress);
         assertEquals("Unexpected result from 'I2CBusImpl.readByte(...)'", byteToRead, readByte);
 
         byte[] buffer = new byte[2];
-        when(I2C.i2cReadBytes(anyInt(), eq(DEVICE_ADDRESS), eq(localAddress), eq(buffer.length), eq(0), eq(buffer))).thenReturn(buffer.length);
+        when(I2C.i2cReadBytes(anyInt(), eq(localAddress), eq(buffer.length), eq(0), eq(buffer))).thenReturn(buffer.length);
         int readBytes = bus.readBytes(deviceImpl, localAddress, buffer.length, 0, buffer);
         assertEquals("Unexpected result from 'I2CBusImpl.readBytes(...)'", buffer.length, readBytes);
 
         // test write-methods
 
         byte toBeWritten = 13;
-        when(I2C.i2cWriteByteDirect(anyInt(), eq(DEVICE_ADDRESS), eq(toBeWritten))).thenReturn(10);
+        when(I2C.i2cWriteByteDirect(anyInt(), eq(toBeWritten))).thenReturn(10);
         int writeByteDirect = bus.writeByteDirect(deviceImpl, toBeWritten);
         assertEquals("Unexpected result from 'writeByteDirect(...)'", 10, writeByteDirect);
 
-        when(I2C.i2cWriteByte(anyInt(), eq(DEVICE_ADDRESS), eq(localAddress), eq(toBeWritten))).thenReturn(10);
+        when(I2C.i2cWriteByte(anyInt(), eq(localAddress), eq(toBeWritten))).thenReturn(10);
         int writeByte = bus.writeByte(deviceImpl, localAddress, toBeWritten);
         assertEquals("Unexpected result from 'writeByte(...)'", 10, writeByte);
 
         byte[] toBeWrittenBuffer = new byte[] { 47, 11 };
-        when(I2C.i2cWriteBytesDirect(anyInt(), eq(DEVICE_ADDRESS), eq(2), eq(0), any(byte[].class))).thenReturn(10);
+        when(I2C.i2cWriteBytesDirect(anyInt(), eq(2), eq(0), any(byte[].class))).thenReturn(10);
         int writeBytesDirect = bus.writeBytesDirect(deviceImpl, 2, 0, toBeWrittenBuffer);
         assertEquals("Unexpected result from 'writeBytesDirect(...)'", 10, writeBytesDirect);
 
-        when(I2C.i2cWriteBytes(anyInt(), eq(DEVICE_ADDRESS), eq(localAddress), eq(2), eq(0), any(byte[].class))).thenReturn(10);
+        when(I2C.i2cWriteBytes(anyInt(), eq(localAddress), eq(2), eq(0), any(byte[].class))).thenReturn(10);
         int writeBytes = bus.writeBytes(deviceImpl, localAddress, 2, 0, toBeWrittenBuffer);
         assertEquals("Unexpected result from 'writeBytes(...)'", 10, writeBytes);
 
-        when(I2C.i2cWriteAndReadBytes(anyInt(), eq(DEVICE_ADDRESS), eq(2), eq(0), any(byte[].class), eq(2), eq(0), any(byte[].class))).thenReturn(10);
+        when(I2C.i2cWriteAndReadBytes(anyInt(), eq(2), eq(0), any(byte[].class), eq(2), eq(0), any(byte[].class))).thenReturn(10);
         int result = bus.writeAndReadBytesDirect(deviceImpl, 2, 0, toBeWrittenBuffer, 2, 0, buffer);
         assertEquals("Unexpected result from 'writeAndReadBytesDirect(...)'", 10, result);
 

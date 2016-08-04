@@ -58,6 +58,8 @@ public class I2CBusImpl implements I2CBus {
     /** File handle for this i2c bus */
     protected int fd = -1;
 
+    protected int lastAddress = -1;
+
     /** File name of this i2c bus */
     protected String filename;
 
@@ -122,6 +124,8 @@ public class I2CBusImpl implements I2CBus {
         if (fd < 0) {
             throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
         }
+
+        lastAddress = -1;
     }
 
     /**
@@ -147,76 +151,147 @@ public class I2CBusImpl implements I2CBus {
         close();
     }
 
+    /**
+     * Selects the slave device if not already selected on this bus
+     *
+     * @param device device to select
+     * @return 0 if success or else (-errno - 10000)
+     */
+    private int checkSlaveSelect(final I2CDeviceImpl device) {
+        int addr = device.getAddress();
+
+        if(lastAddress != addr) {
+            lastAddress = addr;
+            return I2C.i2cSlaveSelect(fd, addr);
+        }
+
+        return 0;
+    }
+
     public int readByteDirect(final I2CDeviceImpl device) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cReadByteDirect(fd, device.getAddress())
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cReadByteDirect(fd);
+        });
     }
 
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cReadBytesDirect(fd, size, offset, buffer);
+        });
     }
 
     public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cReadByte(fd, device.getAddress(), localAddress)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cReadByte(fd, localAddress);
+        });
     }
 
     public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cReadBytes(fd, device.getAddress(), localAddress, size, offset, buffer)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cReadBytes(fd, localAddress, size, offset, buffer);
+        });
     }
 
     public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cWriteByteDirect(fd, device.getAddress(), data)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cWriteByteDirect(fd, data);
+        });
     }
 
     public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cWriteBytesDirect(fd, size, offset, buffer);
+        });
     }
 
     public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cWriteByte(fd, localAddress, data);
+        });
     }
 
     public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cWriteBytes(fd, localAddress, size, offset, buffer);
+        });
     }
 
     public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer, final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(() ->
-            I2C.i2cWriteAndReadBytes(fd, device.getAddress(), writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer)
-        );
+        return runActionOnExclusivLockedBus(() -> {
+            int selectResponse = checkSlaveSelect(device);
+
+            if(selectResponse < 0) {
+                return selectResponse;
+            }
+
+            return I2C.i2cWriteAndReadBytes(fd, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
+        });
     }
 
     /**
