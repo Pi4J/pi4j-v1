@@ -42,79 +42,12 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.io.i2c.I2CFactoryProvider;
 
 public abstract class I2CProviderImpl implements I2CFactoryProvider {
-
-    /** Singletons */
-    private static final Map<Integer, I2CBus> busSingletons = new HashMap<>();
-
-    /** to lock the creation/destruction of the bus singletons */
-    private static final Lock singletonPerBusLock = new ReentrantLock(true);
-
-    /**
-     * Factory method that returns bus implementation.
-     *
-     * @param newInstanceCandidate if no bus has been created yet, this instance is used
-     * @return appropriate bus implementation
-     * @throws IOException thrown in case there is a problem opening bus file or bus number is not 0 or 1.
-     */
-    protected static I2CBus getBus(int busNumber, Callable<I2CBusImpl> constructor, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-        InterruptedException lockException = null;
-        try {
-            if (singletonPerBusLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
-                I2CBus bus;
-                try {
-                    bus = busSingletons.get(busNumber);
-
-                    if (bus == null) {
-                        I2CBusImpl newInstanceCandidate = constructor.call();
-                        newInstanceCandidate.open();
-                        bus = newInstanceCandidate;
-                        busSingletons.put(newInstanceCandidate.busNumber, bus);
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not instantiate I2CBus", e);
-                } finally {
-                    singletonPerBusLock.unlock();
-                }
-                return bus;
-            }
-        } catch (InterruptedException e) {
-            lockException = e;
-        }
-        throw new RuntimeException("Could not abtain lock to build new bus!", lockException);
-    }
-
-    protected static void closeBus(int busNumber, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit, Callable<Void> closeAction) {
-        InterruptedException lockException = null;
-        try {
-            if (singletonPerBusLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
-                try {
-                    closeAction.call();
-                    return;
-                } catch (Exception e) {
-                    throw new RuntimeException("Cannot close bus", e);
-                } finally {
-                    //  after closing the fd, we must "forget" the singleton bus instance, otherwise further request to this bus will always fail
-                    try {
-                        busSingletons.remove(busNumber);
-                    } finally {
-                        singletonPerBusLock.unlock();
-                    }
-                }
-            }
-        } catch (InterruptedException e) {
-            lockException = e;
-        }
-
-        throw new RuntimeException("Could not abtain lock to close the bus!", lockException);
-    }
-
     public I2CBus getBus(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-        return getBus(busNumber, new Callable<I2CBusImpl>() {
-            @Override
-            public I2CBusImpl call() throws UnsupportedBusNumberException {
-                return new I2CBusImpl(busNumber, getFilenameForBusnumber(busNumber), lockAquireTimeout, lockAquireTimeoutUnit);
-            }
-        }, lockAquireTimeout, lockAquireTimeoutUnit);
+        I2CBusImpl result =  new I2CBusImpl(busNumber, getFilenameForBusnumber(busNumber), lockAquireTimeout, lockAquireTimeoutUnit);
+
+        result.open();
+
+        return result;
     }
 
     protected abstract String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException;
