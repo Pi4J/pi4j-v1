@@ -81,7 +81,7 @@ public class I2CDeviceImplTest {
                 throw new IOException("Got null-buffer!");
             }
             if (buffer.length < (offset + size)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
             }
             buffer[offset] = READ_FIRSTBYTE;
             buffer[offset + 1] = READ_SECONDBYTE;
@@ -101,13 +101,13 @@ public class I2CDeviceImplTest {
                 throw new IOException("Expected a writeSize greater than one but got '" + writeSize + "'!");
             }
             if (writeOffset < 0) {
-                throw new IOException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
             }
             if (writeData == null) {
-                throw new IOException("Got null-writeData!");
+                throw new IllegalArgumentException("Got null-writeData!");
             }
             if (writeData.length < (writeOffset + writeSize)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
             }
             byte firstByte = writeData[writeOffset];
             if (firstByte != WRITE_FIRSTBYTE) {
@@ -122,16 +122,16 @@ public class I2CDeviceImplTest {
             int offset = (Integer) args[args.length - 2];
             byte[] buffer = (byte[]) args[args.length - 1];
             if (size < 2) {
-                throw new IOException("Expected a size greater than one but got '" + size + "'!");
+                throw new IllegalArgumentException("Expected a size greater than one but got '" + size + "'!");
             }
             if (offset < 0) {
-                throw new IOException("Expected an non-negative offset but got '" + offset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative offset but got '" + offset + "'!");
             }
             if (buffer == null) {
-                throw new IOException("Got null-buffer!");
+                throw new IllegalArgumentException("Got null-buffer!");
             }
             if (buffer.length < (offset + size)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
             }
             buffer[offset] = READ_FIRSTBYTE;
             buffer[offset + 1] = READ_SECONDBYTE;
@@ -151,13 +151,13 @@ public class I2CDeviceImplTest {
                 throw new IOException("Expected a writeSize greater than one but got '" + writeSize + "'!");
             }
             if (writeOffset < 0) {
-                throw new IOException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
             }
             if (writeData == null) {
-                throw new IOException("Got null-writeData!");
+                throw new IllegalArgumentException("Got null-writeData!");
             }
             if (writeData.length < (writeOffset + writeSize)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
             }
 
             return null; // void
@@ -260,7 +260,7 @@ public class I2CDeviceImplTest {
         try {
             device.read(new byte[2], 1, 2);
             fail("Expected 'read(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
         }
 
@@ -298,7 +298,7 @@ public class I2CDeviceImplTest {
         try {
             device.read(LOCALADDRESS, new byte[2], 1, 2);
             fail("Expected 'read(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
         }
 
@@ -390,7 +390,7 @@ public class I2CDeviceImplTest {
         try {
             device.write(new byte[2], 1, 2);
             fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
         }
 
@@ -417,7 +417,7 @@ public class I2CDeviceImplTest {
         try {
             device.write(LOCALADDRESS, new byte[2], 1, 2);
             fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
         }
 

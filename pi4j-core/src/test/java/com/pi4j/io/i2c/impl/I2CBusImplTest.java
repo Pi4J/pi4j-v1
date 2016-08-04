@@ -112,11 +112,9 @@ public class I2CBusImplTest {
     @Test
     public void testBasics() throws Exception {
 
-        I2CFactory.getInstance(BUSNUMBER);
-
         // test that I2C.i2cOpen was called during setup
 
-        verifyStatic(times(2));
+        verifyStatic(times(1));
         I2C.i2cOpen(eq(FILENAME));
 
         // test for busnumber

@@ -106,9 +106,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(final byte[] data, final int offset, final int size) throws IOException {
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-
         int ret = getBus().writeBytesDirect(this, size, offset, data);
         if (ret < 0) {
             throw new I2CIOException("Error writing to " + makeDescription() + ". Got '" + ret + "'.", ret);
@@ -155,9 +152,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public void write(final int address, final byte[] data, final int offset, final int size) throws IOException {
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-
         int ret = getBus().writeBytes(this, address, size, offset, data);
         if (ret < 0) {
             throw new I2CIOException("Error writing to " + makeDescription(address) + ". Got '" + ret + "'.", ret);
@@ -192,6 +186,8 @@ public class I2CDeviceImpl implements I2CDevice {
         return ret;
     }
 
+
+
     /**
      * <p>
      * This method reads bytes from the i2c device to given buffer at asked offset.
@@ -211,9 +207,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(final byte[] data, final int offset, final int size) throws IOException {
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-
         int ret = getBus().readBytesDirect(this, size, offset, data);
         if (ret < 0) {
             throw new I2CIOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.", ret);
@@ -258,9 +251,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(final int address, final byte[] data, final int offset, final int size) throws IOException {
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-
         int ret = getBus().readBytes(this, address, size, offset, data);
         if (ret < 0) {
             throw new I2CIOException("Error reading from " + makeDescription(address) + ". Got '" + ret + "'.", ret);
@@ -284,12 +274,6 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     @Override
     public int read(final byte[] writeData, final int writeOffset, final int writeSize, final byte[] readData, final int readOffset, final int readSize) throws IOException {
-        if((readOffset + readSize) > readData.length)
-            throw new IndexOutOfBoundsException("read buffer overrun");
-
-        if((writeOffset + writeSize) > writeData.length)
-            throw new IndexOutOfBoundsException("write buffer overrun");
-
         int ret = getBus().writeAndReadBytesDirect(this, writeSize, writeOffset, writeData, readSize, readOffset, readData);
         if (ret < 0) {
             throw new I2CIOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.", ret);

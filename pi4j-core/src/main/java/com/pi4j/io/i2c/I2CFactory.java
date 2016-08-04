@@ -69,8 +69,8 @@ public class I2CFactory {
      * @return Return a new I2CBus instance
      * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
      * @throws IOException If communication to i2c-bus fails
-     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT
-     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
+     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT
+     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
      */
     public static I2CBus getInstance(int busNumber) throws UnsupportedBusNumberException, IOException {
         return provider.getBus(busNumber, DEFAULT_LOCKAQUIRE_TIMEOUT, DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);

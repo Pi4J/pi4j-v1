@@ -151,6 +151,20 @@ public class I2CBusImpl implements I2CBus {
         close();
     }
 
+    protected void validateBufferOffsets(final byte[] data, final int offset, final int size) {
+        if(offset < 0)
+            throw new IllegalArgumentException("offset must be non-negative");
+
+        if(size < 0)
+            throw new IllegalArgumentException("size must be non-negative");
+
+        if(data == null)
+            throw new IllegalArgumentException("must provide data buffer!");
+
+        if((offset + size) > data.length)
+            throw new IndexOutOfBoundsException("buffer overrun");
+    }
+
     /**
      * Selects the slave device if not already selected on this bus
      *
@@ -184,6 +198,7 @@ public class I2CBusImpl implements I2CBus {
 
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
+        validateBufferOffsets(buffer, offset, size);
 
         return runActionOnExclusivLockedBus(() -> {
             int selectResponse = checkSlaveSelect(device);
@@ -212,6 +227,7 @@ public class I2CBusImpl implements I2CBus {
 
     public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
+        validateBufferOffsets(buffer, offset, size);
 
         return runActionOnExclusivLockedBus(() -> {
             int selectResponse = checkSlaveSelect(device);
@@ -240,6 +256,7 @@ public class I2CBusImpl implements I2CBus {
 
     public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
+        validateBufferOffsets(buffer, offset, size);
 
         return runActionOnExclusivLockedBus(() -> {
             int selectResponse = checkSlaveSelect(device);
@@ -268,6 +285,7 @@ public class I2CBusImpl implements I2CBus {
 
     public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
+        validateBufferOffsets(buffer, offset, size);
 
         return runActionOnExclusivLockedBus(() -> {
             int selectResponse = checkSlaveSelect(device);
@@ -282,6 +300,8 @@ public class I2CBusImpl implements I2CBus {
 
     public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer, final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
         testForProperOperationConditions(device);
+        validateBufferOffsets(writeBuffer, writeOffset, writeSize);
+        validateBufferOffsets(readBuffer, readOffset, readSize);
 
         return runActionOnExclusivLockedBus(() -> {
             int selectResponse = checkSlaveSelect(device);
