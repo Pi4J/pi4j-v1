@@ -131,117 +131,92 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public void close() throws IOException {
-        if (fd == -1) {
-            return;
-        }
-
-        I2CProviderImpl.closeBus(getBusNumber(), lockAquireTimeout, lockAquireTimeoutUnit, new Callable<Void>() {
-            @Override
-            public Void call() {
-                I2C.i2cClose(fd);
-                fd = -1;
+        runActionOnExclusivLockedBus(() -> {
+            if (fd == -1) {
                 return null;
             }
+
+            I2C.i2cClose(fd);
+            fd = -1;
+            return null;
         });
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        close();
     }
 
     public int readByteDirect(final I2CDeviceImpl device) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cReadByteDirect(fd, device.getAddress());
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cReadByteDirect(fd, device.getAddress())
+        );
     }
 
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cReadBytesDirect(fd, device.getAddress(), size, offset, buffer)
+        );
     }
 
     public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cReadByte(fd, device.getAddress(), localAddress);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cReadByte(fd, device.getAddress(), localAddress)
+        );
     }
 
     public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cReadBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cReadBytes(fd, device.getAddress(), localAddress, size, offset, buffer)
+        );
     }
 
     public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cWriteByteDirect(fd, device.getAddress(), data);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cWriteByteDirect(fd, device.getAddress(), data)
+        );
     }
 
     public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cWriteBytesDirect(fd, device.getAddress(), size, offset, buffer)
+        );
     }
 
     public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cWriteByte(fd, device.getAddress(), localAddress, data)
+        );
     }
 
     public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cWriteBytes(fd, device.getAddress(), localAddress, size, offset, buffer)
+        );
     }
 
     public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer, final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
         testForProperOperationConditions(device);
 
-        return runActionOnExclusivLockedBus(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return I2C.i2cWriteAndReadBytes(fd, device.getAddress(), writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
-            }
-        });
+        return runActionOnExclusivLockedBus(() ->
+            I2C.i2cWriteAndReadBytes(fd, device.getAddress(), writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer)
+        );
     }
 
     /**
@@ -274,7 +249,7 @@ public class I2CBusImpl implements I2CBus {
             }
         } catch (InterruptedException e) {
             logger.log(Level.FINER, "Failed locking I2CBusImpl-" + busNumber, e);
-            throw new RuntimeException("Could not abtain an access-lock!", e);
+            throw new RuntimeException("Could not obtain an access-lock!", e);
         } catch (IOException e) { // unwrap IOExceptionWrapperException
             throw e;
         } catch (RuntimeException e) {
@@ -282,7 +257,7 @@ public class I2CBusImpl implements I2CBus {
         } catch (Exception e) { // unexpected exceptions
             throw new RuntimeException(e);
         }
-        throw new RuntimeException("Could not abtain an access-lock!");
+        throw new RuntimeException("Could not obtain an access-lock!");
     }
 
     private void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
