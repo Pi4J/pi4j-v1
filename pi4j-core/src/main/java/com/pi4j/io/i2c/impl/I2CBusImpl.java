@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CIOException;
 import com.pi4j.jni.I2C;
 
 /**
@@ -129,214 +130,96 @@ public class I2CBusImpl implements I2CBus {
     }
 
     /**
-     * Closes this i2c bus
+     * Closes this i2c bus. Can be used in a thread safe way during bus operations.
      *
      * @throws IOException never in this implementation
      */
     @Override
-    public void close() throws IOException {
-        runActionOnExclusivLockedBus(() -> {
-            if (fd == -1) {
-                return null;
-            }
-
-            I2C.i2cClose(fd);
-            fd = -1;
-            return null;
-        });
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-    }
-
-    protected void validateBufferOffsets(final byte[] data, final int offset, final int size) {
-        if(offset < 0)
-            throw new IllegalArgumentException("offset must be non-negative");
-
-        if(size < 0)
-            throw new IllegalArgumentException("size must be non-negative");
-
-        if(data == null)
-            throw new IllegalArgumentException("must provide data buffer!");
-
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-    }
-
-    /**
-     * Selects the slave device if not already selected on this bus
-     *
-     * @param device device to select
-     * @return 0 if success or else (-errno - 10000)
-     */
-    private int checkSlaveSelect(final I2CDeviceImpl device) {
-        int addr = device.getAddress();
-
-        if(lastAddress != addr) {
-            lastAddress = addr;
-            return I2C.i2cSlaveSelect(fd, addr);
+    public synchronized void close() throws IOException {
+        if (fd == -1) {
+            return;
         }
 
-        return 0;
+        I2C.i2cClose(fd);
+        fd = -1;
     }
 
     public int readByteDirect(final I2CDeviceImpl device) throws IOException {
-        testForProperOperationConditions(device);
-
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cReadByteDirect(fd);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cReadByteDirect(fd));
     }
 
     public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-        testForProperOperationConditions(device);
         validateBufferOffsets(buffer, offset, size);
 
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cReadBytesDirect(fd, size, offset, buffer);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cReadBytesDirect(fd, size, offset, buffer));
     }
 
     public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
-        testForProperOperationConditions(device);
-
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cReadByte(fd, localAddress);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cReadByte(fd, localAddress));
     }
 
     public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-        testForProperOperationConditions(device);
         validateBufferOffsets(buffer, offset, size);
 
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cReadBytes(fd, localAddress, size, offset, buffer);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cReadBytes(fd, localAddress, size, offset, buffer));
     }
 
     public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
-        testForProperOperationConditions(device);
-
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cWriteByteDirect(fd, data);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteByteDirect(fd, data));
     }
 
     public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-        testForProperOperationConditions(device);
         validateBufferOffsets(buffer, offset, size);
 
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cWriteBytesDirect(fd, size, offset, buffer);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteBytesDirect(fd, size, offset, buffer));
     }
 
     public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
-        testForProperOperationConditions(device);
-
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cWriteByte(fd, localAddress, data);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteByte(fd, localAddress, data));
     }
 
     public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-        testForProperOperationConditions(device);
         validateBufferOffsets(buffer, offset, size);
 
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cWriteBytes(fd, localAddress, size, offset, buffer);
-        });
+        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteBytes(fd, localAddress, size, offset, buffer));
     }
 
-    public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer, final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
-        testForProperOperationConditions(device);
+    public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer,
+                                       final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
         validateBufferOffsets(writeBuffer, writeOffset, writeSize);
         validateBufferOffsets(readBuffer, readOffset, readSize);
 
-        return runActionOnExclusivLockedBus(() -> {
-            int selectResponse = checkSlaveSelect(device);
-
-            if(selectResponse < 0) {
-                return selectResponse;
-            }
-
-            return I2C.i2cWriteAndReadBytes(fd, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer);
-        });
+        return runBusLockedDeviceAction(device, () ->
+                I2C.i2cWriteAndReadBytes(fd, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer));
     }
 
     /**
-     * Sometimes communication to an i2c device must not be disturbed by communication to another i2c device. This method can be used to run a custom sequence of writes/reads.
+     * Selects a device on the bus for an action, and locks parallel access around file descriptor operations.
+     * Multiple bus instances may be used in parallel, but a single bus instance must limit parallel access.
      * <p>
      * The timeout used for the acquisition of the lock may be defined on getting the I2CBus from I2CFactory.
      * <p>
      * The 'run'-method of 'action' may throw an 'IOExceptionWrapperException' to wrap IOExceptions. The wrapped IOException is unwrapped by this method and rethrown as IOException.
      *
      * @param <T> The result-type of the method
+     * @param device Device to be selected on the bus
      * @param action The action to be run
      * @throws RuntimeException thrown by the custom code
      * @throws IOException see method description above
      * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
      */
-    protected <T> T runActionOnExclusivLockedBus(final Callable<T> action) throws IOException {
+    protected <T> T runBusLockedDeviceAction(final I2CDeviceImpl device, final Callable<T> action) throws IOException {
         if (action == null) {
-            throw new RuntimeException("Parameter 'action' is mandatory!");
+            throw new NullPointerException("Parameter 'action' is mandatory!");
         }
 
-        testWhetherBusHasAlreadyBeenClosed();
+        testForProperOperationConditions(device);
 
         try {
             if (accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
                 try {
+                    selectBusSlave(device);
+                    
                     return action.call();
                 } finally {
                     accessLock.unlock();
@@ -355,17 +238,49 @@ public class I2CBusImpl implements I2CBus {
         throw new RuntimeException("Could not obtain an access-lock!");
     }
 
-    private void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
-        testWhetherBusHasAlreadyBeenClosed();
+    @Override
+    protected void finalize() throws Throwable {
+        close();
+    }
 
-        if (device == null) {
-            throw new NullPointerException("Parameter 'device' is mandatory!");
+    protected void validateBufferOffsets(final byte[] data, final int offset, final int size) {
+        if(offset < 0)
+            throw new IllegalArgumentException("offset must be non-negative");
+
+        if(size < 0)
+            throw new IllegalArgumentException("size must be non-negative");
+
+        if(data == null)
+            throw new NullPointerException("must provide data buffer!");
+
+        if((offset + size) > data.length)
+            throw new IndexOutOfBoundsException("buffer overrun");
+    }
+
+    /**
+     * Selects the slave device if not already selected on this bus.
+     *
+     * @param device Device to select
+     */
+    protected void selectBusSlave(final I2CDeviceImpl device) throws IOException {
+        final int addr = device.getAddress();
+
+        if(lastAddress != addr) {
+            lastAddress = addr;
+            final int response = I2C.i2cSlaveSelect(fd, addr);
+
+            if(response < 0)
+                throw new I2CIOException("Failed to select slave device!", response);
         }
     }
 
-    private void testWhetherBusHasAlreadyBeenClosed() throws IOException {
+    protected void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
         if (fd == -1) {
-            throw new IOException(toString() + " has already been closed! A new bus has to be aquired.");
+            throw new IOException(toString() + " has already been closed! A new bus has to be acquired.");
+        }
+
+        if (device == null) {
+            throw new NullPointerException("Parameter 'device' is mandatory!");
         }
     }
 

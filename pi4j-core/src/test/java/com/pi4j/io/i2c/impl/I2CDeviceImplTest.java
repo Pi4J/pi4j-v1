@@ -176,7 +176,7 @@ public class I2CDeviceImplTest {
 
         // simple run runnable and return result. the original method
         // adds locking but we want to test I2CDeviceImpl not I2CBusImpl!
-        when(bus.runActionOnExclusivLockedBus(any(Callable.class))).thenAnswer(new Answer<Object>() {
+        when(bus.runBusLockedDeviceAction(any(), any(Callable.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Callable<Object> action = (Callable<Object>) invocation.getArguments()[0];

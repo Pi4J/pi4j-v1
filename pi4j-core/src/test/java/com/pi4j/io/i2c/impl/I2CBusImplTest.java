@@ -111,6 +111,7 @@ public class I2CBusImplTest {
 
     @Test
     public void testBasics() throws Exception {
+        byte[] buffer = new byte[3];
 
         // test that I2C.i2cOpen was called during setup
 
@@ -143,13 +144,13 @@ public class I2CBusImplTest {
             // expected
         }
         try {
-            bus.readBytesDirect(null, 0, 0, null);
+            bus.readBytesDirect(null, 0, 0, buffer);
             fail("calling 'readBytesDirect(...)' on a closed bus should throw " + "an IOException but did not!");
         } catch (IOException e) {
             // expected
         }
         try {
-            bus.readBytes(null, 0, 0, 0, null);
+            bus.readBytes(null, 0, 0, 0, buffer);
             fail("calling 'readBytes(...)' on a closed bus should throw " + "an IOException but did not!");
         } catch (IOException e) {
             // expected
@@ -167,19 +168,19 @@ public class I2CBusImplTest {
             // expected
         }
         try {
-            bus.writeBytesDirect(null, 0, 0, null);
+            bus.writeBytesDirect(null, 0, 0, buffer);
             fail("calling 'writeBytesDirect(...)' on a closed bus should throw " + "an IOException but did not!");
         } catch (IOException e) {
             // expected
         }
         try {
-            bus.writeBytes(null, 0, 0, 0, null);
+            bus.writeBytes(null, 0, 0, 0, buffer);
             fail("calling 'writeBytes(...)' on a closed bus should throw " + "an IOException but did not!");
         } catch (IOException e) {
             // expected
         }
         try {
-            bus.writeAndReadBytesDirect(null, 0, 0, null, 0, 0, null);
+            bus.writeAndReadBytesDirect(null, 0, 0, buffer, 0, 0, buffer);
             fail("calling 'writeAndReadBytesDirect(...)' on a closed bus should throw " + "an IOException but did not!");
         } catch (IOException e) {
             // expected
@@ -374,30 +375,42 @@ public class I2CBusImplTest {
     @Test
     public void testConcurrency() throws Exception {
 
+        PowerMockito.whenNew(I2CDeviceImpl.class).withArguments(bus, DEVICE_ADDRESS).thenReturn(mock(I2CDeviceImpl.class));
+
+        I2CDevice device = bus.getDevice(DEVICE_ADDRESS);
+        assertNotNull("'I2CBus.getDevice(...)' did not return an device-instance", device);
+        assertTrue("'I2CBus.getDevice(...)' does not return an instance of I2CDeviceImpl!", device instanceof I2CDeviceImpl);
+        PowerMockito.verifyNew(I2CDeviceImpl.class, times(1)).withArguments(bus, DEVICE_ADDRESS);
+
+        when(device.getAddress()).thenReturn(DEVICE_ADDRESS);
+
+        I2CDeviceImpl deviceImpl = (I2CDeviceImpl) device;
+
         // test simple locking
+        bus.open();
 
         long before1 = System.currentTimeMillis();
-        boolean result1 = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+        boolean result1 = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return true;
             }
         });
         long time1 = System.currentTimeMillis() - before1;
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", result1);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", result1);
         assertTrue("It seems that the bus was locked because running the Runnable " + "took more time than expected!", time1 < DEFAULT_TIMEOUT);
 
         // test second attempt
 
         long before2 = System.currentTimeMillis();
-        boolean result2 = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+        boolean result2 = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return true;
             }
         });
         long time2 = System.currentTimeMillis() - before2;
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", result2);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", result2);
         assertTrue("It seems that the bus was locked because running the Runnable " + "took more time than expected!", time2 < DEFAULT_TIMEOUT);
 
         // test lock-unlock and lock by another thread
@@ -406,7 +419,7 @@ public class I2CBusImplTest {
         Thread testThread1 = new Thread() {
             public void run() {
                 try {
-                    result3[0] = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+                    result3[0] = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             try {
@@ -426,7 +439,7 @@ public class I2CBusImplTest {
 
         Thread.sleep(10);
         long before3 = System.currentTimeMillis();
-        boolean result4 = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+        boolean result4 = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 Thread.sleep(20);
@@ -434,11 +447,11 @@ public class I2CBusImplTest {
             }
         });
         long time3 = System.currentTimeMillis() - before3;
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", result4);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", result4);
         assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time3 + "ms)!", time3 > 10);
 
         testThread1.join();
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "on a separat thread was not run!", result3[0]);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result3[0]);
 
         // test lock-unlock and lock by another thread - getting no lock in time
 
@@ -446,7 +459,7 @@ public class I2CBusImplTest {
         Thread testThread3 = new Thread() {
             public void run() {
                 try {
-                    result7[0] = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+                    result7[0] = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             try {
@@ -468,7 +481,7 @@ public class I2CBusImplTest {
         long before5 = System.currentTimeMillis();
         boolean result8 = false;
         try {
-            result8 = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+            result8 = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     Thread.sleep(20);
@@ -479,11 +492,11 @@ public class I2CBusImplTest {
             // expected
         }
         long time5 = System.currentTimeMillis() - before5;
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was run but shouldn't!", !result8);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was run but shouldn't!", !result8);
         assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time5 + "ms)!", time5 > 10);
 
         testThread3.join();
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "on a separat thread was not run!", result7[0]);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result7[0]);
 
         // test lock-unlock and lock by another thread using random delays
 
@@ -500,7 +513,7 @@ public class I2CBusImplTest {
             Thread testThread2 = new Thread() {
                 public void run() {
                     try {
-                        result5[0] = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+                        result5[0] = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                             @Override
                             public Boolean call() throws Exception {
                                 try {
@@ -521,7 +534,7 @@ public class I2CBusImplTest {
 
             Thread.sleep(10);
             long before4 = System.currentTimeMillis();
-            boolean result6 = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+            boolean result6 = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     Thread.sleep(20);
@@ -529,34 +542,34 @@ public class I2CBusImplTest {
                 }
             });
             long time4 = System.currentTimeMillis() - before4;
-            assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", result6);
+            assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", result6);
             assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time4 + "ms)!", time4 > 10);
 
             testThread2.join();
-            assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "on a separat thread was not run!", result5[0]);
+            assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result5[0]);
 
         }
 
         // test custom-code using I2CDevice.read() which leads to call
-        // 'runActionOnExclusivLockedBus' byte the custom I2CRunnable and the
+        // 'runBusLockedDeviceAction' byte the custom I2CRunnable and the
         // I2CRunnable of the read/write-methods of I2CDeviceImpl
 
         final boolean[] results = new boolean[] { false, false };
         long before11 = System.currentTimeMillis();
-        results[0] = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+        results[0] = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
 
                 try {
                     long before12 = System.currentTimeMillis();
-                    results[1] = bus.runActionOnExclusivLockedBus(new Callable<Boolean>() {
+                    results[1] = bus.runBusLockedDeviceAction(deviceImpl, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             return true;
                         }
                     });
                     long time12 = System.currentTimeMillis() - before12;
-                    assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", results[1]);
+                    assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", results[1]);
                     assertTrue("It seems that the bus was locked because running the Runnable " + "took more time than expected!", time12 < DEFAULT_TIMEOUT);
                 } catch (IOException e) {
                     throw e;
@@ -569,7 +582,7 @@ public class I2CBusImplTest {
             }
         });
         long time11 = System.currentTimeMillis() - before11;
-        assertTrue("The Runnable given to 'I2CBus.runActionOnExclusivLockedBus(...)' " + "was not run!", results[0]);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "was not run!", results[0]);
         assertTrue("It seems that the bus was locked because running the Runnable " + "took more time than expected!", time11 < DEFAULT_TIMEOUT);
 
     }
