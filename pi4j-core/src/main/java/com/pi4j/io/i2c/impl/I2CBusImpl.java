@@ -30,6 +30,7 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,6 +42,7 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CIOException;
 import com.pi4j.jni.I2C;
+import sun.misc.SharedSecrets;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only one file per bus for all devices. Device
@@ -57,7 +59,7 @@ public class I2CBusImpl implements I2CBus {
     private static final Logger logger = Logger.getLogger(I2CBusImpl.class.getCanonicalName());
 
     /** File handle for this i2c bus */
-    protected int fd = -1;
+    protected RandomAccessFile file = null;
 
     protected int lastAddress = -1;
 
@@ -117,14 +119,11 @@ public class I2CBusImpl implements I2CBus {
      * @throws IOException thrown in case there are problems opening the i2c bus.
      */
     protected void open() throws IOException {
-        if (fd != -1) {
+        if (file != null) {
             return;
         }
 
-        fd = I2C.i2cOpen(filename);
-        if (fd < 0) {
-            throw new IOException("Cannot open file handle for " + filename + " got " + fd + " back.");
-        }
+        file = new RandomAccessFile(filename, "rw");
 
         lastAddress = -1;
     }
@@ -136,61 +135,82 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public synchronized void close() throws IOException {
-        if (fd == -1) {
-            return;
+        if(file != null) {
+            file.close();
+            file = null;
         }
-
-        I2C.i2cClose(fd);
-        fd = -1;
     }
 
-    public int readByteDirect(final I2CDeviceImpl device) throws IOException {
-        return runBusLockedDeviceAction(device, () -> I2C.i2cReadByteDirect(fd));
+    public int readByteDirect(final I2CDevice device) throws IOException {
+        return runBusLockedDeviceAction(device, () -> file.readUnsignedByte());
     }
 
-    public int readBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-        validateBufferOffsets(buffer, offset, size);
-
-        return runBusLockedDeviceAction(device, () -> I2C.i2cReadBytesDirect(fd, size, offset, buffer));
+    public int readBytesDirect(final I2CDevice device, final int size, final int offset, final byte[] buffer) throws IOException {
+        return runBusLockedDeviceAction(device, () -> file.read(buffer, offset, size));
     }
 
-    public int readByte(final I2CDeviceImpl device, final int localAddress) throws IOException {
-        return runBusLockedDeviceAction(device, () -> I2C.i2cReadByte(fd, localAddress));
+    public int readByte(final I2CDevice device, final int localAddress) throws IOException {
+        return runBusLockedDeviceAction(device, () -> {
+            file.writeByte(localAddress);
+
+            return file.readUnsignedByte();
+        });
     }
 
-    public int readBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-        validateBufferOffsets(buffer, offset, size);
+    public int readBytes(final I2CDevice device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
+        return runBusLockedDeviceAction(device, () -> {
+            file.writeByte(localAddress);
 
-        return runBusLockedDeviceAction(device, () -> I2C.i2cReadBytes(fd, localAddress, size, offset, buffer));
+            return file.read(buffer, offset, size);
+        });
     }
 
-    public int writeByteDirect(final I2CDeviceImpl device, final byte data) throws IOException {
-        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteByteDirect(fd, data));
+    public void writeByteDirect(final I2CDevice device, final byte data) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            file.writeByte(data & 0xFF);
+
+            return null;
+        });
     }
 
-    public int writeBytesDirect(final I2CDeviceImpl device, final int size, final int offset, final byte[] buffer) throws IOException {
-        validateBufferOffsets(buffer, offset, size);
+    public void writeBytesDirect(final I2CDevice device, final int size, final int offset, final byte[] buffer) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            file.write(buffer, offset, size);
 
-        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteBytesDirect(fd, size, offset, buffer));
+            return null;
+        });
     }
 
-    public int writeByte(final I2CDeviceImpl device, final int localAddress, final byte data) throws IOException {
-        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteByte(fd, localAddress, data));
+    public void writeByte(final I2CDevice device, final int localAddress, final byte data) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            file.write(new byte[] { (byte)localAddress, data });
+
+            return null;
+        });
     }
 
-    public int writeBytes(final I2CDeviceImpl device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
-        validateBufferOffsets(buffer, offset, size);
+    public void writeBytes(final I2CDevice device, final int localAddress, final int size, final int offset, final byte[] buffer) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            byte[] buf = new byte[size + 1];
 
-        return runBusLockedDeviceAction(device, () -> I2C.i2cWriteBytes(fd, localAddress, size, offset, buffer));
+            buf[0] = (byte)localAddress;
+
+            for(int i = 0 ; i < size ; i++)
+                buf[i + 1] = buffer[i + offset];
+
+            file.write(buf);
+
+            return null;
+        });
     }
 
-    public int writeAndReadBytesDirect(final I2CDeviceImpl device, final int writeSize, final int writeOffset, final byte[] writeBuffer,
+    public int writeAndReadBytesDirect(final I2CDevice device, final int writeSize, final int writeOffset, final byte[] writeBuffer,
                                        final int readSize, final int readOffset, final byte[] readBuffer) throws IOException {
-        validateBufferOffsets(writeBuffer, writeOffset, writeSize);
-        validateBufferOffsets(readBuffer, readOffset, readSize);
+        return runBusLockedDeviceAction(device, () -> {
+            file.write(writeBuffer, writeOffset, writeSize);
 
-        return runBusLockedDeviceAction(device, () ->
-                I2C.i2cWriteAndReadBytes(fd, writeSize, writeOffset, writeBuffer, readSize, readOffset, readBuffer));
+            return file.read(readBuffer, readOffset, readSize);
+        });
     }
 
     /**
@@ -208,7 +228,7 @@ public class I2CBusImpl implements I2CBus {
      * @throws IOException see method description above
      * @see I2CFactory#getInstance(int, long, java.util.concurrent.TimeUnit)
      */
-    protected <T> T runBusLockedDeviceAction(final I2CDeviceImpl device, final Callable<T> action) throws IOException {
+    public <T> T runBusLockedDeviceAction(final I2CDevice device, final Callable<T> action) throws IOException {
         if (action == null) {
             throw new NullPointerException("Parameter 'action' is mandatory!");
         }
@@ -218,6 +238,8 @@ public class I2CBusImpl implements I2CBus {
         try {
             if (accessLock.tryLock(lockAquireTimeout, lockAquireTimeoutUnit)) {
                 try {
+                    testForProperOperationConditions(device);
+
                     selectBusSlave(device);
                     
                     return action.call();
@@ -243,45 +265,46 @@ public class I2CBusImpl implements I2CBus {
         close();
     }
 
-    protected void validateBufferOffsets(final byte[] data, final int offset, final int size) {
-        if(offset < 0)
-            throw new IllegalArgumentException("offset must be non-negative");
-
-        if(size < 0)
-            throw new IllegalArgumentException("size must be non-negative");
-
-        if(data == null)
-            throw new NullPointerException("must provide data buffer!");
-
-        if((offset + size) > data.length)
-            throw new IndexOutOfBoundsException("buffer overrun");
-    }
-
     /**
      * Selects the slave device if not already selected on this bus.
+     * Uses SharedSecrets to get the POSIX file descriptor, and runs
+     * the required ioctl's via JNI.
      *
      * @param device Device to select
      */
-    protected void selectBusSlave(final I2CDeviceImpl device) throws IOException {
+    protected void selectBusSlave(final I2CDevice device) throws IOException {
         final int addr = device.getAddress();
+        final int fd = getFileDescriptor();
 
         if(lastAddress != addr) {
             lastAddress = addr;
-            final int response = I2C.i2cSlaveSelect(fd, addr);
+            final int response = I2C.i2cSlaveSelect(fd, addr & 0xFF);
 
             if(response < 0)
                 throw new I2CIOException("Failed to select slave device!", response);
         }
     }
 
-    protected void testForProperOperationConditions(final I2CDeviceImpl device) throws IOException {
-        if (fd == -1) {
+    protected void testForProperOperationConditions(final I2CDevice device) throws IOException {
+        if (file == null) {
             throw new IOException(toString() + " has already been closed! A new bus has to be acquired.");
         }
 
         if (device == null) {
             throw new NullPointerException("Parameter 'device' is mandatory!");
         }
+    }
+
+    /**
+     * Gets the real POSIX file descriptor for use by custom jni calls.
+     */
+    private int getFileDescriptor() throws IOException {
+        final int fd = SharedSecrets.getJavaIOFileDescriptorAccess().get(file.getFD());
+
+        if(fd < 1)
+            throw new RuntimeException("failed to get POSIX file descriptor!");
+
+        return fd;
     }
 
     @Override

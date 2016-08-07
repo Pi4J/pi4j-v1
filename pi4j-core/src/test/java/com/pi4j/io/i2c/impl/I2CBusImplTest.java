@@ -101,8 +101,6 @@ public class I2CBusImplTest {
     public void setUp() throws Exception {
 
         PowerMockito.mockStatic(I2C.class);
-        when(I2C.i2cOpen(anyString())).thenReturn(FILEDESCRIPTOR);
-        when(I2C.i2cClose(anyInt())).thenReturn(0);
 
         bus = new TestableI2CBusImpl(BUSNUMBER, FILENAME, 100, TimeUnit.MILLISECONDS);
         bus.open();
@@ -113,21 +111,10 @@ public class I2CBusImplTest {
     public void testBasics() throws Exception {
         byte[] buffer = new byte[3];
 
-        // test that I2C.i2cOpen was called during setup
-
-        verifyStatic(times(1));
-        I2C.i2cOpen(eq(FILENAME));
-
-        // test for busnumber
-
         final int busNo = bus.getBusNumber();
         assertEquals("Got wrong busnumber from I2CBusImpl-instance!", BUSNUMBER, busNo);
 
-        // test that I2C.i2cClose is called on I2CBus.close()
-
         bus.close();
-        verifyStatic(times(1));
-        I2C.i2cClose(eq(FILEDESCRIPTOR));
 
         // test for IOExceptions on using a bus already closed
 
@@ -185,190 +172,6 @@ public class I2CBusImplTest {
         } catch (IOException e) {
             // expected
         }
-
-    }
-
-    @Test
-    public void testDeviceInteractions() throws Exception {
-
-        // test that retrieving a device calls the I2CDeviceImpl-constructor
-
-        PowerMockito.whenNew(I2CDeviceImpl.class).withArguments(bus, DEVICE_ADDRESS).thenReturn(mock(I2CDeviceImpl.class));
-
-        I2CDevice device = bus.getDevice(DEVICE_ADDRESS);
-        assertNotNull("'I2CBus.getDevice(...)' did not return an device-instance", device);
-        assertTrue("'I2CBus.getDevice(...)' does not return an instance of I2CDeviceImpl!", device instanceof I2CDeviceImpl);
-        PowerMockito.verifyNew(I2CDeviceImpl.class, times(1)).withArguments(bus, DEVICE_ADDRESS);
-
-        when(device.getAddress()).thenReturn(DEVICE_ADDRESS);
-
-        I2CDeviceImpl deviceImpl = (I2CDeviceImpl) device;
-
-        // test for required lock
-
-//        try {
-//            bus.readByteDirect(deviceImpl);
-//            fail("Calling 'readByteDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.readBytesDirect(deviceImpl, 0, 0, null);
-//            fail("Calling 'readBytesDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.readByte(deviceImpl, 4711);
-//            fail("Calling 'readByteDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.readBytes(deviceImpl, 4711, 0, 0, null);
-//            fail("Calling 'readBytes' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.writeByteDirect(deviceImpl, (byte) 0);
-//            fail("Calling 'writeByteDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.writeBytesDirect(deviceImpl, 0, 0, null);
-//            fail("Calling 'writeBytesDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.writeByte(deviceImpl, 4711, (byte) 0);
-//            fail("Calling 'writeByte' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.writeBytes(deviceImpl, 4711, 0, 0, null);
-//            fail("Calling 'writeBytes' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-//        try {
-//            bus.writeAndReadBytesDirect(deviceImpl, 0, 0, null, 0, 0, null);
-//            fail("Calling 'writeAndReadBytesDirect' did not throw an RuntimeException although bus was not locked!");
-//        } catch (RuntimeException e) {
-//            // expected
-//        }
-
-        // test read-methods
-
-        final Class<?> busClass = bus.getClass().getSuperclass();
-//        final Method lock = busClass.getDeclaredMethod("lock");
-//        lock.setAccessible(true);
-//        lock.invoke(bus);
-
-        when(I2C.i2cSlaveSelect(anyInt(), anyInt())).thenReturn(0);
-
-        int byteToRead = 123;
-        when(I2C.i2cReadByteDirect(anyInt())).thenReturn(byteToRead);
-        int readByteDirect = bus.readByteDirect(deviceImpl);
-        assertEquals("Unexpected result from 'I2CBusImpl.readByteDirect(...)'", byteToRead, readByteDirect);
-
-        int localAddress = 815;
-        when(I2C.i2cReadByte(anyInt(), eq(localAddress))).thenReturn(byteToRead);
-        int readByte = bus.readByte(deviceImpl, localAddress);
-        assertEquals("Unexpected result from 'I2CBusImpl.readByte(...)'", byteToRead, readByte);
-
-        byte[] buffer = new byte[2];
-        when(I2C.i2cReadBytes(anyInt(), eq(localAddress), eq(buffer.length), eq(0), eq(buffer))).thenReturn(buffer.length);
-        int readBytes = bus.readBytes(deviceImpl, localAddress, buffer.length, 0, buffer);
-        assertEquals("Unexpected result from 'I2CBusImpl.readBytes(...)'", buffer.length, readBytes);
-
-        // test write-methods
-
-        byte toBeWritten = 13;
-        when(I2C.i2cWriteByteDirect(anyInt(), eq(toBeWritten))).thenReturn(10);
-        int writeByteDirect = bus.writeByteDirect(deviceImpl, toBeWritten);
-        assertEquals("Unexpected result from 'writeByteDirect(...)'", 10, writeByteDirect);
-
-        when(I2C.i2cWriteByte(anyInt(), eq(localAddress), eq(toBeWritten))).thenReturn(10);
-        int writeByte = bus.writeByte(deviceImpl, localAddress, toBeWritten);
-        assertEquals("Unexpected result from 'writeByte(...)'", 10, writeByte);
-
-        byte[] toBeWrittenBuffer = new byte[] { 47, 11 };
-        when(I2C.i2cWriteBytesDirect(anyInt(), eq(2), eq(0), any(byte[].class))).thenReturn(10);
-        int writeBytesDirect = bus.writeBytesDirect(deviceImpl, 2, 0, toBeWrittenBuffer);
-        assertEquals("Unexpected result from 'writeBytesDirect(...)'", 10, writeBytesDirect);
-
-        when(I2C.i2cWriteBytes(anyInt(), eq(localAddress), eq(2), eq(0), any(byte[].class))).thenReturn(10);
-        int writeBytes = bus.writeBytes(deviceImpl, localAddress, 2, 0, toBeWrittenBuffer);
-        assertEquals("Unexpected result from 'writeBytes(...)'", 10, writeBytes);
-
-        when(I2C.i2cWriteAndReadBytes(anyInt(), eq(2), eq(0), any(byte[].class), eq(2), eq(0), any(byte[].class))).thenReturn(10);
-        int result = bus.writeAndReadBytesDirect(deviceImpl, 2, 0, toBeWrittenBuffer, 2, 0, buffer);
-        assertEquals("Unexpected result from 'writeAndReadBytesDirect(...)'", 10, result);
-
-        // test read- and write-methods with null-device argument
-
-        try {
-            bus.readByteDirect(null);
-            fail("calling 'readByteDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.readByte(null, 0);
-            fail("calling 'readByte(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.readBytesDirect(null, 0, 0, null);
-            fail("calling 'readBytesDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.readBytes(null, 0, 0, 0, null);
-            fail("calling 'readBytes(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.writeByteDirect(null, Byte.MIN_VALUE);
-            fail("calling 'writeByteDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.writeByte(null, 0, Byte.MIN_VALUE);
-            fail("calling 'writeByte(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.writeBytesDirect(null, 0, 0, null);
-            fail("calling 'writeBytesDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.writeBytes(null, 0, 0, 0, null);
-            fail("calling 'writeBytesDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            bus.writeAndReadBytesDirect(null, 0, 0, null, 0, 0, null);
-            fail("calling 'writeAndReadBytesDirect(null, ...)' throw " + "a NullPointerException but did not!");
-        } catch (NullPointerException e) {
-            // expected
-        }
-//
-//        final Method unlock = busClass.getDeclaredMethod("unlock");
-//        unlock.setAccessible(true);
-//        unlock.invoke(bus);
 
     }
 
@@ -451,7 +254,7 @@ public class I2CBusImplTest {
         assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time3 + "ms)!", time3 > 10);
 
         testThread1.join();
-        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result3[0]);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separate thread was not run!", result3[0]);
 
         // test lock-unlock and lock by another thread - getting no lock in time
 
@@ -496,7 +299,7 @@ public class I2CBusImplTest {
         assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time5 + "ms)!", time5 > 10);
 
         testThread3.join();
-        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result7[0]);
+        assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separate thread was not run!", result7[0]);
 
         // test lock-unlock and lock by another thread using random delays
 
@@ -546,7 +349,7 @@ public class I2CBusImplTest {
             assertTrue("It seems that the bus was not locked because running the Runnable " + "took less time than expected (" + time4 + "ms)!", time4 > 10);
 
             testThread2.join();
-            assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separat thread was not run!", result5[0]);
+            assertTrue("The Runnable given to 'I2CBus.runBusLockedDeviceAction(deviceImpl, ...)' " + "on a separate thread was not run!", result5[0]);
 
         }
 
