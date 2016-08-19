@@ -30,6 +30,8 @@ package com.pi4j.io.i2c;
  */
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 /**
  * This is abstraction of an i2c device. It allows data to be read or written to the device.
@@ -152,6 +154,20 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(int address, byte[] buffer, int offset, int size) throws IOException;
+
+    /**
+     * Runs an ioctl on this device.
+     *
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, int)
+     */
+    void ioctl(long command, int value) throws IOException;
+
+    /**
+     * Runs an ioctl on this device.
+     *
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, ByteBuffer, IntBuffer)
+     */
+    void ioctl(long command, ByteBuffer data, IntBuffer offsets) throws IOException;
 
     /**
      * This method writes and reads bytes to/from the i2c device in a single method call
