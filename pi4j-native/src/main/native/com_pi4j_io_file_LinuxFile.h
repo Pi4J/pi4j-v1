@@ -46,11 +46,27 @@ JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTL
 
 /*
  * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    mmap
+ * Signature: (IIIII)Ljava.lang.Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
+  (JNIEnv *env, jclass obj, jint fd, jint length, jint prot, jint flags, jint offset);
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    munmapDirect
+ * Signature: (Ljava.nio.ByteBuffer;)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
+  (JNIEnv *env, jclass obj, jobject data);
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
  * Method:    directIOCTLStructure
- * Signature: (IJLjava.nio.ByteBuffer;Ljava.nio.IntBuffer;)I
+ * Signature: (IJLjava.nio.ByteBuffer;ILjava.nio.IntBuffer;II)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTLStructure
-  (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jobject offsetMap);
+  (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jint dataOffset, jobject offsetMap, jint offsetMapOffset, jint offsetCapacity);
 
 #ifdef __cplusplus
 }

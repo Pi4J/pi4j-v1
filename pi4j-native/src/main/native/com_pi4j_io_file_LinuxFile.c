@@ -28,7 +28,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <linux/i2c-dev.h>
 #include <fcntl.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -38,11 +37,14 @@
 #include <jni.h>
 #include <errno.h>
 #include <stdint.h>
+#include <sys/mman.h>
 
 #include "com_pi4j_io_file_LinuxFile.h"
 
 int directIOCTLStructure
   (int fd, unsigned long command, uint8_t *data, uint32_t *offsetMap, uint32_t offsetSize);
+
+jobject boxedErrno(JNIEnv *env);
 
 /* Source for com_pi4j_io_file_LinuxFile */
 
@@ -65,21 +67,65 @@ JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTL
 
 /*
  * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    mmap
+ * Signature: (IIIII)Ljava.lang.Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
+  (JNIEnv *env, jclass obj, jint fd, jint length, jint prot, jint flags, jint offset)
+{
+    void *addr = mmap(NULL, length, prot, flags, fd, offset);
+
+    if(addr == MAP_FAILED)
+        return boxedErrno(env);
+
+    return (*env)->NewDirectByteBuffer(env, addr, length);
+}
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    munmapDirect
+ * Signature: (Ljava.nio.ByteBuffer;)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
+  (JNIEnv *env, jclass obj, jobject data)
+{
+    int response;
+
+    uint8_t *buffer = (uint8_t *)((*env)->GetDirectBufferAddress(env, data));
+    jlong capacity = (*env)->GetDirectBufferCapacity(env, data);
+
+    response = munmap(buffer, (size_t)capacity);
+
+    if(response < 0) {
+        response = -errno;
+    }
+
+    return response;
+}
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
  * Method:    directIOCTLStructure
- * Signature: (IJLjava.nio.ByteBuffer;Ljava.nio.IntBuffer;)I
+ * Signature: (IJLjava.nio.ByteBuffer;ILjava.nio.IntBuffer;II)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTLStructure
-  (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jobject offsetMap)
+  (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jint dataOffset, jobject offsetMap, jint offsetMapOffset, jint offsetCapacity)
 {
     int response;
 
     uint8_t *dataBuffer = (uint8_t *)((*env)->GetDirectBufferAddress(env, data));
     uint32_t *offsetBuffer = (uint32_t *)((*env)->GetDirectBufferAddress(env, offsetMap));
-    jlong offsetCapacity = (*env)->GetDirectBufferCapacity(env, offsetMap);
 
-    response = directIOCTLStructure(fd, command, dataBuffer, offsetBuffer, (uint32_t)offsetCapacity);
+    response = directIOCTLStructure(fd, command, dataBuffer + dataOffset, offsetBuffer + offsetMapOffset, offsetCapacity);
 
     return response;
+}
+
+jobject boxedErrno(JNIEnv *env) {
+    jclass cls = (*env)->FindClass(env, "java/lang/Integer");
+    jmethodID methodID = (*env)->GetMethodID(env, cls, "<init>", "(I)V");
+
+    return (*env)->NewObject(env, cls, methodID, errno);
 }
 
 int directIOCTLStructure
