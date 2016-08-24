@@ -256,9 +256,7 @@ public class LinuxFile extends RandomAccessFile {
     }
 
     public synchronized void munmap(ByteBuffer mappedBuffer) throws IOException {
-        if(mapList.contains(mappedBuffer)) {
-            mapList.remove(mappedBuffer);
-
+        if(mapList.remove(mappedBuffer)) {
             int response = munmapDirect(mappedBuffer);
 
             if(response < 0)
