@@ -1,4 +1,4 @@
-package com.pi4j.device.nodic;
+package com.pi4j.device.nordic;
 
 import static com.pi4j.wiringpi.Gpio.INPUT;
 import static com.pi4j.wiringpi.Gpio.OUTPUT;

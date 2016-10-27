@@ -1,4 +1,4 @@
-package com.pi4j.device.nodic;
+package com.pi4j.device.nordic;
 /*
  * #%L
  * **********************************************************************
