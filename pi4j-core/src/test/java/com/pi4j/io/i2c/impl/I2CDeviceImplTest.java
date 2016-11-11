@@ -81,7 +81,7 @@ public class I2CDeviceImplTest {
                 throw new IOException("Got null-buffer!");
             }
             if (buffer.length < (offset + size)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
             }
             buffer[offset] = READ_FIRSTBYTE;
             buffer[offset + 1] = READ_SECONDBYTE;
@@ -101,13 +101,13 @@ public class I2CDeviceImplTest {
                 throw new IOException("Expected a writeSize greater than one but got '" + writeSize + "'!");
             }
             if (writeOffset < 0) {
-                throw new IOException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
             }
             if (writeData == null) {
-                throw new IOException("Got null-writeData!");
+                throw new IllegalArgumentException("Got null-writeData!");
             }
             if (writeData.length < (writeOffset + writeSize)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
             }
             byte firstByte = writeData[writeOffset];
             if (firstByte != WRITE_FIRSTBYTE) {
@@ -122,16 +122,16 @@ public class I2CDeviceImplTest {
             int offset = (Integer) args[args.length - 2];
             byte[] buffer = (byte[]) args[args.length - 1];
             if (size < 2) {
-                throw new IOException("Expected a size greater than one but got '" + size + "'!");
+                throw new IllegalArgumentException("Expected a size greater than one but got '" + size + "'!");
             }
             if (offset < 0) {
-                throw new IOException("Expected an non-negative offset but got '" + offset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative offset but got '" + offset + "'!");
             }
             if (buffer == null) {
-                throw new IOException("Got null-buffer!");
+                throw new IllegalArgumentException("Got null-buffer!");
             }
             if (buffer.length < (offset + size)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (offset + size) + ") but got '" + buffer.length + "'");
             }
             buffer[offset] = READ_FIRSTBYTE;
             buffer[offset + 1] = READ_SECONDBYTE;
@@ -151,13 +151,13 @@ public class I2CDeviceImplTest {
                 throw new IOException("Expected a writeSize greater than one but got '" + writeSize + "'!");
             }
             if (writeOffset < 0) {
-                throw new IOException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
+                throw new IllegalArgumentException("Expected an non-negative writeOffset but got '" + writeOffset + "'!");
             }
             if (writeData == null) {
-                throw new IOException("Got null-writeData!");
+                throw new IllegalArgumentException("Got null-writeData!");
             }
             if (writeData.length < (writeOffset + writeSize)) {
-                throw new IOException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
+                throw new IndexOutOfBoundsException("Expected a buffer greater than 'offset + size' (=" + (writeOffset + writeSize) + ") but got '" + writeData.length + "'");
             }
 
             return null; // void
@@ -176,7 +176,7 @@ public class I2CDeviceImplTest {
 
         // simple run runnable and return result. the original method
         // adds locking but we want to test I2CDeviceImpl not I2CBusImpl!
-        when(bus.runActionOnExclusivLockedBus(any(Callable.class))).thenAnswer(new Answer<Object>() {
+        when(bus.runBusLockedDeviceAction(any(), any(Callable.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Callable<Object> action = (Callable<Object>) invocation.getArguments()[0];
@@ -210,30 +210,12 @@ public class I2CDeviceImplTest {
         int read1 = device.read();
         assertEquals("'read()' does not return the expected value!", readResult1, read1);
 
-        when(bus.readByteDirect(eq(device))).thenReturn(-1000);
-        try {
-            device.read();
-            fail("'read() should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
-        }
-
         // read a byte from register
 
         int readResult2 = 51;
         when(bus.readByte(eq(device), eq(LOCALADDRESS))).thenReturn(readResult2);
         int read2 = device.read(LOCALADDRESS);
         assertEquals("'read(int)' does not return the expected value!", readResult2, read2);
-
-        when(bus.readByte(eq(device), eq(LOCALADDRESS))).thenReturn(-1000);
-        try {
-            device.read(LOCALADDRESS);
-            fail("'read(int) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
-        }
 
         // read n bytes
 
@@ -260,17 +242,8 @@ public class I2CDeviceImplTest {
         try {
             device.read(new byte[2], 1, 2);
             fail("Expected 'read(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
-        }
-
-        when(bus.readBytesDirect(eq(device), anyInt(), anyInt(), any(byte[].class))).thenReturn(-1000);
-        try {
-            device.read(new byte[2], 0, 2);
-            fail("'read(int) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
         }
 
         // read n bytes from register
@@ -298,17 +271,8 @@ public class I2CDeviceImplTest {
         try {
             device.read(LOCALADDRESS, new byte[2], 1, 2);
             fail("Expected 'read(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
-        }
-
-        when(bus.readBytes(eq(device), eq(LOCALADDRESS), anyInt(), anyInt(), any(byte[].class))).thenReturn(-1000);
-        try {
-            device.read(LOCALADDRESS, new byte[2], 0, 2);
-            fail("'read(int) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
         }
 
         // write and read bytes
@@ -337,96 +301,8 @@ public class I2CDeviceImplTest {
         try {
             device.read(new byte[2], 1, 2);
             fail("Expected 'read(...)' to throw an exception but got none!");
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
-        }
-
-    }
-
-    @Test
-    public void testWriting() throws IOException {
-
-        // write one byte
-
-        when(bus.writeByteDirect(eq(device), anyByte())).thenReturn(-1000);
-        when(bus.writeByteDirect(eq(device), eq(WRITE_FIRSTBYTE))).thenReturn(0);
-        device.write(WRITE_FIRSTBYTE);
-
-        try {
-            device.write(WRITE_SECONDBYTE);
-            fail("'write(byte) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
-        }
-
-        // write one byte to register
-
-        when(bus.writeByte(eq(device), eq(LOCALADDRESS), anyByte())).thenReturn(-1000);
-        when(bus.writeByte(eq(device), eq(LOCALADDRESS), eq(WRITE_FIRSTBYTE))).thenReturn(0);
-        device.write(LOCALADDRESS, WRITE_FIRSTBYTE);
-
-        try {
-            device.write(LOCALADDRESS, WRITE_SECONDBYTE);
-            fail("'write(byte) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
-        }
-
-        // write n bytes
-
-        byte[] dataToBeWritten = new byte[] { WRITE_FIRSTBYTE, WRITE_SECONDBYTE };
-        when(bus.writeBytesDirect(eq(device), anyInt(), anyInt(), any(byte[].class))).thenReturn(-1000);
-        when(bus.writeBytesDirect(eq(device), eq(2), anyInt(), any(byte[].class))).thenAnswer(writeAnswer);
-        device.write(dataToBeWritten, 0, dataToBeWritten.length);
-
-        try {
-            device.write(new byte[1], 0, 1);
-            fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
-            // expected
-        }
-        try {
-            device.write(new byte[2], 1, 2);
-            fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
-            // expected
-        }
-
-        try {
-            device.write(new byte[1], 0, 1);
-            fail("'write(byte[], int, int) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
-        }
-
-        // write n bytes to register
-
-        when(bus.writeBytes(eq(device), eq(LOCALADDRESS), anyInt(), anyInt(), any(byte[].class))).thenReturn(-1000);
-        when(bus.writeBytes(eq(device), eq(LOCALADDRESS), eq(2), anyInt(), any(byte[].class))).thenAnswer(writeAnswer);
-        device.write(LOCALADDRESS, dataToBeWritten, 0, dataToBeWritten.length);
-
-        try {
-            device.write(LOCALADDRESS, new byte[1], 0, 1);
-            fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
-            // expected
-        }
-        try {
-            device.write(LOCALADDRESS, new byte[2], 1, 2);
-            fail("Expected 'write(...)' to throw an exception but got none!");
-        } catch (IOException e) {
-            // expected
-        }
-
-        try {
-            device.write(LOCALADDRESS, new byte[1], 0, 1);
-            fail("'write(int, byte[], int, int) should throw an exception but didn't!");
-        } catch (IOException e) {
-            String msg = e.getMessage();
-            assertTrue("Expected message of IOException to contain error-code -1000 " + "given by underlying bus but got '" + msg + "'", msg.contains("-1000"));
         }
 
     }
