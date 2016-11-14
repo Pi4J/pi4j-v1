@@ -38,6 +38,22 @@ extern "C" {
 
 /*
  * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    errno
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_errno
+  (JNIEnv *env, jclass obj);
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    strerror
+ * Signature: (I)Ljava.lang.String;
+ */
+JNIEXPORT jstring JNICALL Java_com_pi4j_io_file_LinuxFile_strerror
+  (JNIEnv *env, jclass obj, jint errorNum);
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
  * Method:    i2cIOCTL
  * Signature: (IJI)I
  */

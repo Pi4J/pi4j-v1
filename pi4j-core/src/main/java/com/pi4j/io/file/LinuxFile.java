@@ -1,14 +1,22 @@
 package com.pi4j.io.file;
 
 import com.pi4j.util.NativeLibraryLoader;
+import sun.misc.Cleaner;
 import sun.misc.SharedSecrets;
 
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.nio.*;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
+
+//TODO: rename to SystemFile?
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
@@ -20,18 +28,18 @@ public class LinuxFile extends RandomAccessFile {
         mapList = new LinkedList<ByteBuffer>();
     }
 
+    private final LinkedList<ByteBuffer> mapList;
+
+    public static final int wordSize = getWordSize();
+    public static final int localBufferSize = 2048; //about 1 page
+
+    public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
+    public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<IntBuffer>();
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
     }
-
-    private final LinkedList<ByteBuffer> mapList;
-
-    public static final int wordSize = getWordSize();
-    public static final int localBufferSize = 2048;
-
-    public static ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
-    public static ThreadLocal<ByteBuffer> localOffsetsBuffer = new ThreadLocal<ByteBuffer>();
 
     /**
      * Runs an ioctl value command on a file descriptor.
@@ -44,8 +52,10 @@ public class LinuxFile extends RandomAccessFile {
         final int response = directIOCTL(getFileDescriptor(), command, value);
 
         if(response < 0)
-            throw new IOCTLException("Failed to run ioctl!", response);
+            throw new LinuxFileException();
     }
+
+    //TODO: instead of int array for offests, provide overload for (Array[Int], Array[AnyRef]) accepting Int or native ByteArray elements,
 
     /**
      * Runs an ioctl on a file descriptor. Uses special offset buffer to produce real C-like structures
@@ -70,17 +80,19 @@ public class LinuxFile extends RandomAccessFile {
      *
      * Provided IntBuffer offsets must use native byte order (endianness).
      *
-     * <pre>
+     * <pre> TODO: fix this
      * {@code
      *    byte[] buffer = new byte[32];
      *    int dataPointer;
      *
      *    buffer[dataPointer = 0] = 0; //data pointer
-     *    buffer[wordSize] = (byte)buffer.length; //length byte
+     *    buffer[dataPointer + wordSize] = (byte)buffer.length; //length byte
      *
      *    int bufferStart = wordSize * 2; //align and pad
      *
      *    System.arraycopy(data, 0, buffer, bufferStart, buffer.length);
+     *
+     *    int[] pointers =
      *
      *    file.ioctl(0x7E, ByteBuffer.wrap(buffer),
      *      new int[] {dataPointer, bufferStart});
@@ -96,7 +108,7 @@ public class LinuxFile extends RandomAccessFile {
      * @param offsets byte offsets of pointer at given index
      * @throws IOException
      */
-    public void ioctl(long command, ByteBuffer data, IntBuffer offsets) throws IOException {
+    public void ioctl(final long command, ByteBuffer data, IntBuffer offsets) throws IOException {
         ByteBuffer originalData = data;
 
         if(data == null || offsets == null)
@@ -106,55 +118,61 @@ public class LinuxFile extends RandomAccessFile {
             throw new IllegalArgumentException("provided IntBuffer offsets ByteOrder must be native!");
 
         //buffers must be direct
-        if(!data.isDirect()) {
-            ByteBuffer newBuf = getDataBuffer(data.remaining());
+        try {
+            if(!data.isDirect()) {
+                ByteBuffer newBuf = getDataBuffer(data.limit());
+                int pos = data.position(); //keep position
 
-            newBuf.clear();
-            newBuf.put(data);
-            newBuf.flip();
+                data.rewind();
+                newBuf.clear();
+                newBuf.put(data);
+                newBuf.position(pos); //restore position
 
-            data = newBuf;
-        }
+                data = newBuf;
+            }
 
-        if(!offsets.isDirect()) {
-            ByteBuffer baseBuf = getOffsetsBuffer(offsets.remaining());
+            if(!offsets.isDirect()) {
+                IntBuffer newBuf = getOffsetsBuffer(offsets.remaining());
 
-            baseBuf.clear();
+                newBuf.clear();
+                newBuf.put(offsets);
+                newBuf.flip();
 
-            //cast *after* setting order
-            IntBuffer newBuf = baseBuf.asIntBuffer();
-
-            newBuf.clear();
-            newBuf.put(offsets);
-            newBuf.flip();
-
-            offsets = newBuf;
+                offsets = newBuf;
+            }
+        } catch (BufferOverflowException e) {
+            throw new ScratchBufferOverrun();
         }
 
         if((offsets.remaining() & 1) != 0)
             throw new IllegalArgumentException("offset buffer must be even length!");
 
-        for(int i = 0 ; i < offsets.remaining() ; i++) {
-            final int offset = offsets.get(i + offsets.position());
+        for(int i = offsets.position() ; i < offsets.limit() ; i += 2) {
+            final int ptrOffset = offsets.get(i);
+            final int dataOffset = offsets.get(i + 1);
 
-            if(offset >= data.remaining() || offset < 0)
-                throw new IndexOutOfBoundsException("invalid offset specified in buffer: " + offset);
+            if(dataOffset >= data.capacity() || dataOffset < 0)
+                throw new IndexOutOfBoundsException("invalid data offset specified in buffer: " + dataOffset);
+
+            if((ptrOffset + wordSize) > data.capacity() || ptrOffset < 0)
+                throw new IndexOutOfBoundsException("invalid pointer offset specified in buffer: " + ptrOffset);
         }
 
         final int response = directIOCTLStructure(getFileDescriptor(), command, data,
                 data.position(), offsets, offsets.position(), offsets.remaining());
 
         if(response < 0)
-            throw new IOCTLException("Failed to run ioctl!", response);
+            throw new LinuxFileException();
 
+        //fast forward positions
         offsets.position(offsets.limit());
+        data.rewind();
 
         //if original data wasnt direct, copy it back in.
-        if(!originalData.isDirect()) {
+        if(originalData != data) {
+            originalData.rewind();
             originalData.put(data);
-        } else {
-            //otherwise fast forward data
-            data.position(data.limit());
+            originalData.rewind();
         }
     }
 
@@ -171,6 +189,7 @@ public class LinuxFile extends RandomAccessFile {
     }
 
     private static int getWordSize() {
+        //TODO: there has to be a better way...
         return System.getProperty("sun.arch.data.model") == "64" ? 8 : 4;
     }
 
@@ -182,37 +201,35 @@ public class LinuxFile extends RandomAccessFile {
     }
 
     @Override
-    public void close() throws IOException {
-        synchronized(this) {
-            while(!mapList.isEmpty()) {
-                ByteBuffer bb = mapList.removeFirst();
-
-                munmap(bb);
-            }
+    public synchronized void close() throws IOException {
+        while(!mapList.isEmpty()) {
+            munmap(mapList.getFirst());
         }
 
         super.close();
     }
 
-    private ByteBuffer getOffsetsBuffer(int size) {
+    private synchronized IntBuffer getOffsetsBuffer(int size) {
         final int byteSize = size * 4;
-        ByteBuffer buf = localOffsetsBuffer.get();
+        IntBuffer buf = localOffsetsBuffer.get();
 
         if(byteSize > localBufferSize)
             throw new ScratchBufferOverrun();
 
         if(buf == null) {
-            buf = ByteBuffer.allocateDirect(localBufferSize);
+            ByteBuffer bb = ByteBuffer.allocateDirect(localBufferSize);
+
+            //keep native order, set before cast to IntBuffer
+            bb.order(ByteOrder.nativeOrder());
+
+            buf = bb.asIntBuffer();
             localOffsetsBuffer.set(buf);
         }
-
-        //keep native order
-        buf.order(ByteOrder.nativeOrder());
 
         return buf;
     }
 
-    private ByteBuffer getDataBuffer(int size) {
+    private synchronized ByteBuffer getDataBuffer(int size) {
         ByteBuffer buf = localDataBuffer.get();
 
         if(size > localBufferSize)
@@ -226,11 +243,17 @@ public class LinuxFile extends RandomAccessFile {
         return buf;
     }
 
+    //TODO: find safe way to handle explicit unmapping?
+
+    //TODO: on unmap, replace mapped pointer with allocated direct buffer
+
     /**
      * Direct memory mapping from a file descriptor.
      * This is normally possible through the local FileChannel,
      * but NIO will try to truncate files if they don't report
      * a correct size. This will avoid that.
+     *
+     * TODO: use Cleaner.create() to create a finalizer for a mmap'd buffer. Disable cleaner on manual munmap.
      *
      * @param length length of desired mapping
      * @param prot protocol used for mapping
@@ -239,38 +262,52 @@ public class LinuxFile extends RandomAccessFile {
      * @return direct mapped ByteBuffer
      * @throws IOException
      */
-    public synchronized ByteBuffer mmap(int length, MMAPProt prot, MMAPFlags flags, int offset) throws IOException {
-        Object res = mmap(getFileDescriptor(), length, prot.flag, flags.flag, offset);
+    public ByteBuffer mmap(int length, MMAPProt prot, MMAPFlags flags, int offset) throws IOException {
+        ByteBuffer bb = mmap(getFileDescriptor(), length, prot.flag, flags.flag, offset);
 
-        if(res instanceof Integer) {
-            int code = ((Integer)res).intValue();
+        if(bb == null)
+            throw new LinuxFileException();
 
-            throw new IOCTLException("Failed to run mmap!", code);
+        synchronized(this) {
+            mapList.add(bb);
         }
 
-        ByteBuffer bb = (ByteBuffer)res;
-
-        mapList.add(bb);
-
         return bb;
+    }
+
+    private static Field addressField = null;
+    private static Field capacityField = null;
+
+    static {
+        try {
+            addressField = Buffer.class.getDeclaredField("address");
+            capacityField = Buffer.class.getDeclaredField("capacity");
+
+            addressField.setAccessible(true);
+            capacityField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void munmap(ByteBuffer mappedBuffer) throws IOException {
         if(mapList.remove(mappedBuffer)) {
             int response = munmapDirect(mappedBuffer);
 
+            try {
+                addressField.setLong(mappedBuffer, 0);
+                capacityField.setInt(mappedBuffer, 0);
+
+                //reset mark and position to new 0 capacity
+                mappedBuffer.clear();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } 
+
             if(response < 0)
-                throw new IOCTLException("Failed to run munmap!", response);
+                throw new LinuxFileException();
         }
     }
-
-    private static native int directIOCTL(int fd, long command, int value);
-
-    private static native Object mmap(int fd, int length, int prot, int flags, int offset);
-
-    private static native int munmapDirect(ByteBuffer mappedBuffer);
-
-    private static native int directIOCTLStructure(int fd, long command, ByteBuffer data, int dataOffset, IntBuffer offsetMap, int offsetMapOffset, int offsetCapacity);
 
     public static class ScratchBufferOverrun extends IllegalArgumentException {
         public ScratchBufferOverrun() {
@@ -278,17 +315,17 @@ public class LinuxFile extends RandomAccessFile {
         }
     }
 
-    public static class IOCTLException extends IOException {
-        int rawCode;
+    public static class LinuxFileException extends IOException {
+        int code;
 
-        /**
-         * @param message Exception message
-         * @param rawCode negative POSIX errno code
-         */
-        public IOCTLException(String message, int rawCode) {
-            super(message);
+        public LinuxFileException() {
+            this(errno());
+        }
 
-            this.rawCode = Math.abs(rawCode);
+        LinuxFileException(int code) {
+            super(strerror(code));
+
+            this.code = code;
         }
 
         /**
@@ -297,14 +334,19 @@ public class LinuxFile extends RandomAccessFile {
          * @return POSIX error code
          */
         public int getCode() {
-            return rawCode;
+            return code;
         }
     }
 
     public enum MMAPProt {
+        NONE(0),
         READ(1),
         WRITE(2),
-        RW(1 | 2);
+        EXEC(4),
+        RW(READ.flag | WRITE.flag),
+        RX(READ.flag | EXEC.flag),
+        RWX(READ.flag | WRITE.flag | EXEC.flag),
+        WX(WRITE.flag | EXEC.flag);
 
         public final int flag;
 
@@ -315,7 +357,8 @@ public class LinuxFile extends RandomAccessFile {
 
     public enum MMAPFlags {
         SHARED(1),
-        PRIVATE(2);
+        PRIVATE(2),
+        SHARED_PRIVATE(SHARED.flag | PRIVATE.flag);
 
         public final int flag;
 
@@ -323,4 +366,16 @@ public class LinuxFile extends RandomAccessFile {
             this.flag = flag;
         }
     }
+
+    public static native int errno();
+
+    public static native String strerror(int code);
+
+    protected static native int directIOCTL(int fd, long command, int value);
+
+    protected static native ByteBuffer mmap(int fd, int length, int prot, int flags, int offset);
+
+    protected static native int munmapDirect(ByteBuffer mappedBuffer);
+
+    protected static native int directIOCTLStructure(int fd, long command, ByteBuffer data, int dataOffset, IntBuffer offsetMap, int offsetMapOffset, int offsetCapacity);
 }

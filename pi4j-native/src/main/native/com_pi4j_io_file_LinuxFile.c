@@ -42,11 +42,32 @@
 #include "com_pi4j_io_file_LinuxFile.h"
 
 int directIOCTLStructure
-  (int fd, unsigned long command, uint8_t *data, uint32_t *offsetMap, uint32_t offsetSize);
-
-jobject boxedErrno(JNIEnv *env);
+  (int fd, unsigned long command, void *data, size_t headOffset, uint32_t *offsetMap, uint32_t offsetSize);
 
 /* Source for com_pi4j_io_file_LinuxFile */
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    errno
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_errno
+  (JNIEnv *env, jclass obj)
+{
+    return errno;
+}
+
+/*
+ * Class:     com_pi4j_io_file_LinuxFile
+ * Method:    strerror
+ * Signature: (I)Ljava.lang.String;
+ */
+JNIEXPORT jstring JNICALL Java_com_pi4j_io_file_LinuxFile_strerror
+  (JNIEnv *env, jclass obj, jint errorNum)
+{
+    return (*env)->NewStringUTF(env, strerror(errorNum));
+}
+
 
 /*
  * Class:     com_pi4j_io_file_LinuxFile
@@ -56,13 +77,7 @@ jobject boxedErrno(JNIEnv *env);
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTL
   (JNIEnv *env, jclass obj, jint fd, jlong command, jlong value)
 {
-    int response = ioctl(fd, command, value);
-
-    if(response < 0) {
-        response = -errno;
-    }
-
-    return response;
+    return ioctl(fd, command, value);
 }
 
 /*
@@ -76,7 +91,7 @@ JNIEXPORT jobject JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
     void *addr = mmap(NULL, length, prot, flags, fd, offset);
 
     if(addr == MAP_FAILED)
-        return boxedErrno(env);
+        return NULL;
 
     return (*env)->NewDirectByteBuffer(env, addr, length);
 }
@@ -89,18 +104,10 @@ JNIEXPORT jobject JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
   (JNIEnv *env, jclass obj, jobject data)
 {
-    int response;
-
     uint8_t *buffer = (uint8_t *)((*env)->GetDirectBufferAddress(env, data));
     jlong capacity = (*env)->GetDirectBufferCapacity(env, data);
 
-    response = munmap(buffer, (size_t)capacity);
-
-    if(response < 0) {
-        response = -errno;
-    }
-
-    return response;
+    return munmap(buffer, (size_t)capacity);
 }
 
 /*
@@ -111,28 +118,16 @@ JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTLStructure
   (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jint dataOffset, jobject offsetMap, jint offsetMapOffset, jint offsetCapacity)
 {
-    int response;
-
     uint8_t *dataBuffer = (uint8_t *)((*env)->GetDirectBufferAddress(env, data));
     uint32_t *offsetBuffer = (uint32_t *)((*env)->GetDirectBufferAddress(env, offsetMap));
 
-    response = directIOCTLStructure(fd, command, dataBuffer + dataOffset, offsetBuffer + offsetMapOffset, offsetCapacity);
-
-    return response;
-}
-
-jobject boxedErrno(JNIEnv *env) {
-    jclass cls = (*env)->FindClass(env, "java/lang/Integer");
-    jmethodID methodID = (*env)->GetMethodID(env, cls, "<init>", "(I)V");
-
-    return (*env)->NewObject(env, cls, methodID, errno);
+    return directIOCTLStructure(fd, command, dataBuffer, (size_t)dataOffset, offsetBuffer + offsetMapOffset, offsetCapacity);
 }
 
 int directIOCTLStructure
-  (int fd, unsigned long command, uint8_t *data, uint32_t *offsetMap, uint32_t offsetSize)
+  (int fd, unsigned long command, void *data, size_t headOffset, uint32_t *offsetMap, uint32_t offsetSize)
 {
     uint32_t i;
-    int response;
 
     //iterate through offsets, convert and apply pointers
     for(i = 0 ; i < offsetSize ; i += 2) {
@@ -145,11 +140,5 @@ int directIOCTLStructure
       *ptr = data + pointingOffset;
     }
 
-    response = ioctl(fd, command, data);
-
-    if(response < 0) {
-        response = -errno;
-    }
-
-    return response;
+    return ioctl(fd, command, data + headOffset);
 }
