@@ -36,6 +36,9 @@ public class LinuxFile extends RandomAccessFile {
     public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
     public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<IntBuffer>();
 
+    private static Field addressField = null;
+    private static Field capacityField = null;
+
     static {
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so");
@@ -274,9 +277,6 @@ public class LinuxFile extends RandomAccessFile {
 
         return bb;
     }
-
-    private static Field addressField = null;
-    private static Field capacityField = null;
 
     static {
         try {
