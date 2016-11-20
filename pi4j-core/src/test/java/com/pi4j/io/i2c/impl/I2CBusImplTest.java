@@ -34,8 +34,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -58,10 +56,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-import com.pi4j.jni.I2C;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ I2C.class, I2CBusImpl.class })
+@PrepareForTest({ I2CBusImpl.class })
 public class I2CBusImplTest {
 
     private static int BUSNUMBER = 1;
@@ -99,8 +96,6 @@ public class I2CBusImplTest {
 
     @Before
     public void setUp() throws Exception {
-
-        PowerMockito.mockStatic(I2C.class);
 
         bus = new TestableI2CBusImpl(BUSNUMBER, FILENAME, 100, TimeUnit.MILLISECONDS);
         bus.open();
