@@ -31,8 +31,6 @@ package com.pi4j.io.w1;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 /**
  * @author Peter Schuebl

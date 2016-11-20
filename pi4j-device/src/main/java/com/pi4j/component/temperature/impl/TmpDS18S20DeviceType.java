@@ -109,6 +109,8 @@ public class TmpDS18S20DeviceType implements W1DeviceType {
                 // FIXME logging
                 deviceName = deviceDir.getName();
             }
+            if (deviceName.endsWith("\n")) { deviceName = deviceName.substring(0, deviceName.length() - 1); }
+
             id = deviceName;
             setName(deviceName);
             this.deviceDir = deviceDir;
