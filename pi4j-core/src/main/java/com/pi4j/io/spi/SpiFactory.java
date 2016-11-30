@@ -1,5 +1,7 @@
 package com.pi4j.io.spi;
 
+import com.pi4j.io.spi.impl.SoftSpiDeviceImpl;
+
 /*
  * #%L
  * **********************************************************************
@@ -46,6 +48,45 @@ public class SpiFactory {
         // forbid object construction
     }
 
+    /**
+     * Create a new Software SPI instance with the desired pins, with a default SPI Speed of 250KHz and default SPI Mode of 0
+     * @param chipSelect Chip Select Pin
+     * @param clock Clock Pin
+     * @param masterOut Master Out Slave In Pin
+     * @param masterIn Master In Slave Out Pin
+     * @return Return a new software SpiDevice instance
+     */
+    public static SpiDevice getInstance(int chipSelect, int clock, int masterOut, int masterIn) {
+    	return new SoftSpiDeviceImpl(chipSelect, clock, masterOut, masterIn);
+    }
+    
+    /**
+     * Create a new Software SPI instance with the desired pins and mode, with a default SPI Mode of 0
+     * @param chipSelect Chip Select Pin
+     * @param clock Clock Pin
+     * @param masterOut Master Out Slave In Pin
+     * @param masterIn Master In Slave Out Pin
+     * @param speed Speed of the SPI bus
+     * @return Return a new software SpiDevice instance
+     */
+	public static SpiDevice getInstance(int chipSelect, int clock, int masterOut, int masterIn, long speed) {
+		return new SoftSpiDeviceImpl(chipSelect, clock, masterOut, masterIn, speed);	
+	}
+	
+	/**
+     * Create a new Software SPI instance with the desired pins, speed and mode
+     * @param chipSelect Chip Select Pin
+     * @param clock Clock Pin
+     * @param masterOut Master Out Slave In Pin
+     * @param masterIn Master In Slave Out Pin
+     * @param speed Speed of the SPI bus
+     * @param mode SPI Mode to use
+     * @return Return a new software SpiDevice instance
+     */
+	public static SpiDevice getInstance(int chipSelect, int clock, int masterOut, int masterIn, long speed, SpiMode mode) {
+		return new SoftSpiDeviceImpl(chipSelect, clock, masterOut, masterIn, speed, mode);
+	}
+	
     /**
      * Create new SpiDevice instance with a default SPI speed of 1 MHz.
      *
