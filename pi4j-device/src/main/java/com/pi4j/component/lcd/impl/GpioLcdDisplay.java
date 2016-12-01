@@ -46,10 +46,6 @@ public class GpioLcdDisplay extends LCDBase implements LCD
         this.columns = columns;
         int bits[] = { 0,0,0,0,0,0,0,0 };
 
-        // set wiringPi interface for internal use
-        // we will use the WiringPi pin number scheme with the wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
-
         // seed bit pin address array
         for(int index = 0; index < 8; index++) {
             if(index < dataPins.length)

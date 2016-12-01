@@ -57,7 +57,7 @@ public class LcdExample {
         final GpioController gpio = GpioFactory.getInstance();
 
         // initialize LCD
-        final GpioLcdDisplay lcd = new GpioLcdDisplay(LCD_ROWS,          // number of row supported by LCD
+        final GpioLcdDisplay lcd = new GpioLcdDisplay(LCD_ROWS,    // number of row supported by LCD
                                                 LCD_COLUMNS,       // number of columns supported by LCD
                                                 RaspiPin.GPIO_11,  // LCD RS pin
                                                 RaspiPin.GPIO_10,  // LCD strobe pin
