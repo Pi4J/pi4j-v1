@@ -241,7 +241,7 @@ public class I2CBusImpl implements I2CBus {
                     testForProperOperationConditions(device);
 
                     selectBusSlave(device);
-                    
+
                     return action.call();
                 } finally {
                     accessLock.unlock();
