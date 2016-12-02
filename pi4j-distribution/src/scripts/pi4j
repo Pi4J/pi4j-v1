@@ -3,6 +3,23 @@
 # THE Pi4J PROJECT - UTILITY SCRIPT
 ######################################
 
+function checkJavaRuntime {
+  JAVA_CMD=`which java`
+  if [ $? -ne 0 ]; then
+    echo "ERROR; The JAVA runtime was not found in the PATH on this system!"
+    exit 1
+  fi
+}
+
+function checkJavaCompiler {
+  JAVAC_CMD=`which javac`
+  if [ $? -ne 0 ]; then
+    echo "ERROR; The JAVA compiler (SDK) was not found in the PATH on this system!"
+    exit 1
+  fi
+}
+
+
 # CHECK FOR MISSING CLI ARGUMENTS
 if [ $# -eq 0 ]; then
   echo
@@ -114,6 +131,7 @@ case $1 in
       echo "--------------------------------------------"
       echo "Pi4J - Compiling: $1"
       echo "--------------------------------------------"
+      checkJavaCompiler
       set -x #echo on
       javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $@
       ;;
@@ -125,6 +143,7 @@ case $1 in
       echo "--------------------------------------------"
       echo "Pi4J - Launching: $PROGRAMNAME"
       echo "--------------------------------------------"
+      checkJavaRuntime
       set -x #echo on
       java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' ${PROGRAMNAME/.java/} $@
       ;;
@@ -134,6 +153,7 @@ case $1 in
         echo "--------------------------------------------"
         echo "Pi4J - Compiling: $1"
         echo "--------------------------------------------"
+        checkJavaCompiler
         set -x #echo on
         javac -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' -d . $1
         set +x #echo off
@@ -187,11 +207,13 @@ case $1 in
             echo "--------------------------------------------"
             echo "Pi4J - Launching: $PACKAGE_NAME$CLASS_NAME"
             echo "--------------------------------------------"
+            checkJavaRuntime
             set -x #echo on
             java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $PACKAGE_NAME$CLASS_NAME $@
           fi
         fi
       else
+        checkJavaRuntime
         set -x #echo on
         java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $@
       fi
