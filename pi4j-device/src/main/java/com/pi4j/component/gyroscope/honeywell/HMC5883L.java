@@ -196,9 +196,9 @@ public class HMC5883L implements MultiAxisGyro {
             throw new IOException("Couldn't read compass data; r=" + r);
         }
 
-        int x = ((data[0] & 0xff) << 8) + (data[1] & 0xff);
-        int y = ((data[2] & 0xff) << 8) + (data[3] & 0xff);
-        int z = ((data[3] & 0xff) << 8) + (data[5] & 0xff);
+        int x = twosCompliment16(((data[0] & 0xff) << 8) + (data[1] & 0xff));
+        int z = twosCompliment16(((data[2] & 0xff) << 8) + (data[3] & 0xff));
+        int y = twosCompliment16(((data[4] & 0xff) << 8) + (data[5] & 0xff));
 
         aX.setRawValue(x);
         aY.setRawValue(y);
@@ -297,6 +297,12 @@ public class HMC5883L implements MultiAxisGyro {
         return "        ".substring(0, l - s.length()) + s;
     }
 
+    int twosCompliment16(int i) {
+        if (i > 0x8000) {
+            return i - 0x10000;
+        }
+        return i;
+    }
 
 
 }
