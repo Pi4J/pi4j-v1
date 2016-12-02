@@ -53,6 +53,13 @@ int wiringpi_detected_maker;
 
 /**
  * --------------------------------------------------------
+ * GLOBAL WIRING PI MODE STATE
+ * --------------------------------------------------------
+ */
+int wiringpi_init_mode = WPI_MODE_UNINITIALISED;
+
+/**
+ * --------------------------------------------------------
  * INITIALIZE THE GPIO PIN CLASS
  * --------------------------------------------------------
  * AUTO DETECTED THE BOARD IDENTIFICATION INFO
@@ -78,11 +85,16 @@ int getEdgePin(int pin)
 	if(pin < 0)
 		return -1;
 
+    // in GPIO mode, the edge pin is the same as the GPIO pin number
+    if(wiringpi_init_mode == WPI_MODE_GPIO){
+      return pin;
+    }
+
 	// validate upper bounds
 	if(pin >= MAX_GPIO_PINS)
 		return -1;
 
-    // check for macro definion for Compute Module, some older versions of WiringPi may be missing this macro.
+    // check for macro definition for Compute Module, some older versions of WiringPi may be missing this macro.
     // (I'm looking at you LeMaker!)
     #ifndef PI_MODEL_CM
     return wpiPinToGpio(pin);

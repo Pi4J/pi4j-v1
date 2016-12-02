@@ -47,6 +47,7 @@ jmethodID isr_callback_method;
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetup
   (JNIEnv *env, jclass obj)
 {
+	wiringpi_init_mode = WPI_MODE_PINS;
 	return wiringPiSetup();
 }
 
@@ -58,6 +59,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetup
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupSys
 (JNIEnv *env, jclass obj)
 {
+    wiringpi_init_mode = WPI_MODE_GPIO_SYS;
 	return wiringPiSetupSys();
 }
 
@@ -69,6 +71,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupSys
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupGpio
 (JNIEnv *env, jclass obj)
 {
+	wiringpi_init_mode = WPI_MODE_GPIO;
 	return wiringPiSetupGpio();
 }
 
@@ -80,6 +83,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupGpio
 JNIEXPORT jint JNICALL Java_com_pi4j_wiringpi_Gpio_wiringPiSetupPhys
   (JNIEnv *env, jclass obj)
 {
+    wiringpi_init_mode = WPI_MODE_PHYS;
     return wiringPiSetupPhys();
 }
 
