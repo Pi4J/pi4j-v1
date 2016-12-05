@@ -39,9 +39,9 @@ these prerequisites automatically:
 Use the following command to deploy a snapshot build to the OSS Maven staging repository.
 (Note, you must have a "sonatype-oss-snapshot-repo" site credentials defined in your private Maven settings.xml file.)
 
-> mvn clean deploy                                   (Java libraries only)
-> mvn clean deploy --projects pi4j-native -P native  (JNI native libraries for all supported platforms)
-> mvn clean deploy -P native                         (Java libraries and JNI native library for all supported platforms)
+> mvn clean deploy                                          (Java libraries only)
+> mvn clean deploy --projects pi4j-native -P all-platforms  (JNI native libraries for all supported platforms)
+> mvn clean deploy -P all-platforms                         (Java libraries and JNI native library for all supported platforms)
 
 If changes or additions are made to the Java JNI classes, then you may need to regenerate the native JNI .H header files.
 Use the following Maven command to regenerate the .H header source file.

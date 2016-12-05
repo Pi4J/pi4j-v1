@@ -283,9 +283,9 @@
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY -->
+		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY FOR ALL PLATFORMS -->
 		<profile>
-			<id>native</id>
+			<id>all-platforms</id>
 			<activation>
 				<property>
 					<name>release-build</name>
@@ -299,6 +299,7 @@
                 <bananapi.build>true</bananapi.build>
                 <bananapro.build>true</bananapro.build>
                 <odroid.build>true</odroid.build>
+                <orangepi.build>true</orangepi.build>
             </properties>
 		</profile>
 

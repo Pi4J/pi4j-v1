@@ -23,7 +23,7 @@
 
         <!-- SPECIAL PROFILE TO DETERMINE IF RUNNING ON THE PI HARDWARE -->
         <profile>
-            <id>rpi-local</id>
+            <id>local-compile</id>
             <activation>
                 <os>
                     <name>linux</name>
