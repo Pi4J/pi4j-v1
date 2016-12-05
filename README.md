@@ -65,12 +65,17 @@ Copyright (C) 2012-2016 Pi4J
 
 ## IN DEVELOPMENT
 
-2016-12-01 :: 1.2-SNAPSHOT
+2016-12-05 :: 1.2-SNAPSHOT
 
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
   *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
   *  Fixed #278: wiringPiSetup*: You must only call this once per program run.
+  *  Fixed #294; added java runtime and compiler check to pi4j helper script
+  *  Fixed #291; W1Device name contains "\n"
+  *  Fixed #275; LCDExample.java doesn't work in release
+  *  Fixed #276; RaspiBcmPin pins not firing pin state change events
+  *  Fixed #198; Problems with data from HMC5883L class
 
 ## RELEASES
 
