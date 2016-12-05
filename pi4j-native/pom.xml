@@ -201,6 +201,14 @@
                                     <property name="bananapro.user" value="${bananapro.user}"/>
                                     <property name="bananapro.password" value="${bananapro.password}"/>
                                     <property name="bananapro.directory" value="${bananapro.directory}"/>
+
+                                    <!-- OrangePi Platform Properties -->
+                                    <property name="orangepi.name" value="${orangepi.name}"/>
+                                    <property name="orangepi.host" value="${orangepi.host}"/>
+                                    <property name="orangepi.port" value="${orangepi.port}"/>
+                                    <property name="orangepi.user" value="${orangepi.user}"/>
+                                    <property name="orangepi.password" value="${orangepi.password}"/>
+                                    <property name="orangepi.directory" value="${orangepi.directory}"/>
                                 </ant>
                             </target>
                         </configuration>
@@ -251,6 +259,15 @@
                                     <then>
                                         <attachartifact file="${project.build.directory}/native/lib/bananapro/static/libpi4j.so" classifier="bananapro-static" type="so"/>
                                         <attachartifact file="${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so" classifier="bananapro-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for OrangePi -->
+                                <if>
+                                    <equals arg1="${orangepi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/static/libpi4j.so" classifier="orangepi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
                                     </then>
                                 </if>
                             </target>

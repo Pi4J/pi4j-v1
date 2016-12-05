@@ -103,11 +103,11 @@
 	<properties>
 
         <!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
-		<pi4j.default.host>192.168.1.100</pi4j.default.host>
-		<pi4j.default.port>22</pi4j.default.port>
-		<pi4j.default.user>pi</pi4j.default.user>
-		<pi4j.default.password>raspberry</pi4j.default.password>
-		<pi4j.default.directory>pi4j-temp</pi4j.default.directory>
+        <pi4j.default.host>192.168.1.100</pi4j.default.host>
+        <pi4j.default.port>22</pi4j.default.port>
+        <pi4j.default.user>pi</pi4j.default.user>
+        <pi4j.default.password>raspberry</pi4j.default.password>
+        <pi4j.default.directory>pi4j-temp</pi4j.default.directory>
 
         <!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT DEVICE/PLATFORM -->
         <pi4j.dev.transfer>false</pi4j.dev.transfer>
@@ -157,12 +157,22 @@
         <bananapro.password>${pi4j.default.password}</bananapro.password>
         <bananapro.directory>${pi4j.default.directory}</bananapro.directory>
 
-		<!-- PROJECT ENCODING PROPERTIES -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'OrangePi' PLATFORM -->
+        <orangepi.build>false</orangepi.build>
+        <orangepi.platform>orangepi</orangepi.platform>
+        <orangepi.name>OrangePi</orangepi.name>
+        <orangepi.host>${pi4j.default.host}</orangepi.host>
+        <orangepi.port>${pi4j.default.port}</orangepi.port>
+        <orangepi.user>${pi4j.default.user}</orangepi.user>
+        <orangepi.password>${pi4j.default.password}</orangepi.password>
+        <orangepi.directory>${pi4j.default.directory}</orangepi.directory>
 
-		<!-- GITHUB PROPERTIES -->
-		<github.global.server>github</github.global.server>
+        <!-- PROJECT ENCODING PROPERTIES -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- GITHUB PROPERTIES -->
+        <github.global.server>github</github.global.server>
 
         <!-- JAVA COMPILER VERSIONS -->
         <jdk.source.version>1.8</jdk.source.version>
@@ -456,6 +466,22 @@
             </activation>
             <properties>
                 <bananapro.build>true</bananapro.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE ORANGEPI PLATFORM -->
+        <profile>
+            <id>orangepi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <orangepi.build>true</orangepi.build>
             </properties>
             <modules>
                 <module>pi4j-native</module>

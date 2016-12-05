@@ -19,17 +19,17 @@
             <echo message=" DIR : @{directory}" />
             <echo message="----------------------------------------------------" />
 
-            <!-- ensure the target directory is empty on the Raspberry Pi -->
+            <!-- ensure the target directory is empty on the target remote platform -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="true"
                      verbose="false" command="rm --recursive --force @{directory}" />
 
-            <!-- ensure the target directory exists on the Raspberry Pi -->
+            <!-- ensure the target directory exists on the target remote platform -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="false"
                      verbose="false" command="mkdir --parents @{directory}" />
 
-            <!-- copy all the necessary source files to the Raspberry Pi -->
+            <!-- copy all the necessary source files to the target remote platform -->
             <scp todir="@{user}:@{password}@@@{host}:@{directory}"
                  port="@{port}" trust="true" verbose="false" failonerror="true">
                 <fileset dir="src/main/native" />
@@ -98,6 +98,16 @@
                            directory="${bananapro.directory}"/>
     </target>
 
+    <!-- build target for OrangePi platform -->
+    <target name="orangepi" if="${orangepi.build}">
+        <pi4j-build-remote platform="${orangepi.platform}"
+                           name="${orangepi.name}"
+                           host="${orangepi.host}"
+                           port="${orangepi.port}"
+                           user="${orangepi.user}"
+                           password="${orangepi.password}"
+                           directory="${orangepi.directory}"/>
+    </target>
 
     <!-- this target is used when building maven project remotely from your workstation -->
     <target name="build-libpi4j.so-remote">
@@ -106,6 +116,7 @@
         <antcall target="odroid"/>
         <antcall target="bananapi"/>
         <antcall target="bananapro"/>
+        <antcall target="orangepi"/>
     </target>
 
     <!-- this target is used when building maven project directly on the Raspberry Pi -->
