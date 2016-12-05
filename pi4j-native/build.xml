@@ -1,43 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pi4j-native" default="build-libpi4j.so-remote" basedir=".">
+<project name="pi4j-native" default="build-libpi4j.so-remote" basedir="." >
+
+    <macrodef name="pi4j-build-remote">
+        <attribute name="name" default="UNKNOWN"/>
+        <attribute name="platform" default="UNKNOWN"/>
+        <attribute name="host" default="${pi4j.default.host}"/>
+        <attribute name="port" default="${pi4j.default.port}"/>
+        <attribute name="user" default="${pi4j.default.user}"/>
+        <attribute name="password" default="${pi4j.default.password}"/>
+        <attribute name="directory" default="${pi4j.default.directory}"/>
+        <sequential>
+            <echo message="----------------------------------------------------" />
+            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}" />
+            <echo message="----------------------------------------------------" />
+            <echo message=" HOST: @{host}" />
+            <echo message=" PORT: @{port}" />
+            <echo message=" USER: @{user}" />
+            <echo message=" DIR : @{directory}" />
+            <echo message="----------------------------------------------------" />
+
+            <!-- ensure the target directory is empty on the Raspberry Pi -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="rm --recursive --force @{directory}" />
+
+            <!-- ensure the target directory exists on the Raspberry Pi -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="false"
+                     verbose="false" command="mkdir --parents @{directory}" />
+
+            <!-- copy all the necessary source files to the Raspberry Pi -->
+            <scp todir="@{user}:@{password}@@@{host}:@{directory}"
+                 port="@{port}" trust="true" verbose="false" failonerror="true">
+                <fileset dir="src/main/native" />
+            </scp>
+
+            <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="cd @{directory}; sudo chmod +x build-@{platform}.sh; ./build-@{platform}.sh" />
+
+            <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
+            <scp
+                    file="@{user}:@{password}@@@{host}:@{directory}/lib/**"
+                    todir="target/native/lib" port="@{port}" trust="true"
+                    verbose="false" failonerror="true">
+            </scp>
+
+            <!-- remove the temporary target directory from the Raspberry Pi -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="rm --recursive --force @{directory}" />
+        </sequential>
+    </macrodef>
+
+    <!-- build target for RaspberryPi platform -->
+    <target name="raspberrypi" if="${raspberrypi.build}">
+        <pi4j-build-remote platform="${raspberrypi.platform}"
+                           name="${raspberrypi.name}"
+                           host="${raspberrypi.host}"
+                           port="${raspberrypi.port}"
+                           user="${raspberrypi.user}"
+                           password="${raspberrypi.password}"
+                           directory="${raspberrypi.directory}"/>
+    </target>
+
+    <!-- build target for Odroid platform -->
+    <target name="odroid" if="${odroid.build}">
+        <pi4j-build-remote platform="${odroid.platform}"
+                           name="${odroid.name}"
+                           host="${odroid.host}"
+                           port="${odroid.port}"
+                           user="${odroid.user}"
+                           password="${odroid.password}"
+                           directory="${odroid.directory}"/>
+    </target>
+
+    <!-- build target for BananaPi platform -->
+    <target name="bananapi" if="${bananapi.build}">
+        <pi4j-build-remote platform="${bananapi.platform}"
+                           name="${bananapi.name}"
+                           host="${bananapi.host}"
+                           port="${bananapi.port}"
+                           user="${bananapi.user}"
+                           password="${bananapi.password}"
+                           directory="${bananapi.directory}"/>
+    </target>
+
+    <!-- build target for BananaPro platform -->
+    <target name="bananapro" if="${bananapro.build}">
+        <pi4j-build-remote platform="${bananapro.platform}"
+                           name="${bananapro.name}"
+                           host="${bananapro.host}"
+                           port="${bananapro.port}"
+                           user="${bananapro.user}"
+                           password="${bananapro.password}"
+                           directory="${bananapro.directory}"/>
+    </target>
+
 
     <!-- this target is used when building maven project remotely from your workstation -->
     <target name="build-libpi4j.so-remote">
-
-        <echo message="Building native libpi4j shared library"/>
-
-		<!-- ensure the target directory is empty on the Raspberry Pi -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="true"
-			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
-
-		<!-- ensure the target directory exists on the Raspberry Pi -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="false"
-			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}" />
-
-		<!-- copy all the necessary source files to the Raspberry Pi -->
-		<scp todir="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}"
-			port="${pi-port}" trust="true" verbose="true" failonerror="true">
-			<fileset dir="src/main/native" />
-		</scp>
-
-        <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
-        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-                 password="${pi-password}" trust="true" failonerror="true"
-                 verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x build.sh; ./build.sh" />
-
-        <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
-        <scp
-                file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/lib/**"
-                todir="${project-build-directory}/native/lib" port="${pi-port}" trust="true"
-                verbose="true" failonerror="true">
-        </scp>
-
-        <!-- remove the temporary target directory from the Raspberry Pi -->
-        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-                 password="${pi-password}" trust="true" failonerror="true"
-                 verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
+        <!-- include a remote build target for each supported platform -->
+        <antcall target="raspberrypi"/>
+        <antcall target="odroid"/>
+        <antcall target="bananapi"/>
+        <antcall target="bananapro"/>
     </target>
 
     <!-- this target is used when building maven project directly on the Raspberry Pi -->

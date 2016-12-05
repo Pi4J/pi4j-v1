@@ -102,22 +102,60 @@
 	<!-- BUILD PROPERTIES -->
 	<properties>
 
-		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>192.168.1.100</pi.host>
-		<pi.port>22</pi.port>
-		<pi.user>pi</pi.user>
-		<pi.password>raspberry</pi.password>
+        <!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
+		<pi4j.default.host>192.168.1.100</pi4j.default.host>
+		<pi4j.default.port>22</pi4j.default.port>
+		<pi4j.default.user>pi</pi4j.default.user>
+		<pi4j.default.password>raspberry</pi4j.default.password>
+		<pi4j.default.directory>pi4j-temp</pi4j.default.directory>
 
-		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
-		<pi.dirBuildTemp>pi4j-temp</pi.dirBuildTemp>
+        <!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT DEVICE/PLATFORM -->
+        <pi4j.dev.transfer>false</pi4j.dev.transfer>
+        <pi4j.dev.host>${pi4j.default.host}</pi4j.dev.host>
+        <pi4j.dev.port>${pi4j.default.port}</pi4j.dev.port>
+        <pi4j.dev.user>${pi4j.default.user}</pi4j.dev.user>
+        <pi4j.dev.password>${pi4j.default.password}</pi4j.dev.password>
+        <pi4j.dev.directory>pi4j-dev</pi4j.dev.directory>
 
-		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
-		<pi.transfer.dev>false</pi.transfer.dev>
-		<pi.host.dev>${pi.host}</pi.host.dev>
-		<pi.port.dev>${pi.port}</pi.port.dev>
-		<pi.user.dev>${pi.user}</pi.user.dev>
-		<pi.password.dev>${pi.password}</pi.password.dev>
-		<pi.dirCopyTo.dev>pi4j-dev</pi.dirCopyTo.dev>
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'RaspberryPi' PLATFORM -->
+        <raspberrypi.build>false</raspberrypi.build>
+        <raspberrypi.platform>raspberrypi</raspberrypi.platform>
+        <raspberrypi.name>RaspberryPi</raspberrypi.name>
+        <raspberrypi.host>${pi4j.default.host}</raspberrypi.host>
+        <raspberrypi.port>${pi4j.default.port}</raspberrypi.port>
+        <raspberrypi.user>${pi4j.default.user}</raspberrypi.user>
+        <raspberrypi.password>${pi4j.default.password}</raspberrypi.password>
+        <raspberrypi.directory>${pi4j.default.directory}</raspberrypi.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'Odroid' PLATFORM -->
+        <odroid.build>false</odroid.build>
+        <odroid.platform>odroid</odroid.platform>
+        <odroid.name>Odroid</odroid.name>
+        <odroid.host>${pi4j.default.host}</odroid.host>
+        <odroid.port>${pi4j.default.port}</odroid.port>
+        <odroid.user>${pi4j.default.user}</odroid.user>
+        <odroid.password>${pi4j.default.password}</odroid.password>
+        <odroid.directory>${pi4j.default.directory}</odroid.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPi' PLATFORM -->
+        <bananapi.build>false</bananapi.build>
+        <bananapi.platform>bananapi</bananapi.platform>
+        <bananapi.name>BananaPi</bananapi.name>
+        <bananapi.host>${pi4j.default.host}</bananapi.host>
+        <bananapi.port>${pi4j.default.port}</bananapi.port>
+        <bananapi.user>${pi4j.default.user}</bananapi.user>
+        <bananapi.password>${pi4j.default.password}</bananapi.password>
+        <bananapi.directory>${pi4j.default.directory}</bananapi.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPro' PLATFORM -->
+        <bananapro.build>false</bananapro.build>
+        <bananapro.platform>bananapro</bananapro.platform>
+        <bananapro.name>BananaPro</bananapro.name>
+        <bananapro.host>${pi4j.default.host}</bananapro.host>
+        <bananapro.port>${pi4j.default.port}</bananapro.port>
+        <bananapro.user>${pi4j.default.user}</bananapro.user>
+        <bananapro.password>${pi4j.default.password}</bananapro.password>
+        <bananapro.directory>${pi4j.default.directory}</bananapro.directory>
 
 		<!-- PROJECT ENCODING PROPERTIES -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -256,6 +294,12 @@
 					<name>release-build</name>
 				</property>
 			</activation>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+                <bananapi.build>true</bananapi.build>
+                <bananapro.build>true</bananapro.build>
+                <odroid.build>true</odroid.build>
+            </properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -352,6 +396,58 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
+        <profile>
+            <id>raspberrypi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+            </properties>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE ODROID PLATFORM -->
+        <profile>
+            <id>odroid</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <odroid.build>true</odroid.build>
+            </properties>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE BANANAPI PLATFORM -->
+        <profile>
+            <id>bananapi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <bananapi.build>true</bananapi.build>
+            </properties>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE BANANAPRO PLATFORM -->
+        <profile>
+            <id>bananapro</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <bananapro.build>true</bananapro.build>
+            </properties>
         </profile>
 
 	</profiles>
