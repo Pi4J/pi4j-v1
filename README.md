@@ -70,6 +70,7 @@ Copyright (C) 2012-2016 Pi4J
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
   *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
+  *  Added experimental support for OrangePi platform.
   *  Fixed #278: wiringPiSetup*: You must only call this once per program run.
   *  Fixed #294; added java runtime and compiler check to pi4j helper script
   *  Fixed #291; W1Device name contains "\n"

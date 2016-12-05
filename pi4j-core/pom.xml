@@ -209,6 +209,28 @@
                                     <destFileName>libpi4j.so</destFileName>
                                 </artifactItem>
 
+                                <!-- LIBPI4J for the OrangePi platform -->
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>orangepi-static</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/orangepi/static</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>orangepi-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/orangepi/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
 							</artifactItems>
 						</configuration>
 					</execution>

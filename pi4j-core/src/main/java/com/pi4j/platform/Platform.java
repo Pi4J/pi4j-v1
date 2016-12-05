@@ -29,20 +29,14 @@ package com.pi4j.platform;
  * #L%
  */
 
-import com.pi4j.io.gpio.BananaPiGpioProvider;
-import com.pi4j.io.gpio.BananaProGpioProvider;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.OdroidGpioProvider;
-import com.pi4j.io.gpio.RaspiGpioProvider;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CFactoryProvider;
 import com.pi4j.io.i2c.impl.I2CFactoryProviderBananaPi;
 import com.pi4j.io.i2c.impl.I2CFactoryProviderOdroid;
+import com.pi4j.io.i2c.impl.I2CFactoryProviderOrangePi;
 import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
 import com.pi4j.system.SystemInfoProvider;
-import com.pi4j.system.impl.BananaPiSystemInfoProvider;
-import com.pi4j.system.impl.BananaProSystemInfoProvider;
-import com.pi4j.system.impl.OdroidSystemInfoProvider;
-import com.pi4j.system.impl.RaspiSystemInfoProvider;
+import com.pi4j.system.impl.*;
 
 /**
  * <p>
@@ -58,7 +52,8 @@ public enum Platform {
     RASPBERRYPI("raspberrypi", "Raspberry Pi"),
     BANANAPI("bananapi", "BananaPi"),
     BANANAPRO("bananapro", "BananaPro"),
-    ODROID("odroid", "Odroid");
+    ODROID("odroid", "Odroid"),
+    ORANGEPI("orangepi", "OrangePi");
 
     // private variables
     protected String platformId = null;
@@ -138,6 +133,9 @@ public enum Platform {
             case ODROID: {
                 return new OdroidGpioProvider();
             }
+            case ORANGEPI: {
+                return new OrangePiGpioProvider();
+            }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
                 return new RaspiGpioProvider();
@@ -164,6 +162,9 @@ public enum Platform {
             case ODROID: {
                 return new I2CFactoryProviderOdroid();
             }
+            case ORANGEPI: {
+                return new I2CFactoryProviderOrangePi();
+            }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
                 return new I2CFactoryProviderRaspberryPi();
@@ -189,6 +190,9 @@ public enum Platform {
             }
             case ODROID: {
                 return new OdroidSystemInfoProvider();
+            }
+            case ORANGEPI: {
+                return new OrangePiSystemInfoProvider();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi

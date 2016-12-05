@@ -58,7 +58,9 @@ public class SystemInfo {
         BananaPi,
         BananaPro,
         //------------------------
-        Odroid
+        Odroid,
+        //------------------------
+        OrangePi
     }
 
     public static String getProcessor()  throws IOException, InterruptedException, UnsupportedOperationException {
