@@ -165,7 +165,43 @@
                         </goals>
                         <configuration>
                             <target name="pi4j-build-platform-libraries" >
-                                <ant target="${pi4j-native-ant-build-target}" inheritRefs="true"/>
+                                <ant target="${pi4j-native-ant-build-target}" inheritRefs="true">
+
+                                    <!-- WE REDEFINE THE FOLLOWING PROPERTIES TO ALLOW THEM TO BE OVERRIDDEN
+                                         VIA SYSTEM PROPERTIES PROVIDED ON THE MAVEN COMMAND LINE -->
+
+                                    <!-- RaspberryPi Platform Properties -->
+                                    <property name="raspberrypi.name" value="${raspberrypi.name}"/>
+                                    <property name="raspberrypi.host" value="${raspberrypi.host}"/>
+                                    <property name="raspberrypi.port" value="${raspberrypi.port}"/>
+                                    <property name="raspberrypi.user" value="${raspberrypi.user}"/>
+                                    <property name="raspberrypi.password" value="${raspberrypi.password}"/>
+                                    <property name="raspberrypi.directory" value="${raspberrypi.directory}"/>
+
+                                    <!-- Odroid Platform Properties -->
+                                    <property name="odroid.name" value="${odroid.name}"/>
+                                    <property name="odroid.host" value="${odroid.host}"/>
+                                    <property name="odroid.port" value="${odroid.port}"/>
+                                    <property name="odroid.user" value="${odroid.user}"/>
+                                    <property name="odroid.password" value="${odroid.password}"/>
+                                    <property name="odroid.directory" value="${odroid.directory}"/>
+
+                                    <!-- BananaPi Platform Properties -->
+                                    <property name="bananapi.name" value="${bananapi.name}"/>
+                                    <property name="bananapi.host" value="${bananapi.host}"/>
+                                    <property name="bananapi.port" value="${bananapi.port}"/>
+                                    <property name="bananapi.user" value="${bananapi.user}"/>
+                                    <property name="bananapi.password" value="${bananapi.password}"/>
+                                    <property name="bananapi.directory" value="${bananapi.directory}"/>
+
+                                    <!-- BananaPro Platform Properties -->
+                                    <property name="bananapro.name" value="${bananapro.name}"/>
+                                    <property name="bananapro.host" value="${bananapro.host}"/>
+                                    <property name="bananapro.port" value="${bananapro.port}"/>
+                                    <property name="bananapro.user" value="${bananapro.user}"/>
+                                    <property name="bananapro.password" value="${bananapro.password}"/>
+                                    <property name="bananapro.directory" value="${bananapro.directory}"/>
+                                </ant>
                             </target>
                         </configuration>
                     </execution>

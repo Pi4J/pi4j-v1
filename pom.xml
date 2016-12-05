@@ -284,6 +284,12 @@
 			<modules>
 				<module>pi4j-native</module>
 			</modules>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+                <bananapi.build>true</bananapi.build>
+                <bananapro.build>true</bananapro.build>
+                <odroid.build>true</odroid.build>
+            </properties>
 		</profile>
 
 		<!-- SPECIAL PROFILE FOR RELEASE DEPLOYMENT BUILDS -->
@@ -294,12 +300,6 @@
 					<name>release-build</name>
 				</property>
 			</activation>
-            <properties>
-                <raspberrypi.build>true</raspberrypi.build>
-                <bananapi.build>true</bananapi.build>
-                <bananapro.build>true</bananapro.build>
-                <odroid.build>true</odroid.build>
-            </properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -409,6 +409,9 @@
             <properties>
                 <raspberrypi.build>true</raspberrypi.build>
             </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
         </profile>
 
         <!-- SPECIAL PROFILE TO INCLUDE ODROID PLATFORM -->
@@ -422,6 +425,9 @@
             <properties>
                 <odroid.build>true</odroid.build>
             </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
         </profile>
 
         <!-- SPECIAL PROFILE TO INCLUDE BANANAPI PLATFORM -->
@@ -435,6 +441,9 @@
             <properties>
                 <bananapi.build>true</bananapi.build>
             </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
         </profile>
 
         <!-- SPECIAL PROFILE TO INCLUDE BANANAPRO PLATFORM -->
@@ -448,6 +457,9 @@
             <properties>
                 <bananapro.build>true</bananapro.build>
             </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
         </profile>
 
 	</profiles>

@@ -8,35 +8,46 @@ Use the following command to build the Pi4J Java libraries.
 
 
 Use the following command to build the Pi4J Java libraries and the JNI native library.
-(Note that building the native code requires a SSH connection to a Raspberry Pi.  The
- connection and credentials to access the Pi can be defined in a custom user profile in
- the parent POM.XML file or included in the command line as shown below.  As of
- version 1.0, only hard-float ABI native builds are supported.)
+(Note that building the native code requires a SSH connection to a Raspberry Pi or other
+taregeted platform.  The connection and credentials to access the target platform can be
+defined in your maven settings XML file or included in the command line as shown below.)
 
-> mvn clean install -P native
-> mvn clean install -P native -Dpi.host=192.168.10.10
+  {platform-name} = raspberrypi | odroid | bananapi | bananapro
 
+FORMAT:
+> mvn clean install -P {platform-name}
+> mvn clean install -P {platform-name} -D{platform-name}.host=192.168.10.10
+
+EXAMPLES:
+> mvn clean install -P raspberrypi
+> mvn clean install -P raspberrypi -Draspberrypi.host=192.168.10.10
+> mvn clean install -P raspberrypi,ordoid
+> mvn clean install -P raspberrypi -Draspberrypi.host=192.168.10.10 -odroid.host=192.168.10.11
 
 Please note that the following prerequisites are required to be installed on your RaspberryPi
 before the pi4j-native project can be compiled.  The pi4j-native build will attempt to install
-these prerequisites automatically using apt-get.
+these prerequisites automatically using apt-get:
 - gcc 4.6.3 or newer                             (sudo apt-get install gcc)
 - git-core                                       (sudo apt-get install git-core)
+- tree                                           (sudo apt-get install tree)
+
+Please note that the following prerequisites are required to be installed on your RaspberryPi
+before the pi4j-native project can be compiled.  The pi4j-native build will not install
+these prerequisites automatically:
 - A working JDK8 (Oracle JDK)                    (sudo apt-get install oracle-java8-jdk)
 
 Use the following command to deploy a snapshot build to the OSS Maven staging repository.
 (Note, you must have a "sonatype-oss-snapshot-repo" site credentials defined in your private Maven settings.xml file.)
 
 > mvn clean deploy                                   (Java libraries only)
-> mvn clean deploy --projects pi4j-native -P native  (JNI native library for hard-float only)
-> mvn clean deploy -P native                         (Java libraries and JNI native library)
-
+> mvn clean deploy --projects pi4j-native -P native  (JNI native libraries for all supported platforms)
+> mvn clean deploy -P native                         (Java libraries and JNI native library for all supported platforms)
 
 If changes or additions are made to the Java JNI classes, then you may need to regenerate the native JNI .H header files.
 Use the following Maven command to regenerate the .H header source file.
 (NOTE:  This command must be executed inside the pi4j-native project, not at the parent project level.)
 
-> mvn generate-sources -P native,generate-jni-headers
+> mvn generate-sources --projects pi4j-native -P generate-jni-headers
 
 
 --------------------
