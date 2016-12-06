@@ -79,10 +79,10 @@
             </copy>
 
             <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
-            <exec dir="${project.build.directory}/native" executable="chmod">
+            <exec dir="${project.build.directory}/native" failonerror="true" executable="chmod">
                 <arg line="+x build-@{platform}.sh"/>
             </exec>
-            <exec dir="${project.build.directory}/native" executable="/bin/bash">
+            <exec dir="${project.build.directory}/native" failonerror="true" executable="/bin/bash">
                 <arg line="build-@{platform}.sh @{args}"/>
             </exec>
         </sequential>
