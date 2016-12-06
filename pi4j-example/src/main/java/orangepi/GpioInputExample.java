@@ -1,10 +1,10 @@
-package orangepi.bananapro;
+package orangepi;
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  GpioListenExample.java
+ * FILENAME      :  GpioInputExample.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -29,8 +29,6 @@ package orangepi.bananapro;
  */
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
@@ -39,16 +37,12 @@ import com.pi4j.util.Console;
 import com.pi4j.util.ConsoleColor;
 
 /**
- * This example code demonstrates how to setup a listener
- * for GPIO pin state changes on the OrangePi.
- *
- * The internal resistance is set to PULL UP by default. So when
- * connecting GPIO pin #2 to a ground pin, you should see the
- * GpioPinListenerDigital fire the event.
+ * This example code demonstrates how to perform simple GPIO
+ * pin state reading on the OrangePi platform.
  *
  * @author Robert Savage
  */
-public class GpioListenExample {
+public class GpioInputExample {
 
     /**
      * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ]
@@ -66,7 +60,7 @@ public class GpioListenExample {
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
      */
-    public static void main(String args[]) throws InterruptedException, PlatformAlreadyAssignedException {
+    public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException {
 
         // ####################################################################
         //
@@ -81,7 +75,7 @@ public class GpioListenExample {
         final Console console = new Console();
 
         // print program title/header
-        console.title("<-- The Pi4J Project -->", "GPIO Listen Example");
+        console.title("<-- The Pi4J Project -->", "GPIO Input Example");
 
         // allow for user to exit program using CTRL-C
         console.promptForExit();
@@ -92,12 +86,6 @@ public class GpioListenExample {
         // ####################################################################
         //
         // When provisioning a pin, use the OrangePiPin class.
-        //
-        // Please note that not all GPIO pins support edge triggered interrupt
-        // and thus not all pins are eligible for pin state change listeners.
-        // These pins must be polled to detect state changes.  See the
-        // 'GpioListenAllExample' for a complete example including polled
-        // pins.
         //
         // ####################################################################
 
@@ -114,38 +102,29 @@ public class GpioListenExample {
                 PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
                 args);                      // argument array to search in
 
-        // provision gpio pin as an input pin with its internal pull up resistor set
-        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(pin, pull);
+        // provision gpio pin as an input pin
+        final GpioPinDigitalInput input = gpio.provisionDigitalInputPin(pin, "MyInput", pull);
 
-        // unexport the GPIO pin when program exits
-        myButton.setShutdownOptions(true);
+        // set shutdown state for this pin: unexport the pin
+        input.setShutdownOptions(true);
 
         // prompt user that we are ready
-        console.println(" ... Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
+        console.println("Successfully provisioned [" + pin + "] with PULL resistance = [" + pull + "]");
         console.emptyLine();
-        console.box("Please complete the [" + pin + "] circuit and see",
-                "the listener feedback here in the console.");
+        console.box("The GPIO input pin states will be displayed below.");
         console.emptyLine();
 
-        // create and register gpio pin listener
-        myButton.addListener(new GpioPinListenerDigital() {
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                // display pin state on console
-                console.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " +
-                        ConsoleColor.conditional(
-                                event.getState().isHigh(), // conditional expression
-                                ConsoleColor.GREEN,        // positive conditional color
-                                ConsoleColor.RED,          // negative conditional color
-                                event.getState()));        // text to display
-            }
+        // display pin state
+        console.emptyLine();
+        console.println(" [" + input.toString() + "] digital state is: " + ConsoleColor.conditional(
+                input.getState().isHigh(), // conditional expression
+                ConsoleColor.GREEN,        // positive conditional color
+                ConsoleColor.RED,          // negative conditional color
+                input.getState()));
+        console.emptyLine();
 
-        });
-
-        // wait (block) for user to exit program using CTRL-C
-        console.waitForExit();
-
-        // forcefully shutdown all GPIO monitoring threads and scheduled tasks
+        // stop all GPIO activity/threads by shutting down the GPIO controller
+        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
     }
 }
