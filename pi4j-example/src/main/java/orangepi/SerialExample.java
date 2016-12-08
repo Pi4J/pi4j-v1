@@ -108,12 +108,12 @@ public class SerialExample {
 
             // set default serial settings (device, baud rate, flow control, etc)
             //
-            // by default, use the DEFAULT com port on the BananaPro (exposed on GPIO header)
-            // see 'BananaProSerial' for constant definitions for BananaPro Serial Port addresses.
+            // by default, use the DEFAULT com port on the OrangePi (exposed on GPIO header)
+            // see 'OrangePiSerial' for constant definitions for OrangePi Serial Port addresses.
             //
             // NOTE: this utility method will determine the default serial port for the
             //       detected platform and board/model.
-            config.device(BananaProSerial.DEFAULT_COM_PORT)  // TX is located at CON6-08; RX is located at CON6-10
+            config.device(OrangePiSerial.DEFAULT_COM_PORT)
                     .baud(Baud._38400)
                     .dataBits(DataBits._8)
                     .parity(Parity.NONE)

@@ -110,9 +110,7 @@ public class I2CExample {
         console.promptForExit();
 
         // get the I2C bus to communicate on
-        // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
-        // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
-        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_2);
+        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_0);
 
         // create an I2C device for an individual device on the bus that you want to communicate with
         // in this example we will use the default address for the TSL2561 chip which is 0x39.
