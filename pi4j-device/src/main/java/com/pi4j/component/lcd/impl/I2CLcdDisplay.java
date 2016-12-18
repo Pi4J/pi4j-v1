@@ -333,6 +333,10 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
      */
     public void setBacklight(boolean backlight) {
         this.backlight = backlight;
+
+        dev.write((byte)(backlight
+                ? 1 << (byte)backlightBit
+                : 0 << (byte)backlightBit));
     }
 
     private void setRS(boolean val) {
