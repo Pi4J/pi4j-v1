@@ -39,14 +39,6 @@
 #define GPIO_PIN_EDGE_FILE      GPIO_PIN_DIRECTORY "/edge"
 #define GPIO_PIN_VALUE_FILE     GPIO_PIN_DIRECTORY "/value"
 
-#define ODROIDC1_GPIO_CLASS_DIRECTORY    "/sys/class/aml_gpio"
-#define ODROIDC1_GPIO_EXPORT_FILE        ODROIDC1_GPIO_CLASS_DIRECTORY "/export"
-#define ODROIDC1_GPIO_UNEXPORT_FILE      ODROIDC1_GPIO_CLASS_DIRECTORY "/unexport"
-#define ODROIDC1_GPIO_PIN_DIRECTORY      ODROIDC1_GPIO_CLASS_DIRECTORY "/gpio%d"
-#define ODROIDC1_GPIO_PIN_DIRECTION_FILE ODROIDC1_GPIO_PIN_DIRECTORY "/direction"
-#define ODROIDC1_GPIO_PIN_EDGE_FILE      ODROIDC1_GPIO_PIN_DIRECTORY "/edge"
-#define ODROIDC1_GPIO_PIN_VALUE_FILE     ODROIDC1_GPIO_PIN_DIRECTORY "/value"
-
 int wiringpi_detected_model;
 int wiringpi_detected_revision;
 int wiringpi_detected_maker;
@@ -150,14 +142,7 @@ int isPinValid(int pin)
  */
 int getGpioExportFile(char *file){
 
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_EXPORT_FILE);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_EXPORT_FILE);
 }
 
@@ -173,14 +158,7 @@ int getGpioExportFile(char *file){
  * returned in case of failure.
  */
 int getGpioUnexportFile(char *file){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_UNEXPORT_FILE);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_UNEXPORT_FILE);
 }
 
@@ -197,14 +175,7 @@ int getGpioUnexportFile(char *file){
  * returned in case of failure.
  */
 int getGpioPinDirectory(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTORY, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_DIRECTORY, pin);
 }
 
@@ -221,14 +192,7 @@ int getGpioPinDirectory(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinDirectionFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTION_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_DIRECTION_FILE, pin);
 }
 
@@ -245,14 +209,7 @@ int getGpioPinDirectionFile(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinEdgeFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_EDGE_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_EDGE_FILE, pin);
 }
 
@@ -269,14 +226,7 @@ int getGpioPinEdgeFile(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinValueFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_VALUE_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_VALUE_FILE, pin);
 }
 
