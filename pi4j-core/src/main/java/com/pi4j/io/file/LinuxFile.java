@@ -1,6 +1,7 @@
 package com.pi4j.io.file;
 
 import com.pi4j.util.NativeLibraryLoader;
+
 import sun.misc.Cleaner;
 import sun.misc.SharedSecrets;
 
@@ -8,15 +9,12 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.nio.*;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
 
-//TODO: rename to SystemFile?
+import java.nio.*;
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
@@ -24,11 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LinuxFile extends RandomAccessFile {
     public LinuxFile(String name, String mode) throws FileNotFoundException {
         super(name, mode);
-
-        mapList = new LinkedList<ByteBuffer>();
     }
-
-    private final LinkedList<ByteBuffer> mapList;
 
     public static final int wordSize = getWordSize();
     public static final int localBufferSize = 2048; //about 1 page
@@ -36,12 +30,36 @@ public class LinuxFile extends RandomAccessFile {
     public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
     public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<IntBuffer>();
 
-    private static Field addressField = null;
-    private static Field capacityField = null;
+    private static final Constructor directByteBufferConstructor;
+
+    private static final Field addressField;
+    private static final Field capacityField;
+    private static final Field cleanerField;
 
     static {
-        // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        try {
+            // Load the platform library
+            NativeLibraryLoader.load("libpi4j.so");
+
+            Class dbb = Class.forName("java.nio.DirectByteBuffer");
+
+            addressField = Buffer.class.getDeclaredField("address");
+            capacityField = Buffer.class.getDeclaredField("capacity");
+            cleanerField = Buffer.class.getDeclaredField("cleaner");
+            directByteBufferConstructor = dbb.getDeclaredConstructor(
+                    new Class[] { int.class, long.class, FileDescriptor.class, Runnable.class });
+
+            addressField.setAccessible(true);
+            capacityField.setAccessible(true);
+            cleanerField.setAccessible(true);
+            directByteBufferConstructor.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new InternalError();
+        } catch (ClassNotFoundException e) {
+            throw new InternalError();
+        } catch (NoSuchMethodException e) {
+            throw new InternalError();
+        }
     }
 
     /**
@@ -58,23 +76,17 @@ public class LinuxFile extends RandomAccessFile {
             throw new LinuxFileException();
     }
 
-    //TODO: instead of int array for offests, provide overload for (Array[Int], Array[AnyRef]) accepting Int or native ByteArray elements,
-
     /**
      * Runs an ioctl on a file descriptor. Uses special offset buffer to produce real C-like structures
      * with pointers. Advanced use only! Must be able to produce byte-perfect data structures just as
      * gcc would on this system, including struct padding and pointer size.
      *
-     * The offsets array contains 2 ints for every offset needed. The first offset specifies
-     * the location of the pointer in the byte array, the second offset specifies the offset
-     * in the byte array that the pointer points to.
-     * int[] {pointer1, dest1, pointer2, dest2, ...}
+     * The data ByteBuffer uses the current position to determine the head point of data
+     * passed to the ioctl. This is useful for appending entry-point data structures
+     * at the end of the buffer, while referring to other structures/data that come before
+     * them in the buffer.
      *
-     * Both NIO Buffers support position/limit, and position will be modified by this operation.
-     * It is recommended to use direct ByteBuffers when possible, but this class does support thread
-     * local temp buffers of 2k for copying heap-allocated buffers. An exception will be thrown otherwise.
-     * JNI will generally allocate new buffers for direct JNI byte[] access anyways,
-     * so the performance profile is similar.
+     * <I NEED A BETTER EXPL OF BUFFERS HERE>
      *
      * When assembling the structured data, use {@link LinuxFile#wordSize} to determine the size
      * in bytes needed for a pointer. Also be sure to consider GCC padding and structure alignment.
@@ -83,22 +95,9 @@ public class LinuxFile extends RandomAccessFile {
      *
      * Provided IntBuffer offsets must use native byte order (endianness).
      *
-     * <pre> TODO: fix this
+     * <pre>
      * {@code
-     *    byte[] buffer = new byte[32];
-     *    int dataPointer;
-     *
-     *    buffer[dataPointer = 0] = 0; //data pointer
-     *    buffer[dataPointer + wordSize] = (byte)buffer.length; //length byte
-     *
-     *    int bufferStart = wordSize * 2; //align and pad
-     *
-     *    System.arraycopy(data, 0, buffer, bufferStart, buffer.length);
-     *
-     *    int[] pointers =
-     *
-     *    file.ioctl(0x7E, ByteBuffer.wrap(buffer),
-     *      new int[] {dataPointer, bufferStart});
+     *    <NEED BETTER EXAMPLE HERE>
      * }
      * </pre>
      *
@@ -203,15 +202,6 @@ public class LinuxFile extends RandomAccessFile {
         super.finalize();
     }
 
-    @Override
-    public synchronized void close() throws IOException {
-        while(!mapList.isEmpty()) {
-            munmap(mapList.getFirst());
-        }
-
-        super.close();
-    }
-
     private synchronized IntBuffer getOffsetsBuffer(int size) {
         final int byteSize = size * 4;
         IntBuffer buf = localOffsetsBuffer.get();
@@ -246,17 +236,12 @@ public class LinuxFile extends RandomAccessFile {
         return buf;
     }
 
-    //TODO: find safe way to handle explicit unmapping?
-
-    //TODO: on unmap, replace mapped pointer with allocated direct buffer
-
     /**
      * Direct memory mapping from a file descriptor.
      * This is normally possible through the local FileChannel,
      * but NIO will try to truncate files if they don't report
      * a correct size. This will avoid that.
      *
-     * TODO: use Cleaner.create() to create a finalizer for a mmap'd buffer. Disable cleaner on manual munmap.
      *
      * @param length length of desired mapping
      * @param prot protocol used for mapping
@@ -266,47 +251,55 @@ public class LinuxFile extends RandomAccessFile {
      * @throws IOException
      */
     public ByteBuffer mmap(int length, MMAPProt prot, MMAPFlags flags, int offset) throws IOException {
-        ByteBuffer bb = mmap(getFileDescriptor(), length, prot.flag, flags.flag, offset);
+        long pointer = mmap(getFileDescriptor(), length, prot.flag, flags.flag, offset);
 
-        if(bb == null)
+        if(pointer == -1)
             throw new LinuxFileException();
 
-        synchronized(this) {
-            mapList.add(bb);
-        }
-
-        return bb;
+        return newMappedByteBuffer(length, pointer, () -> {
+            munmapDirect(pointer, length);
+        });
     }
 
-    static {
+    public static void munmap(ByteBuffer mappedBuffer) throws IOException {
+        if(!mappedBuffer.isDirect())
+            throw new IllegalArgumentException("Must be a mapped direct buffer");
+
         try {
-            addressField = Buffer.class.getDeclaredField("address");
-            capacityField = Buffer.class.getDeclaredField("capacity");
+            long address = addressField.getLong(mappedBuffer);
+            int capacity = capacityField.getInt(mappedBuffer);
 
-            addressField.setAccessible(true);
-            capacityField.setAccessible(true);
-        } catch (NoSuchFieldException e) {
+            if(address == 0 || capacity == 0) return;
+
+            //reset address field first
+            addressField.setLong(mappedBuffer, 0);
+            capacityField.setInt(mappedBuffer, 0);
+
+            //reset mark and position to new 0 capacity
+            mappedBuffer.clear();
+
+            //clean object so it doesnt clean on collection
+            ((Cleaner)cleanerField.get(mappedBuffer)).clean();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw new InternalError();
         }
     }
 
-    public synchronized void munmap(ByteBuffer mappedBuffer) throws IOException {
-        if(mapList.remove(mappedBuffer)) {
-            int response = munmapDirect(mappedBuffer);
-
-            try {
-                addressField.setLong(mappedBuffer, 0);
-                capacityField.setInt(mappedBuffer, 0);
-
-                //reset mark and position to new 0 capacity
-                mappedBuffer.clear();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } 
-
-            if(response < 0)
-                throw new LinuxFileException();
+    private MappedByteBuffer newMappedByteBuffer(int size, long addr, Runnable unmapper) throws IOException
+    {
+        MappedByteBuffer dbb;
+        try {
+            dbb = (MappedByteBuffer)directByteBufferConstructor.newInstance(
+                    new Object[] { new Integer(size), new Long(addr), this.getFD(), unmapper });
+        } catch (InstantiationException e) {
+            throw new InternalError();
+        } catch (IllegalAccessException e) {
+            throw new InternalError();
+        } catch (InvocationTargetException e) {
+            throw new InternalError();
         }
+        return dbb;
     }
 
     public static class ScratchBufferOverrun extends IllegalArgumentException {
@@ -373,9 +366,9 @@ public class LinuxFile extends RandomAccessFile {
 
     protected static native int directIOCTL(int fd, long command, int value);
 
-    protected static native ByteBuffer mmap(int fd, int length, int prot, int flags, int offset);
+    protected static native long mmap(int fd, int length, int prot, int flags, int offset);
 
-    protected static native int munmapDirect(ByteBuffer mappedBuffer);
+    protected static native int munmapDirect(long address, long capacity);
 
     protected static native int directIOCTLStructure(int fd, long command, ByteBuffer data, int dataOffset, IntBuffer offsetMap, int offsetMapOffset, int offsetCapacity);
 }

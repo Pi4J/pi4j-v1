@@ -63,7 +63,7 @@ public class I2CBusImplTest {
 
     private static int BUSNUMBER = 1;
     private static int FILEDESCRIPTOR = 4711;
-    private static String FILENAME = "/dev/i2c-1";
+    private static String FILENAME = "/dev/i2c-" + BUSNUMBER;
     private static int DEVICE_ADDRESS = 0x15;
 
     private static long DEFAULT_TIMEOUT = I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS.toMillis(I2CFactory.DEFAULT_LOCKAQUIRE_TIMEOUT);

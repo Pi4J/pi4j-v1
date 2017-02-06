@@ -83,31 +83,28 @@ JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTL
 /*
  * Class:     com_pi4j_io_file_LinuxFile
  * Method:    mmap
- * Signature: (IIIII)Ljava.lang.Object;
+ * Signature: (IIIII)J
  */
-JNIEXPORT jobject JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
+JNIEXPORT jlong JNICALL Java_com_pi4j_io_file_LinuxFile_mmap
   (JNIEnv *env, jclass obj, jint fd, jint length, jint prot, jint flags, jint offset)
 {
     void *addr = mmap(NULL, length, prot, flags, fd, offset);
 
     if(addr == MAP_FAILED)
-        return NULL;
+        return -1;
 
-    return (*env)->NewDirectByteBuffer(env, addr, length);
+    return (jlong)(uintptr_t)addr;
 }
 
 /*
  * Class:     com_pi4j_io_file_LinuxFile
  * Method:    munmapDirect
- * Signature: (Ljava.nio.ByteBuffer;)I
+ * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
-  (JNIEnv *env, jclass obj, jobject data)
+  (JNIEnv *env, jclass obj, jlong address, jlong capacity)
 {
-    uint8_t *buffer = (uint8_t *)((*env)->GetDirectBufferAddress(env, data));
-    jlong capacity = (*env)->GetDirectBufferCapacity(env, data);
-
-    return munmap(buffer, (size_t)capacity);
+    return munmap((void *)(uintptr_t)address, (size_t)capacity);
 }
 
 /*
