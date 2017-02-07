@@ -35,7 +35,7 @@ public class I2CFactoryProviderRaspberryPi extends I2CProviderImpl {
 
     @Override
     protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
-        if ((busNumber < 0) || (busNumber > 3 && busNumber < 10) || (busNumber > 17)) {
+        if (busNumber < 0) {
             throw new UnsupportedBusNumberException();
         }
 
