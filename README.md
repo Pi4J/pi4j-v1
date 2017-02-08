@@ -18,7 +18,7 @@ Snapshot builds are available from
    *  [Downloads] http://pi4j.com/download.html
    
  
-Copyright (C) 2012-2016 Pi4J
+Copyright (C) 2012-2017 Pi4J
 
 ## LICENSE
  
@@ -65,7 +65,7 @@ Copyright (C) 2012-2016 Pi4J
 
 ## IN DEVELOPMENT
 
-2016-12-05 :: 1.2-SNAPSHOT
+2017-02-08 :: 1.2-SNAPSHOT
 
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.

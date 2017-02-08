@@ -11,7 +11,7 @@ package com.pi4j.component.servo.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2017 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,15 +49,15 @@ import com.pi4j.io.serial.SerialPortException;
 /**
  * Servo Provider implementation for the Pololu Maestro series of Servo Controllers.
  * See https://www.pololu.com/category/102/maestro-usb-servo-controllers
- * 
+ *
  * Both USB and UART interfaces are supported. Be sure to configure the controller
  * using the Maestro Control Center application for the desired interface. The no-args
  * constructor assumes UART control of the default device at address 12 at 9600 Baud.
- * 
+ *
  * This driver also assumes that all 24 channels are available for addressing servos.
  * If you are using a different controller model (6, 12 or 18 channel) or if some pins
  * are not configured for servos, your application must be aware of these.
- *  
+ *
  * @author Bob Brodt (rbrodt@gmail.com)
  *
  */
@@ -159,7 +159,7 @@ public class MaestroServoProvider implements ServoProvider {
 
         return driver;
     }
-    
+
     public synchronized ServoDriver getServoDriver(int address) throws IOException {
         for (Pin pin : getDefinedServoPins()) {
         	if (pin.getAddress() == address)
@@ -167,7 +167,7 @@ public class MaestroServoProvider implements ServoProvider {
         }
         return null;
     }
-    
+
     protected synchronized void setServoPosition(int pinAddress, int value) {
     	byte command[] = { (byte)0x84, (byte)pinAddress, (byte)(value & 0x7F), (byte)(value >> 7 & 0x7F) };
 //    	while (isMoving()) {
@@ -217,7 +217,7 @@ public class MaestroServoProvider implements ServoProvider {
     	byte command[] = { (byte)0xA2 };
     	write(command);
     }
-   
+
     private void write(byte command[]) {
         try {
         	if (interfaceType==InterfaceType.UART) {

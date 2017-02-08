@@ -10,7 +10,7 @@
 # this project can be found here:  http://www.pi4j.com/
 # **********************************************************************
 # %%
-# Copyright (C) 2012 - 2016 Pi4J
+# Copyright (C) 2012 - 2017 Pi4J
 # %%
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -80,7 +80,7 @@ echo
 WIRINGPI_PLATFORM=orangepi
 
 # build wiringPi
-#export WIRINGPI_REPO=git clone https://github.com/zhaolei/WiringOP.git -b h3 
+#export WIRINGPI_REPO=git clone https://github.com/zhaolei/WiringOP.git -b h3
 export WIRINGPI_REPO=https://github.com/savageautomate/WiringOP.git
 export WIRINGPI_BRANCH=h3
 export WIRINGPI_DIRECTORY=wiringPi
