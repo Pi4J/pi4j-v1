@@ -31,6 +31,7 @@ package com.pi4j.io.gpio.impl;
 
 
 import java.util.EnumSet;
+import java.util.Objects;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinEdge;
@@ -145,7 +146,7 @@ public class PinImpl implements Pin {
         // match on pin provider, name and address
         Pin pin = (Pin) obj;
         return (pin.getProvider().equals(getProvider()) &&
-                pin.getName() == getName() &&
+                Objects.equals(pin.getName(), getName()) &&
                 pin.getAddress() == getAddress());
     }
 }

@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import java.nio.*;
+import java.util.Objects;
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
@@ -221,7 +222,8 @@ public class LinuxFile extends RandomAccessFile {
 
     private static int getWordSize() {
         //TODO: there has to be a better way...
-        return System.getProperty("sun.arch.data.model") == "64" ? 8 : 4;
+        final String archDataModel = System.getProperty("sun.arch.data.model");
+        return "64".equals(archDataModel) ? 8 : 4;
     }
 
     @Override
