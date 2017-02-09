@@ -174,9 +174,10 @@ public class GenericServo extends ComponentBase implements Servo {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Position [" + position + "]");
+        result.append("Position [").append(position).append("]");
         for (Entry<String, String> property : getProperties().entrySet()) {
-            result.append(", " + property.getKey() + " [" + property.getValue() + "]");
+            result.append(", ").append(property.getKey())
+                .append(" [").append(property.getValue()).append("]");
         }
         return result.toString();
     }

@@ -31,6 +31,7 @@ package com.pi4j.component;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ObserveableComponentBase extends ComponentBase implements ObserveableComponent {
@@ -43,9 +44,7 @@ public class ObserveableComponentBase extends ComponentBase implements Observeab
         }
 
         // add new listeners
-        for (ComponentListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
     }
 
     protected synchronized void removeListener(ComponentListener... listener) {
