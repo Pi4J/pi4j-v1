@@ -57,7 +57,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 PinState state = ((PinDigitalStateChangeEvent) event).getState();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for digital listeners
                 for (GpioPinListener listener : listeners) {
@@ -69,7 +69,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 }
 
                 // create a copy of the triggers collection
-                Collection<GpioTrigger> triggers  = new ArrayList<GpioTrigger>(pin.getTriggers());
+                Collection<GpioTrigger> triggers  = new ArrayList<>(pin.getTriggers());
 
                 // process triggers
                 for (GpioTrigger trigger : triggers) {
@@ -81,7 +81,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 double value = ((PinAnalogValueChangeEvent) event).getValue();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for analog listeners
                 for (GpioPinListener listener : listeners) {

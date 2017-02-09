@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ObserveableComponentBase extends ComponentBase implements ObserveableComponent {
 
-    protected final List<ComponentListener> listeners = new ArrayList<ComponentListener>();;
+    protected final List<ComponentListener> listeners = new ArrayList<>();;
 
     protected synchronized void addListener(ComponentListener... listener){
         if (listener == null || listener.length == 0) {

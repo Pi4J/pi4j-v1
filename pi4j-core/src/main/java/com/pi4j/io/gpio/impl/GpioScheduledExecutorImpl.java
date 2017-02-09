@@ -125,7 +125,7 @@ public class GpioScheduledExecutorImpl {
             // get pending tasks for the current pin
             ArrayList<ScheduledFuture<?>> tasks;
             if (!pinTaskQueue.containsKey(pin)) {
-                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());
+                pinTaskQueue.put(pin, new ArrayList<>());
             }
             tasks = pinTaskQueue.get(pin);
 
@@ -157,7 +157,7 @@ public class GpioScheduledExecutorImpl {
             // get pending tasks for the current pin
             ArrayList<ScheduledFuture<?>> tasks;
             if (!pinTaskQueue.containsKey(pin)) {
-                pinTaskQueue.put(pin, new ArrayList<ScheduledFuture<?>>());
+                pinTaskQueue.put(pin, new ArrayList<>());
             }
             tasks = pinTaskQueue.get(pin);
 

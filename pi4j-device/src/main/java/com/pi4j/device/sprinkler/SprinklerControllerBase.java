@@ -37,7 +37,7 @@ import com.pi4j.device.DeviceBase;
 
 public abstract class SprinklerControllerBase extends DeviceBase implements SprinklerController {
 
-    protected List<SprinklerZone> zones = new ArrayList<SprinklerZone>();
+    protected List<SprinklerZone> zones = new ArrayList<>();
 
     @Override
     public int getZoneCount() {

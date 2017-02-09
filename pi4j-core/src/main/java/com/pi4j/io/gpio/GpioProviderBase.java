@@ -295,7 +295,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         synchronized (listeners) {
             // create new pin listener entry if one does not already exist
             if (!listeners.containsKey(pin)) {
-                listeners.put(pin, new ArrayList<PinListener>());
+                listeners.put(pin, new ArrayList<>());
             }
 
             // add the listener instance to the listeners map entry
