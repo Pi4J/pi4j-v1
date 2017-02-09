@@ -235,9 +235,7 @@ public abstract class AbstractSerialDataWriter implements SerialDataWriter {
 
     protected CharSequence appendNewLine(CharSequence data){
         String separator = System.getProperty("line.separator");
-        StringBuilder builder = new StringBuilder(data);
-        builder.append(separator);
-        return builder.toString();
+        return data + separator;
     }
 
     /**

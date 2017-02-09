@@ -31,6 +31,7 @@ package com.pi4j.device;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevice {
@@ -43,9 +44,7 @@ public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevi
         }
 
         // add new listeners
-        for (DeviceListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
     }
 
     protected synchronized void removeListener(DeviceListener... listener) {

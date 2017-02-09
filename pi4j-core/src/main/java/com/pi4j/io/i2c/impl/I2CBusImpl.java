@@ -192,8 +192,7 @@ public class I2CBusImpl implements I2CBus {
 
             buf[0] = (byte)localAddress;
 
-            for(int i = 0 ; i < size ; i++)
-                buf[i + 1] = buffer[i + offset];
+            System.arraycopy(buffer, offset, buf, 1, size);
 
             file.write(buf);
 
