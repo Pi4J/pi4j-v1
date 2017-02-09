@@ -8,7 +8,7 @@
   <fileSets>
     <fileSet>
       <directory>target/distro-contents</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory/>
     </fileSet>
   </fileSets>
 </assembly>
