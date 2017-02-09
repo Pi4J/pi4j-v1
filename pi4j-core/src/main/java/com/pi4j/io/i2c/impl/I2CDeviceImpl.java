@@ -30,9 +30,11 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import com.pi4j.io.i2c.I2CConstants;
 import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CIOException;
 
 /**
  * Implementation of i2c device. This class only holds reference to i2c bus (so it can use its handle) and device address.
@@ -225,6 +227,22 @@ public class I2CDeviceImpl implements I2CDevice {
     @Override
     public int read(final int address, final byte[] data, final int offset, final int size) throws IOException {
         return getBus().readBytes(this, address, size, offset, data);
+    }
+
+    /**
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, int)
+     */
+    @Override
+    public void ioctl(long command, int value) throws IOException {
+        getBus().ioctl(this, command, value);
+    }
+
+    /**
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, ByteBuffer, IntBuffer)
+     */
+    @Override
+    public void ioctl(long command, ByteBuffer data, IntBuffer offsets) throws IOException {
+        getBus().ioctl(this, command, data, offsets);
     }
 
     /**

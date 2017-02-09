@@ -30,19 +30,16 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.io.i2c.I2CIOException;
-import com.pi4j.jni.I2C;
-import sun.misc.SharedSecrets;
+import com.pi4j.io.i2c.*;
+import com.pi4j.io.file.LinuxFile;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only one file per bus for all devices. Device
@@ -59,7 +56,7 @@ public class I2CBusImpl implements I2CBus {
     private static final Logger logger = Logger.getLogger(I2CBusImpl.class.getCanonicalName());
 
     /** File handle for this i2c bus */
-    protected RandomAccessFile file = null;
+    protected LinuxFile file = null;
 
     protected int lastAddress = -1;
 
@@ -123,7 +120,7 @@ public class I2CBusImpl implements I2CBus {
             return;
         }
 
-        file = new RandomAccessFile(filename, "rw");
+        file = new LinuxFile(filename, "rw");
 
         lastAddress = -1;
     }
@@ -213,6 +210,22 @@ public class I2CBusImpl implements I2CBus {
         });
     }
 
+    public void ioctl(final I2CDevice device, final long command, final int value) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            file.ioctl(command, value);
+
+            return null;
+        });
+    }
+
+    public void ioctl(final I2CDevice device, final long command, final ByteBuffer values, final IntBuffer offsets) throws IOException {
+        runBusLockedDeviceAction(device, () -> {
+            file.ioctl(command, values, offsets);
+
+            return null;
+        });
+    }
+
     /**
      * Selects a device on the bus for an action, and locks parallel access around file descriptor operations.
      * Multiple bus instances may be used in parallel, but a single bus instance must limit parallel access.
@@ -260,11 +273,6 @@ public class I2CBusImpl implements I2CBus {
         throw new RuntimeException("Could not obtain an access-lock!");
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-    }
-
     /**
      * Selects the slave device if not already selected on this bus.
      * Uses SharedSecrets to get the POSIX file descriptor, and runs
@@ -274,14 +282,11 @@ public class I2CBusImpl implements I2CBus {
      */
     protected void selectBusSlave(final I2CDevice device) throws IOException {
         final int addr = device.getAddress();
-        final int fd = getFileDescriptor();
 
         if(lastAddress != addr) {
             lastAddress = addr;
-            final int response = I2C.i2cSlaveSelect(fd, addr & 0xFF);
 
-            if(response < 0)
-                throw new I2CIOException("Failed to select slave device!", response);
+            file.ioctl(I2CConstants.I2C_SLAVE, addr & 0xFF);
         }
     }
 
@@ -293,18 +298,6 @@ public class I2CBusImpl implements I2CBus {
         if (device == null) {
             throw new NullPointerException("Parameter 'device' is mandatory!");
         }
-    }
-
-    /**
-     * Gets the real POSIX file descriptor for use by custom jni calls.
-     */
-    private int getFileDescriptor() throws IOException {
-        final int fd = SharedSecrets.getJavaIOFileDescriptorAccess().get(file.getFD());
-
-        if(fd < 1)
-            throw new RuntimeException("failed to get POSIX file descriptor!");
-
-        return fd;
     }
 
     @Override
