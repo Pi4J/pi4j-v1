@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevice {
 
-    protected final List<DeviceListener> listeners = new ArrayList<DeviceListener>();;
+    protected final List<DeviceListener> listeners = new ArrayList<>();;
 
     protected synchronized void addListener(DeviceListener... listener){
         if (listener == null || listener.length == 0) {

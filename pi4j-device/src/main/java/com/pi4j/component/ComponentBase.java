@@ -37,7 +37,7 @@ public abstract class ComponentBase implements Component {
 
     private String name = null;
     private Object tag = null;
-    private final Map<String, String> properties = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> properties = new ConcurrentHashMap<>();
 
     @Override
     public void setName(String name) {

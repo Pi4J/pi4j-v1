@@ -92,8 +92,8 @@ public class RPIServoBlasterProvider implements ServoProvider {
     public static Map<String, Pin> REVERSE_PIN_MAP;
 
     static {
-        PIN_MAP = new HashMap<Pin, String>();
-        REVERSE_PIN_MAP = new HashMap<String, Pin>();
+        PIN_MAP = new HashMap<>();
+        REVERSE_PIN_MAP = new HashMap<>();
         definePin(RaspiPin.GPIO_08, PIN_P1_3);
         definePin(RaspiPin.GPIO_09, PIN_P1_5);
         definePin(RaspiPin.GPIO_07, PIN_P1_7);
@@ -129,7 +129,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
 
     protected Writer writer;
 
-    protected Map<Pin, RPIServoBlasterServoDriver> allocatedDrivers = new HashMap<Pin, RPIServoBlasterServoDriver>();
+    protected Map<Pin, RPIServoBlasterServoDriver> allocatedDrivers = new HashMap<>();
 
     /**
      * Constructor. It checks if /dev/servoblaster file exists.
@@ -151,7 +151,7 @@ public class RPIServoBlasterProvider implements ServoProvider {
     }
 
     public List<Pin> getDefinedServoPins() throws IOException {
-        List<Pin> servoPins = new ArrayList<Pin>();
+        List<Pin> servoPins = new ArrayList<>();
         FileReader in = new FileReader(servoBlasterDevCfg);
         try {
             @SuppressWarnings("unused")

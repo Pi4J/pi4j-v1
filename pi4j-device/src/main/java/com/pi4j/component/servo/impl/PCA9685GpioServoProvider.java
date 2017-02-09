@@ -45,7 +45,7 @@ public class PCA9685GpioServoProvider implements ServoProvider {
 
     private PCA9685GpioProvider provider;
 
-    protected Map<Pin, PCA9685GpioServoDriver> allocatedDrivers = new HashMap<Pin, PCA9685GpioServoDriver>();
+    protected Map<Pin, PCA9685GpioServoDriver> allocatedDrivers = new HashMap<>();
 
     public PCA9685GpioServoProvider(PCA9685GpioProvider provider) {
         this.provider = provider;

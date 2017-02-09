@@ -82,11 +82,11 @@ public class MaestroServoProvider implements ServoProvider {
     protected Serial device;
     private String deviceName = "undefined";
     private byte deviceAddress;
-    protected Map<Pin, MaestroServoDriver> servoDrivers = new HashMap<Pin, MaestroServoDriver>();
+    protected Map<Pin, MaestroServoDriver> servoDrivers = new HashMap<>();
 
     static {
-        PIN_MAP = new HashMap<Pin, String>();
-        REVERSE_PIN_MAP = new HashMap<String, Pin>();
+        PIN_MAP = new HashMap<>();
+        REVERSE_PIN_MAP = new HashMap<>();
         for (int i=0; i<24; ++i) {
         	definePin(createDigitalPin(i, ""+i), ""+i);
         }
@@ -130,7 +130,7 @@ public class MaestroServoProvider implements ServoProvider {
     }
 
 	public List<Pin> getDefinedServoPins() throws IOException {
-        List<Pin> servoPins = new ArrayList<Pin>();
+        List<Pin> servoPins = new ArrayList<>();
         for (Pin pin : PIN_MAP.keySet()) {
         	servoPins.add(pin);
         }

@@ -41,7 +41,7 @@ import com.pi4j.component.ObserveableComponentBase;
 public abstract class DistanceSensorBase extends ObserveableComponentBase implements DistanceSensor {
 
     protected Date lastDistanceTimestamp = null;
-    protected SortedMap<Double, Double> coordinates = new TreeMap<Double, Double>();
+    protected SortedMap<Double, Double> coordinates = new TreeMap<>();
 
     @Override
     public Date getLastDistanceTimestamp() {

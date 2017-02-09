@@ -50,7 +50,7 @@ public class SerialDataEventDispatchTaskImpl implements Runnable {
     public void run() {
 
         // create a copy of the listeners collection
-        Collection<SerialDataEventListener> listenersCopy  = new ArrayList<SerialDataEventListener>(listeners);
+        Collection<SerialDataEventListener> listenersCopy  = new ArrayList<>(listeners);
 
         // process event callbacks for serial data listeners
         for (SerialDataEventListener listener : listenersCopy) {

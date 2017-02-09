@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SerialInterrupt {
 
-    private static Map<Integer, SerialInterruptListener> listeners = new ConcurrentHashMap<Integer, SerialInterruptListener>();
+    private static Map<Integer, SerialInterruptListener> listeners = new ConcurrentHashMap<>();
 
     // private constructor
     private SerialInterrupt()  {

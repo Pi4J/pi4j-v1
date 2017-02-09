@@ -56,8 +56,8 @@ public class LinuxFile extends RandomAccessFile {
     public static final int wordSize = getWordSize();
     public static final int localBufferSize = 2048; //about 1 page
 
-    public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
-    public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<IntBuffer>();
+    public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<>();
+    public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<>();
 
     private static final Constructor directByteBufferConstructor;
 

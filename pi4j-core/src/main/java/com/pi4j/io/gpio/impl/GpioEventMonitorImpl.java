@@ -63,7 +63,7 @@ public class GpioEventMonitorImpl implements PinListener {
                 PinState state = ((PinDigitalStateChangeEvent)event).getState();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for digital listeners
                 for (GpioPinListener listener : listeners) {
@@ -73,7 +73,7 @@ public class GpioEventMonitorImpl implements PinListener {
                 }
 
                 // create a copy of the triggers collection
-                Collection<GpioTrigger> triggers  = new ArrayList<GpioTrigger>(pin.getTriggers());
+                Collection<GpioTrigger> triggers  = new ArrayList<>(pin.getTriggers());
 
                 // process triggers
                 for (GpioTrigger trigger : triggers) {
@@ -85,7 +85,7 @@ public class GpioEventMonitorImpl implements PinListener {
                 double value = ((PinAnalogValueChangeEvent)event).getValue();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for analog listeners
                 for (GpioPinListener listener : listeners) {

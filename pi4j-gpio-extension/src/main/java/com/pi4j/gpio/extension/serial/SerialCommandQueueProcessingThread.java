@@ -41,7 +41,7 @@ public class SerialCommandQueueProcessingThread extends Thread {
     private boolean exiting = false;
     private final Serial serial;
     private final int delay;
-    private final LinkedTransferQueue<String> queue = new LinkedTransferQueue<String>();
+    private final LinkedTransferQueue<String> queue = new LinkedTransferQueue<>();
 
 
     public SerialCommandQueueProcessingThread(Serial serial, int delay) {
