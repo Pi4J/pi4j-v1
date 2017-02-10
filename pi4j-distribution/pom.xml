@@ -488,6 +488,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<appendAssemblyId>false</appendAssemblyId>
+					<tarLongFileMode>posix</tarLongFileMode>
 					<finalName>pi4j-${project.version}</finalName>
 					<descriptors>
 				    	<descriptor>src/assembly/distribution.xml</descriptor>
