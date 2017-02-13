@@ -11,7 +11,7 @@ package com.pi4j.io.gpio.event;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2017 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,7 +32,7 @@ package com.pi4j.io.gpio.event;
 
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.PinEventType;
+import com.pi4j.util.StringUtil;
 
 import java.util.EventObject;
 
@@ -43,10 +43,10 @@ public class IFTTTMakerChannelTriggerEvent extends EventObject {
 
     protected final GpioPin pin;
     protected final PinState state;
-    protected final String eventName;
-    protected String value1 = "";
-    protected String value2 = "";
-    protected String value3 = "";
+    private final String eventName;
+    private String value1 = StringUtil.EMPTY;
+    private String value2 = StringUtil.EMPTY;
+    private String value3 = StringUtil.EMPTY;
 
     public IFTTTMakerChannelTriggerEvent(Object obj, GpioPin pin, PinState state, String eventName, String value1, String value2, String value3) {
         super(obj);
