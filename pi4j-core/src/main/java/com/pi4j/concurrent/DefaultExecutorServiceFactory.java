@@ -32,7 +32,6 @@ package com.pi4j.concurrent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
 
-    public static int MAX_THREADS_IN_POOL = 25;
+    private static int MAX_THREADS_IN_POOL = 25;
     private static List<ExecutorService> singleThreadExecutorServices = new ArrayList<>();
 
     // this seemingly odd pattern is the recommended way to lazy-initialize static fields in effective java.

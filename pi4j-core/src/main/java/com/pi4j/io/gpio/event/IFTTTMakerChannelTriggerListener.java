@@ -30,19 +30,6 @@ package com.pi4j.io.gpio.event;
  */
 
 
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.PinState;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 @SuppressWarnings("unused")
 public interface IFTTTMakerChannelTriggerListener {
 
