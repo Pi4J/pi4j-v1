@@ -75,7 +75,7 @@ public class LinuxFile extends RandomAccessFile {
 
             addressField = Buffer.class.getDeclaredField("address");
             capacityField = Buffer.class.getDeclaredField("capacity");
-            cleanerField = Buffer.class.getDeclaredField("cleaner");
+            cleanerField = dbb.getDeclaredField("cleaner");
             directByteBufferConstructor = dbb.getDeclaredConstructor(
                     new Class[] { int.class, long.class, FileDescriptor.class, Runnable.class });
 
@@ -84,11 +84,11 @@ public class LinuxFile extends RandomAccessFile {
             cleanerField.setAccessible(true);
             directByteBufferConstructor.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         } catch (ClassNotFoundException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         } catch (NoSuchMethodException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         }
     }
 
@@ -313,7 +313,7 @@ public class LinuxFile extends RandomAccessFile {
             ((Cleaner)cleanerField.get(mappedBuffer)).clean();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         }
     }
 
@@ -324,11 +324,11 @@ public class LinuxFile extends RandomAccessFile {
             dbb = (MappedByteBuffer)directByteBufferConstructor.newInstance(
                     new Object[] { new Integer(size), new Long(addr), this.getFD(), unmapper });
         } catch (InstantiationException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         } catch (IllegalAccessException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         } catch (InvocationTargetException e) {
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         }
         return dbb;
     }
