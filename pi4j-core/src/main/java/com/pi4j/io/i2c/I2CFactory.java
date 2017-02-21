@@ -32,7 +32,7 @@ package com.pi4j.io.i2c;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
+import com.pi4j.io.i2c.impl.I2CProviderImpl;
 
 /**
  * I2C factory - it returns instances of {@link I2CBus} interface.
@@ -53,7 +53,7 @@ public class I2CFactory {
         }
     }
 
-    volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberryPi();
+    volatile static I2CFactoryProvider provider = new I2CProviderImpl();
 
     // private constructor
     private I2CFactory() {

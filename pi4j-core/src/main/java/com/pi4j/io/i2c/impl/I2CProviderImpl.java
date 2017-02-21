@@ -30,25 +30,42 @@ package com.pi4j.io.i2c.impl;
  */
 
 import java.io.IOException;
+import java.nio.file.*;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.io.i2c.I2CFactoryProvider;
 
-public abstract class I2CProviderImpl implements I2CFactoryProvider {
-    public I2CBus getBus(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-        I2CBusImpl result =  new I2CBusImpl(busNumber, getFilenameForBusnumber(busNumber), lockAquireTimeout, lockAquireTimeoutUnit);
+public class I2CProviderImpl implements I2CFactoryProvider {
 
+    private static Map<Integer, String> devices = new HashMap<Integer, String>();
+
+    public I2CProviderImpl() {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/dev"), "i2c-*")) {
+            for (Path entry: stream) {
+                String path = entry.toString();
+                String[] tokens = path.split("-");
+                if(tokens.length == 2) {
+                    devices.put(Integer.valueOf(tokens[1]), path);
+                }
+            }
+        } catch (IOException exception) {
+        }
+    }
+
+    public I2CBus getBus(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
+        Integer number = Integer.valueOf(busNumber);
+        if(!devices.containsKey(number)) {
+            throw new UnsupportedBusNumberException();
+        }
+
+        I2CBusImpl result =  new I2CBusImpl(busNumber, devices.get(number), lockAquireTimeout, lockAquireTimeoutUnit);
         result.open();
 
         return result;
     }
-
-    protected abstract String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException;
 }
