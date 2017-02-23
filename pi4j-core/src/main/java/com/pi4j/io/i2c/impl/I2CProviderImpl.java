@@ -45,12 +45,12 @@ public class I2CProviderImpl implements I2CFactoryProvider {
     private static Map<Integer, String> devices = new HashMap<Integer, String>();
 
     public I2CProviderImpl() {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/dev"), "i2c-*")) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/sys/bus/i2c/devices"), "*")) {
             for (Path entry: stream) {
                 String path = entry.toString();
                 String[] tokens = path.split("-");
                 if(tokens.length == 2) {
-                    devices.put(Integer.valueOf(tokens[1]), path);
+                    devices.put(Integer.valueOf(tokens[1]), "/dev/i2c-" + tokens[1]);
                 }
             }
         } catch (IOException exception) {
