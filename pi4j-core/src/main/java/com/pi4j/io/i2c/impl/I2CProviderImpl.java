@@ -42,28 +42,26 @@ import com.pi4j.io.i2c.I2CFactoryProvider;
 
 public class I2CProviderImpl implements I2CFactoryProvider {
 
-    private static Map<Integer, String> devices = new HashMap<Integer, String>();
-
     public I2CProviderImpl() {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/sys/bus/i2c/devices"), "*")) {
-            for (Path entry: stream) {
-                String path = entry.toString();
-                String[] tokens = path.split("-");
-                if(tokens.length == 2) {
-                    devices.put(Integer.valueOf(tokens[1]), "/dev/i2c-" + tokens[1]);
-                }
-            }
-        } catch (IOException exception) {
-        }
     }
 
     public I2CBus getBus(final int busNumber, final long lockAquireTimeout, final TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
+        Map<Integer, String> busses = new HashMap<Integer, String>();
+
+        DirectoryStream<Path> devices = Files.newDirectoryStream(Paths.get("/sys/bus/i2c/devices"), "*");
+        for (Path device: devices) {
+            String[] tokens = device.toString().split("-");
+            if(tokens.length == 2) {
+                busses.put(Integer.valueOf(tokens[1]), "/dev/i2c-" + tokens[1]);
+            }
+        }
+
         Integer number = Integer.valueOf(busNumber);
-        if(!devices.containsKey(number)) {
+        if(!busses.containsKey(number)) {
             throw new UnsupportedBusNumberException();
         }
 
-        I2CBusImpl result =  new I2CBusImpl(busNumber, devices.get(number), lockAquireTimeout, lockAquireTimeoutUnit);
+        I2CBusImpl result =  new I2CBusImpl(busNumber, busses.get(number), lockAquireTimeout, lockAquireTimeoutUnit);
         result.open();
 
         return result;
