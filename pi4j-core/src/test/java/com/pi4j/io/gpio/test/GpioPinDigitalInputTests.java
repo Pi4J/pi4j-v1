@@ -68,14 +68,14 @@ public class GpioPinDigitalInputTests {
 
         // register pin listener
         pin.addListener(new GpioPinListenerDigital() {
-                @Override
-                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                    // set pin state
-                    if (event.getPin() == pin) {
-                        pinMonitoredState = event.getState();
-                    }
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                // set pin state
+                if (event.getPin() == pin) {
+                    pinMonitoredState = event.getState();
                 }
-            });
+            }
+        });
     }
 
     @Test
@@ -211,14 +211,17 @@ public class GpioPinDigitalInputTests {
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
+
         // reset pin monitoring variable
         pinMonitoredState = null;
 
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
-        // wait 1/10 second before continuing test
-        Thread.sleep(100);
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
 
         // verify pin low state
         assertEquals(PinState.LOW, pinMonitoredState);
@@ -229,14 +232,17 @@ public class GpioPinDigitalInputTests {
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
+
         // reset pin monitoring variable
         pinMonitoredState = null;
 
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
-        // wait 1/10 second before continuing test
-        Thread.sleep(100);
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
 
         // verify pin hi state
         assertEquals(PinState.HIGH, pinMonitoredState);
