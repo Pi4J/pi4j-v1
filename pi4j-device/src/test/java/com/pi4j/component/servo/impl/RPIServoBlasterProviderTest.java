@@ -10,13 +10,13 @@ import com.pi4j.io.gpio.RaspiPin;
 /*
  * #%L
  * **********************************************************************
-ORGANIZATION  :  Pi4J
-PROJECT       :  Pi4J :: Device Abstractions
-FILENAME      :  RPIServoBlasterProviderTest.java
-
-This file is part of the Pi4J project. More information about
-this project can be found here:  http://www.pi4j.com/
-**********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  RPIServoBlasterProviderTest.java
+ *
+ * This file is part of the Pi4J project. More information about
+ * this project can be found here:  http://www.pi4j.com/
+ * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2017 Pi4J
  * %%

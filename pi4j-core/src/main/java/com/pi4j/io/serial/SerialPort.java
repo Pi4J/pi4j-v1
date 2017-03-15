@@ -69,6 +69,8 @@ public class SerialPort {
             case RaspberryPi_ComputeModule:
             case RaspberryPi_2B:
             case RaspberryPi_Zero:
+            case RaspberryPi_ComputeModule3:
+            case RaspberryPi_ZeroW:
             case RaspberryPi_Alpha:
             case RaspberryPi_Unknown: {
                 return RaspberryPiSerial.DEFAULT_COM_PORT;

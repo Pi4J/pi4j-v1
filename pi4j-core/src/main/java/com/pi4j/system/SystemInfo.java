@@ -52,6 +52,8 @@ public class SystemInfo {
         RaspberryPi_2B,
         RaspberryPi_3B,
         RaspberryPi_Zero,
+        RaspberryPi_ComputeModule3,
+        RaspberryPi_ZeroW,
         RaspberryPi_Alpha,
         RaspberryPi_Unknown,
         //------------------------
