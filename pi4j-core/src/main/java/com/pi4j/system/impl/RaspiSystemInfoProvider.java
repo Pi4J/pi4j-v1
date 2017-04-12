@@ -114,6 +114,8 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
     public static final short RPI_MODEL_UNKNOWN = 7;
     public static final short RPI_MODEL_3B      = 8;
     public static final short RPI_MODEL_ZERO    = 9;
+    public static final short RPI_MODEL_CM3     = 10;
+    public static final short RPI_MODEL_ZERO_W  = 12;
 
     // Raspberry Pi Revision :: Memory
     public static final short RPI_RAM_256       = 0;
@@ -246,6 +248,8 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case RPI_MODEL_UNKNOWN: return SystemInfo.BoardType.RaspberryPi_Unknown;
                 case RPI_MODEL_3B:      return SystemInfo.BoardType.RaspberryPi_3B;
                 case RPI_MODEL_ZERO:    return SystemInfo.BoardType.RaspberryPi_Zero;
+                case RPI_MODEL_CM3:     return SystemInfo.BoardType.RaspberryPi_ComputeModule3;
+                case RPI_MODEL_ZERO_W:  return SystemInfo.BoardType.RaspberryPi_ZeroW;
                 case RPI_MODEL_B: {
                     // for model B, also take into consideration the revision
                     if(pcbrev <= 1)
