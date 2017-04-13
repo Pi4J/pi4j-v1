@@ -30,6 +30,12 @@ package com.pi4j.io.i2c;
  */
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import com.pi4j.io.i2c.impl.I2CProviderImpl;
@@ -78,28 +84,6 @@ public class I2CFactory {
 
     /**
      * Create new I2CBus instance.
-     * <p>
-     * The timeout for locking the bus for exclusive communication is set to DEFAULT_LOCKAQUIRE_TIMEOUT.
-     *
-     * @param sysfs The sysfs device path. E.g /sys/bus/i2c/devices/i2c-0
-     * @return Return a new I2CBus instance
-     * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
-     * @throws IOException If communication to i2c-bus fails
-     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT
-     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
-     */
-    public static I2CBus getInstance(String sysfs) throws UnsupportedBusNumberException, IOException {
-        String[] tokens = sysfs.split("-");
-        if(tokens.length == 2) {
-            return I2CFactory.getInstance(Integer.parseInt(tokens[1]));
-        } else {
-            throw new UnsupportedBusNumberException();
-        }
-    }
-
-
-    /**
-     * Create new I2CBus instance.
      *
      * @param busNumber The bus number
      * @param lockAquireTimeout The timeout for locking the bus for exclusive communication
@@ -113,26 +97,6 @@ public class I2CFactory {
     }
 
     /**
-     * Create new I2CBus instance.
-     *
-     * @param sysfs The sysfs device path. E.g /sys/bus/i2c/devices/i2c-0
-     * @param lockAquireTimeout The timeout for locking the bus for exclusive communication
-     * @param lockAquireTimeoutUnit The units of lockAquireTimeout
-     * @return Return a new I2CBus instance
-     * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
-     * @throws IOException If communication to i2c-bus fails
-     */
-    public static I2CBus getInstance(String sysfs, long lockAquireTimeout, TimeUnit lockAquireTimeoutUnit) throws UnsupportedBusNumberException, IOException {
-        String[] tokens = sysfs.split("-");
-        if(tokens.length == 2) {
-            return I2CFactory.getInstance(Integer.parseInt(tokens[1]), lockAquireTimeout, lockAquireTimeoutUnit);
-        } else {
-            throw new UnsupportedBusNumberException();
-        }
-    }
-
-
-    /**
      * allow changing the provider for the factory
      *
      * @param factoryProvider
@@ -141,4 +105,34 @@ public class I2CFactory {
         provider = factoryProvider;
     }
 
+    /**
+     * Fetch all available I2C bus numbers from sysfs.
+     * Returns null, if nothing was found.
+     *
+     * @return Return found I2C bus numbers or null
+     * @throws IOException If fetching from sysfs interface fails
+     */
+    public static int[] getBusIds() throws IOException {
+        Set<Integer> set = null;
+        for (Path device: Files.newDirectoryStream(Paths.get("/sys/bus/i2c/devices"), "*")) {
+            String[] tokens = device.toString().split("-");
+            if(tokens.length == 2) {
+                if (set == null) {
+                    set = new HashSet<Integer>();
+                }
+                set.add(Integer.valueOf(tokens[1]));
+            }
+        }
+
+        int[] result = null;
+        if(set != null) {
+            int counter = 0;
+            result = new int[set.size()];
+            for(Integer value : set) {
+                result[counter] = value.intValue();
+                counter = counter + 1;
+            }
+        }
+        return result;
+    }
 }
