@@ -30,6 +30,9 @@ package com.pi4j.gpio.extension.pcf;
  */
 
 
+import com.pi4j.gpio.extension.base.MonitorGpioProvider;
+import com.pi4j.gpio.extension.base.MonitorGpioProviderBase;
+import com.pi4j.gpio.extension.base.MonitoringStateDeviceBase;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
@@ -56,7 +59,7 @@ import java.util.BitSet;
  * @author Robert Savage
  *
  */
-public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvider {
+public class PCF8574GpioProvider extends MonitorGpioProviderBase implements MonitorGpioProvider {
 
     public static final String NAME = "com.pi4j.gpio.extension.ti.PCF8574GpioProvider";
     public static final String DESCRIPTION = "PCF8574 GPIO Provider";
@@ -80,21 +83,38 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     public static final int PCF8574A_0x3E = 0x3E; // 110
     public static final int PCF8574A_0x3F = 0x3F; // 111
 
-    public static final int PCF8574_MAX_IO_PINS = 8;
+    private static final int PCF8574_MAX_IO_PINS = PCF8574Pin.ALL.length;
 
     private boolean i2cBusOwner = false;
     private I2CBus bus;
     private I2CDevice device;
-    private GpioStateMonitor monitor = null;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
 
     public PCF8574GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
+        this(busNumber, address, false);
+    }
+    public PCF8574GpioProvider(int busNumber, int address, boolean disableMonitor) throws UnsupportedBusNumberException, IOException {
+        this(busNumber, address, null, disableMonitor);
+    }
+    public PCF8574GpioProvider(int busNumber, int address, GpioPinDigitalInput irqPin) throws UnsupportedBusNumberException, IOException {
+        this(busNumber,address, irqPin, false);
+    }
+    public PCF8574GpioProvider(int busNumber, int address, GpioPinDigitalInput irqPin, boolean disableMonitor) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
-        this(I2CFactory.getInstance(busNumber), address);
+        this(I2CFactory.getInstance(busNumber), address, irqPin, disableMonitor);
         i2cBusOwner = true;
     }
 
     public PCF8574GpioProvider(I2CBus bus, int address) throws IOException {
+        this(bus, address, false);
+    }
+    public PCF8574GpioProvider(I2CBus bus, int address, boolean disableMonitor) throws IOException {
+        this(bus, address, null, disableMonitor);
+    }
+    public PCF8574GpioProvider(I2CBus bus, int address, GpioPinDigitalInput irqPin) throws IOException {
+        this(bus, address, irqPin, false);
+    }
+    public PCF8574GpioProvider(I2CBus bus, int address, GpioPinDigitalInput irqPin, boolean disableMonitor) throws IOException {
 
         // set reference to I2C communications bus instance
         this.bus = bus;
@@ -108,11 +128,12 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
             currentStates.set(pin.getAddress(), true);
         }
 
-        // start monitoring thread
-        monitor = new PCF8574GpioProvider.GpioStateMonitor(device);
-        monitor.start();
+        // start monitoring thread if isn't disabled
+        if (!disableMonitor) {
+            monitor = new PCF8574GpioProvider.GpioStateMonitor(device, irqPin);
+            ((PCF8574GpioProvider.GpioStateMonitor) monitor).start();
+        }
     }
-
 
     @Override
     public String getName() {
@@ -164,85 +185,52 @@ public class PCF8574GpioProvider extends GpioProviderBase implements GpioProvide
     }
 
     @Override
-    public void shutdown() {
-
-        // prevent reentrant invocation
-        if(isShutdown())
-            return;
-
-        // perform shutdown login in base
-        super.shutdown();
-
-        try {
-            // if a monitor is running, then shut it down now
-            if (monitor != null) {
-                // shutdown monitoring thread
-                monitor.shutdown();
-                monitor = null;
-            }
-
-            // if we are the owner of the I2C bus, then close it
-            if(i2cBusOwner) {
-                // close the I2C bus communication
-                bus.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void specificShutdown() throws Exception {
+        // if we are the owner of the I2C bus, then close it
+        if(i2cBusOwner) {
+            // close the I2C bus communication
+            bus.close();
         }
     }
-
 
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
      *
      * @author Robert Savage
-     *
      */
-    private class GpioStateMonitor extends Thread {
+    private class GpioStateMonitor extends MonitoringStateDeviceBase<I2CDevice, GpioPinDigitalInput> {
 
-        private I2CDevice device;
-        private boolean shuttingDown = false;
-
-        public GpioStateMonitor(I2CDevice device) {
-            this.device = device;
+        GpioStateMonitor(I2CDevice device, GpioPinDigitalInput irqPin) {
+            super(device, irqPin);
         }
 
-        public void shutdown() {
-            shuttingDown = true;
+        @Override
+        protected boolean irqRead() {
+            return getIrqPin().isLow();
         }
 
-        public void run() {
-            while (!shuttingDown) {
-                try {
-                    // read device pins state
-                    byte[] buffer = new byte[1];
-                    device.read(buffer, 0, 1);
-                    BitSet pinStates = BitSet.valueOf(buffer);
+        @Override
+        protected void doRead() throws IOException {
+            byte[] buffer = new byte[1];
+            getDevice().read(buffer, 0, 1);
+            BitSet pinStates = BitSet.valueOf(buffer);
 
-                    // determine if there is a pin state difference
-                    for (int index = 0; index < PCF8574_MAX_IO_PINS; index++) {
-                        if (pinStates.get(index) != currentStates.get(index)) {
-                            Pin pin = PCF8574Pin.ALL[index];
-                            PinState newState = (pinStates.get(index)) ? PinState.HIGH : PinState.LOW;
+            // determine if there is a pin state difference
+            for (int index = 0; index < PCF8574_MAX_IO_PINS; index++) {
+                if (pinStates.get(index) != currentStates.get(index)) {
+                    Pin pin = PCF8574Pin.ALL[index];
+                    PinState newState = (pinStates.get(index)) ? PinState.HIGH : PinState.LOW;
 
-                            // cache state
-                            getPinCache(pin).setState(newState);
-                            currentStates.set(index, pinStates.get(index));
+                    // cache state
+                    getPinCache(pin).setState(newState);
+                    currentStates.set(index, pinStates.get(index));
 
-                            // only dispatch events for input pins
-                            if (getMode(pin) == PinMode.DIGITAL_INPUT) {
-                                // change detected for INPUT PIN
-                                // System.out.println("<<< CHANGE >>> " + pin.getName() + " : " + state);
-                                dispatchPinChangeEvent(pin.getAddress(), newState);
-                            }
-                        }
+                    // only dispatch events for input pins
+                    if (getMode(pin) == PinMode.DIGITAL_INPUT) {
+                        // change detected for INPUT PIN
+                        // System.out.println("<<< CHANGE >>> " + pin.getName() + " : " + state);
+                        dispatchPinChangeEvent(pin.getAddress(), newState);
                     }
-
-                    // ... lets take a short breather ...
-                    Thread.currentThread();
-                    Thread.sleep(50);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
         }

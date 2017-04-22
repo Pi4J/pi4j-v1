@@ -15,6 +15,11 @@
 
 	<!-- PROJECT DEPENDENCIES -->
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
         <!-- while the pi4j-native dependency is not needed for compiling this
              project, including it here ensures that it gets compiled in the maven

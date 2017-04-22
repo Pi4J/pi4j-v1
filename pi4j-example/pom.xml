@@ -15,6 +15,12 @@
 
 	<!-- DEPENDENCIES -->
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 <!-- START SNIPPET: maven-dependency-snippet -->
 <dependency>
 	<groupId>com.pi4j</groupId>
