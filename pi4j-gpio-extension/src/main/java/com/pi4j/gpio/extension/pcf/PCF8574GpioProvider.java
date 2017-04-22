@@ -89,6 +89,7 @@ public class PCF8574GpioProvider extends MonitorGpioProviderBase implements Moni
     private I2CBus bus;
     private I2CDevice device;
     private BitSet currentStates = new BitSet(PCF8574_MAX_IO_PINS);
+    private BitSet outputMask = new BitSet(PCF8574_MAX_IO_PINS);
 
     public PCF8574GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
         this(busNumber, address, false);
@@ -126,6 +127,7 @@ public class PCF8574GpioProvider extends MonitorGpioProviderBase implements Moni
         for (Pin pin : PCF8574Pin.ALL) {
             getPinCache(pin).setState(PinState.HIGH);
             currentStates.set(pin.getAddress(), true);
+            outputMask.set(pin.getAddress(), true); // All are in input mode at power on
         }
 
         // start monitoring thread if isn't disabled
@@ -156,6 +158,10 @@ public class PCF8574GpioProvider extends MonitorGpioProviderBase implements Moni
     @Override
     public void setMode(Pin pin, PinMode mode) {
         super.setMode(pin, mode);
+
+        // Save the input pin in the mask
+        // Will be write a high level on port to conserve this pin as an input
+        outputMask.set(pin.getAddress(), mode == PinMode.DIGITAL_INPUT);
     }
 
 
@@ -173,7 +179,13 @@ public class PCF8574GpioProvider extends MonitorGpioProviderBase implements Moni
             currentStates.set(pin.getAddress(), state.isHigh());
 
             // update state value
-            device.write(currentStates.isEmpty() ? 0 : currentStates.toByteArray()[0]);
+            byte valueToWrite = currentStates.isEmpty() ? 0 : currentStates.toByteArray()[0];
+            byte mask = outputMask.isEmpty() ? 127 : outputMask.toByteArray()[0];
+
+            // Apply a logical OR to set to high level all the input pin
+            // The datasheet from NXP (http://www.nxp.com/documents/data_sheet/PCF8574_PCF8574A.pdf page 7) explain
+            // that more quickly
+            device.write((byte) (valueToWrite | mask));
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
