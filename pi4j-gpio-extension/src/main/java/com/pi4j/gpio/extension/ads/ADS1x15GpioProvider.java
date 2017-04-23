@@ -32,11 +32,10 @@ package com.pi4j.gpio.extension.ads;
 
 import java.io.IOException;
 
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.GpioProviderBase;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
+import com.pi4j.gpio.extension.base.MonitorGpioProvider;
+import com.pi4j.gpio.extension.base.MonitorGpioProviderBase;
+import com.pi4j.gpio.extension.base.MonitoringStateDeviceBase;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.PinListener;
 import com.pi4j.io.i2c.I2CBus;
@@ -73,7 +72,7 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
  * @author Robert Savage
  *
  */
-public abstract class ADS1x15GpioProvider extends GpioProviderBase implements GpioProvider {
+public abstract class ADS1x15GpioProvider extends MonitorGpioProviderBase implements MonitorGpioProvider {
 
     public static final String NAME = "com.pi4j.gpio.extension.ads.ADS1x15GpioProvider";
     public static final String DESCRIPTION = "ADS1x15 GPIO Provider";
@@ -81,7 +80,6 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     protected boolean i2cBusOwner = false;
     protected I2CBus bus;
     protected I2CDevice device;
-    protected ADCMonitor monitor = null;
     protected Pin[] allPins = null;
     protected int conversionDelay = 0;
     protected short bitShift = 0;
@@ -91,6 +89,9 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
 
     // default background monitoring interval in milliseconds
     public static int DEFAULT_MONITOR_INTERVAL = 100;
+
+    // value to indicate the monitoring thread is disabled
+    public static int DISABLED_MONITOR_INTERVAL = -1;
 
     // =======================================================================
     // POINTER REGISTER
@@ -196,17 +197,31 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     // this cache value is used to track last known pin values for raising event
     protected double[] cachedValue = { 0, 0, 0, 0 };
 
-    // this value defines the sleep time between value reads by the event monitoring thread
-    protected int monitorInterval = DEFAULT_MONITOR_INTERVAL;
-
     public ADS1x15GpioProvider(int busNumber, int address) throws UnsupportedBusNumberException, IOException {
-
+        this(busNumber, address, false);
+    }
+    public ADS1x15GpioProvider(int busNumber, int address, boolean disableMonitor) throws UnsupportedBusNumberException, IOException {
+        this(busNumber, address, null, disableMonitor);
+    }
+    public ADS1x15GpioProvider(int busNumber, int address, GpioPinDigitalInput irqPin) throws UnsupportedBusNumberException, IOException {
+        this(busNumber,address, irqPin, false);
+    }
+    public ADS1x15GpioProvider(int busNumber, int address, GpioPinDigitalInput irqPin, boolean disableMonitor) throws UnsupportedBusNumberException, IOException {
         // create I2C communications bus instance
-        this(I2CFactory.getInstance(busNumber), address);
+        this(I2CFactory.getInstance(busNumber), address, irqPin, disableMonitor);
         i2cBusOwner = true;
     }
 
     public ADS1x15GpioProvider(I2CBus bus, int address) throws IOException {
+        this(bus, address, false);
+    }
+    public ADS1x15GpioProvider(I2CBus bus, int address, boolean disableMonitor) throws IOException {
+        this(bus, address, null, disableMonitor);
+    }
+    public ADS1x15GpioProvider(I2CBus bus, int address, GpioPinDigitalInput irqPin) throws IOException {
+        this(bus, address, irqPin, false);
+    }
+    public ADS1x15GpioProvider(I2CBus bus, int address, GpioPinDigitalInput irqPin, boolean disableMonitor) throws IOException {
 
         // set reference to I2C communications bus instance
         this.bus = bus;
@@ -242,9 +257,11 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
             //currentStates.set(pin.getAddress(), true);
         //}
 
-        // start monitoring thread
-        monitor = new ADS1x15GpioProvider.ADCMonitor(device);
-        monitor.start();
+        // start monitoring thread if isn't disabled
+        if (!disableMonitor) {
+            monitor = new ADS1x15GpioProvider.ADCMonitor(device, irqPin);
+            ((ADS1x15GpioProvider.ADCMonitor) monitor).start();
+        }
     }
 
 
@@ -290,13 +307,16 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
     }
 
     public int getMonitorInterval(){
-        return monitorInterval;
+        if (monitor == null) {
+            return DISABLED_MONITOR_INTERVAL;
+        }
+        return (int) monitor.getWaitTime();
     }
 
     public void setMonitorInterval(int monitorInterval){
-        this.monitorInterval = monitorInterval;
-        if(monitorInterval < MIN_MONITOR_INTERVAL)
-            monitorInterval = DEFAULT_MONITOR_INTERVAL;
+        if (monitor != null) {
+            monitor.setWaitTime(monitorInterval < MIN_MONITOR_INTERVAL ? DEFAULT_MONITOR_INTERVAL : monitorInterval);
+        }
     }
 
     @Override
@@ -411,46 +431,14 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
         return (short) (arr[off]<<8 &0xFF00 | arr[off+1]&0xFF);
     }
 
-    protected static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for ( int j = 0; j < bytes.length; j++ ) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
     @Override
-    public void shutdown() {
-
-        // prevent reentrant invocation
-        if(isShutdown())
-            return;
-
-        // perform shutdown login in base
-        super.shutdown();
-
-        try {
-            // if a monitor is running, then shut it down now
-            if (monitor != null) {
-                // shutdown monitoring thread
-                monitor.shutdown();
-                monitor = null;
-            }
-
-            // if we are the owner of the I2C bus, then close it
-            if(i2cBusOwner) {
-                // close the I2C bus communication
-                bus.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void specificShutdown() throws Exception {
+        // if we are the owner of the I2C bus, then close it
+        if(i2cBusOwner) {
+            // close the I2C bus communication
+            bus.close();
         }
     }
-
 
     /**
      * This class/thread is used to to actively monitor for GPIO interrupts
@@ -458,71 +446,60 @@ public abstract class ADS1x15GpioProvider extends GpioProviderBase implements Gp
      * @author Robert Savage
      *
      */
-    private class ADCMonitor extends Thread {
+    private class ADCMonitor extends MonitoringStateDeviceBase<I2CDevice, GpioPinDigitalInput> {
 
-        private I2CDevice device;
-        private boolean shuttingDown = false;
-
-        public ADCMonitor(I2CDevice device) {
-            this.device = device;
+        public ADCMonitor(I2CDevice device, GpioPinDigitalInput irqPin) {
+            super(device, irqPin);
         }
 
-        public void shutdown() {
-            shuttingDown = true;
+        @Override
+        protected boolean irqRead() {
+            return getIrqPin().isLow();
         }
 
-        public void run() {
-            while (!shuttingDown) {
-                try {
-                    // read device pins state
-                    byte[] buffer = new byte[1];
-                    device.read(buffer, 0, 1);
+        @Override
+        protected void doRead() throws IOException {
+            // read device pins state
+            byte[] buffer = new byte[1];
+            device.read(buffer, 0, 1);
 
-                    // determine if there is a pin state difference
-                    if(allPins != null && allPins.length > 0){
-                        for (Pin pin : allPins) {
+            // determine if there is a pin state difference
+            if(allPins != null && allPins.length > 0){
+                for (Pin pin : allPins) {
 
-                            try{
-                                // get current cached value
-                                double oldValue = cachedValue[pin.getAddress()];
+                    try{
+                        // get current cached value
+                        double oldValue = cachedValue[pin.getAddress()];
 
-                                // get actual value from ADC chip
-                                double newValue = getImmediateValue(pin);
+                        // get actual value from ADC chip
+                        double newValue = getImmediateValue(pin);
 
-                                // check to see if the pin value exceeds the event threshold
-                                if(Math.abs(oldValue - newValue) > threshold[pin.getAddress()]){
+                        // check to see if the pin value exceeds the event threshold
+                        if(Math.abs(oldValue - newValue) > threshold[pin.getAddress()]){
 
-                                    // cache new value (both in local event comparison cache variable and pin state cache)
-                                    cachedValue[pin.getAddress()] = newValue;
-                                    getPinCache(pin).setAnalogValue(newValue);
+                            // cache new value (both in local event comparison cache variable and pin state cache)
+                            cachedValue[pin.getAddress()] = newValue;
+                            getPinCache(pin).setAnalogValue(newValue);
 
-                                    // only dispatch events for analog input pins
-                                    if (getMode(pin) == PinMode.ANALOG_INPUT) {
-                                        dispatchPinChangeEvent(pin.getAddress(), newValue);
-                                    }
-                                }
-
-                                // Wait for the conversion to complete
-                                try{
-                                    if(conversionDelay > 0){
-                                        Thread.sleep(conversionDelay);
-                                    }
-                                }
-                                catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            catch(IOException ex){
-                                // I2C read error
+                            // only dispatch events for analog input pins
+                            if (getMode(pin) == PinMode.ANALOG_INPUT) {
+                                dispatchPinChangeEvent(pin.getAddress(), newValue);
                             }
                         }
-                    }
 
-                    // ... lets take a short breather ...
-                    Thread.currentThread();
-                    Thread.sleep(monitorInterval);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                        // Wait for the conversion to complete
+                        try{
+                            if(conversionDelay > 0){
+                                Thread.sleep(conversionDelay);
+                            }
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    catch(IOException ex){
+                        // I2C read error
+                    }
                 }
             }
         }
