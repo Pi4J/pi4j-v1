@@ -54,7 +54,7 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
  *
  * <p>
  * The PCF8574 is connected via I2C connection to the Raspberry Pi and provides
- * 16 GPIO pins that can be used for either digital input or digital output pins.
+ * 8 GPIO pins that can be used for either digital input or digital output pins.
  * </p>
  *
  * @author Robert Savage
@@ -68,7 +68,7 @@ public class PCF8574GpioExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // create custom MCP23017 GPIO provider
+        // create custom PCF8574 GPIO provider
         final PCF8574GpioProvider provider = new PCF8574GpioProvider(I2CBus.BUS_1, PCF8574GpioProvider.PCF8574A_0x3F);
 
         // provision gpio input pins from MCP23017

@@ -30,7 +30,6 @@ package com.pi4j.io.gpio.event;
  */
 
 
-
 /**
  * <p> This interface implements the callback event handler for GPIO pin state changes.</p>
  *
@@ -50,6 +49,7 @@ package com.pi4j.io.gpio.event;
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
+@FunctionalInterface
 public interface GpioPinListenerDigital extends GpioPinListener {
 
     void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event);
