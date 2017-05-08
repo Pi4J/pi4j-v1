@@ -52,7 +52,7 @@ public class RaspiGpioProvider extends WiringPiGpioProviderBase implements GpioP
     }
 
     /**
-     * Alternate Constructor allowing user ot override default pin numbering scheme
+     * Alternate Constructor allowing user to override default pin numbering scheme
      *
      * @param pinNumberingScheme
      */
