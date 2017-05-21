@@ -38,8 +38,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.pi4j.io.i2c.*;
 import com.pi4j.io.file.LinuxFile;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CConstants;
+import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
 
 /**
  * This is implementation of i2c bus. This class keeps underlying linux file descriptor of particular bus. As all reads and writes from/to i2c bus are blocked I/Os current implementation uses only one file per bus for all devices. Device
@@ -132,7 +135,7 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public synchronized void close() throws IOException {
-        if(file != null) {
+        if (file != null) {
             file.close();
             file = null;
         }
@@ -282,7 +285,7 @@ public class I2CBusImpl implements I2CBus {
     protected void selectBusSlave(final I2CDevice device) throws IOException {
         final int addr = device.getAddress();
 
-        if(lastAddress != addr) {
+        if (lastAddress != addr) {
             lastAddress = addr;
 
             file.ioctl(I2CConstants.I2C_SLAVE, addr & 0xFF);

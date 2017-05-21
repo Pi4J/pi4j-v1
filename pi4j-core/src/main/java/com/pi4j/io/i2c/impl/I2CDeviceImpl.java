@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import com.pi4j.io.i2c.I2CConstants;
 import com.pi4j.io.i2c.I2CDevice;
 
 /**
