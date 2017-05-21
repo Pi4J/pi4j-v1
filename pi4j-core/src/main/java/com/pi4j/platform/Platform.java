@@ -31,10 +31,7 @@ package com.pi4j.platform;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CFactoryProvider;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderBananaPi;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderOdroid;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderOrangePi;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
+import com.pi4j.io.i2c.impl.I2CProviderImpl;
 import com.pi4j.system.SystemInfoProvider;
 import com.pi4j.system.impl.*;
 
@@ -148,28 +145,7 @@ public enum Platform {
     }
 
     public static I2CFactoryProvider getI2CFactoryProvider(Platform platform) {
-        // return the I2C provider based on the provided platform
-        switch(platform) {
-            case RASPBERRYPI: {
-                return new I2CFactoryProviderRaspberryPi();
-            }
-            case BANANAPI: {
-                return new I2CFactoryProviderBananaPi();
-            }
-            case BANANAPRO: {
-                return new I2CFactoryProviderBananaPi();
-            }
-            case ODROID: {
-                return new I2CFactoryProviderOdroid();
-            }
-            case ORANGEPI: {
-                return new I2CFactoryProviderOrangePi();
-            }
-            default: {
-                // if a platform cannot be determine, then assume it's the default RaspberryPi
-                return new I2CFactoryProviderRaspberryPi();
-            }
-        }
+        return new I2CProviderImpl();
     }
 
     public SystemInfoProvider getSystemInfoProvider() {

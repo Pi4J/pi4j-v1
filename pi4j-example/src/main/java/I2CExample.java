@@ -28,6 +28,7 @@
  */
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
@@ -97,6 +98,26 @@ public class I2CExample {
 
         // allow for user to exit program using CTRL-C
         console.promptForExit();
+
+        // fetch all available busses
+        try {
+            int[] ids = I2CFactory.getBusIds();
+            console.println("Found follow I2C busses: " + Arrays.toString(ids));
+        } catch (IOException exception) {
+            console.println("I/O error during fetch of I2C busses occurred");
+        }
+        
+        // find available busses
+        for (int number = I2CBus.BUS_0; number <= I2CBus.BUS_17; ++number) {
+            try {
+                I2CBus bus = I2CFactory.getInstance(number);
+                console.println("Supported I2C bus " + number + " found");
+            } catch (IOException exception) {
+                console.println("I/O error on I2C bus " + number + " occurred");
+            } catch (UnsupportedBusNumberException exception) {
+                console.println("Unsupported I2C bus " + number + " required");
+            }
+        }
 
         // get the I2C bus to communicate on
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_1);
