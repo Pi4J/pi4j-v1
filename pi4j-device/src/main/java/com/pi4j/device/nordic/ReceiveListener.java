@@ -3,15 +3,15 @@ package com.pi4j.device.nordic;
 /*
  * #%L
  * **********************************************************************
- * ORGANIZATION  :  www.nowcode.cn
- * PROJECT       :  Pi4J :: Device/ NRF24L01
- * FILENAME      :  ReceiveListener
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Device Abstractions
+ * FILENAME      :  ReceiveListener.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2017 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,7 @@ package com.pi4j.device.nordic;
  * #L%
  */
 /**
+ * callback function when data received from FR
  * @author Alex maoanapex88@163.com
  */
 public interface ReceiveListener {
