@@ -25,15 +25,15 @@ import java.util.concurrent.TimeUnit;
 /*
  * #%L
  * **********************************************************************
- * ORGANIZATION  :  www.nowcode.cn
- * PROJECT       :  Pi4J :: Device/ NRF24L01
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: Device Abstractions
  * FILENAME      :  NRF24L01.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2017 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,24 +52,36 @@ import java.util.concurrent.TimeUnit;
  */
 /**
  * NRF24L01.java is the driver for nodic nRF24L01 seriser 2.4G RF chip. see http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01P
- * it is simplex communication, but it abstract the chip as duplex. It owns one data listener for receiving. 
+ * it is simplex communication, but it abstract the chip as duplex. It owns one data listener for receiving.
  * this app mocked SPI bus for communication implementation.
  * 
+ * this class is designed as singleton pattern since hardware is monopolized.
+ *
  * <h1>Sample Usage</h1>
  * <pre>
  * NRF24L01 nrf=NRF24L01.getInstance();
  * nrf.start();//there will be thread daemon up, if your system does not have other user thread, setup one for dummy
  * nrf.setReceiverListener(.....);
- * 
+ *
  * <br>somewhere to send
  * nrf.send(.....);
- * 
+ *
  * <br>somewhere to shutdown
  * nrf.shutdown();
  * </pre>
  * 
- * @author Alex maoanapex88@163.com
+ * RF/GPIO table:<br>
+ * <ul>
+ * <li>GPIO_21 LED bubble</li>
+ * <li>GPIO_2 IRQ</li>
+ * <li>GPIO_12 MISO</li>
+ * <li>GPIO_11 CE</li>
+ * <li>GPIO_13 MOSI</li>
+ * <li>GPIO_14 SCLK</li>
+ * <li>GPIO_0 CSN</li>
+ * </ul>
  *
+ * @author Alex maoanapex88@163.com
  */
 public class NRF24L01 implements IRegister, Runnable {
 	/**
@@ -77,93 +89,133 @@ public class NRF24L01 implements IRegister, Runnable {
 	 */
 	private static final int LED = 21;
 	/**
-	 * irq
+	 * irq GPIO_2
 	 */
 	private static final int IRQ = 2;
 	/**
-	 * miso
+	 * miso GPIO_12
 	 */
 	private static final int MISO = 12;
 	/**
-	 * ce
+	 * ce GPIO_11
 	 */
 	private static final int CE = 11;
 	/**
-	 * mosi
+	 * mosi GPIO_13
 	 */
 	private static final int MOSI = 13;
 	/**
-	 * sclk
+	 * sclk GPIO_14
 	 */
 	private static final int SCLK = 14;
 	/**
-	 * csn
+	 * csn GPIO_0
 	 */
 	private static final int CSN = 0;
 	/**
-	 * default data width 16, NRF support 32 in most
+	 * default data width 16, NRF support 32 in max
 	 */
 	private static final short RECEIVE_DATA_WIDTH = 16;
-	
 	/**
-	 * default local listening chanel
+	 * default local listening chanel 96
 	 */
 	private int localRFChanel=96;
+	/**
+	 * default local RF address which is one byte length n 5
+	 */
 	private int[] localRFAddress={ 53, 69, 149, 231, 231 };
+	/**
+	 * one flag marking thread running
+	 */
 	private volatile boolean running=false;
+	/**
+	 * the IRQ watching thread handler
+	 */
 	private Thread irqWatchThread;
+	/**
+	 * the attached receive listener, it is empty listener by default.
+	 * empty listener will only print received data byte array to STDOUT.
+	 */
 	private ReceiveListener listener=new EmptyReceiveListener();
-	/*send FIFO*/
+	/**
+	 * one blocking queue for send data, when sending data, data first will
+	 * be queued and then wait NRF send period to pull data and send it out.
+	 */
 	private BlockingQueue<DataPackage> fifo=new LinkedBlockingQueue<DataPackage>(16);
 	/**
-	 * one thread pool for processing data listener
+	 * one thread pool for processing data listener, all received data callback will be invoked from
+	 * thread and not thread safe.
 	 */
 	private ExecutorService executorService;
 	static {
 		wiringPiSetup();
 	}
-	
+	/**
+	 * the singleton instance
+	 */
 	private static final NRF24L01 nrf=new NRF24L01();
-	
+	/**
+	 * @return return the singleton instance
+	 */
 	public static final NRF24L01 getInstance() {
 		return nrf;
 	}
-	
+	/**
+	 * the default constructor will do steps as follows,
+	 * <ul>
+	 * <li>provision CSN as output</li>
+	 * <li>provision SCLK as output</li>
+	 * <li>provision MOSI as output</li>
+	 * <li>provision CE as output</li>
+	 * <li>provision MISO as output, then pull up resistor buit-in</li>
+	 * <li>provision IRQ as INPUT, then pull up resistor buit-in</li>
+	 * <li>provision LED as output, then pull up resistor buit-in</li>
+	 * <li>do init and then go into listen mode</li>
+	 * </ul>
+	 */
 	private NRF24L01() {
 		/*CSN*/
 		export(CSN, DIRECTION_OUT);
 		pinMode(CSN, OUTPUT);
-		
+
 		/*SCLK*/
 		export(SCLK, DIRECTION_OUT);
 		pinMode(SCLK, OUTPUT);
-		
+
 		/*mosi*/
 		export(MOSI, DIRECTION_OUT);
 		pinMode(MOSI, OUTPUT);
-		
+
 		/*ce*/
 		export(CE, DIRECTION_OUT);
 		pinMode(CE, OUTPUT);
-		
+
 		/*miso*/
 		export(MISO, DIRECTION_IN);
 		pinMode(MISO, OUTPUT);
 		pullUpDnControl(MISO, PUD_UP);
-		
+
 		/*irq*/
 		export(IRQ, DIRECTION_IN);
 		pinMode(MISO, INPUT);
 		pullUpDnControl(IRQ, PUD_UP);
-		
+
 		/*LED light*/
 		export(LED, DIRECTION_OUT);
 		pinMode(LED, OUTPUT);
 		pullUpDnControl(LED, PUD_UP);
-		
+
 		init();
 		setRxMode(localRFChanel, 5, localRFAddress);
 	}
+	/**
+	 * setRxMode is used to config RF channel and address via SPI command.
+	 * it uses chanel 0 as receive address and same as send
+	 * hardcode to 250kbps 0dBm, then enable RX_DR irq; block TX_DS+MAX_RT; enable CRC powerup; in receive mode
+	 * @param rfChannel from 0-128
+	 * @param addrWidth fixed to 5
+	 * @param rxAddr one array length of 5 representing the address
+	 */
 	private final void setRxMode(int rfChannel, int addrWidth, int[] rxAddr) {
 		digitalWrite(CE, 0);
 		writeRegister((W_REGISTER+SETUP_AW), (addrWidth - 2)); // set address width
@@ -174,50 +226,46 @@ public class NRF24L01 implements IRegister, Runnable {
 		// (+22dBm with PA), LNA?
 		writeRegister((W_REGISTER+STATUS), 0x7f); // clear RX_DR,TX_DS,MAX_RT flags
 		writeRegister((W_REGISTER+CONFIG), 0x3f); // enable RX_DR irq, block TX_DS+MAX_RT, enable CRC powerup, in receive mode
-
-		digitalWrite(CE, 1);// in PRX
 	}
 
 	/**
-	 * 
+	 * send SPI command to init device and power up, clean up read/write buffer
+	 * then light up LED bubble on GPIO_21
 	 */
 	private final void init() {
 		digitalWrite(CE, 0);
 		digitalWrite(CSN, 1);
 		digitalWrite(SCLK, 0);
-		
+
 		writeRegister((W_REGISTER+EN_AA), 0x01);
 		writeRegister((W_REGISTER+EN_RXADDR), 0x01); // enable channel 0
 		writeRegister((W_REGISTER+SETUP_RETR), 0x1f ); // set auto retry delay 500us, retry 15 times
 		writeRegister((W_REGISTER+STATUS), 0x7e); // clear RX_DR,TX_DS,MAX_RT flags
 		writeRegister((W_REGISTER+CONFIG), 0x7e); // enable RX_DR irq, block TX_DS+MAX_RT, enable CRC powerup, in receive mode PTX
-		
+
 		flushTx();
 		flushRx();
-		
-		/*light one led bubble*/
+
 		digitalWrite(LED, 1);
-		/**
-		 * https://github.com/Pi4J/pi4j/blob/master/pi4j-native/src/main/native/com_pi4j_wiringpi_GpioInterrupt.c
-		 * you can see it is not good performance, it is c pthread watching
-		 * so I watch irq by myself, in java code
-		 */
-		//GpioInterrupt.enablePinStateChangeCallback(IRQ);
 	}
+	/**
+	 * write given byte data to SPI protocol, see https://en.wikipedia.org/wiki/SPI
+	 * @param spiData
+	 * @return 0 if succeed
+	 */
 	private final int spiReadWrite(int spiData) {
 		for (int i = 0; i < 8; i++) {
 			if ((0x80 & spiData) == 0x80) digitalWrite(MOSI, 1);
 			else digitalWrite(MOSI, 0);
-			
+
 			spiData <<= 1;
 			digitalWrite(SCLK, 1);
-			
-			if (digitalRead(MISO)==1) spiData |= 0x01; 
+
+			if (digitalRead(MISO)==1) spiData |= 0x01;
 			digitalWrite(SCLK, 0);
 		}
 		return spiData & 0xff;
 	}
-	
 	
 	private final int writeRegister(int regAddr, int writeData) {
 		digitalWrite(CSN, 0);
@@ -233,7 +281,7 @@ public class NRF24L01 implements IRegister, Runnable {
 		digitalWrite(CSN, 1);
 		return val;
 	}
-	
+
 	private final int writeBuffer(int regAddr, int[] txData, int dataLen) {
 		digitalWrite(CSN, 0);
 		int val = spiReadWrite(regAddr);
@@ -253,39 +301,29 @@ public class NRF24L01 implements IRegister, Runnable {
 		digitalWrite(CSN, 1);
 		return val;
 	}
-	
-	/**
-	 * 
-	 */
+
 	private final void flushRx() {
 		digitalWrite(CSN, 0);
 		spiReadWrite(FLUSH_RX);
 		digitalWrite(CSN, 1);
 	}
 
-	/**
-	 * 
-	 */
 	private final void flushTx() {
 		digitalWrite(CSN, 0);
 		spiReadWrite(FLUSH_TX);
 		digitalWrite(CSN, 1);
 	}
-	/**
-	 * @return
-	 */
+
 	private final boolean isDataAvaid() {
 		int status;
-		if (digitalRead(IRQ)==0) {
-			status = readRegister(R_REGISTER+STATUS);
-			// System.out.println("receive status:"+status);
-			if ((status & 0x40) == 0x40)
-			{
+		if (digitalRead(IRQ) == 0) {
+			status = readRegister(R_REGISTER + STATUS);
+			if ((status & 0x40) == 0x40) {
 				// read FIFO
-				status = readRegister(R_REGISTER+FIFO_STATUS);
+				status = readRegister(R_REGISTER + FIFO_STATUS);
 				if ((status & 0x01) == 0x01) {
-					writeRegister(W_REGISTER+STATUS, 0x40);
-					// clear FIFO 
+					writeRegister(W_REGISTER + STATUS, 0x40);
+					// clear FIFO
 				} else {
 					// RX FIFO is not null, data in FIFO
 					return true;
@@ -294,16 +332,17 @@ public class NRF24L01 implements IRegister, Runnable {
 		}
 		return false;
 	}
-	/**
-	 * @return
-	 */
+	
 	private final int[] nrfGetOneDataPacket() {
 		int[] dataBuffer = new int[RECEIVE_DATA_WIDTH];
 		readBuffer(R_RX_PAYLOAD, dataBuffer, RECEIVE_DATA_WIDTH);
 		return dataBuffer;
 	}
 	/**
+	 * method to start the NRF main loop, you must call start after you get this class as singleton.
+	 * duplicated calling of start will take no effect. there is one running flag to avoid duplicated start.
 	 * 
+	 * start method will start IRQ watch thread and listener thread pool.
 	 */
 	public final void start() {
 		if(running) {
@@ -311,20 +350,25 @@ public class NRF24L01 implements IRegister, Runnable {
 			return ;
 		}
 		running=true;
-		
+
 		irqWatchThread=new Thread(this, "NRF24L01+ Daemon");
 		irqWatchThread.setPriority(Thread.MAX_PRIORITY);//in high priority
 		irqWatchThread.setDaemon(true);//daemon
 		irqWatchThread.start();
 		executorService=Executors.newCachedThreadPool();
 	}
-	
+	/**
+	 * You must call shutdown explicitly when you shutdown your application. otherwise, hardware pins will
+	 * be blocked.
+	 * 
+	 * shutdown will release all GPIO and unexport them.
+	 */
 	public final void shutdown() {
 		running=false;
 		executorService.shutdown();
-		/*LED off*/
+		
 		digitalWrite(LED, 0);
-		/*all down*/
+		
 		digitalWrite(CSN, 0);
 		digitalWrite(SCLK, 0);
 		digitalWrite(MOSI, 0);
@@ -332,23 +376,25 @@ public class NRF24L01 implements IRegister, Runnable {
 		digitalWrite(MISO, 0);
 		digitalWrite(IRQ, 0);
 		digitalWrite(LED, 0);
-		
-		/*unexport pins*/
-		/*CSN*/
+
 		unexport(CSN);
-		/*SCLK*/
 		unexport(SCLK);
-		/*mosi*/
 		unexport(MOSI);
-		/*ce*/
 		unexport(CE);
-		/*miso*/
 		unexport(MISO);
-		/*irq*/
 		unexport(IRQ);
-		/*LED light*/
 		unexport(LED);
 	}
+	/**
+	 * run is the core main loop of RF, it is one infinitely loop with one running flag.
+	 * In loop body, it will check if any data valid, if valid, then will receive data and then
+	 * pass to listener callback.
+	 * 
+	 * then loop will check sending block queue if any data, if any send data is queue, if will take one
+	 * and the send it out.
+	 * 
+	 * at last step, it will switch back to listen mode
+	 */
 	public final void run() {
 		while(running){
 			/*receive*/
@@ -360,7 +406,7 @@ public class NRF24L01 implements IRegister, Runnable {
 					}
 				});
 			}
-			
+
 			/*read FIFO for data send*/
 			try {
 				DataPackage pkg = fifo.poll(25, TimeUnit.MILLISECONDS);
@@ -368,9 +414,10 @@ public class NRF24L01 implements IRegister, Runnable {
 				int retry = nrfSendData(pkg.chanel, pkg.power, pkg.maxRetry, pkg.addrWidth, pkg.txAddr, pkg.dataWidth, pkg.txData);
 				pkg.sentTimestamp=System.currentTimeMillis();
 				pkg.retry = retry;
-				setRxMode(this.localRFChanel, 5, this.localRFAddress);//切换回接收模式
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			} finally{
+				setRxMode(this.localRFChanel, 5, this.localRFAddress);
 			}
 		}
 	}
@@ -393,9 +440,9 @@ public class NRF24L01 implements IRegister, Runnable {
 			return 253;
 		}
 		digitalWrite(CE, 0);
-		writeRegister((W_REGISTER+SETUP_AW), (addrWidth - 2)); 
-		writeBuffer((W_REGISTER+TX_ADDR), txAddr, addrWidth); 
-		writeBuffer((W_REGISTER+RX_ADDR_P0), txAddr, addrWidth); 
+		writeRegister((W_REGISTER+SETUP_AW), (addrWidth - 2));
+		writeBuffer((W_REGISTER+TX_ADDR), txAddr, addrWidth);
+		writeBuffer((W_REGISTER+RX_ADDR_P0), txAddr, addrWidth);
 		if (rfPower == 1){
 			writeRegister((W_REGISTER+RF_SETUP), 0x21); // 250Kbps -18dBm
 		}
@@ -413,7 +460,7 @@ public class NRF24L01 implements IRegister, Runnable {
 		}
 		// (+22dBm with PA),
 		// LNA?
-		writeRegister((W_REGISTER+RF_CH), rfChannel); 
+		writeRegister((W_REGISTER+RF_CH), rfChannel);
 		writeRegister((W_REGISTER+STATUS), 0x7f); // clear RX_DR,TX_DS,MAX_RT flags
 		writeRegister((W_REGISTER+CONFIG), 0x4e); // block RX_DR irq
 		// irq TX_DS,MAX_RT，CRC enable PTX power on
@@ -421,7 +468,7 @@ public class NRF24L01 implements IRegister, Runnable {
 			writeBuffer(W_TX_PAYLOAD, txData, dataWidth);//write
 			digitalWrite(CE, 1);
 			while (digitalRead(IRQ)==1) {
-				
+
 			}
 			digitalWrite(CE, 0);// must wait IRQ then set CE!
 			ret = checkSendStatus();
@@ -430,7 +477,7 @@ public class NRF24L01 implements IRegister, Runnable {
 				break;
 			}
 		}
-		
+
 		return ret;
 	}
 	private final int checkSendStatus() {
@@ -439,12 +486,12 @@ public class NRF24L01 implements IRegister, Runnable {
 		if ((status & 0x20) == 0x20) {
 			writeRegister((W_REGISTER + STATUS), 0x7f);
 			return (readRegister(R_REGISTER + OBSERVE_TX) & 0x0f);
-		} 
+		}
 		else if ((status & 0x10) == 0x10) {
 			writeRegister((W_REGISTER + STATUS), 0x7f);
 			flushTx();
 			return 255;
-		} 
+		}
 		else {
 			return 252;
 		}
@@ -461,17 +508,19 @@ public class NRF24L01 implements IRegister, Runnable {
 	}
 	/**
 	 * set your business data listener
-	 * @param l
+	 * @param l ReceiveListener which is callback function on data received
 	 */
 	public final void setReceiveListener(ReceiveListener l) {
 		this.listener = l;
 	}
+	/**
+	 * remove ReceiveListener, class will use EmptyReceiveListener which will only print byte recevied to stdout
+	 */
 	public final void removeReceiveListener(){
 		this.listener = new EmptyReceiveListener();
 	}
 	/**
 	 * one default data listener, it is empty, just print out bytes in console
-	 *
 	 */
 	private final class EmptyReceiveListener implements ReceiveListener {
 		private final DateFormat df=new SimpleDateFormat("hh:mm:ss - ");
@@ -485,8 +534,8 @@ public class NRF24L01 implements IRegister, Runnable {
 		}
 	}
 	/**
-	 * the data package structure
-	 *
+	 * the data package structure. DataPackage holds the data bytes will send out including
+	 * its chanel, power, target address and etc. all also DataPackage will calculate the latency
 	 */
 	public final class DataPackage {
 		public int retry;//result of times retry
@@ -499,7 +548,7 @@ public class NRF24L01 implements IRegister, Runnable {
 		public final int[] txData;//payload
 		public final long createTimestamp;//time to create data package
 		public long sentTimestamp;//time send out
-		
+
 		public DataPackage(int chanel, int power, int maxRetry, int addrWidth, int[] txAddr, int dataWidth, int[] txData) {
 			super();
 			this.chanel = chanel;
@@ -512,13 +561,15 @@ public class NRF24L01 implements IRegister, Runnable {
 			createTimestamp=System.currentTimeMillis();
 		}
 		/**
-		 * the letency
-		 * @return
+		 * the latency
+		 * @return the latency the time escaped from data was queued to final send out
 		 */
 		public final int getLetency(){
 			return (int)(sentTimestamp - createTimestamp);
 		}
-		/*retry times of this package*/
+		/**
+		 * @return　how many time of retry for sending data out.
+		 */
 		public final int getRetry(){
 			return retry;
 		}
