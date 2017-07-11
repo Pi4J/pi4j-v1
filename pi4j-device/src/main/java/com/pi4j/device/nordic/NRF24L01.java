@@ -417,7 +417,7 @@ public class NRF24L01 implements IRegister, Runnable {
 				final int[] data = nrfGetOneDataPacket();
 				executorService.execute(new Runnable() {
 					public void run() {
-						listener.dataRecived(data);
+						listener.dataReceived(data);
 					}
 				});
 			}
@@ -539,7 +539,7 @@ public class NRF24L01 implements IRegister, Runnable {
 	 */
 	private final class EmptyReceiveListener implements ReceiveListener {
 		private final DateFormat df=new SimpleDateFormat("hh:mm:ss - ");
-		public void dataRecived(int[] data) {
+		public void dataReceived(int[] data) {
 			System.out.print(df.format(new Date()));
 			for(int i=0;i<data.length;i++) {
 				System.out.print(data[i]&0x00ff);
