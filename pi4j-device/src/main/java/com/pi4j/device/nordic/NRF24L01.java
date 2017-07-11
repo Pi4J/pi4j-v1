@@ -386,6 +386,21 @@ public class NRF24L01 implements IRegister, Runnable {
 		unexport(LED);
 	}
 	/**
+	 * send is public interface to end user, send method does not really send data out, it will push
+	 * data package to FIFO send queue,then waiting its period to send out.
+	 * 
+	 * @param rfChannel according to RF data sheet, can be value 0-127
+	 * @param rfPower the power for send, it is enum data, can be 1, 2, 3
+	 * @param maxRetry max retry times, it can be integer value less then 9
+	 * @param addrWidth it is fixed to 5
+	 * @param txAddr, one byte array of 5 which it RF address
+	 * @param dataWidth your sending data width, i.e. txData width
+	 * @param txData the byte array to send
+	 */
+	public final void send(int rfChannel, int rfPower, int maxRetry, int addrWidth, int[] txAddr, int dataWidth, int[] txData){
+		fifo.add(new DataPackage(rfChannel, rfPower, maxRetry, addrWidth, txAddr, dataWidth, txData));
+	}
+	/**
 	 * run is the core main loop of RF, it is one infinitely loop with one running flag.
 	 * In loop body, it will check if any data valid, if valid, then will receive data and then
 	 * pass to listener callback.
