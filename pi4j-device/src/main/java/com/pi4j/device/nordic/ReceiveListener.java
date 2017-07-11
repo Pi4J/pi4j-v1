@@ -37,6 +37,6 @@ public interface ReceiveListener {
 	/**
 	 * @param data data bytes arrived
 	 */
-	void dataRecived(int[] data);
+	void dataReceived(int[] data);
 
 }
