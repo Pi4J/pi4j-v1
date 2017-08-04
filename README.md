@@ -65,7 +65,7 @@ Copyright (C) 2012-2017 Pi4J
 
 ## IN DEVELOPMENT
 
-2017-02-08 :: 1.2-SNAPSHOT
+2017-08-04 :: 1.2-SNAPSHOT
 
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
@@ -77,6 +77,7 @@ Copyright (C) 2012-2017 Pi4J
   *  Fixed #275; LCDExample.java doesn't work in release
   *  Fixed #276; RaspiBcmPin pins not firing pin state change events
   *  Fixed #198; Problems with data from HMC5883L class
+  *  Fixed #351; Pi4J packages excluded in OSGI manifest ImportPackage declaration 
 
 ## RELEASES
 
