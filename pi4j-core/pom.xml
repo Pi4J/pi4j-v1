@@ -278,8 +278,7 @@
                             com.pi4j.io.w1.*,
                             com.pi4j.io.wdt.*
 						</Export-Package>
-						<Private-Package>
-						</Private-Package>
+                        <Import-Package>!com.pi4j.*</Import-Package>
 					</instructions>
 				</configuration>
  				<executions>
