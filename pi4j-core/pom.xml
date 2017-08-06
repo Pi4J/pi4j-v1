@@ -183,6 +183,28 @@
                                     <destFileName>libpi4j.so</destFileName>
                                 </artifactItem>
 
+                                <!-- LIBPI4J for the Sinovoip BPI (BananaPi) platform -->
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bpi-static</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bpi/static</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>bpi-dynamic</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/bpi/dynamic</outputDirectory>
+                                    <destFileName>libpi4j.so</destFileName>
+                                </artifactItem>
+
                                 <!-- LIBPI4J for the Odroid platform -->
                                 <artifactItem>
                                     <groupId>com.pi4j</groupId>
