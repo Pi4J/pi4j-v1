@@ -4,7 +4,7 @@
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
 # PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  build-raspberrypi.sh
+# FILENAME      :  build-bpi.sh
 #
 # This file is part of the Pi4J project. More information about
 # this project can be found here:  http://www.pi4j.com/
@@ -66,22 +66,20 @@ else
    echo "'JAVA_HOME' was not defined; attempting to use: $JAVA_HOME";
 fi
 
-
 # ------------------------------------------------------
-# RASPBERRY-PI
+# BANANA-PI
 # ------------------------------------------------------
 echo
 echo "**********************************************************************"
 echo "*                                                                    *"
-echo "*           BUILDING Pi4J FOR THE 'RaspberryPi' PLATFORM             *"
+echo "*          BUILDING Pi4J FOR THE 'SINOVOIP BPI' PLATFORM             *"
 echo "*                                                                    *"
 echo "**********************************************************************"
 echo
-WIRINGPI_PLATFORM=raspberrypi
+WIRINGPI_PLATFORM=bpi
 
 # build wiringPi
-#export WIRINGPI_REPO=git://git.drogon.net/wiringPi
-export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
+export WIRINGPI_REPO=https://github.com/BPI-SINOVOIP/WiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
@@ -105,11 +103,10 @@ echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
 make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
 
-
 echo
 echo "**********************************************************************"
 echo "*                                                                    *"
-echo "*       Pi4J JNI BUILD COMPLETE FOR THE 'RaspberryPi' PLATFORM       *"
+echo "*     Pi4J JNI BUILD COMPLETE FOR THE 'SINOVOIP-BPI' PLATFORM        *"
 echo "*                                                                    *"
 echo "**********************************************************************"
 echo

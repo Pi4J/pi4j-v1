@@ -58,19 +58,19 @@ Copyright (C) 2012-2017 Pi4J
      the Odroid boards (C1/C1+/C2). There is no PWM function on the 30pin GPIO header on the XU3/XU4.   
     (see: https://github.com/Pi4J/pi4j/issues/229)
 
-  *  SPI modes (other than the default SPI MODE 0) are not supported in the Hardkernel Odroid WiringPi port. 
-     Thus the Odroid C1/C1+/C2/XU4 only support SPI mode 0.  
-    (see: https://github.com/Pi4J/pi4j/issues/229)
-
+  *  Support for OrangePi and Synovoip BPI platforms is considered experimental and has had limited testing.  Not 
+     all Pi4J features may be supported and/or working properly.
 
 ## IN DEVELOPMENT
 
-2017-08-04 :: 1.2-SNAPSHOT
+2017-08-06 :: 1.2-SNAPSHOT
 
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
   *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
+  *  Added SPI mode support for Odroid, BananaPi, BananaPro, and OrangePi platforms.
   *  Added experimental support for OrangePi platform.
+  *  Added experimental support for Synovoip BPI (BananaPi) platform.
   *  Fixed #278: wiringPiSetup*: You must only call this once per program run.
   *  Fixed #294; added java runtime and compiler check to pi4j helper script
   *  Fixed #291; W1Device name contains "\n"

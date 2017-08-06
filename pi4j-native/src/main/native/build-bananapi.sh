@@ -93,7 +93,7 @@ echo "Building Pi4J JNI library (staticly linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
 
 # compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
 echo
@@ -102,7 +102,7 @@ echo "Building Pi4J JNI library (dynamically linked)"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
 
 echo
 echo "**********************************************************************"

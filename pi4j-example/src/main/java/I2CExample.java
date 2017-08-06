@@ -106,7 +106,7 @@ public class I2CExample {
         } catch (IOException exception) {
             console.println("I/O error during fetch of I2C busses occurred");
         }
-        
+
         // find available busses
         for (int number = I2CBus.BUS_0; number <= I2CBus.BUS_17; ++number) {
             try {

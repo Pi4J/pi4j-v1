@@ -33,7 +33,7 @@ package com.pi4j.io.gpio;
 import java.util.EnumSet;
 
 /**
- * BananaPro pin definitions for (default) WiringPi pin numbering scheme.
+ * LeMaker BananaPro pin definitions for (default) WiringPi pin numbering scheme.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)

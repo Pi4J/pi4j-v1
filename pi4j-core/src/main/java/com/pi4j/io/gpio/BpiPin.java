@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  BananaPiPin.java
+ * FILENAME      :  BpiPin.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -33,23 +33,25 @@ package com.pi4j.io.gpio;
 import java.util.EnumSet;
 
 /**
- * LeMaker BananaPi pin definitions for (default) WiringPi pin numbering scheme.
+ * Sinovoip BPI (BananaPi) pin definitions for (default) WiringPi pin numbering scheme.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
-public class BananaPiPin extends PinProvider {
+public class BpiPin extends PinProvider {
 
     public static final Pin GPIO_00 = createDigitalPin(0, "GPIO 0");
-    public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");
+    public static final Pin GPIO_01 = createDigitalAndPwmPinNoEdge(1, "GPIO 1"); // supports PWM
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");
     public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");
     public static final Pin GPIO_04 = createDigitalPin(4, "GPIO 4");
     public static final Pin GPIO_05 = createDigitalPin(5, "GPIO 5");
     public static final Pin GPIO_06 = createDigitalPin(6, "GPIO 6");
-    public static final Pin GPIO_07 = createDigitalAndPwmPinNoEdge(7, "GPIO 7");
-    public static final Pin GPIO_08 = createDigitalPinNoEdge(8, "GPIO 8", EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP));
-    public static final Pin GPIO_09 = createDigitalPinNoEdge(9, "GPIO 9", EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP));
+    public static final Pin GPIO_07 = createDigitalPin(7, "GPIO 7");
+    public static final Pin GPIO_08 = createDigitalPinNoEdge(8, "GPIO 8",
+            EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP)); // this pin is permanently pulled up
+    public static final Pin GPIO_09 = createDigitalPinNoEdge(9, "GPIO 9",
+            EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP)); // this pin is permanently pulled up
     public static final Pin GPIO_10 = createDigitalPin(10, "GPIO 10");
     public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11");
     public static final Pin GPIO_12 = createDigitalPin(12, "GPIO 12");
@@ -57,29 +59,38 @@ public class BananaPiPin extends PinProvider {
     public static final Pin GPIO_14 = createDigitalPin(14, "GPIO 14");
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15");
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
-    public static final Pin GPIO_17 = createDigitalPin(17, "GPIO 17");
-    public static final Pin GPIO_18 = createDigitalPinNoEdge(18, "GPIO 18");
-    public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19");
-    public static final Pin GPIO_20 = createDigitalPinNoEdge(20, "GPIO 20");
+
+    public static final Pin GPIO_21 = createDigitalPinNoEdge(21, "GPIO 21");
+    public static final Pin GPIO_22 = createDigitalPinNoEdge(22, "GPIO 22");
+    public static final Pin GPIO_23 = createDigitalPinNoEdge(23, "GPIO 23");
+    public static final Pin GPIO_24 = createDigitalPinNoEdge(24, "GPIO 24");
+    public static final Pin GPIO_25 = createDigitalPinNoEdge(25, "GPIO 25");
+    public static final Pin GPIO_26 = createDigitalPinNoEdge(26, "GPIO 26");
+    public static final Pin GPIO_27 = createDigitalPinNoEdge(27, "GPIO 27");
+    public static final Pin GPIO_28 = createDigitalPinNoEdge(28, "GPIO 28");
+    public static final Pin GPIO_29 = createDigitalPinNoEdge(29, "GPIO 29");
+    //public static final Pin GPIO_30 = createDigitalPinNoEdge(30, "GPIO 30"); << This is SoC GPIO-00 which cannot be exported.
+    public static final Pin GPIO_31 = createDigitalPinNoEdge(31, "GPIO 31",
+            EnumSet.noneOf(PinPullResistance.class));  // this pin is permanently pulled up; pin pull settings do not work
 
     protected static Pin createDigitalPin(int address, String name) {
-        return createDigitalPin(BananaPiGpioProvider.NAME, address, name);
+        return createDigitalPin(BpiGpioProvider.NAME, address, name);
     }
 
     protected static Pin createDigitalPinNoEdge(int address, String name, EnumSet<PinPullResistance> resistance) {
-        return createDigitalPin(BananaPiGpioProvider.NAME, address, name, resistance, EnumSet.noneOf(PinEdge.class));
+        return createDigitalPin(BpiGpioProvider.NAME, address, name, resistance, EnumSet.noneOf(PinEdge.class));
     }
 
     protected static Pin createDigitalPinNoEdge(int address, String name) {
-        return createDigitalPin(BananaPiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
+        return createDigitalPin(BpiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
     }
 
     protected static Pin createDigitalAndPwmPin(int address, String name) {
-        return createDigitalAndPwmPin(BananaPiGpioProvider.NAME, address, name);
+        return createDigitalAndPwmPin(BpiGpioProvider.NAME, address, name);
     }
 
     protected static Pin createDigitalAndPwmPinNoEdge(int address, String name) {
-        return createDigitalAndPwmPin(BananaPiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
+        return createDigitalAndPwmPin(BpiGpioProvider.NAME, address, name, EnumSet.noneOf(PinEdge.class));
     }
 
     // *override* static method from subclass

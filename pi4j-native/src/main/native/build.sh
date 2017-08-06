@@ -70,157 +70,32 @@ fi
 # ------------------------------------------------------
 # RASPBERRY-PI
 # ------------------------------------------------------
-echo
-echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*           BUILDING Pi4J FOR THE 'RaspberryPi' PLATFORM             *"
-echo "*                                                                    *"
-echo "**********************************************************************"
-echo
-WIRINGPI_PLATFORM=raspberrypi
-
-# build wiringPi
-#export WIRINGPI_REPO=git://git.drogon.net/wiringPi
-export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
-export WIRINGPI_BRANCH=master
-export WIRINGPI_DIRECTORY=wiringPi
-rm --recursive --force wiringPi
-./wiringpi-build.sh $@
-
-# compile the 'lib4j.so' JNI native shared library with statically linked dependencies
-echo
-echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
-echo "==========================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so $@
-
-# compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
-echo
-echo "=============================================="
-echo "Building Pi4J JNI library (dynamically linked)"
-echo "=============================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
-
+./build-raspberrypi.sh $@
 
 # ------------------------------------------------------
-# BANANA-PI
+# LEMAKER BANANA-PI
 # ------------------------------------------------------
-echo
-echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*             BUILDING Pi4J FOR THE 'BananaPi' PLATFORM              *"
-echo "*                                                                    *"
-echo "**********************************************************************"
-echo
-WIRINGPI_PLATFORM=bananapi
-
-# build wiringPi
-#export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
-export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
-export WIRINGPI_BRANCH=bananapi
-export WIRINGPI_DIRECTORY=wiringPi
-rm --recursive --force wiringPi
-./wiringpi-build.sh $@
-
-# compile the 'lib4j.so' JNI native shared library with statically linked dependencies
-echo
-echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
-echo "==========================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
-
-# compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
-echo
-echo "=============================================="
-echo "Building Pi4J JNI library (dynamically linked)"
-echo "=============================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED -DWIRINGPI_SOFTTONE_STOP_UNSUPPORTED' $@
-
+./build-bananapi.sh $@
 
 # ------------------------------------------------------
-# BANANA-PRO
+# LEMAKER BANANA-PRO
 # ------------------------------------------------------
-echo
-echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*            BUILDING Pi4J FOR THE 'BananaPro' PLATFORM              *"
-echo "*                                                                    *"
-echo "**********************************************************************"
-echo
-WIRINGPI_PLATFORM=bananapro
+./build-bananapro.sh $@
 
-# build wiringPi
-#export WIRINGPI_REPO=https://github.com/LeMaker/WiringBP.git
-export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
-export WIRINGPI_BRANCH=bananapro
-export WIRINGPI_DIRECTORY=wiringPi
-rm --recursive --force wiringPi
-./wiringpi-build.sh $@
-
-# compile the 'lib4j.so' JNI native shared library with statically linked dependencies
-echo
-echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
-echo "==========================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
-
-# compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
-echo
-echo "=============================================="
-echo "Building Pi4J JNI library (dynamically linked)"
-echo "=============================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
-
+# ------------------------------------------------------
+# SINVOIP BPI (BananaPi)
+# ------------------------------------------------------
+./build-bpi.sh $@
 
 # ------------------------------------------------------
 # ODROID
 # ------------------------------------------------------
-echo
-echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*              BUILDING Pi4J FOR THE 'Odroid' PLATFORM               *"
-echo "*                                                                    *"
-echo "**********************************************************************"
-echo
-WIRINGPI_PLATFORM=odroid
+./build-odroid.sh $@
 
-# build wiringPi
-#export WIRINGPI_REPO=https://github.com/hardkernel/wiringPi.git
-export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi-Odroid
-export WIRINGPI_BRANCH=master
-export WIRINGPI_DIRECTORY=wiringPi
-rm --recursive --force wiringPi
-./wiringpi-build.sh $@
-
-# compile the 'lib4j.so' JNI native shared library on the Raspberry Pi platform
-echo
-echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
-echo "==========================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
-
-echo
-echo "=============================================="
-echo "Building Pi4J JNI library (dynamically linked)"
-echo "=============================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so CARGS='-DWIRINGPI_SPI_SETUP_MODE_UNSUPPORTED' $@
-
+# ------------------------------------------------------
+# ORANGE-PI
+# ------------------------------------------------------
+./build-orangepi.sh $@
 
 echo
 echo "**********************************************************************"

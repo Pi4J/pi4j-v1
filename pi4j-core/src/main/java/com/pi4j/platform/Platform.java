@@ -49,6 +49,7 @@ public enum Platform {
     RASPBERRYPI("raspberrypi", "Raspberry Pi"),
     BANANAPI("bananapi", "BananaPi"),
     BANANAPRO("bananapro", "BananaPro"),
+    BPI("bpi", "Synovoip BPI"),
     ODROID("odroid", "Odroid"),
     ORANGEPI("orangepi", "OrangePi");
 
@@ -127,6 +128,9 @@ public enum Platform {
             case BANANAPRO: {
                 return new BananaProGpioProvider();
             }
+            case BPI: {
+                return new BpiGpioProvider();
+            }
             case ODROID: {
                 return new OdroidGpioProvider();
             }
@@ -163,6 +167,9 @@ public enum Platform {
             }
             case BANANAPRO: {
                 return new BananaProSystemInfoProvider();
+            }
+            case BPI: {
+                return new BpiSystemInfoProvider();
             }
             case ODROID: {
                 return new OdroidSystemInfoProvider();

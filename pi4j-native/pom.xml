@@ -186,7 +186,7 @@
                                     <property name="odroid.password" value="${odroid.password}"/>
                                     <property name="odroid.directory" value="${odroid.directory}"/>
 
-                                    <!-- BananaPi Platform Properties -->
+                                    <!-- LeMaker BananaPi Platform Properties -->
                                     <property name="bananapi.name" value="${bananapi.name}"/>
                                     <property name="bananapi.host" value="${bananapi.host}"/>
                                     <property name="bananapi.port" value="${bananapi.port}"/>
@@ -194,13 +194,21 @@
                                     <property name="bananapi.password" value="${bananapi.password}"/>
                                     <property name="bananapi.directory" value="${bananapi.directory}"/>
 
-                                    <!-- BananaPro Platform Properties -->
+                                    <!-- LeMaker BananaPro Platform Properties -->
                                     <property name="bananapro.name" value="${bananapro.name}"/>
                                     <property name="bananapro.host" value="${bananapro.host}"/>
                                     <property name="bananapro.port" value="${bananapro.port}"/>
                                     <property name="bananapro.user" value="${bananapro.user}"/>
                                     <property name="bananapro.password" value="${bananapro.password}"/>
                                     <property name="bananapro.directory" value="${bananapro.directory}"/>
+
+                                    <!-- SINOVOIP-BPI Platform Properties -->
+                                    <property name="bpi.name" value="${bpi.name}"/>
+                                    <property name="bpi.host" value="${bpi.host}"/>
+                                    <property name="bpi.port" value="${bpi.port}"/>
+                                    <property name="bpi.user" value="${bpi.user}"/>
+                                    <property name="bpi.password" value="${bpi.password}"/>
+                                    <property name="bpi.directory" value="${bpi.directory}"/>
 
                                     <!-- OrangePi Platform Properties -->
                                     <property name="orangepi.name" value="${orangepi.name}"/>
@@ -244,7 +252,7 @@
                                     </then>
                                 </if>
 
-                                <!-- Attach 'libpi4j.so' for BananaPi -->
+                                <!-- Attach 'libpi4j.so' for LeMaker BananaPi -->
                                 <if>
                                     <equals arg1="${bananapi.build}" arg2="true" />
                                     <then>
@@ -253,12 +261,21 @@
                                     </then>
                                 </if>
 
-                                <!-- Attach 'libpi4j.so' for BananaPro -->
+                                <!-- Attach 'libpi4j.so' for LeMaker BananaPro -->
                                 <if>
                                     <equals arg1="${bananapro.build}" arg2="true" />
                                     <then>
                                         <attachartifact file="${project.build.directory}/native/lib/bananapro/static/libpi4j.so" classifier="bananapro-static" type="so"/>
                                         <attachartifact file="${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so" classifier="bananapro-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for Sinovoip BPI (BananaPi)  -->
+                                <if>
+                                    <equals arg1="${bpi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/bpi/static/libpi4j.so" classifier="bpi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/bpi/dynamic/libpi4j.so" classifier="bpi-dynamic" type="so"/>
                                     </then>
                                 </if>
 

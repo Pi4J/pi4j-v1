@@ -57,8 +57,23 @@ public class SystemInfo {
         RaspberryPi_Alpha,
         RaspberryPi_Unknown,
         //------------------------
+        // (LEMAKER BANANAPI)
         BananaPi,
         BananaPro,
+        //------------------------
+        // (SINOVOIP BANANAPI)  (see: https://github.com/BPI-SINOVOIP/WiringPi/blob/master/wiringPi/wiringPi_bpi.c#L1318)
+        Bpi_M1,
+        Bpi_M1P,
+        Bpi_M2,
+        Bpi_M2P,
+        Bpi_M2P_H2_Plus,
+        Bpi_M2P_H5,
+        Bpi_M2U,
+        Bpi_M2U_V40,
+        Bpi_M2M,
+        Bpi_M3,
+        Bpi_R1,
+        Bpi_M64,
         //------------------------
         Odroid,
         //------------------------

@@ -33,7 +33,7 @@ import com.pi4j.platform.Platform;
 import com.pi4j.wiringpi.GpioInterruptListener;
 
 /**
- * BananaPi {@link GpioProvider} implementation.
+ * LeMaker BananaPi {@link GpioProvider} implementation.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
