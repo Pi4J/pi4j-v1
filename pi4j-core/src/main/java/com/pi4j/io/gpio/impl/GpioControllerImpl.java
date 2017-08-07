@@ -37,10 +37,7 @@ import com.pi4j.io.gpio.exception.PinProviderException;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GpioControllerImpl implements GpioController {
 
@@ -1014,12 +1011,15 @@ public class GpioControllerImpl implements GpioController {
         // executor services, we must perform the shutdown with the factory
         GpioFactory.getExecutorServiceFactory().shutdown();
 
+        // create a temporary set of providers to shutdown after completing all the pin instance shutdowns
+        Set<GpioProvider> gpioProvidersToShutdown = new HashSet<>();
+
         // shutdown explicit configured GPIO pins
         for (GpioPin pin : pins) {
 
-            // perform a shutdown on the GPIO provider for this pin
-            if(!pin.getProvider().isShutdown()){
-                pin.getProvider().shutdown();
+            // add each GPIO provider to the shutdown set
+            if(!gpioProvidersToShutdown.contains(pin.getProvider())){
+                gpioProvidersToShutdown.add(pin.getProvider());
             }
 
             // perform the shutdown options if configured for the pin
@@ -1044,6 +1044,13 @@ public class GpioControllerImpl implements GpioController {
                 if (unexport != null && unexport == Boolean.TRUE) {
                     pin.unexport();
                 }
+            }
+        }
+
+        // perform a shutdown on each GPIO provider
+        for(GpioProvider gpioProvider : gpioProvidersToShutdown){
+            if(!gpioProvider.isShutdown()){
+                gpioProvider.shutdown();
             }
         }
 
