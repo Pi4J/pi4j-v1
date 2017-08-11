@@ -4,7 +4,7 @@
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
 # PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  build.sh
+# FILENAME      :  build-nanopi.sh
 #
 # This file is part of the Pi4J project. More information about
 # this project can be found here:  http://www.pi4j.com/
@@ -66,46 +66,48 @@ else
    echo "'JAVA_HOME' was not defined; attempting to use: $JAVA_HOME";
 fi
 
+# ------------------------------------------------------
+# BANANA-PI
+# ------------------------------------------------------
+echo
+echo "**********************************************************************"
+echo "*                                                                    *"
+echo "*              BUILDING Pi4J FOR THE 'NANOPI' PLATFORM               *"
+echo "*                                                                    *"
+echo "**********************************************************************"
+echo
+WIRINGPI_PLATFORM=nanopi
 
-# ------------------------------------------------------
-# RASPBERRY-PI
-# ------------------------------------------------------
-./build-raspberrypi.sh $@
+# build wiringPi
+# export WIRINGPI_REPO=https://github.com/friendlyarm/WiringNP
+export WIRINGPI_REPO=https://github.com/Pi4J/WiringNP
+export WIRINGPI_BRANCH=master
+export WIRINGPI_DIRECTORY=wiringPi
+rm --recursive --force wiringPi
+./wiringpi-build.sh $@
 
-# ------------------------------------------------------
-# LEMAKER BANANA-PI
-# ------------------------------------------------------
-./build-bananapi.sh $@
+# compile the 'lib4j.so' JNI native shared library with statically linked dependencies
+echo
+echo "==========================================="
+echo "Building Pi4J JNI library (staticly linked)"
+echo "==========================================="
+echo
+mkdir -p lib/$WIRINGPI_PLATFORM/static
+make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so $@
 
-# ------------------------------------------------------
-# LEMAKER BANANA-PRO
-# ------------------------------------------------------
-./build-bananapro.sh $@
-
-# ------------------------------------------------------
-# SINVOIP BPI (BananaPi)
-# ------------------------------------------------------
-./build-bpi.sh $@
-
-# ------------------------------------------------------
-# ODROID
-# ------------------------------------------------------
-./build-odroid.sh $@
-
-# ------------------------------------------------------
-# ORANGE-PI
-# ------------------------------------------------------
-./build-orangepi.sh $@
-
-# ------------------------------------------------------
-# NANO-PI
-# ------------------------------------------------------
-./build-nanopi.sh $@
+# compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
+echo
+echo "=============================================="
+echo "Building Pi4J JNI library (dynamically linked)"
+echo "=============================================="
+echo
+mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
 
 echo
 echo "**********************************************************************"
 echo "*                                                                    *"
-echo "*                       Pi4J JNI BUILD COMPLETE                      *"
+echo "*         Pi4J JNI BUILD COMPLETE FOR THE 'NANOPI' PLATFORM          *"
 echo "*                                                                    *"
 echo "**********************************************************************"
 echo

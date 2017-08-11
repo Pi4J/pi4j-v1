@@ -77,7 +77,19 @@ public class SystemInfo {
         //------------------------
         Odroid,
         //------------------------
-        OrangePi
+        OrangePi,
+        //------------------------
+        NanoPi_M1,
+        NanoPi_M1_Plus,
+        NanoPi_M3,
+        NanoPi_NEO,
+        NanoPi_NEO2,
+        NanoPi_NEO2_Plus,
+        NanoPi_NEO_Air,
+        NanoPi_S2,
+        NanoPi_A64,
+        NanoPi_K2
+        //------------------------
     }
 
     public static String getProcessor()  throws IOException, InterruptedException, UnsupportedOperationException {

@@ -5,7 +5,7 @@ package com.pi4j.io.gpio;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  BpiGpioProvider.java
+ * FILENAME      :  NanoPiGpioProvider.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -33,23 +33,20 @@ import com.pi4j.platform.Platform;
 import com.pi4j.wiringpi.GpioInterruptListener;
 
 /**
- * Sinovoip BPI (BananaPi) {@link GpioProvider} implementation.
- *
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ * NanoPi {@link GpioProvider} implementation.
  */
 @SuppressWarnings("unused")
-public class BpiGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
+public class NanoPiGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
 
-    public static final String NAME = "Sinovoip BPI GPIO Provider";
+    public static final String NAME = "NanoPi GPIO Provider";
 
     /**
      * Default Constructor
      */
-    public BpiGpioProvider() {
+    public NanoPiGpioProvider() {
 
-        // configure the Pi4J platform to use the "Sinovoip BPI" implementation
-        System.setProperty("pi4j.platform", Platform.BPI.getId());
+        // configure the Pi4J platform to use the "nanopi" implementation
+        System.setProperty("pi4j.platform", Platform.NANOPI.id());
 
         // set wiringPi interface for internal use
         // we will use the WiringPi pin number scheme with the wiringPi library

@@ -217,6 +217,15 @@
                                     <property name="orangepi.user" value="${orangepi.user}"/>
                                     <property name="orangepi.password" value="${orangepi.password}"/>
                                     <property name="orangepi.directory" value="${orangepi.directory}"/>
+
+                                    <!-- NanoPi Platform Properties -->
+                                    <property name="nanopi.name" value="${nanopi.name}"/>
+                                    <property name="nanopi.host" value="${nanopi.host}"/>
+                                    <property name="nanopi.port" value="${nanopi.port}"/>
+                                    <property name="nanopi.user" value="${nanopi.user}"/>
+                                    <property name="nanopi.password" value="${nanopi.password}"/>
+                                    <property name="nanopi.directory" value="${nanopi.directory}"/>
+
                                 </ant>
                             </target>
                         </configuration>
@@ -287,6 +296,16 @@
                                         <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
                                     </then>
                                 </if>
+
+                                <!-- Attach 'libpi4j.so' for NanoPi -->
+                                <if>
+                                    <equals arg1="${nanopi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/static/libpi4j.so" classifier="nanopi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/dynamic/libpi4j.so" classifier="nanopi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
                             </target>
                         </configuration>
                     </execution>

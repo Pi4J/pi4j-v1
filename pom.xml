@@ -182,6 +182,16 @@
         <orangepi.password>${pi4j.default.password}</orangepi.password>
         <orangepi.directory>${pi4j.default.directory}</orangepi.directory>
 
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'NanoPi' PLATFORM -->
+        <nanopi.build>false</nanopi.build>
+        <nanopi.platform>nanopi</nanopi.platform>
+        <nanopi.name>NanoPi</nanopi.name>
+        <nanopi.host>${pi4j.default.host}</nanopi.host>
+        <nanopi.port>${pi4j.default.port}</nanopi.port>
+        <nanopi.user>${pi4j.default.user}</nanopi.user>
+        <nanopi.password>${pi4j.default.password}</nanopi.password>
+        <nanopi.directory>${pi4j.default.directory}</nanopi.directory>
+
         <!-- PROJECT ENCODING PROPERTIES -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -520,7 +530,23 @@
             </modules>
         </profile>
 
-	</profiles>
+        <!-- SPECIAL PROFILE TO INCLUDE NANOPI PLATFORM -->
+        <profile>
+            <id>nanopi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <nanopi.build>true</nanopi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+    </profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>

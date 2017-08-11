@@ -63,7 +63,7 @@ Copyright (C) 2012-2017 Pi4J
 
 ## IN DEVELOPMENT
 
-2017-08-06 :: 1.2-SNAPSHOT
+2017-08-11 :: 1.2-SNAPSHOT
 
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
@@ -71,6 +71,7 @@ Copyright (C) 2012-2017 Pi4J
   *  Added SPI mode support for Odroid, BananaPi, BananaPro, and OrangePi platforms.
   *  Added experimental support for OrangePi platform.
   *  Added experimental support for Synovoip BPI (BananaPi) platform.
+  *  Added experimental support for NanoPi platform.
   *  Fixed #278: wiringPiSetup*: You must only call this once per program run.
   *  Fixed #294; added java runtime and compiler check to pi4j helper script
   *  Fixed #291; W1Device name contains "\n"

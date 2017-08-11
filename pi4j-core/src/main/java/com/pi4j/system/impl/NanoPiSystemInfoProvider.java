@@ -5,7 +5,7 @@ package com.pi4j.system.impl;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  BpiSystemInfoProvider.java
+ * FILENAME      :  NanoPiSystemInfoProvider.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -29,7 +29,6 @@ package com.pi4j.system.impl;
  * #L%
  */
 
-import com.pi4j.platform.Platform;
 import com.pi4j.system.SystemInfo;
 import com.pi4j.system.SystemInfoProvider;
 
@@ -38,13 +37,11 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * BPI platform specific implementation of the SystemInfoProvider interface.
+ * NanoPi platform specific implementation of the SystemInfoProvider interface.
+ *
+ * Prefered Linux distribution: https://forum.armbian.com/
  */
-public class BpiSystemInfoProvider extends DefaultSystemInfoProvider implements SystemInfoProvider {
-
-    public BpiSystemInfoProvider(){
-        super();
-    }
+public class NanoPiSystemInfoProvider extends DefaultSystemInfoProvider implements SystemInfoProvider {
 
     @Override
     public String getModelName() throws IOException, InterruptedException, UnsupportedOperationException {
@@ -53,15 +50,51 @@ public class BpiSystemInfoProvider extends DefaultSystemInfoProvider implements 
 
     @Override
     public SystemInfo.BoardType getBoardType() throws IOException, InterruptedException, UnsupportedOperationException {
-        // TODO: IMPLEMENT TYPE
+        // for the NanoPi there is no simple way to detect the board type
+        // see: https://forum.armbian.com/index.php?/topic/3733-nanopi-simple-way-to-differ-nanopi-boards-by-sw/#comment-27008
+        try {
+
+//            NanoPi_M1,
+//            NanoPi_M1_Plus,
+//            NanoPi_M3,
+//            NanoPi_NEO,
+//            NanoPi_NEO2,
+//            NanoPi_NEO2_Plus,
+//            NanoPi_NEO_Air,
+//            NanoPi_S2,
+//            NanoPi_A64,
+//            NanoPi_K2
+
+
+            BufferedReader br = new BufferedReader(new FileReader("/etc/armbian-release"));
+            for(String line; (line = br.readLine()) != null; ) {
+                if(line.contains("=")) {
+                    String[] split = line.split("=");
+                    if(split[0].toLowerCase().trim().startsWith("board")) {
+                        switch(split[0].toLowerCase().trim()) {
+                            case "nanopim1":
+                                return SystemInfo.BoardType.NanoPi_M1;
+                            case "nanopineo":
+                                return SystemInfo.BoardType.NanoPi_NEO;
+                            case "nanopiair":
+                                return SystemInfo.BoardType.NanoPi_NEO_Air;
+                            default:
+                                return SystemInfo.BoardType.UNKNOWN;
+                        }
+                    }
+                }
+            }
+        } catch(Exception e) {
+        }
         return SystemInfo.BoardType.UNKNOWN;
     }
 
     @Override
     public float getCpuTemperature() throws IOException, InterruptedException, NumberFormatException, UnsupportedOperationException {
-        try(BufferedReader br = new BufferedReader(new FileReader("/sys/devices/platform/sunxi-i2c.0/i2c-0/0-0034/temp1_input"))) {
+        // Armbian way
+        try(BufferedReader br = new BufferedReader(new FileReader("/sys/devices/virtual/thermal/thermal_zone0/temp"))) {
             for(String line; (line = br.readLine()) != null; ) {
-                return Float.parseFloat(line) / 1000;
+                return Float.parseFloat(line);
             }
         }
         throw new UnsupportedOperationException();
