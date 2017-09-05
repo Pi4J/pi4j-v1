@@ -81,6 +81,7 @@ Copyright (C) 2012-2017 Pi4J
   *  Fixed #351; Pi4J packages excluded in OSGI manifest ImportPackage declaration
   *  Fixed #360; Serial.setBreak(TRUE|FALSE) is printing debug lines to stdout
   *  Fixed #355; ButtonBase Executor Service should be closed on GpioController.shutdown()
+  *  Fixed #356; SystemInfoProvider CPU temperature was divided by 1000 on OrangePi 
 
 ## RELEASES
 

@@ -55,7 +55,7 @@ public class OrangePiSystemInfoProvider extends DefaultSystemInfoProvider implem
     public float getCpuTemperature() throws IOException, InterruptedException, NumberFormatException, UnsupportedOperationException {
         try(BufferedReader br = new BufferedReader(new FileReader("/sys/devices/virtual/thermal/thermal_zone0/temp"))) {
             for(String line; (line = br.readLine()) != null; ) {
-                return Float.parseFloat(line) / 1000;
+                return Float.parseFloat(line);
             }
         }
         throw new UnsupportedOperationException();
