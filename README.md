@@ -83,6 +83,7 @@ Copyright (C) 2012-2017 Pi4J
   *  Fixed #355; ButtonBase Executor Service should be closed on GpioController.shutdown()
   *  Fixed #356; SystemInfoProvider CPU temperature was divided by 1000 on OrangePi
   *  Fixed #272; SerialDataEvent should not fire when event.length() == 0
+  *  Fixed #361; SerialFactory isShutdown() state not getting updated on new instance
 
 ## RELEASES
 

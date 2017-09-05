@@ -51,6 +51,8 @@ public class GpioControllerImpl implements GpioController {
     public GpioControllerImpl() {
         // set the local default provider reference
         this(GpioFactory.getDefaultProvider());
+
+        isshutdown = false;
     }
 
     /**
@@ -62,6 +64,8 @@ public class GpioControllerImpl implements GpioController {
 
         // register shutdown callback hook class
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+
+        isshutdown = false;
     }
 
     @Override

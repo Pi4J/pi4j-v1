@@ -75,6 +75,7 @@ public class SerialFactory {
      * @return Return a new Serial implementation instance.
      */
     public static Serial createInstance() {
+        isshutdown = false;
         return new SerialImpl();
     }
 
