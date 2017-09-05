@@ -79,7 +79,8 @@ Copyright (C) 2012-2017 Pi4J
   *  Fixed #276; RaspiBcmPin pins not firing pin state change events
   *  Fixed #198; Problems with data from HMC5883L class
   *  Fixed #351; Pi4J packages excluded in OSGI manifest ImportPackage declaration
-     Fixed #360; Serial.setBreak(TRUE|FALSE) is printing debug lines to stdout
+  *  Fixed #360; Serial.setBreak(TRUE|FALSE) is printing debug lines to stdout
+  *  Fixed #355; ButtonBase Executor Service should be closed on GpioController.shutdown()
 
 ## RELEASES
 

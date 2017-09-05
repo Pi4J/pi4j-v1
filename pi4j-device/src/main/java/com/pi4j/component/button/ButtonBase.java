@@ -32,6 +32,7 @@ package com.pi4j.component.button;
 
 import com.pi4j.component.ComponentListener;
 import com.pi4j.component.ObserveableComponentBase;
+import com.pi4j.io.gpio.GpioFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
         }
     }
 
-    final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    final ScheduledExecutorService executor = GpioFactory.getExecutorServiceFactory().getScheduledExecutorService();
     final List<ScheduledFuture> holdEventFutures = new ArrayList<>();
 
     protected synchronized void notifyListeners(final ButtonStateChangeEvent event) {
