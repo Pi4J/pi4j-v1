@@ -4,7 +4,7 @@
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
  * FILENAME      :  com_pi4j_jni_SerialInterrupt.c
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
@@ -15,12 +15,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -157,50 +157,53 @@ int monitorSerialInterrupt(void *threadarg)
 
        int length = getAvailableDataLength(fileDescriptor);
 
-       //printf("SERIAL EPOLL - Bytes available: %d\n", length);
+       // only fire event if there is data length
+       if(length > 0){
+           //printf("SERIAL EPOLL - Bytes available: %d\n", length);
 
-       // create a new payload result byte array
-       jbyte result[length];
+           // create a new payload result byte array
+           jbyte result[length];
 
-       // copy the data bytes from the serial receive buffer into the payload result
-       int i;
-       for (i = 0; i < length; i++) {
+           // copy the data bytes from the serial receive buffer into the payload result
+           int i;
+           for (i = 0; i < length; i++) {
 
-            // read a single byte from the RX buffer
-            uint8_t x ;
-            if (read (fileDescriptor, &x, 1) != 1){
-                int err_number = errno;
-                char err_message[100];
-                sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
-                perror("SERIAL FAILED TO READ DATA\n");
-                close(epfd);
-                continue;
-            }
+                // read a single byte from the RX buffer
+                uint8_t x ;
+                if (read (fileDescriptor, &x, 1) != 1){
+                    int err_number = errno;
+                    char err_message[100];
+                    sprintf(err_message, "Failed to read data from serial port. (Error #%d)", err_number);
+                    perror("SERIAL FAILED TO READ DATA\n");
+                    close(epfd);
+                    continue;
+                }
 
-            // assign the single byte; cast to unsigned char
-            result[i] = (unsigned char)(((int)x) & 0xFF);
-       }
+                // assign the single byte; cast to unsigned char
+                result[i] = (unsigned char)(((int)x) & 0xFF);
+           }
 
-       // ensure the callback class and method are available
-       if (serial_callback_class != NULL && serial_callback_method != NULL)
-       {
-            // get attached JVM
-            JNIEnv *env;
-            (*serial_callback_jvm)->AttachCurrentThread(serial_callback_jvm, (void **)&env, NULL);
+           // ensure the callback class and method are available
+           if (serial_callback_class != NULL && serial_callback_method != NULL)
+           {
+                // get attached JVM
+                JNIEnv *env;
+                (*serial_callback_jvm)->AttachCurrentThread(serial_callback_jvm, (void **)&env, NULL);
 
-            // create a java array object and copy the raw payload bytes
-            jbyteArray payload = (*env)->NewByteArray(env, length);
-            (*env)->SetByteArrayRegion(env, payload, 0, length, result);
+                // create a java array object and copy the raw payload bytes
+                jbyteArray payload = (*env)->NewByteArray(env, length);
+                (*env)->SetByteArrayRegion(env, payload, 0, length, result);
 
-            // ensure that the JVM exists
-            if(serial_callback_jvm != NULL)
-            {
-                // invoke callback to java state method to notify event listeners
-                (*env)->CallStaticVoidMethod(env, serial_callback_class, serial_callback_method, (jint)fileDescriptor, payload);
-            }
+                // ensure that the JVM exists
+                if(serial_callback_jvm != NULL)
+                {
+                    // invoke callback to java state method to notify event listeners
+                    (*env)->CallStaticVoidMethod(env, serial_callback_class, serial_callback_method, (jint)fileDescriptor, payload);
+                }
 
-            // detach from thread
-            (*serial_callback_jvm)->DetachCurrentThread(serial_callback_jvm);
+                // detach from thread
+                (*serial_callback_jvm)->DetachCurrentThread(serial_callback_jvm);
+           }
        }
     }
 
