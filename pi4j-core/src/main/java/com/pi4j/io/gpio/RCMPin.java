@@ -31,7 +31,7 @@ package com.pi4j.io.gpio;
 
 
 /**
- * Raspberry Pi Compute Module pin definitions.
+ * Raspberry Pi Compute Module (CM1, CM3-Lite, CM3) pin definitions.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
