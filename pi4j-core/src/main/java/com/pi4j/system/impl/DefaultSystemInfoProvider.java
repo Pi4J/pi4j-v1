@@ -29,8 +29,6 @@ package com.pi4j.system.impl;
  * #L%
  */
 
-import com.pi4j.platform.PlatformManager;
-import com.pi4j.system.SystemInfo;
 import com.pi4j.system.SystemInfoProvider;
 import com.pi4j.util.ExecUtil;
 import com.pi4j.util.StringUtil;
@@ -40,7 +38,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

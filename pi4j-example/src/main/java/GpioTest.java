@@ -96,6 +96,9 @@ public class GpioTest {
             }
         }
 
+        //close scanner stream
+        in.close();
+
         System.out.println();
         System.out.println();
         System.out.println("Goodbye!");
@@ -135,7 +138,33 @@ public class GpioTest {
                 gpioOutputsTest(pins);
                 break;
             }
-        }
+			case BPI:{
+                Pin pins[] = BpiPin.allPins();
+                Arrays.sort(pins);
+                gpioOutputsTest(pins);
+                break;
+			}
+			case NANOPI:{
+                Pin pins[] = NanoPiPin.allPins();
+                Arrays.sort(pins);
+                gpioOutputsTest(pins);
+                break;
+			}
+			case ODROID:{
+                Pin pins[] = OdroidC1Pin.allPins();
+                Arrays.sort(pins);
+                gpioOutputsTest(pins);
+                break;
+			}
+			case ORANGEPI:{
+                Pin pins[] = OrangePiPin.allPins();
+                Arrays.sort(pins);
+                gpioOutputsTest(pins);
+                break;
+			}
+			default:
+				break;
+	        }
     }
 
     public static void gpioOutputsTest(Pin pins[]){
@@ -183,5 +212,8 @@ public class GpioTest {
             System.out.println("... un-provisioning pin: " + pin.toString());
             gpio.unprovisionPin(outputPin);
         }
+
+        //close scanner stream
+        in.close();
     }
 }

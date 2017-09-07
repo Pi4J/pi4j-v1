@@ -32,7 +32,8 @@ package com.pi4j.component.button;
 
 public class ButtonStateChangeEvent extends ButtonEvent {
 
-    protected final ButtonState oldState;
+    private static final long serialVersionUID = 7611552098849283947L;
+	protected final ButtonState oldState;
     protected final ButtonState newState;
 
     public ButtonStateChangeEvent(Button buttonComponent, ButtonState oldState, ButtonState newState) {

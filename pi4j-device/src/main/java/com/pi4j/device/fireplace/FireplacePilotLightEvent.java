@@ -34,7 +34,8 @@ import java.util.EventObject;
 
 public class FireplacePilotLightEvent extends EventObject {
 
-    protected final boolean isPilotLightOn;
+	private static final long serialVersionUID = 7591655670928344605L;
+	protected final boolean isPilotLightOn;
 
     public FireplacePilotLightEvent(Fireplace fireplaceComponent, boolean isPilotLightOn) {
         super(fireplaceComponent);

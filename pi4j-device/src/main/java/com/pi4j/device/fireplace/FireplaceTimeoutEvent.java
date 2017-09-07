@@ -34,7 +34,8 @@ import java.util.EventObject;
 
 public class FireplaceTimeoutEvent extends EventObject {
 
-    public boolean handled = false;
+	private static final long serialVersionUID = 8308972389250845992L;
+	public boolean handled = false;
 
     public FireplaceTimeoutEvent(Fireplace fireplaceComponent) {
         super(fireplaceComponent);

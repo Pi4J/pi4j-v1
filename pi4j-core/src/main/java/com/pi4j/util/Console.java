@@ -29,7 +29,7 @@ package com.pi4j.util;
  * #L%
  */
 
-import com.pi4j.system.SystemInfo;
+
 
 public class Console {
 

@@ -144,7 +144,8 @@ public class W1MasterTest {
             super("");
         }
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         <T extends W1Device> List<T> readDevices() {
             if (readDevices == null) { // during construction
                 readDevices = new ArrayList<>();

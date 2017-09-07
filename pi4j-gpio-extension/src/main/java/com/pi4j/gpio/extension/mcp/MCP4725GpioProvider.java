@@ -78,7 +78,8 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     // WRITE REGISTER
     // =======================================================================
     private static final int MCP4725_REG_WRITEDAC = 0x40; // Writes data to the DAC
-    private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
+    @SuppressWarnings("unused")
+	private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
 
     // =======================================================================
     // CONSTRUCTORS
@@ -87,7 +88,7 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     /**
      * This is the default constructor.  If you use this constructor the
      * MCP4725 will be considered the I2C bus owner and will close the
-     * bus communication anytime the class is destroyed and on program
+     * bus communication any time the class is destroyed and on program
      * shutdown.
      *
      * @param busNumber

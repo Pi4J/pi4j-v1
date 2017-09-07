@@ -29,7 +29,7 @@ package com.pi4j.io.serial;
  * #L%
  */
 
-import java.util.Enumeration;
+
 
 public enum Baud {
 

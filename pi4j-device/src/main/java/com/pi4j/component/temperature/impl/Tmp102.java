@@ -79,7 +79,6 @@ public class Tmp102 extends TemperatureSensorBase implements TemperatureSensor {
     @Override
     public double getTemperature() {
         double retVal     = 0;
-        int    temp       = 0;
         byte[] tempBuffer = new byte[2];
 
         try {

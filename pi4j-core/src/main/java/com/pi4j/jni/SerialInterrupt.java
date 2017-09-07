@@ -99,7 +99,6 @@ public class SerialInterrupt {
      * @param fileDescriptor the serial file descriptor/handle
      * //@param data byte array of data received on this event from the serial receive buffer
      */
-    @SuppressWarnings("unchecked")
     private static void onDataReceiveCallback(int fileDescriptor, byte[] data) {
 
         // notify event listeners

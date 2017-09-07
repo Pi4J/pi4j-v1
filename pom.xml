@@ -325,6 +325,7 @@
                 <odroid.build>true</odroid.build>
                 <orangepi.build>true</orangepi.build>
                 <bpi.build>true</bpi.build>
+                <nanopi.build>true</nanopi.build>
             </properties>
 		</profile>
 
@@ -837,6 +838,25 @@
 											<goal>
 												update-file-header
 											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.github.dantwining.whitespace-maven-plugin
+										</groupId>
+										<artifactId>
+											whitespace-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0.4,)
+										</versionRange>
+										<goals>
+											<goal>trim</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

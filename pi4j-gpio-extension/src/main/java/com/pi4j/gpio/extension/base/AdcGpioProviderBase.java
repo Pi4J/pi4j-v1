@@ -76,7 +76,9 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
         this.threshold = new double[pins.length];  // initialize pin thresholds collection
 
         // set default thresholds
-        for(double item : threshold) { item = DEFAULT_THRESHOLD; }
+        for(int index = 0; index < this.threshold.length; index++) {
+        		this.threshold[index] = DEFAULT_THRESHOLD;
+        }
     }
 
     // ------------------------------------------------------------------------------------------

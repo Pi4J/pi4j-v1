@@ -41,7 +41,9 @@ package com.pi4j.platform;
  */
 public class PlatformAlreadyAssignedException extends Exception {
 
-    /**
+	private static final long serialVersionUID = -2812520138732144154L;
+
+	/**
      * Default Constructor
      *
      * @param platform

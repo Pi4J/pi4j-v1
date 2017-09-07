@@ -31,7 +31,9 @@ package com.pi4j.device.fireplace;
 
 
 public class FireplacePilotLightException extends Exception {
-    public FireplacePilotLightException() {
+	private static final long serialVersionUID = 469248657243235359L;
+
+	public FireplacePilotLightException() {
         super("The pilot light sensor cannot detect the pilot light.");
     }
 }

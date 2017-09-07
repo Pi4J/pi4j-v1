@@ -34,7 +34,6 @@ import com.pi4j.system.SystemInfoProvider;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 
 /**
  * Abstract base implementation of the SystemInfoProvider interface.

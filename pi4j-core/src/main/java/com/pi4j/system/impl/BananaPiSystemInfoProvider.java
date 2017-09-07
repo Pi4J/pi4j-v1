@@ -31,8 +31,6 @@ package com.pi4j.system.impl;
 
 import com.pi4j.system.SystemInfo;
 import com.pi4j.system.SystemInfoProvider;
-import com.pi4j.util.ExecUtil;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

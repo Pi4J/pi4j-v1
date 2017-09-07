@@ -30,7 +30,7 @@ package com.pi4j.io.gpio;
  */
 
 
-import java.util.EnumSet;
+
 
 /**
  * Odroid-XU4 pin definitions for (default) WiringPi pin numbering scheme.

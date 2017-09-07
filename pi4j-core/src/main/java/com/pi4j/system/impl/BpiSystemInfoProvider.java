@@ -29,7 +29,6 @@ package com.pi4j.system.impl;
  * #L%
  */
 
-import com.pi4j.platform.Platform;
 import com.pi4j.system.SystemInfo;
 import com.pi4j.system.SystemInfoProvider;
 

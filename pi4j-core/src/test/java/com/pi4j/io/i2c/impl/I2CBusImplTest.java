@@ -33,13 +33,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -62,7 +58,8 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 public class I2CBusImplTest {
 
     private static int BUSNUMBER = 1;
-    private static int FILEDESCRIPTOR = 4711;
+    @SuppressWarnings("unused")
+	private static int FILEDESCRIPTOR = 4711;
     private static String FILENAME = "/dev/i2c-" + BUSNUMBER;
     private static int DEVICE_ADDRESS = 0x15;
 
@@ -74,7 +71,8 @@ public class I2CBusImplTest {
             super(busNumber, fileName, lockAquireTimeout, lockAquireTimeoutUnit);
         }
 
-        protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
+        @SuppressWarnings("unused")
+		protected String getFilenameForBusnumber(int busNumber) throws UnsupportedBusNumberException {
             if (busNumber != BUSNUMBER) {
                 throw new UnsupportedBusNumberException();
             }

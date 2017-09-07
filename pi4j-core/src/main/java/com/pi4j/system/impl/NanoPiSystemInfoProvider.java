@@ -50,7 +50,10 @@ public class NanoPiSystemInfoProvider extends DefaultSystemInfoProvider implemen
 
     @Override
     public SystemInfo.BoardType getBoardType() throws IOException, InterruptedException, UnsupportedOperationException {
-        // for the NanoPi there is no simple way to detect the board type
+    		SystemInfo.BoardType boardType = SystemInfo.BoardType.UNKNOWN;
+    		BufferedReader br = null;
+
+    		// for the NanoPi there is no simple way to detect the board type
         // see: https://forum.armbian.com/index.php?/topic/3733-nanopi-simple-way-to-differ-nanopi-boards-by-sw/#comment-27008
         try {
 
@@ -66,27 +69,30 @@ public class NanoPiSystemInfoProvider extends DefaultSystemInfoProvider implemen
 //            NanoPi_K2
 
 
-            BufferedReader br = new BufferedReader(new FileReader("/etc/armbian-release"));
+	        	br = new BufferedReader(new FileReader("/etc/armbian-release"));
             for(String line; (line = br.readLine()) != null; ) {
                 if(line.contains("=")) {
                     String[] split = line.split("=");
                     if(split[0].toLowerCase().trim().startsWith("board")) {
                         switch(split[0].toLowerCase().trim()) {
                             case "nanopim1":
-                                return SystemInfo.BoardType.NanoPi_M1;
+                            		boardType = SystemInfo.BoardType.NanoPi_M1;
                             case "nanopineo":
-                                return SystemInfo.BoardType.NanoPi_NEO;
+                            		boardType = SystemInfo.BoardType.NanoPi_NEO;
                             case "nanopiair":
-                                return SystemInfo.BoardType.NanoPi_NEO_Air;
+                            		boardType = SystemInfo.BoardType.NanoPi_NEO_Air;
                             default:
-                                return SystemInfo.BoardType.UNKNOWN;
+                            		boardType = SystemInfo.BoardType.UNKNOWN;
                         }
                     }
                 }
             }
         } catch(Exception e) {
+        } finally {
+	        	// close reader
+	        	if(br != null) br.close();
         }
-        return SystemInfo.BoardType.UNKNOWN;
+        return boardType;
     }
 
     @Override

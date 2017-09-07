@@ -32,10 +32,6 @@ import com.pi4j.wiringpi.Gpio;
 public class WiringPiPinAltExample {
 
     public static void main(String args[]) throws InterruptedException {
-        int pin;
-        int dataPtr;
-        int l, s, d;
-
         System.out.println("<--Pi4J--> GPIO ALT MODE test program");
 
         // setup wiringPi

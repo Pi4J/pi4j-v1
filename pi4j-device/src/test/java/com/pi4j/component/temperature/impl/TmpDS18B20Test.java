@@ -82,7 +82,8 @@ public class TmpDS18B20Test {
         return deviceType.create(deviceDir);
     }
 
-    @Test
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
     public void testEquals() throws Exception {
         final W1Device w1Devicea1 = createDevice("28-00000698ebb1");
         final W1Device w1Devicea2 = createDevice("28-00000698ebb1");

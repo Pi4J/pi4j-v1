@@ -36,9 +36,6 @@ import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.util.ConsoleColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This example code demonstrates how to perform simple GPIO
  * pin state reading on the Odroid C1/C1+ platform.

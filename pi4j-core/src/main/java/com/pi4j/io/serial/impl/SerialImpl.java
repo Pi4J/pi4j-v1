@@ -856,7 +856,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
         }
     }
 
-    private class SerialInputStream extends InputStream {
+    @SuppressWarnings("unused")
+	private class SerialInputStream extends InputStream {
 
         @Override
         public int read() throws IOException {

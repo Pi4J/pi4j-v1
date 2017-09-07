@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class FireplaceBase extends ObserveableDeviceBase implements Fireplace {
 
     protected long timeoutDelay = 0;
-    protected Future timeoutTask = null;
+    protected Future<?> timeoutTask = null;
     protected TimeUnit timeoutUnit = TimeUnit.MINUTES;
     protected ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 

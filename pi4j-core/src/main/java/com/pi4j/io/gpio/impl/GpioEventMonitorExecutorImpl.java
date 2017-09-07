@@ -50,7 +50,7 @@ public class GpioEventMonitorExecutorImpl implements PinListener {
     private final GpioPinInput pin;
     private static ExecutorService executor;
     private static ScheduledExecutorService scheduledExecutor;
-    private ScheduledFuture debounceFuture = null;
+    private ScheduledFuture<?> debounceFuture = null;
 
     public GpioEventMonitorExecutorImpl(GpioPinInput pin) {
         this.pin = pin;

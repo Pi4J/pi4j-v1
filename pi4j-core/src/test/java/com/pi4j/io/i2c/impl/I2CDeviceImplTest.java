@@ -30,10 +30,8 @@ package com.pi4j.io.i2c.impl;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -139,7 +137,8 @@ public class I2CDeviceImplTest {
         }
     };
 
-    private Answer<Object> writeAnswer = new Answer<Object>() {
+    @SuppressWarnings("unused")
+	private Answer<Object> writeAnswer = new Answer<Object>() {
         @Override
         public Integer answer(InvocationOnMock invocation) throws Throwable {
             Object[] args = invocation.getArguments();

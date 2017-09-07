@@ -30,7 +30,6 @@ package com.pi4j.io.serial;
  */
 
 import com.pi4j.io.gpio.exception.UnsupportedBoardType;
-import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.system.SystemInfo;
 
 import java.io.File;
@@ -99,9 +98,81 @@ public class SerialPort {
             }
 
             // ------------------------
+            // BPI
+            // ------------------------
+            // TODO : Implement serial for BPI boards
+			case Bpi_M1:
+				break;
+			case Bpi_M1P:
+				break;
+			case Bpi_M2:
+				break;
+			case Bpi_M2M:
+				break;
+			case Bpi_M2P:
+				break;
+			case Bpi_M2P_H2_Plus:
+				break;
+			case Bpi_M2P_H5:
+				break;
+			case Bpi_M2U:
+				break;
+			case Bpi_M2U_V40:
+				break;
+			case Bpi_M3:
+				break;
+			case Bpi_M64:
+				break;
+			case Bpi_R1:
+				break;
+
+            // ------------------------
+            // NANOPI
+            // ------------------------
+            // TODO : Implement serial for NanoPi boards
+			case NanoPi_A64:
+				break;
+			case NanoPi_K2:
+				break;
+			case NanoPi_M1:
+				break;
+			case NanoPi_M1_Plus:
+				break;
+			case NanoPi_M3:
+				break;
+			case NanoPi_NEO:
+				break;
+			case NanoPi_NEO2:
+				break;
+			case NanoPi_NEO2_Plus:
+				break;
+			case NanoPi_NEO_Air:
+				break;
+			case NanoPi_S2:
+				break;
+
+            // ------------------------
             // ODROID
             // ------------------------
-            // TODO: Implement serial for Odroid boards
+            // TODO : Implement serial for Odroid boards
+
+			case Odroid:
+				break;
+
+            // ------------------------
+            // ORANGEPI
+            // ------------------------
+            // TODO : Implement serial for OrangePi boards
+			case OrangePi:
+				break;
+
+            // ------------------------
+            // UNKNOWN
+            // ------------------------
+			case UNKNOWN:
+				break;
+			default:
+				break;
         }
 
         // unknown board type, return null

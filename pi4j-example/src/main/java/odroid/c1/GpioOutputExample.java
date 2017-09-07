@@ -175,7 +175,7 @@ public class GpioOutputExample {
         // blink gpio pin state for 1 second between HIGH and LOW states
         console.emptyLine();
         console.println("Blinking output pin state between HIGH and LOW for 3 seconds with a blink rate of 250ms.");
-        Future future = output.blink(250, 3000);
+        Future<?> future = output.blink(250, 3000);
 
         // --------------------------------------------------------------------------
 

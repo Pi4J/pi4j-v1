@@ -30,9 +30,7 @@ package com.pi4j.io.gpio;
  */
 
 
-import com.pi4j.io.gpio.impl.PinImpl;
 
-import java.util.EnumSet;
 
 /**
  * Odroid-C1/C1+ pin definitions for (default) WiringPi pin numbering scheme.

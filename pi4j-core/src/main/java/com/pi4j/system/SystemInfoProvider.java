@@ -31,7 +31,6 @@ package com.pi4j.system;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 
 /**
  * SystemInfo provider interface.  Used to support multiple platforms where each may need to

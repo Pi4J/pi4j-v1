@@ -29,15 +29,12 @@ package com.pi4j.util;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinProvider;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.serial.*;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 
 /**
  *

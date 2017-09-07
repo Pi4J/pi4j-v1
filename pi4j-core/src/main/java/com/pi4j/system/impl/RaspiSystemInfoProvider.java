@@ -221,8 +221,11 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         // determine the board info by deciphering the revision number
         long irevision = Long.parseLong(revision, 16);
         long scheme = (irevision >> 23) & 0x1;
-        long ram = (irevision >> 20) & 0x7;
+        @SuppressWarnings("unused")
+		long ram = (irevision >> 20) & 0x7;
+        @SuppressWarnings("unused")
         long manufacturer = (irevision >> 16) & 0xF;
+        @SuppressWarnings("unused")
         long processor = (irevision >> 12) & 0xF;
         long model = (irevision >> 4) & 0xFF;
         long pcbrev = irevision & 0xF;

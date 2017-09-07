@@ -713,7 +713,6 @@ public class Gpio {
      *
      * @param pin GPIO pin number
      */
-    @SuppressWarnings("unchecked")
     private static void isrCallback(int pin) {
         // dispatch callback to the subscribers for this pin
         List<GpioInterruptCallback> callbacks = isrCallbacks[pin];

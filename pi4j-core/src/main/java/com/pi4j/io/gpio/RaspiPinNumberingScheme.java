@@ -30,11 +30,7 @@ package com.pi4j.io.gpio;
  */
 
 
-import com.pi4j.io.gpio.impl.PinImpl;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Raspberry Pi pin numbering scheme.

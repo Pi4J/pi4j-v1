@@ -36,7 +36,6 @@ import com.pi4j.io.gpio.GpioFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -113,13 +112,13 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
     }
 
     final ScheduledExecutorService executor = GpioFactory.getExecutorServiceFactory().getScheduledExecutorService();
-    final List<ScheduledFuture> holdEventFutures = new ArrayList<>();
+    final List<ScheduledFuture<?>> holdEventFutures = new ArrayList<>();
 
     protected synchronized void notifyListeners(final ButtonStateChangeEvent event) {
 
         // cancel any pending hold event futures
         if(!holdEventFutures.isEmpty()) {
-            for (ScheduledFuture future : holdEventFutures) {
+            for (ScheduledFuture<?> future : holdEventFutures) {
                 future.cancel(false);
             }
             holdEventFutures.clear();
@@ -142,7 +141,7 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
                 final ButtonHoldListenerWrapper wrapper = (ButtonHoldListenerWrapper)listener;
 
                 // register a new hold event future
-                ScheduledFuture scheduledFuture = executor.schedule(new Runnable() {
+                ScheduledFuture<?> scheduledFuture = executor.schedule(new Runnable() {
                     @Override
                     public void run() {
                         wrapper.listener.onButtonHold(event);

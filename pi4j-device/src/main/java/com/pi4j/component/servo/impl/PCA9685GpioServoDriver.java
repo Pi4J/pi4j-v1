@@ -31,8 +31,6 @@ package com.pi4j.component.servo.impl;
 
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-
 import com.pi4j.component.servo.ServoDriver;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
 import com.pi4j.io.gpio.Pin;

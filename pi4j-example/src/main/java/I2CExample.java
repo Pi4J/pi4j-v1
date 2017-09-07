@@ -110,7 +110,8 @@ public class I2CExample {
         // find available busses
         for (int number = I2CBus.BUS_0; number <= I2CBus.BUS_17; ++number) {
             try {
-                I2CBus bus = I2CFactory.getInstance(number);
+                @SuppressWarnings("unused")
+				I2CBus bus = I2CFactory.getInstance(number);
                 console.println("Supported I2C bus " + number + " found");
             } catch (IOException exception) {
                 console.println("I/O error on I2C bus " + number + " occurred");

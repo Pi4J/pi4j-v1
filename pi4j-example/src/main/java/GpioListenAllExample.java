@@ -30,9 +30,7 @@
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
-import com.pi4j.platform.PlatformManager;
 import com.pi4j.system.SystemInfo;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
@@ -102,12 +100,12 @@ public class GpioListenAllExample {
         }
 
         // provision GPIO input pins with its internal pull resistor set
-        for (Pin pin : RaspiPin.allPins(board)) {
+        for (Pin pin : pins) {
             try {
                 GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
                 provisionedPins.add(provisionedPin);
 
-                // unexport the provisioned GPIO pins when program exits
+                // un-export the provisioned GPIO pins when program exits
                 provisionedPin.setShutdownOptions(true);
             }
             catch (Exception ex){

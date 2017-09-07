@@ -44,11 +44,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import java.nio.*;
-import java.util.Objects;
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
  */
+@SuppressWarnings("restriction")
 public class LinuxFile extends RandomAccessFile {
     public LinuxFile(String name, String mode) throws FileNotFoundException {
         super(name, mode);
@@ -60,7 +60,7 @@ public class LinuxFile extends RandomAccessFile {
     public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<>();
     public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<>();
 
-    private static final Constructor directByteBufferConstructor;
+    private static final Constructor<?> directByteBufferConstructor;
 
     private static final Field addressField;
     private static final Field capacityField;
@@ -71,7 +71,7 @@ public class LinuxFile extends RandomAccessFile {
             // Load the platform library
             NativeLibraryLoader.load("libpi4j.so");
 
-            Class dbb = Class.forName("java.nio.DirectByteBuffer");
+            Class<?> dbb = Class.forName("java.nio.DirectByteBuffer");
 
             addressField = Buffer.class.getDeclaredField("address");
             capacityField = Buffer.class.getDeclaredField("capacity");
@@ -212,7 +212,7 @@ public class LinuxFile extends RandomAccessFile {
      * Gets the real POSIX file descriptor for use by custom jni calls.
      */
     private int getFileDescriptor() throws IOException {
-        final int fd = SharedSecrets.getJavaIOFileDescriptorAccess().get(getFD());
+		final int fd = SharedSecrets.getJavaIOFileDescriptorAccess().get(getFD());
 
         if(fd < 1)
             throw new IOException("failed to get POSIX file descriptor!");
@@ -334,13 +334,16 @@ public class LinuxFile extends RandomAccessFile {
     }
 
     public static class ScratchBufferOverrun extends IllegalArgumentException {
-        public ScratchBufferOverrun() {
+		private static final long serialVersionUID = -418203522640826177L;
+
+		public ScratchBufferOverrun() {
             super("Scratch buffer overrun! Provide direct ByteBuffer for data larger than " + localBufferSize + " bytes");
         }
     }
 
     public static class LinuxFileException extends IOException {
-        int code;
+		private static final long serialVersionUID = -2581606746434701394L;
+		int code;
 
         public LinuxFileException() {
             this(errno());

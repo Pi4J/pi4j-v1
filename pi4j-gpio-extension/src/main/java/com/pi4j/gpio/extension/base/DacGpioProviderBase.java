@@ -30,10 +30,6 @@ package com.pi4j.gpio.extension.base;
  */
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.PinListener;
-
-import java.io.IOException;
 
 /**
  *
@@ -66,8 +62,8 @@ public abstract class DacGpioProviderBase extends GpioProviderBase implements Da
 
         // create collection for shutdown values for each analog output pin
         shutdownValues = new Double[pins.length];
-        for(Double sv : shutdownValues){
-            sv = null;
+        for(int index = 0; index < shutdownValues.length; index++) {
+        		shutdownValues[index] = null;
         }
     }
 

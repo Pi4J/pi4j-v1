@@ -34,7 +34,8 @@ import java.util.EventObject;
 
 public class FireplaceStateChangeEvent extends EventObject {
 
-    protected final FireplaceState oldState;
+	private static final long serialVersionUID = -8323406968173484160L;
+	protected final FireplaceState oldState;
     protected final FireplaceState newState;
 
     public FireplaceStateChangeEvent(Fireplace fireplaceComponent, FireplaceState oldState, FireplaceState newState) {

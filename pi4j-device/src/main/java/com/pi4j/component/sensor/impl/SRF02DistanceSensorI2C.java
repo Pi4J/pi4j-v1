@@ -48,7 +48,8 @@ import java.io.IOException;
 public class SRF02DistanceSensorI2C extends DistanceSensorBase{
 
     private static final byte COMMAND_REGISTER          = 0x00;
-    private static final byte COMMAND_RANGE_INCHES      = 0x50;
+    @SuppressWarnings("unused")
+	private static final byte COMMAND_RANGE_INCHES      = 0x50;
     private static final byte COMMAND_RANGE_CENTIMETERS = 0x51;
     private byte[]            buffer;
 
@@ -100,7 +101,7 @@ public class SRF02DistanceSensorI2C extends DistanceSensorBase{
                     result = (short)((buffer[2] >> 8) + (buffer[3]&0xFF));
                 } else {
                     try {
-                        Thread.currentThread().sleep(10);    // takes up to 66ms after you initiate ranging so slow loop down
+                        Thread.sleep(10);  // takes up to 66ms after you initiate ranging so slow loop down
                     } catch (InterruptedException ie) {
                         // don't have to actually do anything with the exception except leave loop maybe
                         break;
