@@ -78,6 +78,7 @@ public class GenericServo extends ComponentBase implements Servo {
         this.servoDriver = servoDriver;
     }
 
+    @Override
     public ServoDriver getServoDriver() {
         return servoDriver;
     }
@@ -93,6 +94,11 @@ public class GenericServo extends ComponentBase implements Servo {
     @Override
     public float getPosition() {
         return position;
+    }
+
+    @Override
+    public void off() {
+        servoDriver.setServoPulseWidth(0);
     }
 
     protected int getPwmDuration() {
