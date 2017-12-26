@@ -2,11 +2,34 @@ package com.pi4j.io.gpio;
 
 import java.util.Map;
 
-public class SimulatedGpioProvider extends GpioProviderBase implements GpioProvider {
 
-   // public static final String NAME = "Simulator GPIO Provider";
+/**
+ * A simulator to aid in development of RI Pi systems using a standard PC dev environment.
+ * 
+ * To use the simulator you need two environment variables:
+ * 
+ * The standard PI4J platform statement MUST point to the simulator:
+ * 
+ * PI4J_PLATFORM=Simulated
+ * 
+ * A second environment variable that defines the platform that is to be simulated.
+ * 
+ * SimulatedPlatform=<Real Platform's Name>
+ * 
+ * e.g.
+ * 
+ * SimultatedPlatform=RaspberryPi GPIO Provider
+ * 
+ * If you don't provide a value for theSimulatedPlatform the system assumes that you want to use
+ * the raspberry pi platform: RaspiGpioProvider
+ * 
+ * @author bsutton
+ *
+ */
+public class SimulatedGpioProvider extends GpioProviderBase implements GpioProvider {
 	
-	public static String NAME;
+	// We use the name of the platform that we are simulating.
+    public static  String NAME;
 	
 	public SimulatedGpioProvider()
 	{
@@ -17,22 +40,8 @@ public class SimulatedGpioProvider extends GpioProviderBase implements GpioProvi
 		 // If no specific platform is specified we default to simulating the raspberry pi.
 		 if (config == null)
 			 NAME=RaspiGpioProvider.NAME;
-		 
-//		 try
-//		{
-//			Class<GpioProvider> providerClass = (Class<GpioProvider>) Class.forName(config);
-//			provider
-//			
-//		}
-//		catch (ClassNotFoundException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		 
+	 
 		 NAME = config;
-		 
-		 
 	}
 
     @Override
