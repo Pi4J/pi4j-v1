@@ -108,6 +108,11 @@ public interface Servo extends Component {
     float getPosition();
 
     /**
+     * Make the servo passive. How/if the happens is implementation specific.
+     */
+    void off();
+
+    /**
      * Returns servo driver this servo is attached to
      * @return servo driver
      */
