@@ -53,7 +53,7 @@ public enum Platform {
     ODROID("odroid", "Odroid"),
     ORANGEPI("orangepi", "OrangePi"),
     NANOPI("nanopi", "NanoPi"),
-	SIMULATED("simulated", "Simulated");
+    SIMULATED("simulated", "Simulated");
 
     // private variables
     protected String platformId = null;
