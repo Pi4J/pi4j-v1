@@ -67,17 +67,16 @@ public class SimulatedGpioProvider extends GpioProviderBase implements GpioProvi
 
         String config = env.get("SimulatedPlatform");
 
-        // If no specific platform is specified we default to simulating the raspberry
-        // pi.
-        if (config == null)
+        // If no specific platform is specified we default to simulating the raspberry pi
+        if (config == null) {
             NAME = RaspiGpioProvider.NAME;
+        }
 
         NAME = config;
     }
 
     @Override
     public String getName() {
-
         return NAME;
     }
 

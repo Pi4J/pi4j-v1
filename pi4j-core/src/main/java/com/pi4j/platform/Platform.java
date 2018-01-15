@@ -145,7 +145,7 @@ public enum Platform {
             case SIMULATED: {
                 return new SimulatedGpioProvider();
             }
-          default: {
+            default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
                 return new RaspiGpioProvider();
             }
