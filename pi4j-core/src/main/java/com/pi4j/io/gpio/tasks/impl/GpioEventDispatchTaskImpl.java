@@ -30,13 +30,24 @@ package com.pi4j.io.gpio.tasks.impl;
  */
 
 
-import com.pi4j.io.gpio.GpioPinInput;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.event.*;
-import com.pi4j.io.gpio.trigger.GpioTrigger;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.pi4j.io.gpio.GpioPinInput;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.event.GpioPinAnalogShortValueChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListener;
+import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
+import com.pi4j.io.gpio.event.GpioPinListenerAnalogShort;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.io.gpio.event.PinAnalogShortValueChangeEvent;
+import com.pi4j.io.gpio.event.PinAnalogValueChangeEvent;
+import com.pi4j.io.gpio.event.PinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.PinEvent;
+import com.pi4j.io.gpio.event.PinEventType;
+import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 public class GpioEventDispatchTaskImpl implements Runnable {
 
@@ -63,8 +74,8 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 for (GpioPinListener listener : listeners) {
                     if(listener != null && listener instanceof GpioPinListenerDigital) {
                         ((GpioPinListenerDigital) listener)
-                            .handleGpioPinDigitalStateChangeEvent(new GpioPinDigitalStateChangeEvent(
-                                    event.getSource(), pin, state));
+                                .handleGpioPinDigitalStateChangeEvent(new GpioPinDigitalStateChangeEvent(
+                                        event.getSource(), pin, state));
                     }
                 }
 
@@ -87,8 +98,22 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 for (GpioPinListener listener : listeners) {
                     if (listener != null && listener instanceof GpioPinListenerAnalog) {
                         ((GpioPinListenerAnalog) listener)
-                            .handleGpioPinAnalogValueChangeEvent(new GpioPinAnalogValueChangeEvent(
-                                    event.getSource(), pin, value));
+                                .handleGpioPinAnalogValueChangeEvent(new GpioPinAnalogValueChangeEvent(
+                                        event.getSource(), pin, value));
+                    }
+                }
+            } else if (event.getEventType() == PinEventType.ANALOG_SHORT_VALUE_CHANGE) {
+                short value = ((PinAnalogShortValueChangeEvent) event).getValue();
+
+                // create a copy of the listeners collection
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
+
+                // process event callbacks for analog listeners
+                for (GpioPinListener listener : listeners) {
+                    if (listener != null && listener instanceof GpioPinListenerAnalogShort) {
+                        ((GpioPinListenerAnalogShort) listener)
+                                .handleGpioPinAnalogShortValueChangeEvent(new GpioPinAnalogShortValueChangeEvent(
+                                        event.getSource(), pin, value));
                     }
                 }
             }
