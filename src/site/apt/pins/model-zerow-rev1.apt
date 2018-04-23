@@ -1,0 +1,45 @@
+            ------
+            Pin Numbering - Raspberry Pi Zero W
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering - Raspberry Pi Zero W
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Numbering Scheme
+
+  Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+  P14J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
+
+
+* Expansion Header
+
+  The Raspberry Pi Zero W board contains a single 40-pin expansion header labeled as 'J8' providing access to 28 GPIO pins.\
+  (Pins 1, 2, 39 & 40 are also labeled below.)
+
+[../images/j8header-photo-zero.png]
+
+  {{{../images/j8header-photo-zero-large.png}(click here for hi-resolution image)}}
+
+* J8 Pinout (40-pin Header)
+
+  The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
+
+[../images/j8header-zero.png]
+
+  {{{../images/j8header-zero-large.png}(click here for hi-resolution image)}}
+
+
+* Additional Resources
+
+   * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
+
+   * {{{https://www.raspberrypi.org/products/raspberry-pi-zero-w/}Click here for more information on the J8 header.}}
+
+   * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}
