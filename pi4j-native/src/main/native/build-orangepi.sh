@@ -90,7 +90,7 @@ rm --recursive --force wiringPi
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies
 echo
 echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
+echo "Building Pi4J JNI library (statically linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static
