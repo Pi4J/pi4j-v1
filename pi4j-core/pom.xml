@@ -118,16 +118,8 @@
 									native library can be included in the final packaged pi4j.jar -->
 
                                 <!-- LIBPI4J for the Raspberry-Pi platform -->
-                                <artifactItem>
-									<groupId>com.pi4j</groupId>
-									<artifactId>pi4j-native</artifactId>
-									<version>${project.version}</version>
-                                    <classifier>raspberrypi-static</classifier>
-                                    <type>so</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/lib/raspberrypi/static</outputDirectory>
-									<destFileName>libpi4j.so</destFileName>
-								</artifactItem>
+                                <!-- NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                 <artifactItem>
                                     <groupId>com.pi4j</groupId>
                                     <artifactId>pi4j-native</artifactId>

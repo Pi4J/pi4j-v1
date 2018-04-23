@@ -29,6 +29,8 @@ package com.pi4j.util;
  * #L%
  */
 
+import com.pi4j.platform.Platform;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -89,8 +91,14 @@ public class NativeLibraryLoader {
         //
         // path = /lib/{platform}/{linking:static|dynamic}/{filename}
         //
-        String platform = System.getProperty("pi4j.platform", "raspberrypi");
-        String linking = System.getProperty("pi4j.linking", "static");
+        String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
+
+        // NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+        //       a statically linked wiringPi lib for the Raspberry Pi platform.  The
+        //       default linking for the Raspberry Pi platform should always be "dynamic"
+        String linking = System.getProperty("pi4j.linking",
+                platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+
 		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
 		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 		try {
@@ -98,7 +106,8 @@ public class NativeLibraryLoader {
 			logger.fine("Library [" + fileName + "] loaded successfully using embedded resource file: [" + path + "]");
 		} catch (Exception | UnsatisfiedLinkError e) {
 			logger.log(Level.SEVERE, "Unable to load [" + fileName + "] using path: [" + path + "]", e);
-			// either way, we did what we could, no need to remove now the library from the loaded libraries since we run inside one VM and nothing could possibly change, so there is no point in
+			// either way, we did what we could, no need to remove now the library from the loaded libraries
+            // since we run inside one VM and nothing could possibly change, so there is no point in
 			// trying out this logic again
 		}
 	}
@@ -106,7 +115,8 @@ public class NativeLibraryLoader {
 	/**
 	 * Loads library from classpath
 	 *
-	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted after exiting. Method uses String as filename because the pathname is
+	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is
+     * deleted after exiting. Method uses String as filename because the pathname is
 	 * "abstract", not system-dependent.
 	 *
 	 * @param path
@@ -116,7 +126,8 @@ public class NativeLibraryLoader {
 	 * @throws IllegalArgumentException
 	 *             If source file (param path) does not exist
 	 * @throws IllegalArgumentException
-	 *             If the path is not absolute or if the filename is shorter than three characters (restriction of {@see File#createTempFile(java.lang.String, java.lang.String)}).
+	 *             If the path is not absolute or if the filename is shorter than three characters (restriction
+     *             of {@see File#createTempFile(java.lang.String, java.lang.String)}).
 	 */
 	public static void loadLibraryFromClasspath(String path) throws IOException {
 		Path inputPath = Paths.get(path);

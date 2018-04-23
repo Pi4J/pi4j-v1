@@ -83,6 +83,7 @@ export WIRINGPI_REPO=https://github.com/BPI-SINOVOIP/WiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 rm --recursive --force wiringPi
+export WIRINGPI_STATIC=1
 ./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies

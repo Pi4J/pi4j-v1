@@ -83,6 +83,7 @@ WIRINGPI_PLATFORM=bananapro
 export WIRINGPI_REPO=https://github.com/Pi4J/WiringBP
 export WIRINGPI_BRANCH=bananapro
 export WIRINGPI_DIRECTORY=wiringPi
+export WIRINGPI_STATIC=1
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 

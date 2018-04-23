@@ -38,8 +38,13 @@ if [ -z $WIRINGPI_BRANCH ]; then
 	WIRINGPI_BRANCH=master
 fi
 # set default wiringPi directory if not already defined
-if [ -z WIRINGPI_DIRECTORY ]; then
+if [ -z $WIRINGPI_DIRECTORY ]; then
 	WIRINGPI_DIRECTORY=wiringPi
+fi
+
+# set default wiringPi static build flag if not already defined
+if [ -z $WIRINGPI_STATIC ]; then
+	WIRINGPI_STATIC=0
 fi
 
 echo "============================"
@@ -65,10 +70,13 @@ else
   WIRINGPI_VERSION=2.0
 fi
 
-# create target directories to hold compiled libraries
-mkdir -p lib/static
-mkdir -p lib/dynamic
+# create target directory for STATICALLY linked compiled library
+if [[ $WIRINGPI_STATIC > 0 ]]; then
+  mkdir -p lib/static
+fi
 
+# create target directory for DYNAMICALLY linked compiled library
+mkdir -p lib/dynamic
 
 # ----------------------------------
 # build latest wiringPi
@@ -81,9 +89,21 @@ echo
 echo "Compiling wiringPi library"
 
 cd $WIRINGPI_DIRECTORY
-make clean all static -j1 $@
-mv libwiringPi.a ../lib/static/libwiringPi.a
-mv libwiringPi.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPi.so
+
+if [[ $WIRINGPI_STATIC > 0 ]]; then
+  # make WiringPi static and dynamic lib
+  make clean all static -j1 $@
+
+  # move compiled libs to respective paths
+  mv libwiringPi.a ../lib/static/libwiringPi.a
+  mv libwiringPi.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPi.so
+else
+  # make WiringPi dynamic lib
+  make clean all -j1 $@
+
+  # move compiled libs to respective paths
+  mv libwiringPi.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPi.so
+fi
 
 
 # ----------------------------------
@@ -98,10 +118,15 @@ echo
 
 cd ../devLib
 cp ../$WIRINGPI_DIRECTORY/*.h .
-echo "Compiling wiringPi devLib STATIC library"
-make clean static -j1 LIBS=lib/static $@
-mv libwiringPiDev.a ../lib/static/libwiringPiDev.a
 
+# compile wiringPi devlLib and link STATICALLY
+if [[ $WIRINGPI_STATIC > 0 ]]; then
+  echo "Compiling wiringPi devLib STATIC library"
+  make clean static -j1 LIBS=lib/static $@
+  mv libwiringPiDev.a ../lib/static/libwiringPiDev.a
+fi
+
+# compile wiringPi devlLib and link DYNAMICALLY
 echo "Compiling wiringPi devLib DYNAMIC library"
 make all -j1 LIBS=lib/dynamic $@
 mv libwiringPiDev.so.$WIRINGPI_VERSION ../lib/dynamic/libwiringPiDev.so

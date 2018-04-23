@@ -84,17 +84,9 @@ WIRINGPI_PLATFORM=raspberrypi
 export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
+export WIRINGPI_STATIC=0
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
-
-# compile the 'lib4j.so' JNI native shared library with statically linked dependencies
-echo
-echo "==========================================="
-echo "Building Pi4J JNI library (statically linked)"
-echo "==========================================="
-echo
-mkdir -p lib/$WIRINGPI_PLATFORM/static
-make clean static TARGET=lib/$WIRINGPI_PLATFORM/static/libpi4j.so $@
 
 # compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
 echo
@@ -104,7 +96,6 @@ echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
 make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
-
 
 echo
 echo "**********************************************************************"

@@ -83,6 +83,7 @@ WIRINGPI_PLATFORM=odroid
 export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi-Odroid
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
+export WIRINGPI_STATIC=1
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 

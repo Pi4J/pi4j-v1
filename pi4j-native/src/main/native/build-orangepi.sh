@@ -84,6 +84,7 @@ WIRINGPI_PLATFORM=orangepi
 export WIRINGPI_REPO=https://github.com/savageautomate/WiringOP.git
 export WIRINGPI_BRANCH=h3
 export WIRINGPI_DIRECTORY=wiringPi
+export WIRINGPI_STATIC=1
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 
