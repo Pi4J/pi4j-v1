@@ -18,7 +18,7 @@ Snapshot builds are available from
    *  [Downloads] http://pi4j.com/download.html
    
  
-Copyright (C) 2012-2017 Pi4J
+Copyright (C) 2012-2018 Pi4J
 
 ## LICENSE
  
