@@ -116,6 +116,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
     public static final short RPI_MODEL_ZERO    = 9;
     public static final short RPI_MODEL_CM3     = 10;
     public static final short RPI_MODEL_ZERO_W  = 12;
+    public static final short RPI_MODEL_3B_PLUS = 13;
 
     // Raspberry Pi Revision :: Memory
     public static final short RPI_RAM_256       = 0;
@@ -203,7 +204,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         // +---+-------+--------------+--------------------------------------------+
         // | A | 00-03 | PCB Revision | (the pcb revision number)                  |
         // | B | 04-11 | Model name   | A, B, A+, B+, B Pi2, Alpha, Compute Module |
-        // |   |       |              | unknown, B Pi3, Zero                       |
+        // |   |       |              | unknown, B Pi3, Zero, CM3, ZeroW, Pi3+     |
         // | C | 12-15 | Processor    | BCM2835, BCM2836, BCM2837                  |
         // | D | 16-19 | Manufacturer | Sony, Egoman, Embest, unknown, Embest      |
         // | E | 20-22 | Memory size  | 256 MB, 512 MB, 1024 MB                    |
@@ -253,6 +254,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case RPI_MODEL_ZERO:    return SystemInfo.BoardType.RaspberryPi_Zero;
                 case RPI_MODEL_CM3:     return SystemInfo.BoardType.RaspberryPi_ComputeModule3;
                 case RPI_MODEL_ZERO_W:  return SystemInfo.BoardType.RaspberryPi_ZeroW;
+                case RPI_MODEL_3B_PLUS: return SystemInfo.BoardType.RaspberryPi_3B_Plus;
                 case RPI_MODEL_B: {
                     // for model B, also take into consideration the revision
                     if(pcbrev <= 1)

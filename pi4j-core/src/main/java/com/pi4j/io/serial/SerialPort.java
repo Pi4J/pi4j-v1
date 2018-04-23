@@ -75,10 +75,11 @@ public class SerialPort {
                 return RaspberryPiSerial.DEFAULT_COM_PORT;
             }
 
-            // ------------------------
-            // RASPBERRY PI MODEL 3B
-            // ------------------------
-            case RaspberryPi_3B: {
+            // ---------------------------
+            // RASPBERRY PI MODEL 3B, 3B+
+            // ---------------------------
+            case RaspberryPi_3B:
+            case RaspberryPi_3B_Plus: {
                 // if the /dev/ttyS0 port exists, then use it as the default serial port
                 File s0ComPort = new File(RaspberryPiSerial.S0_COM_PORT);
                 if((s0ComPort.exists())){
