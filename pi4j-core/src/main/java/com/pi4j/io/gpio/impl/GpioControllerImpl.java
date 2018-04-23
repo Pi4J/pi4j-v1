@@ -1009,12 +1009,6 @@ public class GpioControllerImpl implements GpioController {
         if(isShutdown())
             return;
 
-        // shutdown all executor services
-        //
-        // NOTE: we are not permitted to access the shutdown() method of the individual
-        // executor services, we must perform the shutdown with the factory
-        GpioFactory.getExecutorServiceFactory().shutdown();
-
         // create a temporary set of providers to shutdown after completing all the pin instance shutdowns
         Set<GpioProvider> gpioProvidersToShutdown = new HashSet<>();
 
@@ -1057,6 +1051,12 @@ public class GpioControllerImpl implements GpioController {
                 gpioProvider.shutdown();
             }
         }
+
+        // shutdown all executor services
+        //
+        // NOTE: we are not permitted to access the shutdown() method of the individual
+        // executor services, we must perform the shutdown with the factory
+        GpioFactory.getExecutorServiceFactory().shutdown();
 
         // set is shutdown tracking variable
         isshutdown = true;
