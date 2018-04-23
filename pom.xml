@@ -218,7 +218,7 @@
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
-        <maven-site-plugin.version>3.6</maven-site-plugin.version>
+        <maven-site-plugin.version>3.7</maven-site-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
@@ -931,12 +931,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
 				<inherited>false</inherited>
 				<configuration>
                     <generateProjectInfo>true</generateProjectInfo>
                     <generateReports>true</generateReports>
                     <generateSitemap>true</generateSitemap>
 				</configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                </dependencies>
 			</plugin>
 
 			<!-- ATTACH LICENSE AS ARTIFACT -->
