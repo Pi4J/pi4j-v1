@@ -13,7 +13,7 @@ import com.pi4j.wiringpi.GpioInterruptListener;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2017 Pi4J
+ * Copyright (C) 2012 - 2018 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as

@@ -31,8 +31,8 @@ Pi4J Installation
 
   Pi4J depends on the WiringPi native library by Gordon Henderson.  Please see the following page for more information on WiringPi. \
   {{http://wiringpi.com/}}
-  
-  No installation is required for Wiring Pi.  Wiring Pi is embedded in the Pi4J native library.   
+
+  The Pi4J native library is dynamically linked to WiringPi and thus you must have WiringPi installed on your target Raspberry Pi system.
 
 =====================
 
@@ -68,7 +68,7 @@ Pi4J Installation
   prefer to transfer the file (USB, SCP, FTP, etc.)
 
   (NOTE: If you have a previous version of Pi4J installed, you will need to  uninstall it first.)
-  
+
   Once the installer package is available on your RaspberryPi, use the following command on the Pi to perform the installation: \
   <<<sudo dpkg -i pi4j-${project.version}.deb>>>
 

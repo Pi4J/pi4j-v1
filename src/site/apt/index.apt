@@ -14,6 +14,29 @@ Welcome to Pi4J!
 
 * News / Announcements
 
+  [2018-04-23]
+
+  Version 1.2-SNAPSHOT is available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
+  This is the active development version where you can find the latest fixes and updates.
+
+  Latest Development Updates:
+
+    * Added support for {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3B+}}
+
+    * Added support for {{{./pins/model-zerow-rev1.html}Raspberry Pi Zero W}}
+
+    * Added support for {{{./pins/model-cm-rev1.html}Raspberry Pi Compute Module 3}}
+
+    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/230}OrangePi}} platform.
+
+    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/337}Synovoip BPI (BananaPi)}} platform.
+
+    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/279}NanoPi}} platform.
+
+    * Updated to Java 8 runtime
+
+   Additional details can be found in the project's {{{https://github.com/Pi4J/pi4j/blob/master/README.md}README}}.
+
   [2016-07-26]
 
   Version 1.1 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})

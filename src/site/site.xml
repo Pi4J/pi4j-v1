@@ -23,7 +23,7 @@
 		<head>
 			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
-			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2017 Pi4J. All Rights Reserved."/>
+			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2018 Pi4J. All Rights Reserved."/>
 			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io, odroid, bananapi"/>
 			<META NAME="ROBOTS" CONTENT="ALL"/>
 			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
@@ -95,9 +95,12 @@
             <item name="Raspberry Pi - Model B (Rev 2)" href="pins/model-b-rev2.html" />
             <item name="Raspberry Pi - Model B+" href="pins/model-b-plus.html" />
             <item name="Raspberry Pi - Compute Module" href="pins/model-cm-rev1.html" />
+            <item name="Raspberry Pi - Compute Module 3" href="pins/model-cm-rev1.html" />
             <item name="Raspberry Pi 2 - Model B" href="pins/model-2b-rev1.html" />
             <item name="Raspberry Pi 3 - Model B" href="pins/model-3b-rev1.html" />
+            <item name="Raspberry Pi 3 - Model B+" href="pins/model-3b-plus-rev1.html" />
             <item name="Raspberry Pi Zero" href="pins/model-zero-rev1.html" />
+            <item name="Raspberry Pi Zero W" href="pins/model-zerow-rev1.html" />
             <item name="Lemaker BananaPi" href="pins/lemaker-bananapi.html" />
             <item name="Lemaker BananaPro" href="pins/lemaker-bananapro.html" />
             <item name="Odroid C1/C1+" href="pins/odroid-c1.html" />

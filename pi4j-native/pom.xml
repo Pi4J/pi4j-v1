@@ -247,7 +247,8 @@
                                 <if>
                                     <equals arg1="${raspberrypi.build}" arg2="true" />
                                     <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/raspberrypi/static/libpi4j.so" classifier="raspberrypi-static" type="so"/>
+                                        <!-- NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                         <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so" classifier="raspberrypi-dynamic" type="so"/>
                                     </then>
                                 </if>

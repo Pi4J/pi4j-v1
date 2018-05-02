@@ -218,14 +218,14 @@
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
-        <maven-site-plugin.version>3.6</maven-site-plugin.version>
+        <maven-site-plugin.version>3.7</maven-site-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
         <maven-bundle-plugin.version>3.2.0</maven-bundle-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <native-maven-plugin.version>1.0-alpha-8</native-maven-plugin.version>
-        <license-maven-plugin.version>1.12</license-maven-plugin.version>
+        <license-maven-plugin.version>1.14</license-maven-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <site-maven-plugin.version>0.12</site-maven-plugin.version>
         <jdeb.version>1.5</jdeb.version>
@@ -886,6 +886,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
+				<version>${license-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>update-project-license</id>
@@ -930,12 +931,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
 				<inherited>false</inherited>
 				<configuration>
                     <generateProjectInfo>true</generateProjectInfo>
                     <generateReports>true</generateReports>
                     <generateSitemap>true</generateSitemap>
 				</configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                </dependencies>
 			</plugin>
 
 			<!-- ATTACH LICENSE AS ARTIFACT -->

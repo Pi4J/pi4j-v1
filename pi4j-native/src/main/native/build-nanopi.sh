@@ -10,7 +10,7 @@
 # this project can be found here:  http://www.pi4j.com/
 # **********************************************************************
 # %%
-# Copyright (C) 2012 - 2017 Pi4J
+# Copyright (C) 2012 - 2018 Pi4J
 # %%
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -83,13 +83,14 @@ WIRINGPI_PLATFORM=nanopi
 export WIRINGPI_REPO=https://github.com/Pi4J/WiringNP
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
+export WIRINGPI_STATIC=1
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 
 # compile the 'lib4j.so' JNI native shared library with statically linked dependencies
 echo
 echo "==========================================="
-echo "Building Pi4J JNI library (staticly linked)"
+echo "Building Pi4J JNI library (statically linked)"
 echo "==========================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/static

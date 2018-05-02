@@ -11,7 +11,7 @@ package com.pi4j.system;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2017 Pi4J
+ * Copyright (C) 2012 - 2018 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,6 +51,7 @@ public class SystemInfo {
         RaspberryPi_ComputeModule,
         RaspberryPi_2B,
         RaspberryPi_3B,
+        RaspberryPi_3B_Plus,
         RaspberryPi_Zero,
         RaspberryPi_ComputeModule3,
         RaspberryPi_ZeroW,
