@@ -338,7 +338,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
         // pin6.setDebounce(10);
         pin6.addListener(this);
 
-        dispatcher = new Thread(this);
+        dispatcher = new Thread(this, "PiFaceCadLcd.Dispatcher");
         dispatcher.start();
     }
 
