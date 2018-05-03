@@ -224,6 +224,7 @@
         <maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
         <maven-bundle-plugin.version>3.2.0</maven-bundle-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <native-maven-plugin.version>1.0-alpha-8</native-maven-plugin.version>
         <license-maven-plugin.version>1.14</license-maven-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
