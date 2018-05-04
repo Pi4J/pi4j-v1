@@ -41,6 +41,7 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
@@ -339,6 +340,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
         pin6.addListener(this);
 
         dispatcher = new Thread(this, "PiFaceCadLcd.Dispatcher");
+        dispatcher.setPriority(Thread.NORM_PRIORITY+1);
         dispatcher.start();
     }
 
@@ -618,6 +620,8 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
 
     /**
      * Dispatcher thread (needed to avoid to short delays between events)
+     *
+     * The dispatcher will query each 500ms if an event is in the queue
      */
     public void run() {
         try {
