@@ -50,12 +50,14 @@ import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiFactory;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import jdk.nashorn.internal.runtime.ECMAException;
 
 /**
  * The PiFace Control and Display LCD implementation
  *
- * The original C implementation can be found http://piface.github.io/libpifacecad/
+ * The original C implementation can be found
+ * http://piface.github.io/libpifacecad/
  *
  * The used pins are
  * <PRE>
@@ -73,14 +75,15 @@ import jdk.nashorn.internal.runtime.ECMAException;
  *
  * The infrared is not yet implemented.
  *
- * The implementation will use a dispatch thread with the buttons events to
- * send to listener, the pooling in 500ms.
+ * The implementation will use a dispatch thread with the buttons events to send
+ * to listener, the pooling in 500ms.
  *
- * Direct calling of the listener will results in some garbage on the screen
- * if the calls are to near, so the working polling approach was implemented.
+ * Direct calling of the listener will results in some garbage on the screen if
+ * the calls are to near, so the working polling approach was implemented.
  *
- * If there is another reliable way to fire events to listener, please submit
- * a pull request.
+ * If there is another reliable way to fire events to listener, please submit a
+ * pull request.
+ *
  * @author sbodmer
  */
 public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListenerDigital {
@@ -127,7 +130,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
     protected static final byte LCD_PORT = REGISTER_GPIO_B;
 
     /**
-     * SPI Address Register  0b[0 1 0 0 A2 A1 A0 x]
+     * SPI Address Register 0b[0 1 0 0 A2 A1 A0 x]
      */
     public static final byte ADDRESS_0 = 0b01000000; // 0x40 [0100 0000] [A0 = 0 | A1 = 0 | A2 = 0]
     public static final byte ADDRESS_1 = 0b01000010; // 0x42 [0100 0010] [A0 = 1 | A1 = 0 | A2 = 0]
@@ -230,6 +233,8 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
      * The event dispatcher (sequential to avoid problems)
      */
     protected Thread dispatcher = null;
+    public static boolean DEBUG_DISPATCHER = false;
+    public static int DISPATCHER_POOLING_DELAY = 500;   //--- in miliseconds
 
     /**
      * The default PiFace is at CS1
@@ -250,6 +255,8 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
      * @throws IOException
      */
     public PiFaceCadLcd(SpiChannel channel) throws IOException {
+        GpioController gpio = GpioFactory.getInstance();
+
         spi = SpiFactory.getInstance(channel);
 
         //--- The below init code was taken from MCP23S17GpioProvider
@@ -281,7 +288,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
         // (1 = Enable GPIO input pin for interrupt-on-change event.)
         // (0 = Disable GPIO input pin for interrupt-on-change event.)
         // enable interrupts
-        write(REGISTER_GPINTEN_A, (byte) 0xff);
+        write(REGISTER_GPINTEN_A, (byte) 0x00);
         write(REGISTER_GPINTEN_B, (byte) 0x00);
 
         // set all default pin interrupt default values
@@ -332,16 +339,17 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
             ex.printStackTrace();
         }
 
-        GpioController gpio = GpioFactory.getInstance();
-
+        //--- Button interrupt
         pin6 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "Interrupt");
         pin6.setShutdownOptions(Boolean.TRUE);
         // pin6.setDebounce(10);
         pin6.addListener(this);
 
+        //--- Dispatcher threa which will stack event and call listener
         dispatcher = new Thread(this, "PiFaceCadLcd.Dispatcher");
-        dispatcher.setPriority(Thread.NORM_PRIORITY+1);
+        dispatcher.setPriority(Thread.NORM_PRIORITY + 2);
         dispatcher.start();
+
     }
 
     //**************************************************************************
@@ -403,6 +411,14 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
     public void setButtonsListener(PiFaceCadButtonsListener listener) {
         this.listener = listener;
 
+        //--- Enable interrupt
+        try {
+            write(REGISTER_GPINTEN_A, (byte) 0xff);
+            Thread.sleep(1000);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public int readSwitches() throws IOException {
@@ -461,11 +477,12 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
     public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
         // display pin state on console
         try {
-            // System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+            if (DEBUG_DISPATCHER) System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             int pressed = 255 - readSwitches();
             if (listener != null) {
                 if (event.getState().isLow()) {
-                    queue.add(new int[] {pressed, oldPressedButtons & ~pressed});
+                    if (DEBUG_DISPATCHER) System.out.println(" --> GPIO EVENT INSERTED IN DISAPTCHER QUEUE");
+                    queue.add(new int[]{pressed, oldPressedButtons & ~pressed});
                     oldPressedButtons = pressed;
                 }
             }
@@ -509,9 +526,9 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
     /* pulse the enable pin */
     protected void lcdPulseEnable() throws InterruptedException, IOException {
         lcdSetEnable(true);
-        Thread.sleep(0,DELAY_PULSE_NS);
+        Thread.sleep(0, DELAY_PULSE_NS);
         lcdSetEnable(false);
-        Thread.sleep(0,DELAY_PULSE_NS);
+        Thread.sleep(0, DELAY_PULSE_NS);
     }
 
     protected void lcdSetEnable(boolean state) throws IOException {
@@ -533,7 +550,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
     protected void lcdSendCommand(byte command) throws IOException, InterruptedException {
         lcdSetRs(false);
         lcdSendByte(command);
-        Thread.sleep(0,DELAY_SETTLE_NS);
+        Thread.sleep(0, DELAY_SETTLE_NS);
     }
 
     protected void lcdSetRs(boolean state) throws IOException {
@@ -567,7 +584,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
         lcdSetRs(true);
         lcdSendByte(data);
         currentAddress++;
-        Thread.sleep(0,DELAY_SETTLE_NS);
+        Thread.sleep(0, DELAY_SETTLE_NS);
     }
 
     protected static int max(int a, int b) {
@@ -614,9 +631,7 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
          */
         public void pifaceButtonsEvent(int pressed, int released);
 
-
     }
-
 
     /**
      * Dispatcher thread (needed to avoid to short delays between events)
@@ -628,10 +643,10 @@ public class PiFaceCadLcd extends LCDBase implements Runnable, LCD, GpioPinListe
             while (dispatcher.isInterrupted() == false) {
                 if (!queue.isEmpty()) {
                     int ev[] = queue.remove(0);
-                    if (listener != null) listener.pifaceButtonsEvent(ev[0],ev[1]);
+                    if (listener != null) listener.pifaceButtonsEvent(ev[0], ev[1]);
 
                 }
-                dispatcher.sleep(500);
+                dispatcher.sleep(DISPATCHER_POOLING_DELAY);
 
             }
 
