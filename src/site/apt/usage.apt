@@ -32,7 +32,7 @@ Usage
   * <<For Models A, A+, B, B+, 2B, 3B, and Zero>>
 
     Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
-    P14J implements the same pin number scheme as the Wiring Pi project.
+    Pi4J implements the same pin number scheme as the Wiring Pi project.
     More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
 
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
@@ -100,7 +100,7 @@ Usage
 
 * Control Pin State
 
-  P14J provides a number of convenience method for controlling or writing a state to a GPIO pin.\
+  Pi4J provides a number of convenience method for controlling or writing a state to a GPIO pin.\
   The examples below demonstrate a few of the controlling methods you can invoke on a GPIO pin.
 
 %{snippet|id=usage-control-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
@@ -111,7 +111,7 @@ Usage
 
 * Read Pin State
 
-  P14J provides a number of convenience method for reading/interrogating the current state to a GPIO pin.\
+  Pi4J provides a number of convenience method for reading/interrogating the current state to a GPIO pin.\
   The examples below demonstrate a few of the reading methods you can invoke on a GPIO pin.
 
 %{snippet|id=usage-read-pin-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
@@ -150,7 +150,7 @@ Usage
 
 * Pin Triggers
 
-  P14J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\
+  Pi4J provides a series of <GpioTriggers> that can perform actions on GPIO pins based on the state change of another pin.  Triggers also provide an extensible interface that allow you to extend and create your own custom triggers.\
   The following snippet demonstrates a simple ''follow-me' trigger implementation:
 
 %{snippet|id=usage-trigger-snippet|file=pi4j-example/src/main/java/UsageGpioExample.java}
@@ -162,7 +162,7 @@ Usage
 
 * Serial Communication
 
-  P14J provides a simplified API to send and receive data using a serial port of the Raspberry's Pi.\
+  Pi4J provides a simplified API to send and receive data using a serial port of the Raspberry's Pi.\
   The following example project demonstrates implementing serial communication:\
   {{{./example/serial.html}Serial Communication Example}}.
 
@@ -170,7 +170,7 @@ Usage
 
 * System Information
 
-  P14J provides an API to access system and network information from the Raspberry's Pi.\
+  Pi4J provides an API to access system and network information from the Raspberry's Pi.\
   The following example project demonstrates accessing system and network information:\
   {{{./example/system-info.html}System Information Example}}.
 

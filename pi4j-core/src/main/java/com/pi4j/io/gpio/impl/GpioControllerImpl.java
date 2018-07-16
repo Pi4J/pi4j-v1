@@ -11,7 +11,7 @@ package com.pi4j.io.gpio.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2017 Pi4J
+ * Copyright (C) 2012 - 2018 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -1009,12 +1009,6 @@ public class GpioControllerImpl implements GpioController {
         if(isShutdown())
             return;
 
-        // shutdown all executor services
-        //
-        // NOTE: we are not permitted to access the shutdown() method of the individual
-        // executor services, we must perform the shutdown with the factory
-        GpioFactory.getExecutorServiceFactory().shutdown();
-
         // create a temporary set of providers to shutdown after completing all the pin instance shutdowns
         Set<GpioProvider> gpioProvidersToShutdown = new HashSet<>();
 
@@ -1057,6 +1051,12 @@ public class GpioControllerImpl implements GpioController {
                 gpioProvider.shutdown();
             }
         }
+
+        // shutdown all executor services
+        //
+        // NOTE: we are not permitted to access the shutdown() method of the individual
+        // executor services, we must perform the shutdown with the factory
+        GpioFactory.getExecutorServiceFactory().shutdown();
 
         // set is shutdown tracking variable
         isshutdown = true;

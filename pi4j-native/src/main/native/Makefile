@@ -59,7 +59,7 @@ OBJ =	$(SRC:.c=.o)
 all:	static
 
 static:	$(OBJ)
-	@echo [LINK with STATICLY linked libraries]
+	@echo [LINK with STATICALLY linked libraries]
 	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE) $(LIBS_STATIC)
 
 dynamic: $(OBJ)

@@ -22,7 +22,7 @@
         <dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-native</artifactId>
-			<classifier>raspberrypi-static</classifier>
+			<classifier>raspberrypi-dynamic</classifier>
 			<version>${project.version}</version>
 			<type>so</type>
 			<scope>provided</scope>
@@ -66,6 +66,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<argLine>-noverify</argLine> <!-- needed for running PowerMock for com.pi4j.jni.I2C -->
                     <excludes>
@@ -118,16 +119,8 @@
 									native library can be included in the final packaged pi4j.jar -->
 
                                 <!-- LIBPI4J for the Raspberry-Pi platform -->
-                                <artifactItem>
-									<groupId>com.pi4j</groupId>
-									<artifactId>pi4j-native</artifactId>
-									<version>${project.version}</version>
-                                    <classifier>raspberrypi-static</classifier>
-                                    <type>so</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/lib/raspberrypi/static</outputDirectory>
-									<destFileName>libpi4j.so</destFileName>
-								</artifactItem>
+                                <!-- NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                 <artifactItem>
                                     <groupId>com.pi4j</groupId>
                                     <artifactId>pi4j-native</artifactId>

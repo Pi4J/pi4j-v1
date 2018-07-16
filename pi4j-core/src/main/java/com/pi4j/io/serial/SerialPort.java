@@ -11,7 +11,7 @@ package com.pi4j.io.serial;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2017 Pi4J
+ * Copyright (C) 2012 - 2018 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -75,10 +75,11 @@ public class SerialPort {
                 return RaspberryPiSerial.DEFAULT_COM_PORT;
             }
 
-            // ------------------------
-            // RASPBERRY PI MODEL 3B
-            // ------------------------
-            case RaspberryPi_3B: {
+            // ---------------------------
+            // RASPBERRY PI MODEL 3B, 3B+
+            // ---------------------------
+            case RaspberryPi_3B:
+            case RaspberryPi_3B_Plus: {
                 // if the /dev/ttyS0 port exists, then use it as the default serial port
                 File s0ComPort = new File(RaspberryPiSerial.S0_COM_PORT);
                 if((s0ComPort.exists())){

@@ -11,7 +11,7 @@ package com.pi4j.io.gpio.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2017 Pi4J
+ * Copyright (C) 2012 - 2018 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ import java.util.concurrent.*;
 
 public class GpioScheduledExecutorImpl {
 
-    private static final ConcurrentHashMap<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<GpioPinDigitalOutput, CopyOnWriteArrayList<ScheduledFuture<?>>> pinTaskQueue = new ConcurrentHashMap<>();
     private static ScheduledExecutorService scheduledExecutorService;
 
     private synchronized static void init(GpioPinDigitalOutput pin) {
@@ -54,7 +54,7 @@ public class GpioScheduledExecutorImpl {
         // determine if any existing future tasks are already scheduled for this pin
         if (pinTaskQueue.containsKey(pin)) {
             // if a task is found, then cancel all pending tasks immediately and remove them
-            ArrayList<ScheduledFuture<?>> tasks = pinTaskQueue.get(pin);
+            CopyOnWriteArrayList<ScheduledFuture<?>> tasks = pinTaskQueue.get(pin);
             if (tasks != null && !tasks.isEmpty()) {
                 for (int index =  (tasks.size() - 1); index >= 0; index--) {
                     ScheduledFuture<?> task = tasks.get(index);
@@ -76,8 +76,8 @@ public class GpioScheduledExecutorImpl {
         @SuppressWarnings({"rawtypes", "unchecked"})
         ScheduledFuture<?> cleanupFutureTask = scheduledExecutorService.schedule(new Callable() {
             public Object call() throws Exception {
-                for (Entry<GpioPinDigitalOutput, ArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet()) {
-                    ArrayList<ScheduledFuture<?>> remainingTasks = item.getValue();
+                for (Entry<GpioPinDigitalOutput, CopyOnWriteArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet()) {
+                    CopyOnWriteArrayList<ScheduledFuture<?>> remainingTasks = item.getValue();
 
                     // if a task is found, then cancel all pending tasks immediately and remove them
                     if (remainingTasks != null && !remainingTasks.isEmpty()) {
@@ -123,9 +123,9 @@ public class GpioScheduledExecutorImpl {
                 .schedule(new GpioPulseTaskImpl(pin, PinState.getInverseState(pulseState), callback), duration, TimeUnit.MILLISECONDS);
 
             // get pending tasks for the current pin
-            ArrayList<ScheduledFuture<?>> tasks;
+            CopyOnWriteArrayList<ScheduledFuture<?>> tasks;
             if (!pinTaskQueue.containsKey(pin)) {
-                pinTaskQueue.put(pin, new ArrayList<>());
+                pinTaskQueue.put(pin, new CopyOnWriteArrayList<>());
             }
             tasks = pinTaskQueue.get(pin);
 
@@ -155,9 +155,9 @@ public class GpioScheduledExecutorImpl {
                 .scheduleAtFixedRate(new GpioBlinkTaskImpl(pin), delay, delay, TimeUnit.MILLISECONDS);
 
             // get pending tasks for the current pin
-            ArrayList<ScheduledFuture<?>> tasks;
+            CopyOnWriteArrayList<ScheduledFuture<?>> tasks;
             if (!pinTaskQueue.containsKey(pin)) {
-                pinTaskQueue.put(pin, new ArrayList<>());
+                pinTaskQueue.put(pin, new CopyOnWriteArrayList<>());
             }
             tasks = pinTaskQueue.get(pin);
 

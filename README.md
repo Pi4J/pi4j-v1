@@ -18,7 +18,7 @@ Snapshot builds are available from
    *  [Downloads] http://pi4j.com/download.html
    
  
-Copyright (C) 2012-2017 Pi4J
+Copyright (C) 2012-2018 Pi4J
 
 ## LICENSE
  
@@ -36,6 +36,16 @@ Copyright (C) 2012-2017 Pi4J
 
 
 ## KNOWN ISSUES
+
+2018-04-23 :: 1.2-SNAPSHOT
+
+  *  As of 2018-04-23, We have removed support for the Pi4J native library statically compiled against WiringPi.
+     for the Raspberry Pi platform.  You must now have WiringPi installed on your target Raspberry Pi system 
+     separately from Pi4J.  WiringPi is now included be default in the latest Raspbian builds.  We made this change
+     in part because the WiringPi project now requests no static linking and because it would cause Pi4J to fail 
+     on newer platforms when we were not able to get a new build released in a reasonable and timely manner.  This 
+     change should be of a minimal negative impact now that WiringPi is included with the OS and users will benefit
+     from being able to take advantage of newer WirinPi builds without depending on a new Pi4J build. 
 
 2016-07-26 :: 1.1
 
@@ -63,8 +73,12 @@ Copyright (C) 2012-2017 Pi4J
 
 ## IN DEVELOPMENT
 
-2017-09-05 :: 1.2-SNAPSHOT
+2018-04-23 :: 1.2-SNAPSHOT
 
+  *  Removed support for statically compiled wiringPi library (for Raspberry Pi).
+  *  Added support for Raspberry Pi 3B+ 
+  *  Added support for Raspberry Pi Zero W
+  *  Added support for Raspberry Pi Compute Module 3   
   *  Updated to Java 8 (enhancement #203) 
   *  Updated build dependencies/plugins to latest versions.
   *  Removed unsupported sub-projects (pi4j-temp, pi4j-service).
