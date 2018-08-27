@@ -70,6 +70,7 @@ public class SimulatedGpioProvider extends GpioProviderBase implements GpioProvi
         // If no specific platform is specified we default to simulating the raspberry pi
         if (config == null) {
             NAME = RaspiGpioProvider.NAME;
+            return;
         }
 
         NAME = config;
