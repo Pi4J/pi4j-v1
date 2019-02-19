@@ -45,7 +45,7 @@ Copyright (C) 2012-2018 Pi4J
      in part because the WiringPi project now requests no static linking and because it would cause Pi4J to fail 
      on newer platforms when we were not able to get a new build released in a reasonable and timely manner.  This 
      change should be of a minimal negative impact now that WiringPi is included with the OS and users will benefit
-     from being able to take advantage of newer WirinPi builds without depending on a new Pi4J build. 
+     from being able to take advantage of newer WiringPi builds without depending on a new Pi4J build. 
 
 2016-07-26 :: 1.1
 
