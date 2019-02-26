@@ -76,7 +76,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         int address = pin.getAddress();
 
         // dynamically resize pin cache storage if needed based on pin address
-        if(address > cache.length){
+        if(address >= cache.length){
             // create a new array with existing contents
             // that is 100 elements larger than the requested address
             // (we add the extra 100 elements to provide additional overhead capacity in
