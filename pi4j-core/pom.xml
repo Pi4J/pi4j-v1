@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.2</version>
+        <version>1.3-SNAPSHOT</version>
 	</parent>
 
 	<!-- PROJECT DEPENDENCIES -->
@@ -119,7 +119,7 @@
 									native library can be included in the final packaged pi4j.jar -->
 
                                 <!-- LIBPI4J for the Raspberry-Pi platform -->
-                                <!-- NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+                                <!-- NOTE: As of 2018-04-23, Pi4J no longer includes
                                            a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                 <artifactItem>
                                     <groupId>com.pi4j</groupId>

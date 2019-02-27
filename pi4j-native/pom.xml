@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.2</version>
+        <version>1.3-SNAPSHOT</version>
 	</parent>
 
     <!-- BUILD PROPERTIES -->
@@ -247,7 +247,7 @@
                                 <if>
                                     <equals arg1="${raspberrypi.build}" arg2="true" />
                                     <then>
-                                        <!-- NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+                                        <!-- NOTE: As of 2018-04-23 Pi4J no longer includes
                                            a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                         <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so" classifier="raspberrypi-dynamic" type="so"/>
                                     </then>

@@ -93,7 +93,7 @@ public class NativeLibraryLoader {
         //
         String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
 
-        // NOTE: As of 2018-04-23 in Pi4J 1.2 SNAPSHOT builds, Pi4J no longer includes
+        // NOTE: As of 2018-04-23, Pi4J no longer includes
         //       a statically linked wiringPi lib for the Raspberry Pi platform.  The
         //       default linking for the Raspberry Pi platform should always be "dynamic"
         String linking = System.getProperty("pi4j.linking",

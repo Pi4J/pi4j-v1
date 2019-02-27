@@ -71,6 +71,12 @@ Copyright (C) 2012-2019 Pi4J
   *  Support for OrangePi and Synovoip BPI platforms is considered experimental and has had limited testing.  Not 
      all Pi4J features may be supported and/or working properly.
 
+
+## IN DEVELOPMENT
+
+2019-02-27 :: 1.3-SNAPSHOT
+
+
 ## RELEASES
 
 2019-02-27 :: 1.2
