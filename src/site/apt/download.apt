@@ -17,15 +17,15 @@ Download
 
   <<RELEASE BUILDS>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.1.deb}pi4j-1.1.deb}} <<<Debian Installer Package>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.2.deb}pi4j-1.2.deb}} <<<Debian Installer Package>>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.1.zip}pi4j-1.1.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.2.zip}pi4j-1.2.zip}} <<<Compressed ZIP Archive>>>
 
   <<LATEST SNAPSHOT BUILDS>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.2-SNAPSHOT.deb}pi4j-1.2-SNAPSHOT.deb}} <<<Debian Installer Package>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.3-SNAPSHOT.deb}pi4j-1.3-SNAPSHOT.deb}} <<<Debian Installer Package>>>
 
-     * {{{http://get.pi4j.com/download/pi4j-1.2-SNAPSHOT.zip}pi4j-1.2-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
+     * {{{http://get.pi4j.com/download/pi4j-1.3-SNAPSHOT.zip}pi4j-1.3-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
@@ -47,7 +47,7 @@ Download
   <<SNAPSHOT BUILDS>>
 
   Snapshots will be hosted in the following Sonatype OSS repository.\
-  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.2-SNAPSHOT~~}}
+  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.3-SNAPSHOT~~}}
 
   To download SNAPSHOT builds in your Maven project, you must include the following repository definition in your POM.XML file.
 
@@ -59,7 +59,7 @@ Download
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.2-SNAPSHOT</version>
+   <version>1.3-SNAPSHOT</version>
 </dependency>
 +---------------------
 
