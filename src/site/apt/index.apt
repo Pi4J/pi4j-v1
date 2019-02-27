@@ -14,18 +14,22 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2018-04-23]
+  [2019-02-26]
 
   Version 1.2-SNAPSHOT is available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
   This is the active development version where you can find the latest fixes and updates.
 
   Latest Development Updates:
 
+    * Added support for {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3A+}}
+
     * Added support for {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3B+}}
 
     * Added support for {{{./pins/model-zerow-rev1.html}Raspberry Pi Zero W}}
 
-    * Added support for {{{./pins/model-cm-rev1.html}Raspberry Pi Compute Module 3}}
+    * Added support for {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi Compute Module 3+}}
+
+    * Added support for {{{./pins/model-cm3-rev1.html}Raspberry Pi Compute Module 3}}
 
     * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/230}OrangePi}} platform.
 
@@ -102,6 +106,10 @@ Welcome to Pi4J!
   * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
 
   * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+
+  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3 - Model B+}}
+
+  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3 - Model A+}}
 
   * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
 

@@ -1,0 +1,53 @@
+            ------
+            Pin Numbering - Raspberry Pi Compute Module (CM3+, CM3+ Lite)
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering - Raspberry Pi Compute Module (CM3+, CM3+ Lite)
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Numbering Scheme
+
+  Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
+  Pi4J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}} enumeration that is used to manage the accessible GPIO pins.
+
+
+* Expansion Header
+
+  The Raspberry Pi Compute Module development board contains two banks with 60-pin expansion headers labeled as 'J5' and 'J6' providing access to 46 GPIO pins.
+
+[../images/j5header-photo.png]
+
+* J5 Pinout  (60-pin Header)
+
+  The diagram below illustrates the (BANK0) GPIO pinout using the Broadcom GPIO numbering scheme.
+
+[../images/j5header.png]
+
+  {{{../images/j5header-large.png}(click here for hi-resolution image)}}
+
+* J6 Pinout  (60-pin Header)
+
+  The diagram below illustrates the (BANK1) J6 GPIO pinout using the Broadcom GPIO numbering scheme.
+
+[../images/j6header.png]
+
+  {{{../images/j6header-large.png}(click here for hi-resolution image)}}
+
+* Examples/Sample Code
+
+   * {{{https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/ComputeModuleGpioExample.java}ComputeModuleGpioExample.java}}
+
+* Additional Resources
+
+   * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
+
+   * {{{http://www.raspberrypi.org/products/compute-module-development-kit/}Click here for more information on the J5/J6 headers.}}
+
+   * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}
