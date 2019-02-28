@@ -21,8 +21,6 @@ FORMAT:
 EXAMPLES:
 > mvn clean install -P raspberrypi
 > mvn clean install -P raspberrypi -Draspberrypi.host=192.168.10.10
-> mvn clean install -P raspberrypi,ordoid
-> mvn clean install -P raspberrypi,ordoid -Draspberrypi.host=192.168.10.10 -Dodroid.host=192.168.10.11
 
 Please note that the following prerequisites are required to be installed on your RaspberryPi
 before the pi4j-native project can be compiled.  The pi4j-native build will attempt to install

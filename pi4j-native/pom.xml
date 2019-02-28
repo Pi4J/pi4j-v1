@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
 	</parent>
 
     <!-- BUILD PROPERTIES -->
@@ -177,55 +177,6 @@
                                     <property name="raspberrypi.user" value="${raspberrypi.user}"/>
                                     <property name="raspberrypi.password" value="${raspberrypi.password}"/>
                                     <property name="raspberrypi.directory" value="${raspberrypi.directory}"/>
-
-                                    <!-- Odroid Platform Properties -->
-                                    <property name="odroid.name" value="${odroid.name}"/>
-                                    <property name="odroid.host" value="${odroid.host}"/>
-                                    <property name="odroid.port" value="${odroid.port}"/>
-                                    <property name="odroid.user" value="${odroid.user}"/>
-                                    <property name="odroid.password" value="${odroid.password}"/>
-                                    <property name="odroid.directory" value="${odroid.directory}"/>
-
-                                    <!-- LeMaker BananaPi Platform Properties -->
-                                    <property name="bananapi.name" value="${bananapi.name}"/>
-                                    <property name="bananapi.host" value="${bananapi.host}"/>
-                                    <property name="bananapi.port" value="${bananapi.port}"/>
-                                    <property name="bananapi.user" value="${bananapi.user}"/>
-                                    <property name="bananapi.password" value="${bananapi.password}"/>
-                                    <property name="bananapi.directory" value="${bananapi.directory}"/>
-
-                                    <!-- LeMaker BananaPro Platform Properties -->
-                                    <property name="bananapro.name" value="${bananapro.name}"/>
-                                    <property name="bananapro.host" value="${bananapro.host}"/>
-                                    <property name="bananapro.port" value="${bananapro.port}"/>
-                                    <property name="bananapro.user" value="${bananapro.user}"/>
-                                    <property name="bananapro.password" value="${bananapro.password}"/>
-                                    <property name="bananapro.directory" value="${bananapro.directory}"/>
-
-                                    <!-- SINOVOIP-BPI Platform Properties -->
-                                    <property name="bpi.name" value="${bpi.name}"/>
-                                    <property name="bpi.host" value="${bpi.host}"/>
-                                    <property name="bpi.port" value="${bpi.port}"/>
-                                    <property name="bpi.user" value="${bpi.user}"/>
-                                    <property name="bpi.password" value="${bpi.password}"/>
-                                    <property name="bpi.directory" value="${bpi.directory}"/>
-
-                                    <!-- OrangePi Platform Properties -->
-                                    <property name="orangepi.name" value="${orangepi.name}"/>
-                                    <property name="orangepi.host" value="${orangepi.host}"/>
-                                    <property name="orangepi.port" value="${orangepi.port}"/>
-                                    <property name="orangepi.user" value="${orangepi.user}"/>
-                                    <property name="orangepi.password" value="${orangepi.password}"/>
-                                    <property name="orangepi.directory" value="${orangepi.directory}"/>
-
-                                    <!-- NanoPi Platform Properties -->
-                                    <property name="nanopi.name" value="${nanopi.name}"/>
-                                    <property name="nanopi.host" value="${nanopi.host}"/>
-                                    <property name="nanopi.port" value="${nanopi.port}"/>
-                                    <property name="nanopi.user" value="${nanopi.user}"/>
-                                    <property name="nanopi.password" value="${nanopi.password}"/>
-                                    <property name="nanopi.directory" value="${nanopi.directory}"/>
-
                                 </ant>
                             </target>
                         </configuration>
@@ -250,60 +201,6 @@
                                         <!-- NOTE: As of 2018-04-23 Pi4J no longer includes
                                            a statically linked wiringPi lib for the Raspberry Pi platform. -->
                                         <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so" classifier="raspberrypi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for Odroid -->
-                                <if>
-                                    <equals arg1="${odroid.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/odroid/static/libpi4j.so" classifier="odroid-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/odroid/dynamic/libpi4j.so" classifier="odroid-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for LeMaker BananaPi -->
-                                <if>
-                                    <equals arg1="${bananapi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/static/libpi4j.so" classifier="bananapi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/dynamic/libpi4j.so" classifier="bananapi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for LeMaker BananaPro -->
-                                <if>
-                                    <equals arg1="${bananapro.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/static/libpi4j.so" classifier="bananapro-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so" classifier="bananapro-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for Sinovoip BPI (BananaPi)  -->
-                                <if>
-                                    <equals arg1="${bpi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bpi/static/libpi4j.so" classifier="bpi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bpi/dynamic/libpi4j.so" classifier="bpi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for OrangePi -->
-                                <if>
-                                    <equals arg1="${orangepi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/static/libpi4j.so" classifier="orangepi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for NanoPi -->
-                                <if>
-                                    <equals arg1="${nanopi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/static/libpi4j.so" classifier="nanopi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/dynamic/libpi4j.so" classifier="nanopi-dynamic" type="so"/>
                                     </then>
                                 </if>
 
