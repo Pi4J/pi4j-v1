@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pi4j</groupId>
 	<artifactId>pi4j-parent</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
 	<name>Pi4J :: Parent POM</name>
 	<description>Parent Maven POM for the Pi4J Project</description>
 	<url>https://www.pi4j.com</url>
@@ -94,8 +94,6 @@
 	<modules>
 		<module>pi4j-core</module>
 		<module>pi4j-example</module>
-		<module>pi4j-gpio-extension</module>
-		<module>pi4j-device</module>
 		<module>pi4j-distribution</module>
 	</modules>
 
@@ -131,66 +129,6 @@
         <raspberrypi.user>${pi4j.default.user}</raspberrypi.user>
         <raspberrypi.password>${pi4j.default.password}</raspberrypi.password>
         <raspberrypi.directory>${pi4j.default.directory}</raspberrypi.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'Odroid' PLATFORM -->
-        <odroid.build>false</odroid.build>
-        <odroid.platform>odroid</odroid.platform>
-        <odroid.name>Odroid</odroid.name>
-        <odroid.host>${pi4j.default.host}</odroid.host>
-        <odroid.port>${pi4j.default.port}</odroid.port>
-        <odroid.user>${pi4j.default.user}</odroid.user>
-        <odroid.password>${pi4j.default.password}</odroid.password>
-        <odroid.directory>${pi4j.default.directory}</odroid.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPi' PLATFORM -->
-        <bananapi.build>false</bananapi.build>
-        <bananapi.platform>bananapi</bananapi.platform>
-        <bananapi.name>LeMaker BananaPi</bananapi.name>
-        <bananapi.host>${pi4j.default.host}</bananapi.host>
-        <bananapi.port>${pi4j.default.port}</bananapi.port>
-        <bananapi.user>${pi4j.default.user}</bananapi.user>
-        <bananapi.password>${pi4j.default.password}</bananapi.password>
-        <bananapi.directory>${pi4j.default.directory}</bananapi.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPro' PLATFORM -->
-        <bananapro.build>false</bananapro.build>
-        <bananapro.platform>bananapro</bananapro.platform>
-        <bananapro.name>LeMaker BananaPro</bananapro.name>
-        <bananapro.host>${pi4j.default.host}</bananapro.host>
-        <bananapro.port>${pi4j.default.port}</bananapro.port>
-        <bananapro.user>${pi4j.default.user}</bananapro.user>
-        <bananapro.password>${pi4j.default.password}</bananapro.password>
-        <bananapro.directory>${pi4j.default.directory}</bananapro.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'SINOVOIP-BPI' PLATFORM -->
-        <bpi.build>false</bpi.build>
-        <bpi.platform>bpi</bpi.platform>
-        <bpi.name>Sinovoip BananaPi</bpi.name>
-        <bpi.host>${pi4j.default.host}</bpi.host>
-        <bpi.port>${pi4j.default.port}</bpi.port>
-        <bpi.user>${pi4j.default.user}</bpi.user>
-        <bpi.password>${pi4j.default.password}</bpi.password>
-        <bpi.directory>${pi4j.default.directory}</bpi.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'OrangePi' PLATFORM -->
-        <orangepi.build>false</orangepi.build>
-        <orangepi.platform>orangepi</orangepi.platform>
-        <orangepi.name>OrangePi</orangepi.name>
-        <orangepi.host>${pi4j.default.host}</orangepi.host>
-        <orangepi.port>${pi4j.default.port}</orangepi.port>
-        <orangepi.user>${pi4j.default.user}</orangepi.user>
-        <orangepi.password>${pi4j.default.password}</orangepi.password>
-        <orangepi.directory>${pi4j.default.directory}</orangepi.directory>
-
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'NanoPi' PLATFORM -->
-        <nanopi.build>false</nanopi.build>
-        <nanopi.platform>nanopi</nanopi.platform>
-        <nanopi.name>NanoPi</nanopi.name>
-        <nanopi.host>${pi4j.default.host}</nanopi.host>
-        <nanopi.port>${pi4j.default.port}</nanopi.port>
-        <nanopi.user>${pi4j.default.user}</nanopi.user>
-        <nanopi.password>${pi4j.default.password}</nanopi.password>
-        <nanopi.directory>${pi4j.default.directory}</nanopi.directory>
 
         <!-- PROJECT ENCODING PROPERTIES -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -451,103 +389,6 @@
                 <module>pi4j-native</module>
             </modules>
         </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE ODROID PLATFORM -->
-        <profile>
-            <id>odroid</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <odroid.build>true</odroid.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE BANANAPI PLATFORM -->
-        <profile>
-            <id>bananapi</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <bananapi.build>true</bananapi.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE BANANAPRO PLATFORM -->
-        <profile>
-            <id>bananapro</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <bananapro.build>true</bananapro.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE SINOVOIP-BPI PLATFORM -->
-        <profile>
-            <id>bpi</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <bpi.build>true</bpi.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE ORANGEPI PLATFORM -->
-        <profile>
-            <id>orangepi</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <orangepi.build>true</orangepi.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
-        <!-- SPECIAL PROFILE TO INCLUDE NANOPI PLATFORM -->
-        <profile>
-            <id>nanopi</id>
-            <activation>
-                <property>
-                    <name>release-build</name>
-                </property>
-            </activation>
-            <properties>
-                <nanopi.build>true</nanopi.build>
-            </properties>
-            <modules>
-                <module>pi4j-native</module>
-            </modules>
-        </profile>
-
     </profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
