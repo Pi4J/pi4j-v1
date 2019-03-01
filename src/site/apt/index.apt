@@ -41,43 +41,6 @@ Welcome to Pi4J!
 
    Additional details can be found in the project's {{{https://github.com/Pi4J/pi4j/blob/master/README.md}README}}.
 
-  [2016-07-26]
-
-  Version 1.1 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
-
-  New Feature Highlights:
-
-    * Added support for {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
-
-    * Added support for {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
-
-    * Added support for {{{./pins/lemaker-bananapi.html}BananaPi platform}}
-
-    * Added support for {{{./pins/lemaker-bananapro.html}BananaPro platform}}
-
-    * Added support for {{{./pins/odroid-c1.html}Odroid C1/C1+}}
-
-    * Added support for {{{./pins/odroid-xu4.html}Odroid XU4}}
-
-    * Updated to Java 7 runtime
-
-    * Added support for enabling non-privileged GPIO access via the Pi4J APIs (no 'sudo' required) \
-    (see: {{{http://www.savagehomeautomation.com/projects/pi4j-now-supports-non-privileged-access-no-more-rootsudo.html}Pi4J GPIO Non-Privileged Access}})
-
-    * Added optimizations for GPIO state change latency
-
-    * Added cross-compiler support in Maven build
-
-    * Added new Serial JNI implementation to support advanced serial configuration/operations
-
-  In addition to maintenance and bug fixes, the 1.1 release includes a completely overhauled Serial communication API
-  and implementation.  Please note that to add these serial API enhancements some APIs required breaking changes where
-  they may no longer be backwards compatible with prior versions.
-
-  New development and bug fixes will now be provided via the 1.3-SNAPSHOT builds and the latest development codebase
-  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch.
-
-
 * Project Status
 
   Please note that this project is continually under development but has been very stable for several years.  The
