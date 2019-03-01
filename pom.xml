@@ -182,7 +182,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>				
+					</plugin>
 				</plugins>
 			</build>
 			<repositories>
@@ -255,83 +255,17 @@
 				<inherited>false</inherited>
 			</plugin>
 
-			<!-- GENERATE SITE DOCUMENTATION -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<inherited>false</inherited>
-				<configuration>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.8</version>
-							<reportSets>
-								<reportSet>
-									<id>non-aggregate</id>
-									<configuration>
-										<verbose>true</verbose>
-										<linksource>true</linksource>
-										<name>JavaDocs</name>
-										<description>JavaDoc API documentation</description>
-										<outputName>javadoc/index</outputName>
-										<sourcepath>pi4j-core/src/main/java</sourcepath>
-									</configuration>
-									<reports>
-										<report>javadoc</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.5.1</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>summary</report>
-										<report>project-team</report>
-										<report>license</report>
-										<report>scm</report>
-										<report>issue-tracking</report>
-										<report>plugins</report>
-										<report>dependency-info</report>
-										<report>dependency-management</report>
-										<report>plugin-management</report>
-										<report>distribution-management</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>taglist-maven-plugin</artifactId>
-							<version>2.4</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.12.3</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>2.7.1</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.3</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.9.1</version>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
+            <!-- GENERATE SITE DOCUMENTATION -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <generateProjectInfo>true</generateProjectInfo>
+                    <generateReports>true</generateReports>
+                    <generateSitemap>true</generateSitemap>
+                </configuration>
+            </plugin>
 
 			<!-- DEPLOY GITHUB SITE DOCUMENTATION -->
 			<plugin>
@@ -392,7 +326,7 @@
 			<!-- <execution> -->
 			<!-- <configuration> -->
 			<!-- Tell users that the project is deployed -->
-			<!-- <twitterStatus>#Pi4J build ${project.version} has been deployed to 
+			<!-- <twitterStatus>#Pi4J build ${project.version} has been deployed to
 				the repository.</twitterStatus> -->
 			<!-- </configuration> -->
 			<!-- <id>deploy</id> -->
@@ -568,10 +502,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.0</version>
+					<version>3.3</version>
 				</plugin>
 
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
