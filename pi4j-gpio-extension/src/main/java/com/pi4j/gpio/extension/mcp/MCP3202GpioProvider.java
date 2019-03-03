@@ -148,7 +148,7 @@ public class MCP3202GpioProvider extends MCP3x0xGpioProvider implements AdcGpioP
 	// PUBLIC METHODS
 	// ------------------------------------------------------------------------------------------
 	@Override
-    private short toCommand(final short channel) {
+    protected short toCommand(final short channel) {
         final short command = (short) ((((channel + 2) << 1) + 1) << 5);
         return command;
     }
