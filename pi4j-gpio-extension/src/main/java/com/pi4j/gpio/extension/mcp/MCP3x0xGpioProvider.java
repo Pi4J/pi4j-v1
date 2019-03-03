@@ -142,7 +142,7 @@ public abstract class MCP3x0xGpioProvider extends AdcGpioProviderBase implements
 	// base implementation methods for MCP3x0x ADC chips
 	// ------------------------------------------------------------------------------------------
 
-	private short toCommand(final short channel) {
+	protected short toCommand(final short channel) {
 		final short command = (short) ((channel + 8) << 4);
 		return command;
 	}
