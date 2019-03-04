@@ -38,6 +38,13 @@ os:
   - linux
 
 # ----------------------------------------------------------------------------------
+# Only build master branch
+# ----------------------------------------------------------------------------------
+branches:
+  only:
+  - master
+
+# ----------------------------------------------------------------------------------
 # Before maven build, we need to setup cross-compiler environment for native
 # gcc/make builds for ARM platform.  First we will download the cross-compiler
 # toolchain from github and then add the arm cross-compiler tools to the path and
