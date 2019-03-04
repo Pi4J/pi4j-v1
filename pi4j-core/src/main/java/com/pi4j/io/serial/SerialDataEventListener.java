@@ -49,7 +49,7 @@ package com.pi4j.io.serial;
  * @see com.pi4j.io.serial.Serial
  * @see com.pi4j.io.serial.SerialDataEvent
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

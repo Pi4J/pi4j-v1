@@ -35,7 +35,7 @@ import java.util.EventObject;
 /**
  * <p> This class provides the event object for Serial interrupt data receive event. </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

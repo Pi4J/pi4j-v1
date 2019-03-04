@@ -52,7 +52,7 @@ import com.pi4j.io.gpio.impl.GpioControllerImpl;
  *
  * @see com.pi4j.io.gpio.GpioController
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

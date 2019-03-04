@@ -33,7 +33,7 @@ package com.pi4j.jni;
 /**
  * <p>This interface implements the callback event handler for GPIO analog input value changes.</p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

@@ -6,7 +6,7 @@
    Copyright (C) 2012-2019 Pi4J.com
 
    This product includes software developed at:
-   The Pi4J Project (https://www.pi4j.com/).
+   The Pi4J Project (https://pi4j.com/).
 
    This product was originally authored by: Robert Savage
 
@@ -15,7 +15,7 @@
      https://pi4j.com/license.html
 
    Additional information about this project and its authors can be found at:
-   - https://www.pi4j.com/
+   - https://pi4j.com/
    - http://www.raspicentral.com
    - http://www.savagehomeautomation.com
 

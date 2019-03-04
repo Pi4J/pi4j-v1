@@ -60,7 +60,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * </blockquote>
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/software-tone-library/">http://wiringpi.com/reference/software-tone-library/</a>
  * @author Robert Savage (<a

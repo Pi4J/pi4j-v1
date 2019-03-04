@@ -53,7 +53,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * </blockquote>
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com</a>
  * @see <a
  *      href="http://wiringpi.com/reference/i2c-library/">http://wiringpi.com/reference/i2c-library</a>
  * @author Robert Savage (<a
