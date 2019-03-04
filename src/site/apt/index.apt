@@ -14,69 +14,45 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2019-02-26]
+  [2019-03-01]
 
-  Version 1.2 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
-  This is the active development version where you can find the latest fixes and updates.
+  Starting with the Pi4J 2.0 builds, the Pi4J project is prioritizing focus
+  on providing Java programs access, control and communication with the core
+  I/O capabilities of the Raspberry Pi platform.  Earlier versions of Pi4J
+  were perhaps too ambitious in scope and that led to significant project
+  bloat to the point that the project was becoming unsustainable.  The goal
+  moving forward is to limit scope to that of the raw I/O capabilities
+  of the Raspberry Pi platform and provide timely updates and releases for
+  bug fixed and new RaspberryPi model introductions.  Reducing the scope of
+  the project should better serve the Java community for basic I/O access by
+  reducing complexity.
 
-  Latest Development Updates:
+  The following features have been removed from the Pi4J library:
 
-    * Added support for {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3A+}}
+   * IO Expanders:  IO expansion is still supported but concrete
+     implementations should be provided outside the core Pi4J core project such
+     that they can be maintained and extended independently.
 
-    * Added support for {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3B+}}
+   * Other Platforms:  Other platforms such as Odroid, BananaPi, NanoPi,
+     OrangePi, etc. have been removed and will no longer be supported.  The
+     challenge with supporting these additional platforms is that Pi4J depends on
+     the underlying WiringPi project and WiringPi ports for these other platforms
+     is not well supported by the various SoC vendors or community.  The various
+     WiringPi ports for these other platforms are also inconsistent causing
+     inconsistent features and functionality of Pi4J.  Additionally, regression
+     testing of bug fixes and new features in Pi4J is compounded with each
+     additional supported platform.
 
-    * Added support for {{{./pins/model-zerow-rev1.html}Raspberry Pi Zero W}}
+   * Components & Devices:  Pi4J originally provided higher level
+     interfaces for components and devices that provided an abstraction
+     layer between real world devices (things) and lower-level I/O interfaces.
+     While a noble goal, unfortunately this part of the project never received
+     the attention and time that it deserved and never gained much adoption
+     by the community.  We are removing these to allow Pi4J to focus solely on
+     the raw I/O supported by the Raspberry Pi platform.
 
-    * Added support for {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi Compute Module 3+}}
-
-    * Added support for {{{./pins/model-cm3-rev1.html}Raspberry Pi Compute Module 3}}
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/230}OrangePi}} platform.
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/337}Synovoip BPI (BananaPi)}} platform.
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/279}NanoPi}} platform.
-
-    * Updated to Java 8 runtime
-
-   Additional details can be found in the project's {{{https://github.com/Pi4J/pi4j/blob/master/README.md}README}}.
-
-  [2016-07-26]
-
-  Version 1.1 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
-
-  New Feature Highlights:
-
-    * Added support for {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
-
-    * Added support for {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
-
-    * Added support for {{{./pins/lemaker-bananapi.html}BananaPi platform}}
-
-    * Added support for {{{./pins/lemaker-bananapro.html}BananaPro platform}}
-
-    * Added support for {{{./pins/odroid-c1.html}Odroid C1/C1+}}
-
-    * Added support for {{{./pins/odroid-xu4.html}Odroid XU4}}
-
-    * Updated to Java 7 runtime
-
-    * Added support for enabling non-privileged GPIO access via the Pi4J APIs (no 'sudo' required) \
-    (see: {{{http://www.savagehomeautomation.com/projects/pi4j-now-supports-non-privileged-access-no-more-rootsudo.html}Pi4J GPIO Non-Privileged Access}})
-
-    * Added optimizations for GPIO state change latency
-
-    * Added cross-compiler support in Maven build
-
-    * Added new Serial JNI implementation to support advanced serial configuration/operations
-
-  In addition to maintenance and bug fixes, the 1.1 release includes a completely overhauled Serial communication API
-  and implementation.  Please note that to add these serial API enhancements some APIs required breaking changes where
-  they may no longer be backwards compatible with prior versions.
-
-  New development and bug fixes will now be provided via the 1.3-SNAPSHOT builds and the latest development codebase
-  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch.
-
+  New development and bug fixes will now be provided via the 2.0-SNAPSHOT builds and the latest development codebase
+  is now maintained in the '{{{https://github.com/Pi4J/pi4j/tree/V2}V2}}' branch.
 
 * Project Status
 
@@ -91,35 +67,33 @@ Welcome to Pi4J!
 
 * Supported Hardware
 
-  * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+  * {{{./pins/model-a-rev2.html}Raspberry Pi - A}}
 
-  * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1)}}
+  * {{{./pins/model-b-rev1.html}Raspberry Pi - B (Revision 1)}}
 
-  * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2)}}
+  * {{{./pins/model-b-rev2.html}Raspberry Pi - B (Revision 2)}}
 
-  * {{{./pins/model-a-plus.html}Raspberry Pi - Model A+}}
+  * {{{./pins/model-a-plus.html}Raspberry Pi - A+}}
 
-  * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+  * {{{./pins/model-b-plus.html}Raspberry Pi - B+}}
 
-  * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
+  * {{{./pins/model-2b-rev1.html}Raspberry Pi - 2B}}
 
-  * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
+  * {{{./pins/model-3b-rev1.html}Raspberry Pi - 3B}}
 
-  * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi - 3B+}}
 
-  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3 - Model B+}}
+  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi - 3A+}}
 
-  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3 - Model A+}}
+  * {{{./pins/model-zero-rev1.html}Raspberry Pi - Zero}}
 
-  * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+  * {{{./pins/model-zerow-rev1.html}Raspberry Pi - Zero W}}
 
-  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPi}}
+  * {{{./pins/model-cm-rev1.html}Raspberry Pi - CM1 (Compute Module)}}
 
-  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPro}}
+  * {{{./pins/model-cm3-rev1.html}Raspberry Pi - CM3 (Compute Module)}}
 
-  * {{{./pins/odroid-c1.html}Odroid C1/C1+}}
-
-  * {{{./pins/odroid-xu4.html}Odroid XU4}}
+  * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
 
 * Features
 
@@ -156,7 +130,9 @@ Welcome to Pi4J!
 * Getting Started
 
   The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
-  <<<curl -s get.pi4j.com | sudo bash>>>
+  <<<curl -sSL install.pi4j.com | sudo bash>>>
+  or
+  <<<curl -sSL https://pi4j.com/install | sudo bash>>>
 
   To get started using the Pi4J library, please see the following pages:
 
@@ -177,6 +153,3 @@ Welcome to Pi4J!
   * {{{./example/trigger.html}Trigger GPIO on Events}}
 
   * {{{./example/serial.html}Serial Communication}}
-
-  * {{{./example/system-info.html}System/Network Information}}
-

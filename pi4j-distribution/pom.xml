@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-distribution</artifactId>
 	<name>Pi4J :: Distribution</name>
@@ -477,7 +477,6 @@
                 <plugins>
                     <!-- this plugin will upload the ZIP and DEB packages to the public
                          Pi4J downloads URL for the website.
-                         http://get.pi4j.com
                          The "{pi4j.aws.access.key}" property must be configured in your maven settings.xml file.
                          The "{pi4j.aws.secret.key}" property must be configured in your maven settings.xml file.
                          (This is intended only for Pi4J public deployment)
@@ -487,7 +486,7 @@
                         <artifactId>s3-upload-maven-plugin</artifactId>
                         <configuration>
                             <recursive>false</recursive>
-                            <bucketName>get.pi4j.com</bucketName>
+                            <bucketName>pi4j.com</bucketName>
                             <accessKey>${pi4j.aws.access.key}</accessKey>
                             <secretKey>${pi4j.aws.secret.key}</secretKey>
                         </configuration>
@@ -520,8 +519,8 @@
             </build>
         </profile>
 
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO get.pi4j.com -->
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO https://pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO https://pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
             <!--<activation>-->
@@ -533,7 +532,7 @@
                 <plugins>
                     <!-- this plugin will upload the GPG public key file, the Pi4J APT
                          repo list file, the install script and uninstall script to
-                         http://get.pi4j.com
+                         https://pi4j.com
 
                          The "{pi4j.aws.access.key}" property must be configured in your maven settings.xml file.
                          The "{pi4j.aws.secret.key}" property must be configured in your maven settings.xml file.
@@ -544,7 +543,7 @@
                         <artifactId>s3-upload-maven-plugin</artifactId>
                         <configuration>
                             <recursive>false</recursive>
-                            <bucketName>get.pi4j.com</bucketName>
+                            <bucketName>pi4j.com</bucketName>
                             <accessKey>${pi4j.aws.access.key}</accessKey>
                             <secretKey>${pi4j.aws.secret.key}</secretKey>
                         </configuration>

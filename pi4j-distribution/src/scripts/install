@@ -3,20 +3,20 @@
 # THE Pi4J PROJECT - INSTALL SCRIPT
 ######################################
 #
-#  curl -s get.pi4j.com/install | sudo bash
+#  curl -ssL https://pi4j.com/install | sudo bash
 #
 
 # download and install the Pi4J GPG public key
 echo ====================================================
 echo INSTALLING Pi4J GPG PUBLIC KEY
 echo ====================================================
-curl http://get.pi4j.com/pi4j.gpg | apt-key add -
+curl https://pi4j.com/pi4j.gpg | apt-key add -
 
 # download and install the pi4j apt repository list
 echo ====================================================
 echo ADDING Pi4J APT REPOSITORY
 echo ====================================================
-sudo wget http://get.pi4j.com/pi4j.list -O /etc/apt/sources.list.d/pi4j.list
+sudo curl -sSL https://pi4j.com/pi4j.list --output pi4j.list
 
 # update the apt package list
 echo ====================================================

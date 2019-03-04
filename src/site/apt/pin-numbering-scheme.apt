@@ -17,7 +17,7 @@ Pin Numbering Schemes
   The WiringPi pin numbering scheme is an abstract pin numbering scheme to help insulate software from hardware changes.
   More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
 
-  * <<For Models A, A+, B, B+, 2B, 3B, and Zero>>
+  * <<For Models A, A+, B, B+, 2B, 3B, 3B+, 3A+, Zero and Zero W>>
 
     Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
     Pi4J implements the same pin number scheme as the Wiring Pi project.
@@ -25,7 +25,7 @@ Pin Numbering Schemes
 
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
 
-  * <<For the Compute Module>>
+  * <<For the Compute Modules: CM1, CM3, CM3+>>
 
     Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> enumeration that is used to manage the accessible GPIO pins for the Compute Module.
@@ -35,23 +35,33 @@ Pin Numbering Schemes
     The available GPIO pins differ between Raspberry Pi models and board revisions.
     Please select your model/revision below to see the GPIO pinout for your board.
 
-       * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+       * {{{./pins/model-a-rev2.html}Raspberry Pi - A}}
 
-       * {{{./pins/model-a-plus.html}Raspberry Pi - Model A+}}
+       * {{{./pins/model-a-plus.html}Raspberry Pi - A+}}
 
-       * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1.0)}}
+       * {{{./pins/model-b-rev1.html}Raspberry Pi - B (Revision 1.0)}}
 
-       * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2.0)}}
+       * {{{./pins/model-b-rev2.html}Raspberry Pi - B (Revision 2.0)}}
 
-       * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+       * {{{./pins/model-b-plus.html}Raspberry Pi - B+}}
 
-       * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module (CM1, CM3, CM3-Lite)}}
+       * {{{./pins/model-2b-rev1.html}Raspberry Pi - 2B}}
 
-       * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
+       * {{{./pins/model-3b-rev1.html}Raspberry Pi - 3B}}
 
-       * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+       * {{{./pins/model-3b-plus-rev1.html}Raspberry - Pi 3B+}}
 
-       * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+       * {{{./pins/model-3a-plus-rev1.html}Raspberry - Pi 3A+}}
+
+       * {{{./pins/model-zero-rev1.html}Raspberry - Pi Zero}}
+
+       * {{{./pins/model-zerow-rev1.html}Raspberry - Pi Zero W}}
+
+       * {{{./pins/model-cm-rev1.html}Raspberry Pi - CM1 (Compute Module)}}
+
+       * {{{./pins/model-cm3-rev1.html}Raspberry Pi - CM3 (Compute Module)}}
+
+       * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
 
     \
     {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}

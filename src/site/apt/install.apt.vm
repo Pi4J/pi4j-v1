@@ -43,7 +43,9 @@ Pi4J Installation
   (NOTE: This installation method requires that your RaspberryPi is connected to the Internet.)
 
   The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
-  <<<curl -s get.pi4j.com | sudo bash>>>
+  <<<curl -sSL install.pi4j.com | sudo bash>>>
+  or
+  <<<curl -sSL https://pi4j.com/install | sudo bash>>>
 
     This method will download and launch an installation script that perform the following steps:
 
@@ -62,7 +64,7 @@ Pi4J Installation
 
   First, download a copy of the latest Pi4J Debian/Raspian installer package (.deb) file to your local computer.
   You can download the Pi4J Debian/Raspian installer package (.deb) using your web browser at the following URL: \
-  {{{http://get.pi4j.com/download/pi4j-${project.version}.deb}http://get.pi4j.com/download/pi4j-${project.version}.deb}}
+  {{{https://pi4j.com/download/pi4j-${project.version}.deb}https://pi4j.com/download/pi4j-${project.version}.deb}}
 
   Next, you will need to transfer the download installer package over to your RaspberryPi.  You can use any method you
   prefer to transfer the file (USB, SCP, FTP, etc.)
@@ -105,7 +107,9 @@ Pi4J Installation
   If you originally installed Pi4J using the <'easy'> method and you want to remove all traces of Pi4J,
   including the Pi4J repository in the APT repositories list and the Pi4J GPG signature, then simply execute the
   following command on your RaspberryPi. \
-  <<<curl -s get.pi4j.com/uninstall | sudo bash>>>
+  <<<curl -sSL uninstall.pi4j.com | sudo bash>>>
+  or
+  <<<curl -sSL https://pi4j.com/uninstall | sudo bash>>>
 
 ** Offline/Manual
 

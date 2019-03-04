@@ -3,7 +3,7 @@
 # THE Pi4J PROJECT - UNINSTALL SCRIPT
 ######################################
 #
-#  curl -s get.pi4j.com/uninstall | sudo bash
+#  curl -sSL https://pi4j.com/uninstall | sudo bash
 #
 
 # uninstall the pi4j project package

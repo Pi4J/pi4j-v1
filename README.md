@@ -11,11 +11,11 @@ Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />
 Release builds are available from 
    *  [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
-   *  [Downloads] http://pi4j.com/download.html
+   *  [Downloads] https://pi4j.com/download.html
 
 Snapshot builds are available from 
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
-   *  [Downloads] http://pi4j.com/download.html
+   *  [Downloads] https://pi4j.com/download.html
    
  
 Copyright (C) 2012-2019 Pi4J
@@ -75,7 +75,7 @@ Copyright (C) 2012-2019 Pi4J
 
 ## IN DEVELOPMENT
 
-2019-02-27 :: 2.0.0-SNAPSHOT
+2019-02-27 :: 2.0-SNAPSHOT
 
   * Removed `pi4j-device` library.  _(See comments above)_
   * Removed `pi4j-gpio-extension` library.  _(See comments above)_
