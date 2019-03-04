@@ -5,7 +5,7 @@
 
 ## PROJECT INFORMATION
 
-Project website: http://www.pi4j.com/ <br />
+Project website: https://pi4j.com/ <br />
 Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
 Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />

@@ -9,7 +9,7 @@
  * FILENAME      :  FrequencyGpioExample.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  https://www.pi4j.com/
+ * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2019 Pi4J
