@@ -64,11 +64,11 @@
 			</script>
 		</head>
 		<links>
-			<item name="Home" href="https://www.pi4j.com/" />
+			<item name="Home" href="http://www.pi4j.com/" />
 			<item name="Downloads" href="download.html" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>
-			<item name="Forum" href="https://groups.google.com/forum/#!forum/pi4j" target="pi4j-groups"/>
+			<item name="Forum" href="https://forum.pi4j.com" target="pi4j-forum"/>
 			<item name="@Pi4J (Twitter)" href="https://twitter.com/pi4j" target="_blank"/>
 			<item name="Blog" href="http://www.savagehomeautomation.com/projects/category/pi4j" target="_blank"/>
 		</links>
@@ -98,13 +98,9 @@
             <item name="Raspberry Pi - 3A+" href="pins/model-3a-plus-rev1.html" />
             <item name="Raspberry Pi - Zero" href="pins/model-zero-rev1.html" />
             <item name="Raspberry Pi - Zero W" href="pins/model-zerow-rev1.html" />
-			<item name="Raspberry Pi - CM1 (Compute Module)" href="pins/model-cm-rev1.html" />
-			<item name="Raspberry Pi - CM3 (Compute Module)" href="pins/model-cm3-rev1.html" />
-			<item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/model-cm3-plus-rev1.html" />
-            <item name="Lemaker - BananaPi" href="pins/lemaker-bananapi.html" />
-            <item name="Lemaker - BananaPro" href="pins/lemaker-bananapro.html" />
-            <item name="Odroid - C1/C1+" href="pins/odroid-c1.html" />
-            <item name="Odroid - XU4" href="pins/odroid-xu4.html" />
+            <item name="Raspberry Pi - CM1 (Compute Module)" href="pins/model-cm-rev1.html" />
+            <item name="Raspberry Pi - CM3 (Compute Module)" href="pins/model-cm3-rev1.html" />
+            <item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/model-cm3-plus-rev1.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />
@@ -130,13 +126,14 @@
 			<item name="Project Information" href="project-info.html" />
 			<item name="Project Reports" href="project-reports.html" />
 		</menu>
-		<menu name="Previous Releases">
-			<item name="Pi4J Version 1.2" href="../1.2" />
-			<item name="Pi4J Version 1.1" href="../1.1" />
-			<item name="Pi4J Version 1.0" href="../1.0" />
-			<item name="Pi4J Version 0.0.5" href="../0.0.5" />
-			<item name="Pi4J Version 0.0.4" href="../0.0.4" />
-		</menu>
+        <menu name="Previous Releases">
+            <item name="Pi4J Version 1.2" href="../1.2" />
+            <item name="Pi4J Version 1.1" href="../1.1" />
+            <item name="Pi4J Version 1.0" href="../1.0" />
+            <item name="Pi4J Version 0.0.5" href="../0.0.5" />
+            <item name="Pi4J Version 0.0.4" href="../0.0.4" />
+        </menu>
+
 <!-- 		<menu ref="reports" /> -->
 	</body>
 </project>

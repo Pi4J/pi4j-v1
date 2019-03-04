@@ -779,6 +779,7 @@
                     <generateProjectInfo>true</generateProjectInfo>
                     <generateReports>true</generateReports>
                     <generateSitemap>true</generateSitemap>
+                    <outputDirectory>${project.reporting.outputDirectory}/${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</outputDirectory>
 				</configuration>
                 <dependencies>
                     <dependency>

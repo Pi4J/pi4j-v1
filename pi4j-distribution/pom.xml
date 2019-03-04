@@ -520,8 +520,8 @@
             </build>
         </profile>
 
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO pi4j.com -->
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO https://pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO https://pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
             <!--<activation>-->
