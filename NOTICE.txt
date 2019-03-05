@@ -10,7 +10,7 @@
 
    This product was originally authored by: Robert Savage
 
-   This software is licensed under the GNU LGPLv3 license.
+   This software is licensed under the Apache License, Version 2.0.
    More information about licensing terms can be found at:
      https://pi4j.com/license.html
 

@@ -17,13 +17,14 @@
 	</organization>
 
 	<!-- LICENSE -->
-	<licenses>
-		<license>
-			<name>GNU General Lesser Public License (LGPL) version 3.0</name>
-			<url>http://www.gnu.org/licenses/lgpl.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
 	<!-- DEVELOPERS/CONTRIBUTORS -->
 	<developers>
@@ -554,7 +555,7 @@
                             </goals>
                             <phase>process-sources</phase>
                             <configuration>
-                                <licenseName>lgpl_v3</licenseName>
+                                <licenseName>apache_v2</licenseName>
                                 <descriptionTemplate>${basedir}/../src/license/template.ftl</descriptionTemplate>
                                 <canUpdateCopyright>true</canUpdateCopyright>
                                 <canUpdateDescription>true</canUpdateDescription>
@@ -737,7 +738,7 @@
 						</goals>
 						<phase>process-sources</phase>
 						<configuration>
-							<licenseName>lgpl_v3</licenseName>
+							<licenseName>apache_v2</licenseName>
 						</configuration>
 					</execution>
 					<execution>
