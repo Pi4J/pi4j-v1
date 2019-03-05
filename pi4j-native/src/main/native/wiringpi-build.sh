@@ -62,8 +62,6 @@ git clone $WIRINGPI_REPO -b $WIRINGPI_BRANCH wiringPi
 cd wiringPi
 
 # get wiringPi version
-# (NOTE: The Lemaker (BananaPi) and Hardkernel (Odroid) versions of WiringPi
-#  are a bit outdated and do not have the VERSION file in the repo.)
 if [ -f VERSION ]; then
   WIRINGPI_VERSION=$(cat VERSION)
 else

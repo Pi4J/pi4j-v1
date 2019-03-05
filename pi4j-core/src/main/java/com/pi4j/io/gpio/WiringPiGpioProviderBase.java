@@ -37,7 +37,7 @@ import com.pi4j.wiringpi.GpioUtil;
  */
 
 /**
- * BananaPro {@link GpioProvider} implementation.
+ * WiringPiGpioProviderBase {@link GpioProvider} implementation.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
@@ -46,7 +46,7 @@ import com.pi4j.wiringpi.GpioUtil;
 public abstract class WiringPiGpioProviderBase extends GpioProviderBase implements GpioProvider, GpioInterruptListener {
 
     // the pin cache should support the maximum number of pins supported by wiringPi plus some
-    // additional overhead for virtual analog input pins used by providers like Odroid C1/C1+/C2/XU4
+    // additional overhead for virtual analog input pins used by providers
     protected static short MAX_PIN_CACHE = Gpio.NUM_PINS + 5;
 
     // need enough space in array for maximum number of pins.

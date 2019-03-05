@@ -30,7 +30,7 @@ package com.pi4j.platform;
 /**
  * <p>
  * This class provides static methods to configure the Pi4J library's default
- * platform.  Pi4J supports the following platforms:  RaspberryPi, BananaPi, BananaPro, Odroid.
+ * platform.  Pi4J supports the following platforms:  RaspberryPi
  * </p>
  *
  * @see <a href="https://pi4j.com/">https://pi4j.com/</a>

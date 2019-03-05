@@ -45,12 +45,6 @@ import com.pi4j.system.impl.*;
 public enum Platform {
     // SUPPORTED PLATFORMS
     RASPBERRYPI("raspberrypi", "Raspberry Pi"),
-    BANANAPI("bananapi", "BananaPi"),
-    BANANAPRO("bananapro", "BananaPro"),
-    BPI("bpi", "Synovoip BPI"),
-    ODROID("odroid", "Odroid"),
-    ORANGEPI("orangepi", "OrangePi"),
-    NANOPI("nanopi", "NanoPi"),
     SIMULATED("simulated", "Simulated");
 
     // private variables
@@ -122,24 +116,6 @@ public enum Platform {
             case RASPBERRYPI: {
                 return new RaspiGpioProvider();
             }
-            case BANANAPI: {
-                return new BananaPiGpioProvider();
-            }
-            case BANANAPRO: {
-                return new BananaProGpioProvider();
-            }
-            case BPI: {
-                return new BpiGpioProvider();
-            }
-            case ODROID: {
-                return new OdroidGpioProvider();
-            }
-            case ORANGEPI: {
-                return new OrangePiGpioProvider();
-            }
-            case NANOPI: {
-                return new NanoPiGpioProvider();
-            }
             case SIMULATED: {
                 return new SimulatedGpioProvider();
             }
@@ -167,24 +143,6 @@ public enum Platform {
         switch(platform) {
             case RASPBERRYPI: {
                 return new RaspiSystemInfoProvider();
-            }
-            case BANANAPI: {
-                return new BananaPiSystemInfoProvider();
-            }
-            case BANANAPRO: {
-                return new BananaProSystemInfoProvider();
-            }
-            case BPI: {
-                return new BpiSystemInfoProvider();
-            }
-            case ODROID: {
-                return new OdroidSystemInfoProvider();
-            }
-            case ORANGEPI: {
-                return new OrangePiSystemInfoProvider();
-            }
-            case NANOPI: {
-                return new NanoPiSystemInfoProvider();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi

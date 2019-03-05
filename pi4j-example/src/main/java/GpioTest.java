@@ -36,7 +36,7 @@ import java.util.Scanner;
 
 /**
  * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the BananaPi.
+ * control of a GPIO pin on the RaspberryPi.
  *
  * @author Robert Savage
  */
@@ -45,15 +45,6 @@ public class GpioTest {
     private static boolean exit = false;
 
     public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
-
-        // ####################################################################
-        //
-        // since we are not using the default Raspberry Pi platform, we should
-        // explicitly assign the platform as the BananaPro platform.
-        //
-        // ####################################################################
-        PlatformManager.setPlatform(Platform.BANANAPRO);
-
         final Scanner in = new Scanner(System.in);
 
         // create gpio controller
@@ -124,42 +115,6 @@ public class GpioTest {
                 gpioOutputsTest(pins);
                 break;
             }
-            case BANANAPI:{
-                Pin pins[] = BananaPiPin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-            }
-            case BANANAPRO:{
-                Pin pins[] = BananaProPin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-            }
-			case BPI:{
-                Pin pins[] = BpiPin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-			}
-			case NANOPI:{
-                Pin pins[] = NanoPiPin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-			}
-			case ODROID:{
-                Pin pins[] = OdroidC1Pin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-			}
-			case ORANGEPI:{
-                Pin pins[] = OrangePiPin.allPins();
-                Arrays.sort(pins);
-                gpioOutputsTest(pins);
-                break;
-			}
 			default:
 				break;
 	        }

@@ -60,14 +60,7 @@ public class SpiDeviceImpl implements SpiDevice {
         this.channel = channel;
         this.mode = mode;
         try {
-            int fd;
-            if(mode == SpiMode.MODE_0){
-                // using this hack because the Odroid port of WiringPi does not currently support 'wiringPiSPISetupMode'
-                fd = Spi.wiringPiSPISetup(channel.getChannel(), speed);
-            }
-            else{
-                fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
-            }
+            int fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
             if (fd <= -1) {
                 throw new IOException("SPI port setup failed, wiringPiSPISetupMode returned " + fd);
             }
