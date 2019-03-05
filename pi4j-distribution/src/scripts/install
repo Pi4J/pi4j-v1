@@ -10,13 +10,13 @@
 echo ====================================================
 echo INSTALLING Pi4J GPG PUBLIC KEY
 echo ====================================================
-curl https://pi4j.com/pi4j.gpg | apt-key add -
+curl -ssL https://pi4j.com/pi4j.gpg | apt-key add -
 
 # download and install the pi4j apt repository list
 echo ====================================================
 echo ADDING Pi4J APT REPOSITORY
 echo ====================================================
-sudo curl -sSL https://pi4j.com/pi4j.list --output pi4j.list
+sudo curl -sSL https://pi4j.com/pi4j.list --output /etc/apt/sources.list.d/pi4j.list
 
 # update the apt package list
 echo ====================================================

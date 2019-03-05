@@ -130,8 +130,6 @@ Welcome to Pi4J!
 * Getting Started
 
   The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
-  <<<curl -sSL install.pi4j.com | sudo bash>>>
-  or
   <<<curl -sSL https://pi4j.com/install | sudo bash>>>
 
   To get started using the Pi4J library, please see the following pages:
