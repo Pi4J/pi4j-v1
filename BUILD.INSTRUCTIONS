@@ -12,7 +12,7 @@ Use the following command to build the Pi4J Java libraries and the JNI native li
 taregeted platform.  The connection and credentials to access the target platform can be
 defined in your maven settings XML file or included in the command line as shown below.)
 
-  {platform-name} = raspberrypi | odroid | bananapi | bananapro
+  {platform-name} = raspberrypi
 
 FORMAT:
 > mvn clean install -P {platform-name}

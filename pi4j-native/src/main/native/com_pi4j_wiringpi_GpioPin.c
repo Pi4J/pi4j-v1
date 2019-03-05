@@ -4,7 +4,7 @@
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: JNI Native Library
  * FILENAME      :  com_pi4j_wiringpi_GpioPin.c
- * 
+ *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
@@ -14,9 +14,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,7 @@ int wiringpi_init_mode = WPI_MODE_UNINITIALISED;
  * AUTO DETECTED THE BOARD IDENTIFICATION INFO
  */
 void GpioPin_Init(){
-    // some wiringPi ports are old and don't support the 'piBoardId()' method; I'm looking at you LeMaker BananaPi!
+    // some wiringPi ports are old and don't support the 'piBoardId()'
     #ifdef PI_MODEL_UNKNOWN
     int mem, overVolted ;
 

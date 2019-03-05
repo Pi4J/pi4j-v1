@@ -54,7 +54,7 @@ import com.pi4j.util.Console;
  * > TSL2561 DATA 0 = 0x1e
  * > TSL2561 DATA 1 = 0x04
  * > ... powering down TSL2561
- * > Exiting bananapi.I2CExample
+ * > Exiting I2CExample
  *
  *
  * @author Robert Savage

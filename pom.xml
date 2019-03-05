@@ -260,12 +260,6 @@
 			</modules>
             <properties>
                 <raspberrypi.build>true</raspberrypi.build>
-                <bananapi.build>true</bananapi.build>
-                <bananapro.build>true</bananapro.build>
-                <odroid.build>true</odroid.build>
-                <orangepi.build>true</orangepi.build>
-                <bpi.build>true</bpi.build>
-                <nanopi.build>true</nanopi.build>
             </properties>
 		</profile>
 
