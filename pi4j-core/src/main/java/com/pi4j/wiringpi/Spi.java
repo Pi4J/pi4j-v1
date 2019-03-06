@@ -8,7 +8,7 @@ package com.pi4j.wiringpi;
  * FILENAME      :  Spi.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2019 Pi4J
@@ -54,7 +54,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * </blockquote>
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com</a>
+ * @see <a href="https.pi4j.com/">https://www.pi4j.com</a>
  * @see <a
  *      href="http://wiringpi.com/reference/spi-library/">http://wiringpi.com/reference/spi-library</a>
  * @author Robert Savage (<a

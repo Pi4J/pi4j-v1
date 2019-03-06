@@ -8,7 +8,7 @@ package com.pi4j.jni;
  * FILENAME      :  AnalogInputMonitor.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2019 Pi4J
@@ -42,7 +42,7 @@ import java.util.Vector;
  * value changes.
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
