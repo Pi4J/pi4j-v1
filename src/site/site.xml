@@ -131,6 +131,7 @@
 			<item name="Project Reports" href="project-reports.html" />
 		</menu>
 		<menu name="Previous Releases">
+			<item name="Pi4J Version 1.2" href="../1.2" />
 			<item name="Pi4J Version 1.1" href="../1.1" />
 			<item name="Pi4J Version 1.0" href="../1.0" />
 			<item name="Pi4J Version 0.0.5" href="../0.0.5" />
