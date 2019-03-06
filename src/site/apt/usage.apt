@@ -75,13 +75,13 @@ Usage
 
        * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
 
-       * {{{./pins/lemaker-bananapi.html}Lemaker - BananaPi)}}
+       * {{{./pins/lemaker-bananapi.html}Lemaker - BananaPi}}
 
-       * {{{./pins/lemaker-bananapro.html}Lemaker - BananaPro)}}
+       * {{{./pins/lemaker-bananapro.html}Lemaker - BananaPro}}
 
-       * {{{./pins/odroid-c1.html}Odroid - C1/C1+)}}
+       * {{{./pins/odroid-c1.html}Odroid - C1/C1+}}
 
-       * {{{./pins/odroid-xu4.html}Odroid - XU4)}}
+       * {{{./pins/odroid-xu4.html}Odroid - XU4}}
 
     \
     {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
