@@ -54,35 +54,41 @@ Welcome to Pi4J!
 
 * Supported Hardware
 
-  * {{{./pins/model-a-rev2.html}Raspberry Pi - Model A}}
+  * {{{./pins/model-a-rev2.html}Raspberry Pi - A}}
 
-  * {{{./pins/model-b-rev1.html}Raspberry Pi - Model B (Revision 1)}}
+  * {{{./pins/model-b-rev1.html}Raspberry Pi - B (Revision 1)}}
 
-  * {{{./pins/model-b-rev2.html}Raspberry Pi - Model B (Revision 2)}}
+  * {{{./pins/model-b-rev2.html}Raspberry Pi - B (Revision 2)}}
 
-  * {{{./pins/model-a-plus.html}Raspberry Pi - Model A+}}
+  * {{{./pins/model-a-plus.html}Raspberry Pi - A+}}
 
-  * {{{./pins/model-b-plus.html}Raspberry Pi - Model B+}}
+  * {{{./pins/model-b-plus.html}Raspberry Pi - B+}}
 
-  * {{{./pins/model-cm-rev1.html}Raspberry Pi - Compute Module}}
+  * {{{./pins/model-2b-rev1.html}Raspberry Pi - 2B}}
 
-  * {{{./pins/model-2b-rev1.html}Raspberry Pi 2 - Model B}}
+  * {{{./pins/model-3b-rev1.html}Raspberry Pi - 3B}}
 
-  * {{{./pins/model-3b-rev1.html}Raspberry Pi 3 - Model B}}
+  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi - 3B+}}
 
-  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3 - Model B+}}
+  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi - 3A+}}
 
-  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3 - Model A+}}
+  * {{{./pins/model-zero-rev1.html}Raspberry Pi - Zero}}
 
-  * {{{./pins/model-zero-rev1.html}Raspberry Pi Zero}}
+  * {{{./pins/model-zerow-rev1.html}Raspberry Pi - Zero W}}
 
-  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPi}}
+  * {{{./pins/model-cm-rev1.html}Raspberry Pi - CM1 (Compute Module)}}
 
-  * {{{./pins/lemaker-bananapi.html}LeMaker BananaPro}}
+  * {{{./pins/model-cm3-rev1.html}Raspberry Pi - CM3 (Compute Module)}}
 
-  * {{{./pins/odroid-c1.html}Odroid C1/C1+}}
+  * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
 
-  * {{{./pins/odroid-xu4.html}Odroid XU4}}
+  * {{{./pins/lemaker-bananapi.html}LeMaker - BananaPi}}
+
+  * {{{./pins/lemaker-bananapi.html}LeMaker - BananaPro}}
+
+  * {{{./pins/odroid-c1.html}Odroid - C1/C1+}}
+
+  * {{{./pins/odroid-xu4.html}Odroid - XU4}}
 
 * Features
 
@@ -119,7 +125,7 @@ Welcome to Pi4J!
 * Getting Started
 
   The simplest method to install Pi4J on your RaspberryPi is to execute the following command directly on your RaspberryPi.\
-  <<<curl -s get.pi4j.com | sudo bash>>>
+  <<<curl -sSL https://pi4j.com/install | sudo bash>>>
 
   To get started using the Pi4J library, please see the following pages:
 
