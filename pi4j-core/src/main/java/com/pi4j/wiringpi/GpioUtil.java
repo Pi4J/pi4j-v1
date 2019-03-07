@@ -40,7 +40,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
@@ -185,7 +185,7 @@ public class GpioUtil {
      * <p>This method determines if the requested GPIO pin is already exported.</p>
      *
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @return A return value of '0' represents that the pin is not exported. </br> A return value
+     * @return A return value of '0' represents that the pin is not exported.  A return value
      *         of '1' represents that the pin is exported.
      */
     public static native boolean isExported(int pin) throws RuntimeException;
@@ -195,7 +195,7 @@ public class GpioUtil {
      * the hardware GPIO changes raise interrupts on the system.</p>
      * <p>
      * NOTE: Calling this method will automatically export the pin and set the pin direction to
-     * INPUT.</br> This method required root permissions access.
+     * INPUT. This method required root permissions access.
      * </p>
      *
      * @see #EDGE_NONE
@@ -204,7 +204,7 @@ public class GpioUtil {
      * @see #EDGE_FALLING
      *
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @param edge The edge condition to detect: none, rising, falling, or both. </br>The following
+     * @param edge The edge condition to detect: none, rising, falling, or both. The following
      *            constants are provided for use with this parameter:
      *            <ul>
      *            <li>EDGE_NONE</li>
@@ -228,7 +228,7 @@ public class GpioUtil {
      *
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @return The edge condition detected on the selected pin: none, rising, falling, or both.
-     *         </br>The following constants are provided for use with this parameter:
+     *         The following constants are provided for use with this parameter:
      *         <ul>
      *         <li>EDGE_NONE</li>
      *         <li>EDGE_BOTH</li>
@@ -246,7 +246,7 @@ public class GpioUtil {
      *
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @param direction
-     *            The export direction to apply: IN, OUT. </br>The following constants are provided
+     *            The export direction to apply: IN, OUT. The following constants are provided
      *            for use with this parameter:
      *            <ul>
      *            <li>DIRECTION_IN</li>
@@ -265,7 +265,7 @@ public class GpioUtil {
      * @see #DIRECTION_OUT
      *
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
-     * @return The GPIO pin's configured export direction is returned: IN (0), OUT (1). </br>The
+     * @return The GPIO pin's configured export direction is returned: IN (0), OUT (1). The
      *         following constants are provided for use with this parameter:
      *         <ul>
      *         <li>DIRECTION_IN</li>

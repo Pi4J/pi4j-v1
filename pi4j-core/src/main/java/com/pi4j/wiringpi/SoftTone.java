@@ -53,7 +53,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * <p>
  * NOTES:  - Each pin activated in softTone mode uses approximately 0.5% of the CPU.
            - You need to keep your program running to maintain the sound output!
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
@@ -88,7 +88,6 @@ public class SoftTone {
      *      href="http://wiringpi.com/reference/software-tone-library/">http://wiringpi.com/reference/software-tone-library/</a>
      *
      * @param pin The GPIO pin to use as a PWM pin.
-     *            </p>
      * @return The return value is 0 for success. Anything else and you should check the global
      *         errno variable to see what went wrong.
      */

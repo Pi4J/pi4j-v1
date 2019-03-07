@@ -56,7 +56,7 @@ import java.util.List;
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
@@ -293,9 +293,9 @@ public class Gpio {
      * @see #PWM_OUTPUT
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number, the Broadcom GPIO pin number, or the board header pin number.)</i>
-     * @param mode  Pin mode/direction to apply to the selected pin.</br>The following constants are
+     * @param mode  Pin mode/direction to apply to the selected pin.The following constants are
      *            provided for use with this parameter:
      *            <ul>
      *            <li>INPUT</li>
@@ -316,7 +316,7 @@ public class Gpio {
      * </p>
      *
      * @param pin pin number
-     * @param mode  Pin mode/direction to apply to the selected pin.</br>The following constants are
+     * @param mode  Pin mode/direction to apply to the selected pin.The following constants are
      *            provided for use with this parameter:
      *            <ul>
      *            <li>INPUT</li>
@@ -350,9 +350,9 @@ public class Gpio {
      * @see #PUD_UP
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     * @param pud Pull Up/Down internal pin resistance.</br>The following constants are provided for
+     * @param pud Pull Up/Down internal pin resistance.The following constants are provided for
      *            use with this parameter:
      *            <ul>
      *            <li>PUD_OFF</li>
@@ -375,9 +375,9 @@ public class Gpio {
      * @see #LOW
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     * @param value The pin state to write to the selected pin.</br>The following constants are
+     * @param value The pin state to write to the selected pin.The following constants are
      *            provided for use with this parameter:
      *            <ul>
      *            <li>HIGH</li>
@@ -397,7 +397,7 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @param value The pin boolean state to write to the selected pin.
      */
@@ -418,9 +418,9 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     * @param value The analog value to write to the selected pin. </br><i>(The value must be between
+     * @param value The analog value to write to the selected pin. <i>(The value must be between
      *            0 and 1024.)</i>
      */
     public static native void pwmWrite(int pin, int value);
@@ -436,7 +436,7 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @return If the selected GPIO pin is HIGH, then a value of '1' is returned; else of the pin is
      *         LOW, then a value of '0' is returned.
@@ -454,7 +454,7 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @return Analog value of selected pin.
      */
@@ -471,7 +471,7 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/core-functions/">http://wiringpi.com/reference/core-functions/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @param value The analog value to assign to the selected pin number.
      */
@@ -618,9 +618,9 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/priority-interrupts-and-threads/">http://wiringpi.com/reference/priority-interrupts-and-threads/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
-     * @param timeout The number of milliseconds to wait before timing out. </br>A value of '-1' will
+     * @param timeout The number of milliseconds to wait before timing out. A value of '-1' will
      *            disable the timeout.
      * @return The return value is -1 if an error occurred (and errno will be set appropriately), 0
      *         if it timed out, or 1 on a successful interrupt event.
@@ -663,7 +663,7 @@ public class Gpio {
      *
      * @see <a
      *      href="http://wiringpi.com/reference/priority-interrupts-and-threads/">http://wiringpi.com/reference/priority-interrupts-and-threads/</a>
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      * @param edgeType The type of pin edge event to watch for: INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP.
      * @param callback The callback interface implemented by the consumer.  The 'callback' method of this interface
@@ -691,7 +691,7 @@ public class Gpio {
     /**
      * Clear all WiringPiISR callbacks for this GPIO pin.
      *
-     * @param pin The GPIO pin number. </br><i>(Depending on how wiringPi was initialized, this may
+     * @param pin The GPIO pin number. <i>(Depending on how wiringPi was initialized, this may
      *            be the wiringPi pin number or the Broadcom GPIO pin number.)</i>
      */
     public static void wiringPiClearISR(int pin){

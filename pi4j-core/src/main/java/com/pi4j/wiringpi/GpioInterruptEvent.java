@@ -31,19 +31,15 @@ package com.pi4j.wiringpi;
 import java.util.EventObject;
 
 /**
- * <p> This class provides the event object for GPIO interrupt state changes. </p>
- *
- * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
- * the following system libraries:
+ * <p>This class provides the event object for GPIO interrupt state changes. Before using the Pi4J
+ * library, you need to ensure that the Java VM in configured with access to the following system libraries:</p>
  * <ul>
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
- * </p>
  *
  * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
