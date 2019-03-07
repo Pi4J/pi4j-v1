@@ -68,7 +68,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * <li>wiringPi</li>
  * <li>pthread</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
@@ -104,7 +104,6 @@ public class SoftPwm {
      *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
      *
      * @param pin The GPIO pin to use as a PWM pin.
-     *            </p>
      * @param value The value to initialize the PWM pin (between 0 <i>(off)</i> to 100 <i>(fully
      *            on)</i>)
      * @param range The maximum range. Use 100 for the pwmRange.

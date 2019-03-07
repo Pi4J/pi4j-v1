@@ -40,7 +40,7 @@ import java.util.EventObject;
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
