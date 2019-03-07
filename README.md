@@ -5,29 +5,28 @@
 
 ## PROJECT INFORMATION
 
-Project website: https://www.pi4j.com/ <br />
+Project website: https://pi4j.com/ <br />
 Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
 Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />
-Release builds are available from 
+Release builds are available from:
    *  [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
    *  [Downloads] https://pi4j.com/download.html
 
-Snapshot builds are available from 
+Snapshot builds are available from:
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
    *  [Downloads] https://pi4j.com/download.html
-   
- 
+
+
 Copyright (C) 2012-2019 Pi4J
 
 ## LICENSE
- 
- Licensed under the GNU LGPLv3 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
 
- http://www.gnu.org/licenses/lgpl.txt
-  
+ Pi4J Version 1.4 and later is licensed under the Apache License,
+ Version 2.0 (the "License"); you may not use this file except in
+ compliance with the License.  You may obtain a copy of the License at:
+      http://www.apache.org/licenses/LICENSE-2.0
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +43,7 @@ Copyright (C) 2012-2019 Pi4J
   bloat to the point that the project was becoming unsustainable.  The goal
   moving forward is to limit scope to that of the raw I/O capabilities 
   of the Raspberry Pi platform and provide timely updates and releases for
-  bug fixed and new RaspberryPi model introductions.  Reducing the scope of 
+  bug fixes and new RaspberryPi model introductions.  Reducing the scope of 
   the project should better serve the Java community for basic I/O access by
   reducing complexity.
   
@@ -77,6 +76,7 @@ Copyright (C) 2012-2019 Pi4J
 
 2019-07-03 :: 1.4-SNAPSHOT
 
+  * Changed project to Apache License, Version 2.0
   * Removed `pi4j-device` library.  _(See comments above)_
   * Removed `pi4j-gpio-extension` library.  _(See comments above)_
   * Removed platform support for `Odroid`.  _(See comments above)_
@@ -88,7 +88,7 @@ Copyright (C) 2012-2019 Pi4J
 
 ## PREVIOUS RELEASES
 
-For previous 1.x release notes and source code, please see the 1.x branch 
+For previous 1.x release notes and source code, please see the 1.x branch
 or release tags in the source repository:
 
   * **Releases**: https://github.com/Pi4J/pi4j/releases
