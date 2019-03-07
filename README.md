@@ -6,8 +6,8 @@
 ## PROJECT INFORMATION
 
 Project website: https://pi4j.com/ <br />
-Pi4J Community Forum (*<new>*): https://forum.pi4j.com/ <br />
-Version 2.0 Project Discussions (*<new>*): https://forum.pi4j.com/category/6/version-2-0 <br />
+Pi4J Community Forum (*new*): https://forum.pi4j.com/ <br />
+Version 2.0 Project Discussions (*new*): https://forum.pi4j.com/category/6/version-2-0 <br />
 Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />
 Release builds are available from:
