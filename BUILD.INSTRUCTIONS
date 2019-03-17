@@ -32,7 +32,7 @@ these prerequisites automatically using apt-get:
 Please note that the following prerequisites are required to be installed on your RaspberryPi
 before the pi4j-native project can be compiled.  The pi4j-native build will not install
 these prerequisites automatically:
-- A working JDK8 (Oracle JDK)                    (sudo apt-get install oracle-java8-jdk)
+- A working JDK 11 (Any OpenJDK based JDK 11+)   (Bell-Soft's Liberica provides a deb package, Azul provides a binary archive)
 
 Use the following command to deploy a snapshot build to the OSS Maven staging repository.
 (Note, you must have a "sonatype-oss-snapshot-repo" site credentials defined in your private Maven settings.xml file.)
