@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pi4j</groupId>
 	<artifactId>pi4j-parent</artifactId>
-    <version>2.0-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<name>Pi4J :: Parent POM</name>
 	<description>Parent Maven POM for the Pi4J Project</description>
 	<url>https://pi4j.com</url>
@@ -17,14 +17,14 @@
 	</organization>
 
 	<!-- LICENSE -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-            <comments>A business-friendly OSS license</comments>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+				<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
 
 	<!-- DEVELOPERS/CONTRIBUTORS -->
 	<developers>
@@ -39,13 +39,13 @@
 				<role>developer</role>
 			</roles>
 		</developer>
-        <developer>
-            <name>Daniel Sendula</name>
-            <email>daniel@pi4j.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
+		<developer>
+			<name>Daniel Sendula</name>
+			<email>daniel@pi4j.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 	</developers>
 
 	<!-- SOURCE CONTROL -->
@@ -76,20 +76,20 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-    <!-- DEPENDENCY REPOSITORIES -->
-    <repositories>
-        <repository>
-            <id>oss-snapshots-repo</id>
-            <name>Sonatype OSS Maven Repository</name>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+	<!-- DEPENDENCY REPOSITORIES -->
+	<repositories>
+		<repository>
+			<id>oss-snapshots-repo</id>
+			<name>Sonatype OSS Maven Repository</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<!-- PROJECT MODULES -->
 	<modules>
@@ -98,100 +98,99 @@
 		<module>pi4j-distribution</module>
 	</modules>
 
-    <!-- PROJECT PREREQUISITES -->
+	<!-- PROJECT PREREQUISITES -->
 	<prerequisites>
 		<maven>3.0.5</maven>
 	</prerequisites>
 
 	<!-- BUILD PROPERTIES -->
 	<properties>
+		<!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
+		<pi4j.default.host>192.168.1.100</pi4j.default.host>
+		<pi4j.default.port>22</pi4j.default.port>
+		<pi4j.default.user>pi</pi4j.default.user>
+		<pi4j.default.password>raspberry</pi4j.default.password>
+		<pi4j.default.directory>pi4j-temp</pi4j.default.directory>
 
-        <!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
-        <pi4j.default.host>192.168.1.100</pi4j.default.host>
-        <pi4j.default.port>22</pi4j.default.port>
-        <pi4j.default.user>pi</pi4j.default.user>
-        <pi4j.default.password>raspberry</pi4j.default.password>
-        <pi4j.default.directory>pi4j-temp</pi4j.default.directory>
+		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT DEVICE/PLATFORM -->
+		<pi4j.dev.transfer>false</pi4j.dev.transfer>
+		<pi4j.dev.host>${pi4j.default.host}</pi4j.dev.host>
+		<pi4j.dev.port>${pi4j.default.port}</pi4j.dev.port>
+		<pi4j.dev.user>${pi4j.default.user}</pi4j.dev.user>
+		<pi4j.dev.password>${pi4j.default.password}</pi4j.dev.password>
+		<pi4j.dev.directory>pi4j-dev</pi4j.dev.directory>
 
-        <!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT DEVICE/PLATFORM -->
-        <pi4j.dev.transfer>false</pi4j.dev.transfer>
-        <pi4j.dev.host>${pi4j.default.host}</pi4j.dev.host>
-        <pi4j.dev.port>${pi4j.default.port}</pi4j.dev.port>
-        <pi4j.dev.user>${pi4j.default.user}</pi4j.dev.user>
-        <pi4j.dev.password>${pi4j.default.password}</pi4j.dev.password>
-        <pi4j.dev.directory>pi4j-dev</pi4j.dev.directory>
+		<!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'RaspberryPi' PLATFORM -->
+		<raspberrypi.build>false</raspberrypi.build>
+		<raspberrypi.platform>raspberrypi</raspberrypi.platform>
+		<raspberrypi.name>RaspberryPi</raspberrypi.name>
+		<raspberrypi.host>${pi4j.default.host}</raspberrypi.host>
+		<raspberrypi.port>${pi4j.default.port}</raspberrypi.port>
+		<raspberrypi.user>${pi4j.default.user}</raspberrypi.user>
+		<raspberrypi.password>${pi4j.default.password}</raspberrypi.password>
+		<raspberrypi.directory>${pi4j.default.directory}</raspberrypi.directory>
 
-        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'RaspberryPi' PLATFORM -->
-        <raspberrypi.build>false</raspberrypi.build>
-        <raspberrypi.platform>raspberrypi</raspberrypi.platform>
-        <raspberrypi.name>RaspberryPi</raspberrypi.name>
-        <raspberrypi.host>${pi4j.default.host}</raspberrypi.host>
-        <raspberrypi.port>${pi4j.default.port}</raspberrypi.port>
-        <raspberrypi.user>${pi4j.default.user}</raspberrypi.user>
-        <raspberrypi.password>${pi4j.default.password}</raspberrypi.password>
-        <raspberrypi.directory>${pi4j.default.directory}</raspberrypi.directory>
+		<!-- PROJECT ENCODING PROPERTIES -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- PROJECT ENCODING PROPERTIES -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- GITHUB PROPERTIES -->
+		<github.global.server>github</github.global.server>
 
-        <!-- GITHUB PROPERTIES -->
-        <github.global.server>github</github.global.server>
+		<!-- JAVA COMPILER VERSIONS -->
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <!-- JAVA COMPILER VERSIONS -->
-        <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+		<!-- DEPENDENCY VERSIONS -->
+		<org.osgi.core.version>6.0.0</org.osgi.core.version>
+		<ant-jsch.version>1.9.7</ant-jsch.version>
+		<jsch.version>0.1.53</jsch.version>
+		<ant-contrib.version>20020829</ant-contrib.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+		<powermock.version>1.6.5</powermock.version>
 
-        <!-- DEPENDENCY VERSIONS -->
-        <org.osgi.core.version>6.0.0</org.osgi.core.version>
-        <ant-jsch.version>1.9.7</ant-jsch.version>
-        <jsch.version>0.1.53</jsch.version>
-        <ant-contrib.version>20020829</ant-contrib.version>
-        <junit.version>4.12</junit.version>
-        <mockito.version>1.10.19</mockito.version>
-        <powermock.version>1.6.5</powermock.version>
+		<!-- PLUGIN VERSIONS -->
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+		<maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+		<maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+		<maven-scm-plugin.version>1.11.1</maven-scm-plugin.version>
+		<maven-bundle-plugin.version>3.5.0</maven-bundle-plugin.version>
+		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+		<native-maven-plugin.version>1.0-alpha-9</native-maven-plugin.version>
+		<license-maven-plugin.version>1.19</license-maven-plugin.version>
+		<build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+		<jdeb.version>1.7</jdeb.version>
+		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+		<s3-upload-maven-plugin.version>1.4</s3-upload-maven-plugin.version>
+		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 
-        <!-- PLUGIN VERSIONS -->
-        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
-        <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-        <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <maven-scm-plugin.version>1.11.1</maven-scm-plugin.version>
-        <maven-bundle-plugin.version>3.5.0</maven-bundle-plugin.version>
-        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <native-maven-plugin.version>1.0-alpha-9</native-maven-plugin.version>
-        <license-maven-plugin.version>1.19</license-maven-plugin.version>
-        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-        <jdeb.version>1.7</jdeb.version>
-        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-        <s3-upload-maven-plugin.version>1.4</s3-upload-maven-plugin.version>
-        <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
+		<!-- REPORTS VERSIONS -->
+		<maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
 
-        <!-- REPORTS VERSIONS -->
-        <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
-
-        <!-- SPECIAL ACCESS PROPERTIES -->
-        <!-- These are only used by project comitters/publishers -->
-        <pi4j.aws.access.key></pi4j.aws.access.key>
-        <pi4j.aws.secret.key></pi4j.aws.secret.key>
-        <pi4j.gpg.sign>false</pi4j.gpg.sign>
-        <pi4j.gpg.key></pi4j.gpg.key>
-        <pi4j.gpg.keyring></pi4j.gpg.keyring>
-        <pi4j.gpg.passphrase></pi4j.gpg.passphrase>
+		<!-- SPECIAL ACCESS PROPERTIES -->
+		<!-- These are only used by project comitters/publishers -->
+		<pi4j.aws.access.key></pi4j.aws.access.key>
+		<pi4j.aws.secret.key></pi4j.aws.secret.key>
+		<pi4j.gpg.sign>false</pi4j.gpg.sign>
+		<pi4j.gpg.key></pi4j.gpg.key>
+		<pi4j.gpg.keyring></pi4j.gpg.keyring>
+		<pi4j.gpg.passphrase></pi4j.gpg.passphrase>
 
 	</properties>
 
-    <!-- PROJECT DEPENDENCIES -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.osgi</groupId>
+	<!-- PROJECT DEPENDENCIES -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>${org.osgi.core.version}</version>
             </dependency>
@@ -838,51 +837,50 @@
 		</plugins>
 	</build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <id>non-aggregate</id>
-                        <configuration>
-                            <verbose>false</verbose>
-                            <linksource>true</linksource>
-                            <name>JavaDocs</name>
-                            <description>JavaDoc API documentation</description>
-                            <outputName>javadoc/index</outputName>
-                            <sourcepath>pi4j-core/src/main/java</sourcepath>
-                        </configuration>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>${maven-project-info-reports-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>summary</report>
-                            <report>project-team</report>
-                            <report>license</report>
-                            <report>scm</report>
-                            <report>issue-tracking</report>
-                            <report>plugins</report>
-                            <report>dependency-info</report>
-                            <report>dependency-management</report>
-                            <report>plugin-management</report>
-                            <report>distribution-management</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
-
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<reportSets>
+					<reportSet>
+						<id>non-aggregate</id>
+						<configuration>
+							<verbose>false</verbose>
+							<linksource>true</linksource>
+							<name>JavaDocs</name>
+							<description>JavaDoc API documentation</description>
+							<outputName>javadoc/index</outputName>
+							<sourcepath>pi4j-core/src/main/java</sourcepath>
+						</configuration>
+						<reports>
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>summary</report>
+							<report>project-team</report>
+							<report>license</report>
+							<report>scm</report>
+							<report>issue-tracking</report>
+							<report>plugins</report>
+							<report>dependency-info</report>
+							<report>dependency-management</report>
+							<report>plugin-management</report>
+							<report>distribution-management</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
