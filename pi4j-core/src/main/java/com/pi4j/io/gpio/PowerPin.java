@@ -27,12 +27,6 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-
-import com.pi4j.system.SystemInfo;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 /**
  * Power Pi pin definitions for (default) WiringPi pin numbering scheme.
  *
