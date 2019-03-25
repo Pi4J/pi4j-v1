@@ -35,7 +35,11 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 
+import com.pi4j.service.AppConfig;
+import com.pi4j.service.GpioControllerInstance;
 import java.util.Collection;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,19 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Based on https://www.pi4j.com/1.2/example/control.html
  */
 @RestController
-public class Pins {
-
-    /**
-     * The GPIO controller.
-     */
-    private final GpioController gpio;
-
-    /**
-     * Constructor.
-     */
-    private Pins() {
-        this.gpio = GpioFactory.getInstance();
-    }
+public class PinsRestController {
 
     /**
      * Get the current state of the pins.
@@ -69,7 +61,9 @@ public class Pins {
      */
     @GetMapping(path = "/pins/state", produces = "application/json")
     public Collection<GpioPin> getStates() {
-        return this.gpio.getProvisionedPins();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        return context.getBean(GpioControllerInstance.class).getGpioController().getProvisionedPins();
     }
 
     /**
@@ -85,7 +79,9 @@ public class Pins {
     public GpioPinDigitalOutput setPinState(@RequestBody Pin pin,
             @RequestBody String name,
             @RequestBody PinState pinState) {
-        return this.gpio.provisionDigitalOutputPin(pin, name, pinState);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        return context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin, name, pinState);
     }
 
     /**
@@ -95,7 +91,9 @@ public class Pins {
      */
     @PostMapping(path = "/pin/toggle", consumes = "application/json", produces = "application/json")
     public void togglePin(@RequestBody Pin pin) {
-        this.gpio.provisionDigitalOutputPin(pin).toggle();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).toggle();
     }
 
     /**
@@ -105,6 +103,8 @@ public class Pins {
      */
     @PostMapping(path = "/pin/pulse", consumes = "application/json", produces = "application/json")
     public void pulsePin(@RequestBody Pin pin, @RequestBody int duration) {
-        this.gpio.provisionDigitalOutputPin(pin).pulse(duration);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).pulse(duration);
     }
 }
