@@ -5,8 +5,8 @@
 
 	<!-- MAVEN ARTIFACT INFORMATION -->
 	<artifactId>pi4j-service</artifactId>
-	<name>Pi4J :: Java REST services</name>
-	<description>Rest services to expose the PI4J functions</description>
+	<name>Pi4J :: Java remote services (REST + WebSockets)</name>
+	<description>Remote services to expose the PI4J functions</description>
 	<packaging>jar</packaging>
 
 	<!-- https://www.baeldung.com/spring-boot-dependency-management-custom-parent -->
