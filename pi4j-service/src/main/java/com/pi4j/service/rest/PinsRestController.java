@@ -4,8 +4,8 @@ package com.pi4j.service.rest;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java REST services
- * FILENAME      :  HelloWorld.java
+ * PROJECT       :  Pi4J :: Java remote services (REST + WebSockets)
+ * FILENAME      :  PinsRestController.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://pi4j.com/
@@ -39,6 +39,9 @@ import com.pi4j.service.AppConfig;
 import com.pi4j.service.GpioControllerInstance;
 import java.util.Collection;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +55,14 @@ import org.springframework.web.bind.annotation.RestController;
  * Based on https://www.pi4j.com/1.2/example/control.html
  */
 @RestController
-public class PinsRestController {
+public class PinsRestController implements ApplicationContextAware {
+
+    private ApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 
     /**
      * Get the current state of the pins.
@@ -61,9 +71,7 @@ public class PinsRestController {
      */
     @GetMapping(path = "/pins/state", produces = "application/json")
     public Collection<GpioPin> getStates() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-        return context.getBean(GpioControllerInstance.class).getGpioController().getProvisionedPins();
+        return this.context.getBean(GpioControllerInstance.class).getGpioController().getProvisionedPins();
     }
 
     /**
@@ -79,9 +87,7 @@ public class PinsRestController {
     public GpioPinDigitalOutput setPinState(@RequestBody Pin pin,
             @RequestBody String name,
             @RequestBody PinState pinState) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-        return context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin, name, pinState);
+        return this.context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin, name, pinState);
     }
 
     /**
@@ -91,9 +97,7 @@ public class PinsRestController {
      */
     @PostMapping(path = "/pin/toggle", consumes = "application/json", produces = "application/json")
     public void togglePin(@RequestBody Pin pin) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-        context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).toggle();
+        this.context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).toggle();
     }
 
     /**
@@ -103,8 +107,6 @@ public class PinsRestController {
      */
     @PostMapping(path = "/pin/pulse", consumes = "application/json", produces = "application/json")
     public void pulsePin(@RequestBody Pin pin, @RequestBody int duration) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-        context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).pulse(duration);
+        this.context.getBean(GpioControllerInstance.class).getGpioController().provisionDigitalOutputPin(pin).pulse(duration);
     }
 }

@@ -4,7 +4,7 @@ package com.pi4j.service.rest;
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
- * PROJECT       :  Pi4J :: Java REST services
+ * PROJECT       :  Pi4J :: Java remote services (REST + WebSockets)
  * FILENAME      :  HelloWorld.java
  *
  * This file is part of the Pi4J project. More information about
