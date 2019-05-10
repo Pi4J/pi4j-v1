@@ -30,7 +30,7 @@ import java.util.EnumSet;
  */
 
 /**
- * Pn direction.
+ * Pin direction.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
