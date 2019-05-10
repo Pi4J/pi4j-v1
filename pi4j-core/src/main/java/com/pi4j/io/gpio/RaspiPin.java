@@ -221,6 +221,8 @@ public class RaspiPin extends PinProvider {
                 header.addHeaderPin(24, 10, "CE0", "", null);
                 header.addHeaderPin(25, null, "DNC", "", null);
                 header.addHeaderPin(26, 11, "CE1", "", null);
+
+                break;
             case RaspberryPi_A_Plus:
             case RaspberryPi_B_Plus:
             case RaspberryPi_2B:
@@ -271,7 +273,7 @@ public class RaspiPin extends PinProvider {
                 header.addHeaderPin(39, null, "Ground", "", RaspiPin.GROUND);
                 header.addHeaderPin(40, 29, "GPIO 29", "PCM_DOUT", RaspiPin.GPIO_29);
 
-                return header;
+                break;
         }
 
         return header;
