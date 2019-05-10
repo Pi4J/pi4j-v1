@@ -94,8 +94,9 @@
 	<!-- PROJECT MODULES -->
 	<modules>
 		<module>pi4j-core</module>
+        <module>pi4j-distribution</module>
 		<module>pi4j-example</module>
-		<module>pi4j-distribution</module>
+        <module>pi4j-fxui</module>
 	</modules>
 
     <!-- PROJECT PREREQUISITES -->
