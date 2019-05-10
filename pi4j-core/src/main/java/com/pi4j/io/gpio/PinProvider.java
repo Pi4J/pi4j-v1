@@ -75,6 +75,10 @@ public abstract class PinProvider {
         return createPin(providerName, address, name, EnumSet.of(PinMode.ANALOG_INPUT));
     }
 
+    protected static Pin createPowerPin(String name, PinMode pinMode) {
+        return new PinImpl(RaspiGpioProvider.NAME, 0, name, EnumSet.of(pinMode));
+    }
+
     protected static Pin createPin(String providerName, int address, String name, EnumSet<PinMode> modes) {
         Pin pin = new PinImpl(providerName, address, name, modes);
         pins.put(name, pin);

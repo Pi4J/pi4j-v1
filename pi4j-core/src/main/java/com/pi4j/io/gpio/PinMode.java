@@ -45,7 +45,10 @@ public enum PinMode {
     SOFT_TONE_OUTPUT(5, "soft_tone_output", PinDirection.OUT),
     PWM_TONE_OUTPUT(6, "pwm_tone_output", PinDirection.OUT),
     ANALOG_INPUT(998, "analog_input", PinDirection.IN),
-    ANALOG_OUTPUT(999, "analog_output", PinDirection.OUT);
+    ANALOG_OUTPUT(999, "analog_output", PinDirection.OUT),
+    GROUND(1000, "ground", PinDirection.IN),
+    POWER_3_3(1001, "power 3.3V", PinDirection.OUT),
+    POWER_5_0(1002, "power 5.0V", PinDirection.OUT);
 
     private final int value;
     private final String name;
