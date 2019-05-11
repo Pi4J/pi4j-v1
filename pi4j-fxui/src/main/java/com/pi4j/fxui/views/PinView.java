@@ -54,6 +54,8 @@ public class PinView extends HBox {
                             .collect(Collectors.joining(", ")))
                         .append("\n");
             }
+        } else {
+            sbToolTip.append(pin.getName());
         }
 
         tooltip.setText(sbToolTip.toString());
