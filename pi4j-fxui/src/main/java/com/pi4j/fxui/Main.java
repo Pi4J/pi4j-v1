@@ -22,6 +22,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+/**
+ * Main class of the application.
+ */
 public class Main extends Application {
 
     private ListView listBoardTypes;
@@ -33,6 +36,18 @@ public class Main extends Application {
 
     private TableView<BoardTypeData> tableView;
 
+    /**
+     * Entry point of the application.
+     *
+     * @param args Start-up arguments.
+     */
+    public static void main(String[] args) {
+        launch();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage stage) {
 
@@ -63,14 +78,15 @@ public class Main extends Application {
         this.listBoardTypes = new ListView(boardTypes);
 
         this.listBoardTypes.getSelectionModel().selectedItemProperty().addListener(
-                (ChangeListener<String>) (ov, old_val, new_val) -> visualize(new_val));
+                (ChangeListener<String>) (ov, previous, selected) -> visualize(selected));
     }
 
     /**
-     * Creates a tab pane for the different visualizations
+     * Creates a tab pane for the different visualizations.
      */
     private void createTabs() {
         this.tabPane = new TabPane();
+        this.tabPane.setMinWidth(1000);
 
         this.tabTable = new Tab("Table view");
         this.tabPane.getTabs().add(this.tabTable);
@@ -84,32 +100,97 @@ public class Main extends Application {
         this.tabPane.getTabs().add(this.tabExtendedHeader);
     }
 
+    /**
+     * Creates a table with all the columns.
+     */
     private void createTable() {
         this.tableView = new TableView<>();
 
         TableColumn colPinNumber = new TableColumn("Pin");
-        colPinNumber.setMinWidth(100);
+        colPinNumber.setStyle("-fx-alignment: TOP-CENTER;");
+        colPinNumber.setMinWidth(70);
         colPinNumber.setCellValueFactory(
                 new PropertyValueFactory<BoardTypeData, Integer>("pinNumber"));
 
+        // Description
+        TableColumn colDescription = new TableColumn("Description");
+
+        TableColumn colName = new TableColumn("Name");
+        colName.setMinWidth(75);
+        colName.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, Integer>("name"));
+
+        TableColumn colInfo = new TableColumn("Info");
+        colInfo.setMinWidth(125);
+        colInfo.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, Integer>("Info"));
+
         TableColumn colAddress = new TableColumn("Address");
-        colAddress.setMinWidth(100);
+        colAddress.setStyle("-fx-alignment: TOP-CENTER;");
+        colAddress.setMinWidth(70);
         colAddress.setCellValueFactory(
                 new PropertyValueFactory<BoardTypeData, Integer>("address"));
 
-        TableColumn colName = new TableColumn("Name");
-        colName.setMinWidth(100);
-        colName.setCellValueFactory(
-                new PropertyValueFactory<BoardTypeData, String>("name"));
+        colDescription.getColumns().addAll(colName, colInfo, colAddress);
 
-        TableColumn colPinModes = new TableColumn("Pin modes");
-        colPinModes.setMinWidth(200);
+        // Modes
+        TableColumn colPinModes = new TableColumn("Modes");
+        colPinModes.setMinWidth(300);
         colPinModes.setCellValueFactory(
                 new PropertyValueFactory<BoardTypeData, String>("pinModes"));
 
-        this.tableView.getColumns().addAll(colPinNumber, colAddress, colName, colPinModes);
+        // Events
+        TableColumn colPinEventsSupported = new TableColumn("Events");
+        colPinEventsSupported.setStyle("-fx-alignment: TOP-CENTER;");
+        colPinEventsSupported.setMinWidth(75);
+        colPinEventsSupported.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinEvents"));
+
+        // Resistance
+        TableColumn colPinPullResistances = new TableColumn("Pull resistances");
+
+        TableColumn colPinPullResistancesSupported = new TableColumn("Supported");
+        colPinPullResistancesSupported.setStyle("-fx-alignment: TOP-CENTER;");
+        colPinPullResistancesSupported.setMinWidth(75);
+        colPinPullResistancesSupported.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinPullResistance"));
+
+        TableColumn colPinPullResistancesTypes = new TableColumn("Types");
+        colPinPullResistancesTypes.setMinWidth(300);
+        colPinPullResistancesTypes.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, String>("pinPullResistances"));
+
+        colPinPullResistances.getColumns().addAll(colPinPullResistancesSupported, colPinPullResistancesTypes);
+
+        // Edges
+        TableColumn colPinEdges = new TableColumn("Edges");
+
+        TableColumn colPinEdgesSupported = new TableColumn("Supported");
+        colPinEdgesSupported.setStyle("-fx-alignment: TOP-CENTER;");
+        colPinEdgesSupported.setMinWidth(75);
+        colPinEdgesSupported.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinEdges"));
+
+        TableColumn colPinEdgesTypes = new TableColumn("Types");
+        colPinEdgesTypes.setMinWidth(300);
+        colPinEdgesTypes.setCellValueFactory(
+                new PropertyValueFactory<BoardTypeData, String>("pinEdges"));
+
+        colPinEdges.getColumns().addAll(colPinEdgesSupported, colPinEdgesTypes);
+
+        this.tableView.getColumns().addAll(colPinNumber,
+                colDescription,
+                colPinModes,
+                colPinEventsSupported,
+                colPinPullResistances,
+                colPinEdges);
     }
 
+    /**
+     * Fill the table data provider with a list of {@link BoardTypeData}.
+     *
+     * @param boardType The {@link BoardType} from which all {@link HeaderPin} need to be added to the table.
+     */
     private void fillTableData(BoardType boardType) {
         ObservableList<BoardTypeData> data = FXCollections.observableArrayList();
 
@@ -129,7 +210,7 @@ public class Main extends Application {
     /**
      * Fill the tabs with the pinning visualization of the selected board type.
      *
-     * @param selectedBoardName
+     * @param selectedBoardName The name of the selected board type.
      */
     private void visualize(String selectedBoardName) {
         BoardType selectedBoardType = BoardType.valueOf(selectedBoardName);
@@ -140,15 +221,10 @@ public class Main extends Application {
             this.tabCompactHeader.setContent(new HeaderView(selectedBoardType, false));
             this.tabExtendedHeader.setContent(new HeaderView(selectedBoardType, true));
             this.fillTableData(selectedBoardType);
-
         } else {
             this.tabCompactHeader.setContent(new Label("Board type not found for: " + selectedBoardName));
             this.tabExtendedHeader.setContent(new Label("Board type not found for: " + selectedBoardName));
             this.fillTableData(null);
         }
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

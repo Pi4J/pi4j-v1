@@ -79,10 +79,6 @@ public class RaspiPin extends PinProvider {
     public static final Pin GPIO_30 = createDigitalPinNoPullDown(30, "GPIO 30");  // SDA.0 pin has a physical pull-up resistor
     public static final Pin GPIO_31 = createDigitalPinNoPullDown(31, "GPIO 31");  // SDC.0 pin has a physical pull-up resistor
 
-    public static final Pin POWER_3_3 = createPowerPin("Power 3.3V", PinMode.POWER_3_3);
-    public static final Pin POWER_5_0 = createPowerPin("Power 5.0V", PinMode.POWER_5_0);
-    public static final Pin GROUND = createPowerPin("Ground", PinMode.GROUND);
-
     protected static Pin createDigitalPinNoPullDown(int address, String name) {
         return createDigitalPin(RaspiGpioProvider.NAME, address, name,
                 EnumSet.of(PinPullResistance.OFF, PinPullResistance.PULL_UP),
@@ -195,12 +191,12 @@ public class RaspiPin extends PinProvider {
             case RaspberryPi_B_Rev2:
                 header = new Header(26);
 
-                header.addHeaderPin(1, null, "3.3 VDC", "Power", RaspiPin.POWER_3_3);
-                header.addHeaderPin(2, null, "5.0 VDC", "Power", RaspiPin.POWER_5_0);
+                header.addHeaderPin(1, null, "3.3 VDC", "Power", null);
+                header.addHeaderPin(2, null, "5.0 VDC", "Power", null);
                 header.addHeaderPin(3, 8, "SDA0", "(I2C)", null);
                 header.addHeaderPin(4, null, "DNC", "", null);
                 header.addHeaderPin(5, 9, "SCL0", "(I2C)", null);
-                header.addHeaderPin(6, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(6, null, "Ground", "", null);
                 header.addHeaderPin(7, 7, "GPIO 7", "", RaspiPin.GPIO_07);
                 header.addHeaderPin(8, 15, "TxD", "(UART)", null);
                 header.addHeaderPin(9, null, "DNC", "", null);
@@ -232,45 +228,45 @@ public class RaspiPin extends PinProvider {
             case RaspberryPi_ZeroW:
                 header = new Header(40);
 
-                header.addHeaderPin(1, null, "3.3 VDC", "Power", RaspiPin.POWER_3_3);
-                header.addHeaderPin(2, null, "5.0 VDC", "Power", RaspiPin.POWER_5_0);
+                header.addHeaderPin(1, null, "3.3 VDC", "Power", null);
+                header.addHeaderPin(2, null, "5.0 VDC", "Power", null);
                 header.addHeaderPin(3, 8, "GPIO 8", "SDA1 (I2C)", RaspiPin.GPIO_08);
-                header.addHeaderPin(4, null, "5.0 VDC", "Power", RaspiPin.POWER_5_0);
+                header.addHeaderPin(4, null, "5.0 VDC", "Power", null);
                 header.addHeaderPin(5, 9, "GPIO 9", "SCL1 (I2C)", RaspiPin.GPIO_09);
-                header.addHeaderPin(6, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(6, null, "Ground", "", null);
                 header.addHeaderPin(7, 7, "GPIO 7", "GPCLK0", RaspiPin.GPIO_07);
                 header.addHeaderPin(8, 15, "GPIO 15", "TxD (UART)", RaspiPin.GPIO_15);
-                header.addHeaderPin(9, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(9, null, "Ground", "", null);
                 header.addHeaderPin(10, 16, "GPIO 16", "RxD (UART)", RaspiPin.GPIO_16);
                 header.addHeaderPin(11, 0, "GPIO 0", "", RaspiPin.GPIO_00);
                 header.addHeaderPin(12, 1, "GPIO 1", "PCM_CLK/PWM0", RaspiPin.GPIO_01);
                 header.addHeaderPin(13, 2, "GPIO 2", "", RaspiPin.GPIO_02);
-                header.addHeaderPin(14, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(14, null, "Ground", "", null);
                 header.addHeaderPin(15, 3, "GPIO 3", "", RaspiPin.GPIO_03);
                 header.addHeaderPin(16, 4, "GPIO 4", "", RaspiPin.GPIO_04);
-                header.addHeaderPin(17, null, "3.3 VDC", "Power", RaspiPin.POWER_3_3);
+                header.addHeaderPin(17, null, "3.3 VDC", "Power", null);
                 header.addHeaderPin(18, 5, "GPIO 5", "", RaspiPin.GPIO_05);
                 header.addHeaderPin(19, 12, "GPIO 12", "MOSI (SPI)", RaspiPin.GPIO_12);
-                header.addHeaderPin(20, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(20, null, "Ground", "", null);
                 header.addHeaderPin(21, 13, "GPIO 13", "MISO (SPI)", RaspiPin.GPIO_13);
                 header.addHeaderPin(22, 6, "GPIO 6", "", RaspiPin.GPIO_06);
                 header.addHeaderPin(23, 14, "GPIO 14", "SCLK (SPI)", RaspiPin.GPIO_14);
                 header.addHeaderPin(24, 10, "GPIO 10", "CE0 (SPI)", RaspiPin.GPIO_10);
-                header.addHeaderPin(25, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(25, null, "Ground", "", null);
                 header.addHeaderPin(26, 11, "GPIO 11", "CE1 (SPI)", RaspiPin.GPIO_11);
                 header.addHeaderPin(27, 30, "SDA0", "I2C ID EEPROM", null);
                 header.addHeaderPin(28, 31, "SCL0", "I2C ID EEPROM", null);
                 header.addHeaderPin(29, 21, "GPIO 21", "GPCLK1", RaspiPin.GPIO_21);
-                header.addHeaderPin(30, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(30, null, "Ground", "", null);
                 header.addHeaderPin(31, 22, "GPIO 22", "GPCL2", RaspiPin.GPIO_22);
                 header.addHeaderPin(32, 26, "GPIO 26", "PWM0", RaspiPin.GPIO_26);
                 header.addHeaderPin(33, 23, "GPIO 23", "PWM1", RaspiPin.GPIO_23);
-                header.addHeaderPin(34, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(34, null, "Ground", "", null);
                 header.addHeaderPin(35, 24, "GPIO 24", "PCM_FS/PWM1", RaspiPin.GPIO_24);
                 header.addHeaderPin(36, 27, "GPIO 27", "", RaspiPin.GPIO_27);
                 header.addHeaderPin(37, 25, "GPIO 25", "", RaspiPin.GPIO_25);
                 header.addHeaderPin(38, 28, "GPIO 28", "PCM_DIN", RaspiPin.GPIO_28);
-                header.addHeaderPin(39, null, "Ground", "", RaspiPin.GROUND);
+                header.addHeaderPin(39, null, "Ground", "", null);
                 header.addHeaderPin(40, 29, "GPIO 29", "PCM_DOUT", RaspiPin.GPIO_29);
 
                 break;

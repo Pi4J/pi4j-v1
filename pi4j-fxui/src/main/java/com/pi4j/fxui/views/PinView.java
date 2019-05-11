@@ -29,7 +29,7 @@ public class PinView extends HBox {
         gpioNumber.setPrefWidth(40);
         gpioNumber.setStyle("-fx-font: 20px Tahoma;\n");
 
-        if (pin.getPin() != null) {
+        if (pin.getPin() != null && pin.getPin().toString().contains("GPIO")) {
             final String lbl = pin.getPin().toString().replace("GPIO ", "");
             gpioNumber.setText(lbl);
         }
