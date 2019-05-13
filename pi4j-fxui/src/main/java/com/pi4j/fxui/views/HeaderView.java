@@ -46,8 +46,6 @@ public class HeaderView extends VBox {
      * @param extended True for extended view, false for compact view.
      */
     public HeaderView(BoardType boardType, boolean extended) {
-        this.setSpacing(1);
-
         Header header = RaspiPin.getHeader(boardType);
 
         if (header != null) {
@@ -71,8 +69,8 @@ public class HeaderView extends VBox {
      */
     private VBox getRow(Header header, boolean extended, boolean firstRow) {
         final VBox vBox = new VBox();
+        vBox.setSpacing(1);
         vBox.setPadding(new Insets(1, 1, 1, 1));
-        vBox.setSpacing(extended ? 5 : 1);
 
         for (int i = (firstRow ? 0 : 1); i < header.getPins().size(); i += 2) {
             vBox.getChildren().add(new PinView(header.getPins().get(i), extended, !firstRow));

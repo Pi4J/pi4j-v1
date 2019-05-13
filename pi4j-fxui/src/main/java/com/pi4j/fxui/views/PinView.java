@@ -37,6 +37,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * Visualizes the {@link HeaderPin}.
@@ -52,18 +53,16 @@ class PinView extends HBox {
      */
     PinView(final HeaderPin pin, final boolean extended, final boolean rightToLeft) {
         this.setNodeOrientation(rightToLeft ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
-        this.setStyle("-fx-border-color: black;\n" +
-                "-fx-border-insets: 5;\n" +
-                "-fx-border-width: 2;\n" +
-                "-fx-border-style: solid;\n");
+        this.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;");
         this.setPadding(new Insets(1, 1, 1, 1));
         this.setSpacing(1);
         this.setPrefHeight(extended ? 30 : 15);
 
         // GPIO number
         Label gpioNumber = new Label();
-        gpioNumber.setPrefWidth(40);
-        gpioNumber.setStyle("-fx-font: 20px Tahoma;\n");
+        gpioNumber.setPrefWidth(50);
+        gpioNumber.setTextFill(Color.BLUE);
+        gpioNumber.setStyle("-fx-font: 20px Tahoma; -fx-alignment: TOP-CENTER;");
 
         if (pin.getPin() != null && pin.getPin().toString().contains("GPIO")) {
             final String lbl = pin.getPin().toString().replace("GPIO ", "");
@@ -102,16 +101,14 @@ class PinView extends HBox {
         textBoxes.setAlignment(Pos.CENTER_LEFT);
 
         Label name = new Label(pin.getName());
-        name.setStyle("-fx-font: 12px Tahoma;\n" +
-                "-fx-font-weight: bold;\n");
+        name.setStyle("-fx-font: 12px Tahoma; -fx-font-weight: bold;");
         name.setTooltip(tooltip);
 
         textBoxes.getChildren().add(name);
 
         if (extended) {
             Label info = new Label(pin.getInfo());
-            info.setStyle("-fx-font: 12px Tahoma;\n" +
-                    "-fx-font-weight: normal;\n");
+            info.setStyle("-fx-font: 12px Tahoma; -fx-font-weight: normal;");
 
             textBoxes.getChildren().add(info);
         }
@@ -122,8 +119,7 @@ class PinView extends HBox {
         // Pin number
         Label pinNumber = new Label();
         pinNumber.setPrefWidth(25);
-        pinNumber.setStyle("-fx-font: 8px Tahoma;\n" +
-                "-fx-rotate: -90;\n");
+        pinNumber.setStyle("-fx-font: 8px Tahoma; -fx-rotate: -90;");
         pinNumber.setText(String.valueOf(pin.getPinNumber()));
 
         this.getChildren().add(pinNumber);
