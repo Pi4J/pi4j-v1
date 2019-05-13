@@ -64,6 +64,11 @@ public class PinsRestController implements ApplicationContextAware {
         this.context = applicationContext;
     }
 
+    @GetMapping(path = "/")
+    public String get() {
+        return "Hello world from the Pi4J REST controller!";
+    }
+
     /**
      * Get the current state of the pins.
      *
@@ -83,7 +88,7 @@ public class PinsRestController implements ApplicationContextAware {
      *
      * @return
      */
-    @PostMapping(path = "/pins/state/set", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/pin/state/set", consumes = "application/json", produces = "application/json")
     public GpioPinDigitalOutput setPinState(@RequestBody Pin pin,
             @RequestBody String name,
             @RequestBody PinState pinState) {

@@ -5,7 +5,7 @@ package com.pi4j.service.websocket;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java remote services (REST + WebSockets)
- * FILENAME      :  PinsController.java
+ * FILENAME      :  WebSocketHandler.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://pi4j.com/
@@ -31,27 +31,54 @@ import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.service.AppConfig;
 import com.pi4j.service.GpioControllerInstance;
 import java.util.Collection;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-/**
- * Provides a websocket controller for the pins.
- *
- * Based on https://www.pi4j.com/1.2/example/control.html
- */
-@Controller
-public class PinsController implements ApplicationContextAware {
+@Component
+public class WebSocketHandler extends TextWebSocketHandler {
 
-    private ApplicationContext context;
+    WebSocketHandler() {
+        System.out.println("WS handler initialized");
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
+    public final void afterConnectionEstablished(WebSocketSession session) {
+        System.out.println("WS connected");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        System.out.println("WS closed: " + status);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void handleTransportError(WebSocketSession session, Throwable ex) {
+        System.out.println("WS error: " + ex.getMessage());
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void handleTextMessage(WebSocketSession session, TextMessage message) {
+        System.out.println("WS message: " + message);
     }
 
     /**
@@ -59,11 +86,13 @@ public class PinsController implements ApplicationContextAware {
      *
      * @return
      */
-    @MessageMapping("/ws/pins/states")
+    /*@MessageMapping("/ws/pins/states")
     @SendTo("/topic/pins/states")
     public Collection<GpioPin> getStates() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
         return context.getBean(GpioControllerInstance.class).getGpioController().getProvisionedPins();
-    }
+    }*/
 }
+
+

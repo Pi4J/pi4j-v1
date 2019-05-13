@@ -16,8 +16,6 @@
 		<version>2.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.pi4j</groupId>
-
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -31,6 +29,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
 		</dependency>
 
 		<dependency>
