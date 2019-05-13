@@ -41,6 +41,8 @@ import javafx.scene.paint.Color;
 
 /**
  * Visualizes the {@link HeaderPin}.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 class PinView extends HBox {
 
