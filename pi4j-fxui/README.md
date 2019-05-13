@@ -54,7 +54,7 @@ To run the application get it from the out-directory and start it with this comm
 
 ```
 cd {LOCATION OF THE JAR-FILE}
-sudo /opt/jdk-11.0.2/bin/java -jar MinimalJavaFx11Application-0.1-SNAPSHOT.jar
+sudo /opt/jdk-11.0.2/bin/java -jar pi4j-fxui-2.0-SNAPSHOT.jar
 ```
 
 ## LICENSE
