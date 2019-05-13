@@ -33,6 +33,8 @@ import javafx.scene.paint.Color;
 
 /**
  * View helper function to colorize a table cell green (true) or red (false) depending on the value of its cell.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 public class BooleanTableCell extends TableCell<TableRow, Boolean> {
     @Override

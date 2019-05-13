@@ -36,6 +36,8 @@ import javafx.scene.layout.VBox;
 
 /**
  * Visualizes the {@link Header} for the given {@link BoardType} in two columns, as it looks on the board.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 public class HeaderView extends VBox {
 

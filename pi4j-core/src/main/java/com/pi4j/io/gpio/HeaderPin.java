@@ -29,6 +29,8 @@ package com.pi4j.io.gpio;
 
 /**
  * Describes a pin in the header.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 public class HeaderPin {
     private final int pinNumber;

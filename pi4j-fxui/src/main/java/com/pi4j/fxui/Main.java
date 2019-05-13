@@ -54,6 +54,8 @@ import javafx.stage.Stage;
 
 /**
  * Main class of the application.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 public class Main extends Application {
 

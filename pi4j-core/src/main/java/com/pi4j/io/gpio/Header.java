@@ -32,6 +32,8 @@ import java.util.List;
 
 /**
  * Describes the pinning layout of a header.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 public class Header {
     private final int numberOfPins;

@@ -35,6 +35,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Helper class to be used in the table data list to convert a {@link HeaderPin} to table cell values.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)inter
  */
 public class BoardTypeData {
 
