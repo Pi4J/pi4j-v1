@@ -1,4 +1,4 @@
- Pi4J :: JavaFX visualization on top of Pi4J Java I/O Library for Raspberry Pi
+Pi4J :: JavaFX visualization on top of Pi4J Java I/O Library for Raspberry Pi
 ==============================================================================
 JavaFX UI for PI4J
 
