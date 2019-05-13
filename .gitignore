@@ -16,6 +16,9 @@ bin
 .metadata
 maven-eclipse.xml
 
+# UltraEdit .bak files
+*.bak
+
 # Vim files
 *.swp
 
