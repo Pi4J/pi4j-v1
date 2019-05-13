@@ -1,6 +1,34 @@
 package com.pi4j.fxui;
 
+/*
+ * #%L
+ * **********************************************************************
+ * ORGANIZATION  :  Pi4J
+ * PROJECT       :  Pi4J :: JavaFX Visualizaion
+ * FILENAME      :  Main.java
+ *
+ * This file is part of the Pi4J project. More information about
+ * this project can be found here:  https://pi4j.com/
+ * **********************************************************************
+ * %%
+ * Copyright (C) 2012 - 2019 Pi4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.pi4j.fxui.data.BoardTypeData;
+import com.pi4j.fxui.views.BooleanTableCell;
 import com.pi4j.fxui.views.HeaderView;
 import com.pi4j.io.gpio.Header;
 import com.pi4j.io.gpio.HeaderPin;
@@ -11,15 +39,17 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -29,12 +59,15 @@ public class Main extends Application {
 
     private ListView listBoardTypes;
 
+    private Label lblSelectedBoard;
+
     private TabPane tabPane;
     private Tab tabTable;
     private Tab tabCompactHeader;
     private Tab tabExtendedHeader;
 
     private TableView<BoardTypeData> tableView;
+    private ObservableList<BoardTypeData> data = FXCollections.observableArrayList();
 
     /**
      * Entry point of the application.
@@ -50,20 +83,26 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) {
-
         // PI4J Boardtypes
         this.createBoardsList();
+
+        // Label which will show the selected board
+        this.lblSelectedBoard = new Label("Select a board from the list");
+        this.lblSelectedBoard.setPadding(new Insets(3, 3, 3, 7));
+        this.lblSelectedBoard.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         // Tabs for the different visualizations
         this.createTabs();
 
-        // JavaFX window
-        HBox holder = new HBox(this.listBoardTypes, this.tabPane);
-        holder.setSpacing(5);
+        // Holder to align the elements correctly
+        BorderPane holder = new BorderPane();
+        holder.setTop(this.lblSelectedBoard);
+        holder.setLeft(this.listBoardTypes);
+        holder.setCenter(this.tabPane);
 
-        Scene scene = new Scene(holder, 1024, 600);
+        Scene scene = new Scene(holder);
         stage.setScene(scene);
-        stage.setMaximized(true);
+        stage.setMaximized(false);
         stage.show();
     }
 
@@ -76,6 +115,7 @@ public class Main extends Application {
         );
 
         this.listBoardTypes = new ListView(boardTypes);
+        this.listBoardTypes.setMinWidth(200);
 
         this.listBoardTypes.getSelectionModel().selectedItemProperty().addListener(
                 (ChangeListener<String>) (ov, previous, selected) -> visualize(selected));
@@ -86,7 +126,6 @@ public class Main extends Application {
      */
     private void createTabs() {
         this.tabPane = new TabPane();
-        this.tabPane.setMinWidth(1000);
 
         this.tabTable = new Tab("Table view");
         this.tabPane.getTabs().add(this.tabTable);
@@ -141,19 +180,19 @@ public class Main extends Application {
 
         // Events
         TableColumn colPinEventsSupported = new TableColumn("Events");
-        colPinEventsSupported.setStyle("-fx-alignment: TOP-CENTER;");
         colPinEventsSupported.setMinWidth(75);
         colPinEventsSupported.setCellValueFactory(
-                new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinEvents"));
+                new PropertyValueFactory<BoardTypeData, String>("supportsPinEvents"));
+        colPinEventsSupported.setCellFactory(factory -> new BooleanTableCell());
 
         // Resistance
         TableColumn colPinPullResistances = new TableColumn("Pull resistances");
 
         TableColumn colPinPullResistancesSupported = new TableColumn("Supported");
-        colPinPullResistancesSupported.setStyle("-fx-alignment: TOP-CENTER;");
         colPinPullResistancesSupported.setMinWidth(75);
         colPinPullResistancesSupported.setCellValueFactory(
                 new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinPullResistance"));
+        colPinPullResistancesSupported.setCellFactory(factory -> new BooleanTableCell());
 
         TableColumn colPinPullResistancesTypes = new TableColumn("Types");
         colPinPullResistancesTypes.setMinWidth(300);
@@ -166,10 +205,10 @@ public class Main extends Application {
         TableColumn colPinEdges = new TableColumn("Edges");
 
         TableColumn colPinEdgesSupported = new TableColumn("Supported");
-        colPinEdgesSupported.setStyle("-fx-alignment: TOP-CENTER;");
         colPinEdgesSupported.setMinWidth(75);
         colPinEdgesSupported.setCellValueFactory(
                 new PropertyValueFactory<BoardTypeData, Boolean>("supportsPinEdges"));
+        colPinEdgesSupported.setCellFactory(factory -> new BooleanTableCell());
 
         TableColumn colPinEdgesTypes = new TableColumn("Types");
         colPinEdgesTypes.setMinWidth(300);
@@ -192,14 +231,14 @@ public class Main extends Application {
      * @param boardType The {@link BoardType} from which all {@link HeaderPin} need to be added to the table.
      */
     private void fillTableData(BoardType boardType) {
-        ObservableList<BoardTypeData> data = FXCollections.observableArrayList();
+        this.data.clear();
 
         if (boardType != null) {
             Header header = RaspiPin.getHeader(boardType);
 
             if (header != null) {
                 for (HeaderPin pin : header.getPins()) {
-                    data.add(new BoardTypeData(pin));
+                    this.data.add(new BoardTypeData(pin));
                 }
             }
         }
@@ -218,13 +257,31 @@ public class Main extends Application {
         System.out.println("Drawing " + selectedBoardType);
 
         if (selectedBoardType != null) {
-            this.tabCompactHeader.setContent(new HeaderView(selectedBoardType, false));
-            this.tabExtendedHeader.setContent(new HeaderView(selectedBoardType, true));
+            Header header = RaspiPin.getHeader(selectedBoardType);
+
+            this.lblSelectedBoard.setText(selectedBoardType.name()
+                    + (header == null ? ": header is not defined" : ": " + header.getPins().size() + " pins")
+            );
+
+            ScrollPane spCompact = new ScrollPane();
+            spCompact.setContent(new HeaderView(selectedBoardType, false));
+            this.tabCompactHeader.setContent(spCompact);
+
+            ScrollPane spExtended = new ScrollPane();
+            spExtended.setContent(new HeaderView(selectedBoardType, true));
+            this.tabExtendedHeader.setContent(spExtended);
+
             this.fillTableData(selectedBoardType);
+
+            this.tabPane.setDisable(false);
         } else {
-            this.tabCompactHeader.setContent(new Label("Board type not found for: " + selectedBoardName));
-            this.tabExtendedHeader.setContent(new Label("Board type not found for: " + selectedBoardName));
+            this.lblSelectedBoard.setText("Board type not found for: " + selectedBoardName);
+
+            this.tabCompactHeader.setContent(null);
+            this.tabExtendedHeader.setContent(null);
             this.fillTableData(null);
+
+            this.tabPane.setDisable(true);
         }
     }
 }
