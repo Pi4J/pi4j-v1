@@ -32,3 +32,5 @@ See parent README
    * http://localhost:8080/pins/pulse
    
 ### WebSocket:
+* Connect to ws://localhost:8080/ws
+   * When sending a text message (e.g. via "Simple Web Socket Client") the server will reply with an echo text message.

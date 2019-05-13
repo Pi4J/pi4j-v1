@@ -79,6 +79,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     protected final void handleTextMessage(WebSocketSession session, TextMessage message) {
         System.out.println("WS message: " + message);
+
+        try {
+            session.sendMessage(new TextMessage("ECHO " + message));
+        } catch (Exception ex) {
+            System.err.println("Error while handling text message from websocket: " + ex.getMessage());
+        }
     }
 
     /**
