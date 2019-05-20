@@ -26,14 +26,27 @@ With Maven > package
     * E.g. "PI4J_PLATFORM=Simulated;SimulatedPlatform=RaspberryPi GPIO Provider" 
     
 ### REST
+#### GENERAL
 * GET 
    * http://localhost:8080/ = "Hello World" to test if the service started successfully
+#### PINS
+* GET 
    * http://localhost:8080/pins/state = Get the state of the pins which were already provisioned
 * POST 
    * http://localhost:8080/pin/state/set
    * http://localhost:8080/pins/toggle
    * http://localhost:8080/pins/pulse
-   
+#### INF0
+* GET 
+   * http://localhost:8080/info/platform
+   * http://localhost:8080/info/hardware
+   * http://localhost:8080/info/memory
+   * http://localhost:8080/info/os
+   * http://localhost:8080/info/java
+   * http://localhost:8080/info/network
+   * http://localhost:8080/info/codec
+   * http://localhost:8080/info/frequencies
+    
 ### WebSocket:
 * Connect to ws://localhost:8080/ws
    * When sending a text message (e.g. via "Simple Web Socket Client") the server will reply with an echo text message.
