@@ -11,6 +11,9 @@ See parent README
 
 See parent README
 
+## HOW TO BUILD
+With Maven > package
+
 ## HOW TO USE THE SERVICE
 
 ### Testing on a non-PI system:

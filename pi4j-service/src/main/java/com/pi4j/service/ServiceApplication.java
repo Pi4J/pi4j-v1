@@ -27,16 +27,21 @@ package com.pi4j.service;
  * #L%
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ServiceApplication {
-
-	// https://medium.com/@cleverti/building-a-spring-boot-rest-web-service-in-4-steps-d951be63647f
+	private static Logger logger = LoggerFactory.getLogger(ServiceApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceApplication.class, args);
+
+		logger.info("=============================================");
+		logger.info("Spring boot Pi4J service application started.");
+		logger.info("=============================================");
 	}
 
 }

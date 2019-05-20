@@ -27,24 +27,23 @@ package com.pi4j.service.rest;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
 
+import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 
-import com.pi4j.service.AppConfig;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.service.GpioControllerInstance;
 import java.util.Collection;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,9 +73,39 @@ public class PinsRestController implements ApplicationContextAware {
      *
      * @return
      */
-    @GetMapping(path = "/pins/state", produces = "application/json")
+    @GetMapping(path = "/pins/states", produces = "application/json")
     public Collection<GpioPin> getStates() {
         return this.context.getBean(GpioControllerInstance.class).getGpioController().getProvisionedPins();
+    }
+
+    /**
+     * Get the current state of the pins.
+     *
+     * @return
+     */
+    @GetMapping(path = "/pins/state/{number}", produces = "application/json")
+    public boolean getState(@PathVariable("number") long number) {
+        System.out.println("PIN state requested for " + number);
+
+        Pin pin = RaspiPin.getPinByAddress((int) number);
+
+        if (pin == null) {
+            System.err.println("Pin " + number + " is not defined");
+
+            return false;
+        }
+
+        GpioPinDigitalInput provisionedPin = this.context.getBean(GpioControllerInstance.class)
+                .getGpioController()
+                .provisionDigitalInputPin(pin);
+
+        if (provisionedPin == null || provisionedPin.getState() == null) {
+            System.err.println("Pin " + number + " or its state not available");
+
+            return false;
+        } else {
+            return provisionedPin.getState().isHigh();
+        }
     }
 
     /**
