@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -46,14 +47,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 @RestController
+@RequestMapping("info")
 public class InfoRestController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
     /**
      * Get the platform info.
      */
-    @GetMapping(path = "/info/platform", produces = "application/json")
+    @GetMapping(path = "platform", produces = "application/json")
     public Map<String, String> getPlatform() {
         Map<String, String> map = new TreeMap<>();
 
@@ -69,7 +70,7 @@ public class InfoRestController {
     /**
      * Get the hardware info.
      */
-    @GetMapping(path = "/info/hardware", produces = "application/json")
+    @GetMapping(path = "hardware", produces = "application/json")
     public Map<String, String> getHardwareInfo() {
         Map<String, String> map = new TreeMap<>();
 
@@ -151,7 +152,7 @@ public class InfoRestController {
     /**
      * Get the memory info.
      */
-    @GetMapping(path = "/info/memory", produces = "application/json")
+    @GetMapping(path = "memory", produces = "application/json")
     public Map<String, Float> getMemoryInfo() {
         Map<String, Float> map = new TreeMap<>();
 
@@ -215,7 +216,7 @@ public class InfoRestController {
     /**
      * Get the OS info.
      */
-    @GetMapping(path = "/info/os", produces = "application/json")
+    @GetMapping(path = "os", produces = "application/json")
     public Map<String, String> getOsInfo() {
         Map<String, String> map = new TreeMap<>();
 
@@ -251,7 +252,7 @@ public class InfoRestController {
     /**
      * Get the Java info.
      */
-    @GetMapping(path = "/info/java", produces = "application/json")
+    @GetMapping(path = "java", produces = "application/json")
     public Map<String, String> getJavaInfo() {
         Map<String, String> map = new TreeMap<>();
 
@@ -267,7 +268,7 @@ public class InfoRestController {
     /**
      * Get the network info.
      */
-    @GetMapping(path = "/info/network", produces = "application/json")
+    @GetMapping(path = "network", produces = "application/json")
     public Map<String, String> getSystemInfo() {
         Map<String, String> map = new TreeMap<>();
 
@@ -311,7 +312,7 @@ public class InfoRestController {
     /**
      * Get the codec info.
      */
-    @GetMapping(path = "/info/codec", produces = "application/json")
+    @GetMapping(path = "codec", produces = "application/json")
     public Map<String, Boolean> getCodecInfo() {
         Map<String, Boolean> map = new TreeMap<>();
 
@@ -337,7 +338,7 @@ public class InfoRestController {
     /**
      * Get the clock frequencies.
      */
-    @GetMapping(path = "/info/frequencies", produces = "application/json")
+    @GetMapping(path = "frequencies", produces = "application/json")
     public Map<String, Long> getClockInfo() {
         Map<String, Long> map = new TreeMap<>();
 
