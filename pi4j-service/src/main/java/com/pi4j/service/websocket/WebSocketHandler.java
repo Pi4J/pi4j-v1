@@ -27,19 +27,17 @@ package com.pi4j.service.websocket;
  * #L%
  */
 
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.service.AppConfig;
-import com.pi4j.service.GpioControllerInstance;
-import java.util.Collection;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+/**
+ * Handler for a websocket connection.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
+ */
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 

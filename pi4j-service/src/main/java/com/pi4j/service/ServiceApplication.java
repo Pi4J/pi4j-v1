@@ -32,6 +32,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main functino of the Spring application.
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
+ */
 @SpringBootApplication
 public class ServiceApplication {
 	private static Logger logger = LoggerFactory.getLogger(ServiceApplication.class);

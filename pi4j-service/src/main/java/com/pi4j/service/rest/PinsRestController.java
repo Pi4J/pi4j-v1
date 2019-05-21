@@ -52,6 +52,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Provides a REST interface with the pins.
  *
  * Based on https://www.pi4j.com/1.2/example/control.html
+ *
+ * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
 @RestController
 public class PinsRestController implements ApplicationContextAware {
@@ -61,11 +63,6 @@ public class PinsRestController implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
-    }
-
-    @GetMapping(path = "/")
-    public String get() {
-        return "Hello world from the Pi4J REST controller!";
     }
 
     /**

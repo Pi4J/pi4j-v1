@@ -1,11 +1,11 @@
-package com.pi4j.service.config;
+package com.pi4j.service.rest;
 
 /*-
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java remote services (REST + WebSockets)
- * FILENAME      :  SwaggerConfig.java
+ * FILENAME      :  HelloRestController.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://pi4j.com/
@@ -27,28 +27,29 @@ package com.pi4j.service.config;
  * #L%
  */
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Configuration for the Swagger REST documentation.
+ * Provides a REST interface at the base URL with a link to the Swagger UI.
  *
  * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
-@Configuration
-@EnableSwagger2
-public class SwaggerConfig {
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build();
+@RestController
+public class HelloRestController implements ApplicationContextAware {
+
+    private ApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    @GetMapping(path = "/")
+    public String get() {
+        return "The Pi4J web service is running! Check <a href='/swagger-ui.html'/>/swagger-ui.html</a> for all available REST calls.";
     }
 }
