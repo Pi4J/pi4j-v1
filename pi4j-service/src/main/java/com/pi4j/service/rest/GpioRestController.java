@@ -30,8 +30,6 @@ package com.pi4j.service.rest;
 import com.pi4j.io.gpio.GpioPin;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.platform.Platform;
-import com.pi4j.platform.PlatformManager;
 import com.pi4j.service.gpio.GpioControllerSingleton;
 import java.util.Collection;
 

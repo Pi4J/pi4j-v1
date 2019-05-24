@@ -9,32 +9,25 @@
 	<description>Remote services to expose the PI4J functions</description>
 	<packaging>jar</packaging>
 
-	<!-- https://www.baeldung.com/spring-boot-dependency-management-custom-parent -->
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
 
+	<!--
+	Define the Java version and the class to be started from the packaged JAR.
+	-->
 	<properties>
 		<java.version>11</java.version>
 		<start-class>com.pi4j.service.ServiceApplication</start-class>
 	</properties>
 
 	<dependencies>
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
 		</dependency>
 
 		<!-- Build Swagger REST documentation -->
@@ -49,27 +42,12 @@
 			<version>2.9.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-
+		<!-- Pi4J -->
 		<dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-core</artifactId>
 			<version>2.0-SNAPSHOT</version>
 			<scope>compile</scope>
-		</dependency>
-
-		<!-- Automatically restart spring when code changes, very handy during development -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -88,6 +66,9 @@
 	<build>
 		<plugins>
 			<!--
+			Package the minimal JAR with all dependencies so we can run it on the Raspberry Pi without
+			additional installations.
+
 			https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html
 			-->
 			<plugin>

@@ -32,7 +32,6 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 import java.util.HashMap;
@@ -70,13 +69,6 @@ public class GpioControllerSingleton {
      */
     public GpioControllerSingleton() {
         this.gpio = GpioFactory.getInstance();
-    }
-
-    /**
-     * @return The singleton instance of the {@link GpioController}.
-     */
-    public GpioController getGpioController() {
-        return this.gpio;
     }
 
     /**
@@ -188,7 +180,7 @@ public class GpioControllerSingleton {
      * @return True if successful.
      */
     public boolean setPinDigitalState(final int address, final int value) {
-        logger.info("Set pin digital state requested for address {} to value {}:{}", address, value);
+        logger.info("Set pin digital state requested for address {} to value {}", address, value);
 
         Object provisionedPin = this.provisionedPins.get(address);
 

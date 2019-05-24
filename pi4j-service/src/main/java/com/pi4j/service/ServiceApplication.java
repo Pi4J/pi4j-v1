@@ -33,7 +33,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Main functino of the Spring application.
+ * Main entry point of the Spring application.
  *
  * @author Frank Delporte (<a href="https://www.webtechie.be">https://www.webtechie.be</a>)
  */
@@ -48,5 +48,4 @@ public class ServiceApplication {
 		logger.info("Spring boot Pi4J service application started.");
 		logger.info("=============================================");
 	}
-
 }

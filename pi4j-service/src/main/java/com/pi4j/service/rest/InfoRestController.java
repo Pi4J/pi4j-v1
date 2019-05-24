@@ -60,7 +60,12 @@ public class InfoRestController {
 
         Platform platform = PlatformManager.getPlatform();
 
-        map.put("id", platform.getId());
+        try {
+            map.put("id", platform.getId());
+        } catch (NullPointerException ex) {
+            map.put("id", "UNKNOWN");
+        }
+
         map.put("label", platform.getLabel());
         map.put("name", platform.name());
 
