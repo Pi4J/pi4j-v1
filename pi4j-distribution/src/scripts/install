@@ -43,5 +43,5 @@ echo
 echo You can compile the examples using this script:
 echo   sudo /opt/pi4j/examples/build
 echo
-echo Please see https://www.pi4j.com for more information.
+echo Please see https://pi4j.com for more information.
 echo

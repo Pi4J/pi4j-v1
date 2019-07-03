@@ -38,7 +38,7 @@ import com.pi4j.system.impl.*;
  * This enumeration defines the platforms supported by Pi4J.
  * </p>
  *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

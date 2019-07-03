@@ -8,7 +8,7 @@
 	<bannerLeft>
 		<name>Pi4J</name>
 		<src>/images/logos/pi4j-header.png</src>
-		<href>https://www.pi4j.com/</href>
+		<href>https://pi4j.com/</href>
 	</bannerLeft>
 	<bannerRight>
 		<name>The Pi4J Project</name>
@@ -64,7 +64,7 @@
 			</script>
 		</head>
 		<links>
-			<item name="Home" href="http://www.pi4j.com/" />
+			<item name="Home" href="http://pi4j.com/" />
 			<item name="Downloads" href="download.html" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>

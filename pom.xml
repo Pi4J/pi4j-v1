@@ -311,49 +311,52 @@
 			</repositories>
 		</profile>
 
-		<profile>
-			<id>deploy-site</id>
-			<build>
-				<plugins>
-					<!-- DEPLOY GITHUB SITE DOCUMENTATION -->
-					<plugin>
-						<groupId>com.github.github</groupId>
-						<artifactId>site-maven-plugin</artifactId>
-						<inherited>false</inherited>
-						<configuration>
-							<message>Generating site content for ${project.version}</message>
-							<repositoryOwner>Pi4J</repositoryOwner>
-							<repositoryName>pi4j</repositoryName>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>site</goal>
-								</goals>
-								<phase>site</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
-		<!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
-		<profile>
-			<id>raspberrypi</id>
-			<activation>
-				<property>
-					<name>release-build</name>
-				</property>
-			</activation>
-			<properties>
-				<raspberrypi.build>true</raspberrypi.build>
-			</properties>
-			<modules>
-				<module>pi4j-native</module>
-			</modules>
-		</profile>
-	</profiles>
+        <!-- DISABLE JAVADOC-->
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclint>none</doclint>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclint>none</doclint>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
+        <profile>
+            <id>raspberrypi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+    </profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
@@ -375,7 +378,7 @@
 		<pluginManagement>
 			<plugins>
 				<!-- JAVA COMPILER -->
-                	<plugin>
+                <plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
@@ -494,12 +497,12 @@
 					</executions>
 				</plugin>
 
-				<!-- GPG PLUGIN (used to sign JARs) -->
-				<plugin>
-                    	<groupId>org.apache.maven.plugins</groupId>
-                    	<artifactId>maven-gpg-plugin</artifactId>
-                    	<version>${maven-gpg-plugin.version}</version>
-                	</plugin>
+                <!-- GPG PLUGIN (used to sign JARs) -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
 
 				<!-- SCM PLUGIN (used to access github) -->
 				<plugin>
@@ -692,7 +695,7 @@
 
 		<!-- GLOBAL BUILD PLUGINS (used when building all modules) -->
 		<plugins>
-			
+
 			<!-- ENFORCING JDK AND MAVEN VERSIONS -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -703,7 +706,7 @@
 						<id>enforce-java</id>
 						<goals>
 							<goal>enforce</goal>
-						</goals>							
+						</goals>
 						<configuration>
 							<rules>
 								<requireJavaVersion>
@@ -717,7 +720,7 @@
 						<id>enforce-maven</id>
 						<goals>
 							<goal>enforce</goal>
-						</goals>							
+						</goals>
 						<configuration>
 							<rules>
 								<requireMavenVersion>
@@ -725,7 +728,7 @@
 									<message>Building Pi4J requires at least Maven 3.3.1</message>
 								</requireMavenVersion>
 							</rules>
-						</configuration>						
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

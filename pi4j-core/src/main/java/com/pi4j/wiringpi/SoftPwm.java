@@ -73,7 +73,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * </blockquote>
  * </p>
  *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/software-pwm-library/">http://wiringpi.com/reference/software-pwm-library/</a>
  * @author Robert Savage (<a

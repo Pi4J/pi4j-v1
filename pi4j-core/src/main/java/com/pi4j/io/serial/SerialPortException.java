@@ -45,7 +45,7 @@ package com.pi4j.io.serial;
  *
  * @see com.pi4j.io.serial.Serial
  *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Jakub Derda (<a
  *         href="http://www.ardeo.pl">http://www.ardeo.pl</a>)
  */

@@ -51,7 +51,7 @@ import com.pi4j.io.serial.impl.SerialImpl;
  * @see com.pi4j.io.serial.SerialDataEvent
  * @see SerialDataEventListener
  *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
