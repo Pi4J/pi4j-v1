@@ -311,36 +311,6 @@
 			</repositories>
 		</profile>
 
-        <!-- DISABLE JAVADOC-->
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <doclint>none</doclint>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <doclint>none</doclint>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
-
         <!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
         <profile>
             <id>raspberrypi</id>
@@ -432,6 +402,7 @@
 							<!-- TODO :: ELIMINATE JDK INTERNAL REFS -->
 							<additionalOption>--add-exports java.base/jdk.internal.misc=ALL-UNNAMED</additionalOption>
 							<additionalOption>--add-exports java.base/jdk.internal.ref=ALL-UNNAMED</additionalOption>
+                            <additionalOption>-Xdoclint:none</additionalOption>
 						</additionalOptions>
 					</configuration>
 					<executions>
