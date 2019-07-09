@@ -28,10 +28,10 @@ package com.pi4j.jni;
  */
 
 
-import com.pi4j.util.NativeLibraryLoader;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.pi4j.util.NativeLibraryLoader;
 
 /**
  * <p>
@@ -55,7 +55,7 @@ public class SerialInterrupt {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**

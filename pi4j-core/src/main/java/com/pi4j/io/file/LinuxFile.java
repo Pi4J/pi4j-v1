@@ -27,21 +27,13 @@ package com.pi4j.io.file;
  * #L%
  */
 
-import com.pi4j.util.NativeLibraryLoader;
-
-// TODO :: REMOVE JDK INTERNAL REFS
-import jdk.internal.misc.SharedSecrets;
-import jdk.internal.ref.Cleaner;
-
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-
 import java.nio.*;
 
 /**
@@ -68,7 +60,7 @@ public class LinuxFile extends RandomAccessFile {
     static {
         try {
             // Load the platform library
-            NativeLibraryLoader.load("libpi4j.so");
+            NativeLibraryLoader.load("libpi4j");
 
             Class<?> dbb = Class.forName("java.nio.DirectByteBuffer");
 

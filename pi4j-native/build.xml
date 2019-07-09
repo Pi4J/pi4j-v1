@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pi4j-native" default="build-libpi4j.so-remote" basedir="." >
+<project name="pi4j-native" default="build-libpi4j.so-remote" basedir=".">
 
     <!-- ********************************************************************************** -->
     <!-- MACRO BUILD STEPS FOR REMOTE PLATFORM BUILDS -->
@@ -14,35 +14,35 @@
         <attribute name="password" default="${pi4j.default.password}"/>
         <attribute name="directory" default="${pi4j.default.directory}"/>
         <sequential>
-            <echo message="----------------------------------------------------" />
-            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}" />
-            <echo message="----------------------------------------------------" />
-            <echo message=" HOST: @{host}" />
-            <echo message=" PORT: @{port}" />
-            <echo message=" USER: @{user}" />
-            <echo message=" DIR : @{directory}" />
-            <echo message="----------------------------------------------------" />
+            <echo message="----------------------------------------------------"/>
+            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}"/>
+            <echo message="----------------------------------------------------"/>
+            <echo message=" HOST: @{host}"/>
+            <echo message=" PORT: @{port}"/>
+            <echo message=" USER: @{user}"/>
+            <echo message=" DIR : @{directory}"/>
+            <echo message="----------------------------------------------------"/>
 
             <!-- ensure the target directory is empty on the target remote platform -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="true"
-                     verbose="false" command="rm --recursive --force @{directory}" />
+                     verbose="false" command="rm --recursive --force @{directory}"/>
 
             <!-- ensure the target directory exists on the target remote platform -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="false"
-                     verbose="false" command="mkdir --parents @{directory}" />
+                     verbose="false" command="mkdir --parents @{directory}"/>
 
             <!-- copy all the necessary source files to the target remote platform -->
             <scp todir="@{user}:@{password}@@@{host}:@{directory}"
                  port="@{port}" trust="true" verbose="false" failonerror="true">
-                <fileset dir="src/main/native" />
+                <fileset dir="src/main/native"/>
             </scp>
 
             <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="true"
-                     verbose="false" command="cd @{directory}; sudo chmod +x build-@{platform}.sh; ./build-@{platform}.sh" />
+                     verbose="false" command="cd @{directory}; sudo chmod +x build-@{platform}.sh; ./build-@{platform}.sh"/>
 
             <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
             <scp
@@ -54,7 +54,7 @@
             <!-- remove the temporary target directory from the Raspberry Pi -->
             <sshexec host="@{host}" port="@{port}" username="@{user}"
                      password="@{password}" trust="true" failonerror="true"
-                     verbose="false" command="rm --recursive --force @{directory}" />
+                     verbose="false" command="rm --recursive --force @{directory}"/>
         </sequential>
     </macrodef>
 
@@ -65,13 +65,15 @@
     <macrodef name="pi4j-build-local">
         <attribute name="name" default="UNKNOWN"/>
         <attribute name="platform" default="UNKNOWN"/>
+        <attribute name="arch" default="UNKNOWN"/>
+        <attribute name="crossCompile" default="false"/>
         <attribute name="args" default=""/>
         <sequential>
-            <echo message="----------------------------------------------------" />
-            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}" />
-            <echo message="----------------------------------------------------" />
-            <echo message=" ARGS: @{args}" />
-            <echo message="----------------------------------------------------" />
+            <echo message="----------------------------------------------------"/>
+            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}"/>
+            <echo message="----------------------------------------------------"/>
+            <echo message=" ARGS: @{args}"/>
+            <echo message="----------------------------------------------------"/>
 
             <!-- copy all the necessary source files -->
             <copy todir="${project.build.directory}/native">
@@ -83,6 +85,8 @@
                 <arg line="+x build-@{platform}.sh"/>
             </exec>
             <exec dir="${project.build.directory}/native" failonerror="true" executable="/bin/bash">
+                <env key="ARCH" value="@{arch}"/>
+                <env key="CROSS_COMPILE" value="@{crossCompile}"/>
                 <arg line="build-@{platform}.sh @{args}"/>
             </exec>
         </sequential>
@@ -121,8 +125,11 @@
     <!-- local build target for RaspberryPi platform using cross-compiler -->
     <target name="raspberrypi-cross-compile" if="${raspberrypi.build}">
         <pi4j-build-local platform="${raspberrypi.platform}"
-                          name="${raspberrypi.name}"
-                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+                          name="${raspberrypi.name}" arch="armhf" crossCompile="true"
+                          args="ARCH=armhf CC=arm-linux-gnueabihf-gcc"/>
+        <pi4j-build-local platform="${raspberrypi.platform}"
+                          name="${raspberrypi.name}" arch="aarch64" crossCompile="true"
+                          args="ARCH=aarch64 CC=aarch64-linux-gnu-gcc"/>
     </target>
 
 
@@ -140,7 +147,7 @@
     <target name="build-libpi4j.so-local">
 
         <!-- ensure the target directory is empty -->
-        <delete dir="${project.build.directory}/native" includeemptydirs="true" />
+        <delete dir="${project.build.directory}/native" includeemptydirs="true"/>
 
         <!-- ensure the target directory exists -->
         <mkdir dir="${project.build.directory}/native"/>
@@ -150,12 +157,12 @@
         <antcall target="raspberrypi-local"/>
     </target>
 
-	<!-- this target is used when building maven project using the ARM cross-compiler -->
-	<target name="build-libpi4j.so-cross-compile">
-		<echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
+    <!-- this target is used when building maven project using the ARM cross-compiler -->
+    <target name="build-libpi4j.so-cross-compile">
+        <echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
 
         <!-- ensure the target directory is empty -->
-        <delete dir="${project.build.directory}/native" includeemptydirs="true" />
+        <delete dir="${project.build.directory}/native" includeemptydirs="true"/>
 
         <!-- ensure the target directory exists -->
         <mkdir dir="${project.build.directory}/native"/>
@@ -163,6 +170,6 @@
 
         <!-- include a local build target for each supported platform -->
         <antcall target="raspberrypi-cross-compile"/>
-	</target>
+    </target>
 
 </project>
