@@ -36,6 +36,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.*;
 
+import com.pi4j.util.NativeLibraryLoader;
+import jdk.internal.misc.SharedSecrets;
+import jdk.internal.ref.Cleaner;
+
+// TODO :: REMOVE JDK INTERNAL REFS
+
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
  */

@@ -125,19 +125,19 @@ public class NativeLibraryLoader {
 	/**
 	 * Loads library from classpath
 	 *
-	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is
-     * deleted after exiting. Method uses String as filename because the pathname is
-	 * "abstract", not system-dependent.
+	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted
+	 * after exiting. Method uses String as filename because the pathname is "abstract", not system-dependent.
 	 *
 	 * @param path
-	 *            The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 * 		The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 *
 	 * @throws IOException
-	 *             If temporary file creation or read/write operation fails
+	 * 		If temporary file creation or read/write operation fails
 	 * @throws IllegalArgumentException
-	 *             If source file (param path) does not exist
+	 * 		If source file (param path) does not exist
 	 * @throws IllegalArgumentException
-	 *             If the path is not absolute or if the filename is shorter than three characters (restriction
-     *             of {@see File#createTempFile(java.lang.String, java.lang.String)}).
+	 * 		If the path is not absolute or if the filename is shorter than three characters (restriction of {@see
+	 *        File#createTempFile(java.lang.String, java.lang.String)}).
 	 */
 	public static void loadLibraryFromClasspath(String path) throws IOException {
 		Path inputPath = Paths.get(path);
