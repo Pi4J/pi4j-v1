@@ -8,10 +8,10 @@ package com.pi4j.device;
  * FILENAME      :  ObserveableDeviceBase.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,11 +31,12 @@ package com.pi4j.device;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevice {
 
-    protected final List<DeviceListener> listeners = new ArrayList<DeviceListener>();;
+    protected final List<DeviceListener> listeners = new ArrayList<>();;
 
     protected synchronized void addListener(DeviceListener... listener){
         if (listener == null || listener.length == 0) {
@@ -43,9 +44,7 @@ public class ObserveableDeviceBase extends DeviceBase implements ObserveableDevi
         }
 
         // add new listeners
-        for (DeviceListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
     }
 
     protected synchronized void removeListener(DeviceListener... listener) {

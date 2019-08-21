@@ -8,10 +8,10 @@ package com.pi4j.io.gpio.impl;
  * FILENAME      :  GpioControllerImpl.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,10 +37,7 @@ import com.pi4j.io.gpio.exception.PinProviderException;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GpioControllerImpl implements GpioController {
 
@@ -54,6 +51,8 @@ public class GpioControllerImpl implements GpioController {
     public GpioControllerImpl() {
         // set the local default provider reference
         this(GpioFactory.getDefaultProvider());
+
+        isshutdown = false;
     }
 
     /**
@@ -65,6 +64,8 @@ public class GpioControllerImpl implements GpioController {
 
         // register shutdown callback hook class
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+
+        isshutdown = false;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class GpioControllerImpl implements GpioController {
     @Override
     public GpioPin getProvisionedPin(Pin pin){
         for(GpioPin gpio_pin : pins){
-            if(gpio_pin.getPin().equals(pin)){
+            if (Objects.equals(gpio_pin.getPin(), pin)) {
                 return gpio_pin;
             }
         }
@@ -86,7 +87,7 @@ public class GpioControllerImpl implements GpioController {
     @Override
     public GpioPin getProvisionedPin(String name){
         for(GpioPin pin : pins){
-            if(pin.getName().equals(name)){
+            if (Objects.equals(pin.getName(), name)) {
                 return pin;
             }
         }
@@ -542,13 +543,13 @@ public class GpioControllerImpl implements GpioController {
     public GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState) {
 
         // if the provider does not match the pin's provider then throw an error
-        if(!provider.getName().equals(pin.getProvider())){
+        if (!Objects.equals(provider.getName(), pin.getProvider())) {
             throw new PinProviderException(provider, pin);
         }
 
         // if an existing pin has been previously created, then throw an error
         for(GpioPin p : pins) {
-            if (p.getProvider().equals(provider) && p.getPin().equals(pin)) {
+            if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
                 throw new GpioPinExistsException(pin);
             }
         }
@@ -1008,18 +1009,15 @@ public class GpioControllerImpl implements GpioController {
         if(isShutdown())
             return;
 
-        // shutdown all executor services
-        //
-        // NOTE: we are not permitted to access the shutdown() method of the individual
-        // executor services, we must perform the shutdown with the factory
-        GpioFactory.getExecutorServiceFactory().shutdown();
+        // create a temporary set of providers to shutdown after completing all the pin instance shutdowns
+        Set<GpioProvider> gpioProvidersToShutdown = new HashSet<>();
 
         // shutdown explicit configured GPIO pins
         for (GpioPin pin : pins) {
 
-            // perform a shutdown on the GPIO provider for this pin
-            if(!pin.getProvider().isShutdown()){
-                pin.getProvider().shutdown();
+            // add each GPIO provider to the shutdown set
+            if(!gpioProvidersToShutdown.contains(pin.getProvider())){
+                gpioProvidersToShutdown.add(pin.getProvider());
             }
 
             // perform the shutdown options if configured for the pin
@@ -1046,6 +1044,19 @@ public class GpioControllerImpl implements GpioController {
                 }
             }
         }
+
+        // perform a shutdown on each GPIO provider
+        for(GpioProvider gpioProvider : gpioProvidersToShutdown){
+            if(!gpioProvider.isShutdown()){
+                gpioProvider.shutdown();
+            }
+        }
+
+        // shutdown all executor services
+        //
+        // NOTE: we are not permitted to access the shutdown() method of the individual
+        // executor services, we must perform the shutdown with the factory
+        GpioFactory.getExecutorServiceFactory().shutdown();
 
         // set is shutdown tracking variable
         isshutdown = true;

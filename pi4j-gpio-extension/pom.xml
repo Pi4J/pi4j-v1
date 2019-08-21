@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-		<version>1.1</version>
+        <version>1.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-gpio-extension</artifactId>
 	<name>Pi4J :: GPIO Extension</name>
@@ -22,12 +22,6 @@
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
 			<version>1.9</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -98,20 +92,20 @@
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
-									<equals arg1="${pi.transfer.dev}" arg2="true" />
+									<equals arg1="${pi4j.dev.transfer}" arg2="true" />
 									<then>
 
 										<!-- ensure the target directory exists on the Raspberry Pi -->
-										<sshexec host="${pi.host.dev}" port="${pi.port.dev}"
-											username="${pi.user.dev}" password="${pi.password.dev}"
+										<sshexec host="${pi4j.dev.host}" port="${pi4j.dev.port}"
+											username="${pi4j.dev.user}" password="${pi4j.dev.password}"
 											trust="true" failonerror="false" verbose="true"
-											command="mkdir --parents ${pi.dirCopyTo.dev}" />
+											command="mkdir --parents ${pi4j.dev.directory}" />
 
 										<!-- copy the JAR file to the Raspberry Pi -->
 										<scp
 											file="${project.build.directory}/${project.build.finalName}.jar"
-											todir="${pi.user.dev}:${pi.password.dev}@${pi.host.dev}:${pi.dirCopyTo.dev}"
-											port="${pi.port.dev}" trust="true" verbose="true"
+											todir="${pi4j.dev.user}:${pi4j.dev.password}@${pi4j.dev.host}:${pi4j.dev.directory}"
+											port="${pi4j.dev.port}" trust="true" verbose="true"
 											failonerror="true">
 										</scp>
 									</then>

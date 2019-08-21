@@ -8,10 +8,10 @@ package com.pi4j.io.serial.impl;
  * FILENAME      :  AbstractSerialDataWriter.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -235,9 +235,7 @@ public abstract class AbstractSerialDataWriter implements SerialDataWriter {
 
     protected CharSequence appendNewLine(CharSequence data){
         String separator = System.getProperty("line.separator");
-        StringBuilder builder = new StringBuilder(data);
-        builder.append(separator);
-        return builder.toString();
+        return data + separator;
     }
 
     /**

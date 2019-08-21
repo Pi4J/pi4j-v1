@@ -8,10 +8,10 @@ package com.pi4j.io.i2c;
  * FILENAME      :  I2CFactory.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,9 +30,14 @@ package com.pi4j.io.i2c;
  */
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
+import com.pi4j.io.i2c.impl.I2CProviderImpl;
 
 /**
  * I2C factory - it returns instances of {@link I2CBus} interface.
@@ -53,7 +58,7 @@ public class I2CFactory {
         }
     }
 
-    volatile static I2CFactoryProvider provider = new I2CFactoryProviderRaspberryPi();
+    volatile static I2CFactoryProvider provider = new I2CProviderImpl();
 
     // private constructor
     private I2CFactory() {
@@ -69,8 +74,8 @@ public class I2CFactory {
      * @return Return a new I2CBus instance
      * @throws UnsupportedBusNumberException If the given bus-number is not supported by the underlying system
      * @throws IOException If communication to i2c-bus fails
-     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT
-     * @see I2CProvider#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
+     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT
+     * @see I2CFactory#DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS
      */
     public static I2CBus getInstance(int busNumber) throws UnsupportedBusNumberException, IOException {
         return provider.getBus(busNumber, DEFAULT_LOCKAQUIRE_TIMEOUT, DEFAULT_LOCKAQUIRE_TIMEOUT_UNITS);
@@ -99,4 +104,34 @@ public class I2CFactory {
         provider = factoryProvider;
     }
 
+    /**
+     * Fetch all available I2C bus numbers from sysfs.
+     * Returns null, if nothing was found.
+     *
+     * @return Return found I2C bus numbers or null
+     * @throws IOException If fetching from sysfs interface fails
+     */
+    public static int[] getBusIds() throws IOException {
+        Set<Integer> set = null;
+        for (Path device: Files.newDirectoryStream(Paths.get("/sys/bus/i2c/devices"), "*")) {
+            String[] tokens = device.toString().split("-");
+            if (tokens.length == 2) {
+                if (set == null) {
+                    set = new HashSet<Integer>();
+                }
+                set.add(Integer.valueOf(tokens[1]));
+            }
+        }
+
+        int[] result = null;
+        if (set != null) {
+            int counter = 0;
+            result = new int[set.size()];
+            for (Integer value : set) {
+                result[counter] = value.intValue();
+                counter = counter + 1;
+            }
+        }
+        return result;
+    }
 }

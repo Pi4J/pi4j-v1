@@ -6,10 +6,10 @@
  * FILENAME      :  I2CExample.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@
  */
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
@@ -97,6 +98,27 @@ public class I2CExample {
 
         // allow for user to exit program using CTRL-C
         console.promptForExit();
+
+        // fetch all available busses
+        try {
+            int[] ids = I2CFactory.getBusIds();
+            console.println("Found follow I2C busses: " + Arrays.toString(ids));
+        } catch (IOException exception) {
+            console.println("I/O error during fetch of I2C busses occurred");
+        }
+
+        // find available busses
+        for (int number = I2CBus.BUS_0; number <= I2CBus.BUS_17; ++number) {
+            try {
+                @SuppressWarnings("unused")
+				I2CBus bus = I2CFactory.getInstance(number);
+                console.println("Supported I2C bus " + number + " found");
+            } catch (IOException exception) {
+                console.println("I/O error on I2C bus " + number + " occurred");
+            } catch (UnsupportedBusNumberException exception) {
+                console.println("Unsupported I2C bus " + number + " required");
+            }
+        }
 
         // get the I2C bus to communicate on
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_1);

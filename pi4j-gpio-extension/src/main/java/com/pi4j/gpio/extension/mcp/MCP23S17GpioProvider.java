@@ -19,10 +19,10 @@ import java.io.IOException;
  * FILENAME      :  MCP23S17GpioProvider.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,6 +55,7 @@ import java.io.IOException;
  * @author Robert Savage
  *
  */
+@SuppressWarnings("unused")
 public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvider {
 
     public static final String NAME = "com.pi4j.gpio.extension.mcp.MCP23S17GpioProvider";
@@ -100,7 +101,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
     private static final byte IOCON_DISSLW    = (byte)0x10;
     private static final byte IOCON_SEQOP     = (byte)0x20;
     private static final byte IOCON_MIRROR    = (byte)0x40;
-    private static final byte IOCON_BANK_MODE = (byte)0x80;
+	private static final byte IOCON_BANK_MODE = (byte)0x80;
 
     private int currentStatesA = 0;
     private int currentStatesB = 0;
@@ -568,7 +569,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_A_PINS) {
-                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
+                                //int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
 
                                 // is there an interrupt flag on this pin?
                                 //if ((pinInterruptA & pinAddressA) > 0) {
@@ -592,7 +593,7 @@ public class MCP23S17GpioProvider extends GpioProviderBase implements GpioProvid
 
                             // loop over the available pins on port B
                             for (Pin pin : MCP23S17Pin.ALL_B_PINS) {
-                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
+                                //int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
 
                                 // is there an interrupt flag on this pin?
                                 //if ((pinInterruptB & pinAddressB) > 0) {

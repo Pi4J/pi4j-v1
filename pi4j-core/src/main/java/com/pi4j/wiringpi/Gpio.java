@@ -8,10 +8,10 @@ package com.pi4j.wiringpi;
  * FILENAME      :  Gpio.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,7 +63,7 @@ import java.util.List;
  * </blockquote>
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
  * @see <a
  *      href="http://wiringpi.com/reference/">http://wiringpi.com/reference/</a>
  * @author Robert Savage (<a
@@ -713,7 +713,6 @@ public class Gpio {
      *
      * @param pin GPIO pin number
      */
-    @SuppressWarnings("unchecked")
     private static void isrCallback(int pin) {
         // dispatch callback to the subscribers for this pin
         List<GpioInterruptCallback> callbacks = isrCallbacks[pin];

@@ -8,10 +8,10 @@ package com.pi4j.gpio.extension.base;
  * FILENAME      :  AdcGpioProviderBase.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -76,7 +76,9 @@ public abstract class AdcGpioProviderBase extends GpioProviderBase implements Ad
         this.threshold = new double[pins.length];  // initialize pin thresholds collection
 
         // set default thresholds
-        for(double item : threshold) { item = DEFAULT_THRESHOLD; }
+        for(int index = 0; index < this.threshold.length; index++) {
+        		this.threshold[index] = DEFAULT_THRESHOLD;
+        }
     }
 
     // ------------------------------------------------------------------------------------------

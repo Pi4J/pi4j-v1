@@ -8,10 +8,10 @@ package com.pi4j.io.gpio;
  * FILENAME      :  GpioProviderBase.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -76,7 +76,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         int address = pin.getAddress();
 
         // dynamically resize pin cache storage if needed based on pin address
-        if(address > cache.length){
+        if(address >= cache.length){
             // create a new array with existing contents
             // that is 100 elements larger than the requested address
             // (we add the extra 100 elements to provide additional overhead capacity in
@@ -264,7 +264,7 @@ public abstract class GpioProviderBase implements GpioProvider {
 
         PinMode mode = getMode(pin);
 
-        if (mode != PinMode.PWM_OUTPUT || mode != PinMode.SOFT_PWM_OUTPUT) {
+        if (mode != PinMode.PWM_OUTPUT && mode != PinMode.SOFT_PWM_OUTPUT) {
             throw new InvalidPinModeException(pin, "Invalid pin mode [" + mode.getName() + "]; unable to setPwm(" + value + ")");
         }
 
@@ -295,7 +295,7 @@ public abstract class GpioProviderBase implements GpioProvider {
         synchronized (listeners) {
             // create new pin listener entry if one does not already exist
             if (!listeners.containsKey(pin)) {
-                listeners.put(pin, new ArrayList<PinListener>());
+                listeners.put(pin, new ArrayList<>());
             }
 
             // add the listener instance to the listeners map entry

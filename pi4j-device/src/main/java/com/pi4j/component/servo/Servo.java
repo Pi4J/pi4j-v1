@@ -8,10 +8,10 @@ package com.pi4j.component.servo;
  * FILENAME      :  Servo.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -106,6 +106,11 @@ public interface Servo extends Component {
      * @return current position value between -100 and +100[%]
      */
     float getPosition();
+
+    /**
+     * Make the servo passive. How/if the happens is implementation specific.
+     */
+    void off();
 
     /**
      * Returns servo driver this servo is attached to

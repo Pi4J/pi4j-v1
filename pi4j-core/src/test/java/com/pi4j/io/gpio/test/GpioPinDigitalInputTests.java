@@ -8,10 +8,10 @@ package com.pi4j.io.gpio.test;
  * FILENAME      :  GpioPinDigitalInputTests.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -68,14 +68,14 @@ public class GpioPinDigitalInputTests {
 
         // register pin listener
         pin.addListener(new GpioPinListenerDigital() {
-                @Override
-                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                    // set pin state
-                    if (event.getPin() == pin) {
-                        pinMonitoredState = event.getState();
-                    }
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                // set pin state
+                if (event.getPin() == pin) {
+                    pinMonitoredState = event.getState();
                 }
-            });
+            }
+        });
     }
 
     @Test
@@ -211,14 +211,17 @@ public class GpioPinDigitalInputTests {
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
+
         // reset pin monitoring variable
         pinMonitoredState = null;
 
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
-        // wait 1/10 second before continuing test
-        Thread.sleep(100);
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
 
         // verify pin low state
         assertEquals(PinState.LOW, pinMonitoredState);
@@ -229,14 +232,17 @@ public class GpioPinDigitalInputTests {
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
+
         // reset pin monitoring variable
         pinMonitoredState = null;
 
         // explicit mock set on the mock provider
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
-        // wait 1/10 second before continuing test
-        Thread.sleep(100);
+        // wait 1/100 second before continuing test
+        Thread.sleep(10);
 
         // verify pin hi state
         assertEquals(PinState.HIGH, pinMonitoredState);

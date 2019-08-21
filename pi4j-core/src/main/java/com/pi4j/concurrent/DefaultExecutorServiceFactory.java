@@ -8,10 +8,10 @@ package com.pi4j.concurrent;
  * FILENAME      :  DefaultExecutorServiceFactory.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,7 +32,6 @@ package com.pi4j.concurrent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
 
-    public static int MAX_THREADS_IN_POOL = 25;
+    private static int MAX_THREADS_IN_POOL = 25;
     private static List<ExecutorService> singleThreadExecutorServices = new ArrayList<>();
 
     // this seemingly odd pattern is the recommended way to lazy-initialize static fields in effective java.
@@ -80,7 +79,7 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
      * return an instance to the thread factory used to create new executor services
      */
     private static ThreadFactory getThreadFactory(final String nameFormat) {
-        final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+        final ThreadFactory defaultThreadFactory = Executors.privilegedThreadFactory();
         return new ThreadFactory() {
             final AtomicLong count = (nameFormat != null) ? new AtomicLong(0) : null;
 

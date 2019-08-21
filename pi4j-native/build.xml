@@ -1,61 +1,329 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pi4j-native" default="build-libpi4j.so-remote" basedir=".">
+<project name="pi4j-native" default="build-libpi4j.so-remote" basedir="." >
+
+    <!-- ********************************************************************************** -->
+    <!-- MACRO BUILD STEPS FOR REMOTE PLATFORM BUILDS -->
+    <!-- ********************************************************************************** -->
+
+    <macrodef name="pi4j-build-remote">
+        <attribute name="name" default="UNKNOWN"/>
+        <attribute name="platform" default="UNKNOWN"/>
+        <attribute name="host" default="${pi4j.default.host}"/>
+        <attribute name="port" default="${pi4j.default.port}"/>
+        <attribute name="user" default="${pi4j.default.user}"/>
+        <attribute name="password" default="${pi4j.default.password}"/>
+        <attribute name="directory" default="${pi4j.default.directory}"/>
+        <sequential>
+            <echo message="----------------------------------------------------" />
+            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}" />
+            <echo message="----------------------------------------------------" />
+            <echo message=" HOST: @{host}" />
+            <echo message=" PORT: @{port}" />
+            <echo message=" USER: @{user}" />
+            <echo message=" DIR : @{directory}" />
+            <echo message="----------------------------------------------------" />
+
+            <!-- ensure the target directory is empty on the target remote platform -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="rm --recursive --force @{directory}" />
+
+            <!-- ensure the target directory exists on the target remote platform -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="false"
+                     verbose="false" command="mkdir --parents @{directory}" />
+
+            <!-- copy all the necessary source files to the target remote platform -->
+            <scp todir="@{user}:@{password}@@@{host}:@{directory}"
+                 port="@{port}" trust="true" verbose="false" failonerror="true">
+                <fileset dir="src/main/native" />
+            </scp>
+
+            <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="cd @{directory}; sudo chmod +x build-@{platform}.sh; ./build-@{platform}.sh" />
+
+            <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
+            <scp
+                    file="@{user}:@{password}@@@{host}:@{directory}/lib/**"
+                    todir="target/native/lib" port="@{port}" trust="true"
+                    verbose="false" failonerror="true">
+            </scp>
+
+            <!-- remove the temporary target directory from the Raspberry Pi -->
+            <sshexec host="@{host}" port="@{port}" username="@{user}"
+                     password="@{password}" trust="true" failonerror="true"
+                     verbose="false" command="rm --recursive --force @{directory}" />
+        </sequential>
+    </macrodef>
+
+    <!-- ********************************************************************************** -->
+    <!-- MACRO BUILD STEPS FOR LOCAL & CROSS-COMPILED PLATFORM BUILDS -->
+    <!-- ********************************************************************************** -->
+
+    <macrodef name="pi4j-build-local">
+        <attribute name="name" default="UNKNOWN"/>
+        <attribute name="platform" default="UNKNOWN"/>
+        <attribute name="args" default=""/>
+        <sequential>
+            <echo message="----------------------------------------------------" />
+            <echo message="Pi4J NATIVE LIBRARY BUILD FOR: @{name}" />
+            <echo message="----------------------------------------------------" />
+            <echo message=" ARGS: @{args}" />
+            <echo message="----------------------------------------------------" />
+
+            <!-- copy all the necessary source files -->
+            <copy todir="${project.build.directory}/native">
+                <fileset dir="src/main/native"/>
+            </copy>
+
+            <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
+            <exec dir="${project.build.directory}/native" failonerror="true" executable="chmod">
+                <arg line="+x build-@{platform}.sh"/>
+            </exec>
+            <exec dir="${project.build.directory}/native" failonerror="true" executable="/bin/bash">
+                <arg line="build-@{platform}.sh @{args}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- ********************************************************************************** -->
+    <!-- REMOTE PLATFORM BUILD TARGETS -->
+    <!-- ********************************************************************************** -->
+
+    <!-- remote build target for RaspberryPi platform -->
+    <target name="raspberrypi-remote" if="${raspberrypi.build}">
+        <pi4j-build-remote platform="${raspberrypi.platform}"
+                           name="${raspberrypi.name}"
+                           host="${raspberrypi.host}"
+                           port="${raspberrypi.port}"
+                           user="${raspberrypi.user}"
+                           password="${raspberrypi.password}"
+                           directory="${raspberrypi.directory}"/>
+    </target>
+
+    <!-- remote build target for Odroid platform -->
+    <target name="odroid-remote" if="${odroid.build}">
+        <pi4j-build-remote platform="${odroid.platform}"
+                           name="${odroid.name}"
+                           host="${odroid.host}"
+                           port="${odroid.port}"
+                           user="${odroid.user}"
+                           password="${odroid.password}"
+                           directory="${odroid.directory}"/>
+    </target>
+
+    <!-- remote build target for BananaPi platform -->
+    <target name="bananapi-remote" if="${bananapi.build}">
+        <pi4j-build-remote platform="${bananapi.platform}"
+                           name="${bananapi.name}"
+                           host="${bananapi.host}"
+                           port="${bananapi.port}"
+                           user="${bananapi.user}"
+                           password="${bananapi.password}"
+                           directory="${bananapi.directory}"/>
+    </target>
+
+    <!-- remote build target for BananaPro platform -->
+    <target name="bananapro-remote" if="${bananapro.build}">
+        <pi4j-build-remote platform="${bananapro.platform}"
+                           name="${bananapro.name}"
+                           host="${bananapro.host}"
+                           port="${bananapro.port}"
+                           user="${bananapro.user}"
+                           password="${bananapro.password}"
+                           directory="${bananapro.directory}"/>
+    </target>
+
+    <!-- remote build target for Sinovoip BPI (BananaPi) platform -->
+    <target name="bpi-remote" if="${bpi.build}">
+        <pi4j-build-remote platform="${bpi.platform}"
+                           name="${bpi.name}"
+                           host="${bpi.host}"
+                           port="${bpi.port}"
+                           user="${bpi.user}"
+                           password="${bpi.password}"
+                           directory="${bpi.directory}"/>
+    </target>
+
+    <!-- remote build target for OrangePi platform -->
+    <target name="orangepi-remote" if="${orangepi.build}">
+        <pi4j-build-remote platform="${orangepi.platform}"
+                           name="${orangepi.name}"
+                           host="${orangepi.host}"
+                           port="${orangepi.port}"
+                           user="${orangepi.user}"
+                           password="${orangepi.password}"
+                           directory="${orangepi.directory}"/>
+    </target>
+
+    <!-- remote build target for NanoPi platform -->
+    <target name="nanopi-remote" if="${nanopi.build}">
+        <pi4j-build-remote platform="${nanopi.platform}"
+                           name="${nanopi.name}"
+                           host="${nanopi.host}"
+                           port="${nanopi.port}"
+                           user="${nanopi.user}"
+                           password="${nanopi.password}"
+                           directory="${nanopi.directory}"/>
+
+    </target>
+
+    <!-- ********************************************************************************** -->
+    <!-- LOCAL PLATFORM BUILD TARGETS -->
+    <!-- ********************************************************************************** -->
+
+    <!-- local build target for RaspberryPi platform -->
+    <target name="raspberrypi-local" if="${raspberrypi.build}">
+        <pi4j-build-local platform="${raspberrypi.platform}"
+                          name="${raspberrypi.name}"/>
+    </target>
+
+    <!-- local build target for Odroid platform -->
+    <target name="odroid-local" if="${odroid.build}">
+        <pi4j-build-local platform="${odroid.platform}"
+                          name="${odroid.name}"/>
+    </target>
+
+    <!-- local build target for BananaPi platform -->
+    <target name="bananapi-local" if="${bananapi.build}">
+        <pi4j-build-local platform="${bananapi.platform}"
+                          name="${bananapi.name}"/>
+    </target>
+
+    <!-- local build target for BananaPro platform -->
+    <target name="bananapro-local" if="${bananapro.build}">
+        <pi4j-build-local platform="${bananapro.platform}"
+                          name="${bananapro.name}"/>
+    </target>
+
+    <!-- local build target for Sinovoip BPI (BananaPi) platform -->
+    <target name="bpi-local" if="${bpi.build}">
+        <pi4j-build-local platform="${bpi.platform}"
+                          name="${bpi.name}"/>
+    </target>
+
+    <!-- local build target for OrangePi platform -->
+    <target name="orangepi-local" if="${orangepi.build}">
+        <pi4j-build-local platform="${orangepi.platform}"
+                          name="${orangepi.name}"/>
+    </target>
+
+    <!-- local build target for NanoPi platform -->
+    <target name="nanopi-local" if="${nanopi.build}">
+        <pi4j-build-local platform="${nanopi.platform}"
+                          name="${nanopi.name}"/>
+    </target>
+
+    <!-- ********************************************************************************** -->
+    <!-- CROSS COMPILER PLATFORM BUILD TARGETS -->
+    <!-- ********************************************************************************** -->
+
+    <!-- local build target for RaspberryPi platform using cross-compiler -->
+    <target name="raspberrypi-cross-compile" if="${raspberrypi.build}">
+        <pi4j-build-local platform="${raspberrypi.platform}"
+                          name="${raspberrypi.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for Odroid platform using cross-compiler -->
+    <target name="odroid-cross-compile" if="${odroid.build}">
+        <pi4j-build-local platform="${odroid.platform}"
+                          name="${odroid.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for BananaPi platform using cross-compiler -->
+    <target name="bananapi-cross-compile" if="${bananapi.build}">
+        <pi4j-build-local platform="${bananapi.platform}"
+                          name="${bananapi.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for BananaPro platform using cross-compiler -->
+    <target name="bananapro-cross-compile" if="${bananapro.build}">
+        <pi4j-build-local platform="${bananapro.platform}"
+                          name="${bananapro.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for Sinovoip BPI (BananaPi) platform using cross-compiler -->
+    <target name="bpi-cross-compile" if="${bpi.build}">
+        <pi4j-build-local platform="${bpi.platform}"
+                          name="${bpi.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for OrangePi platform using cross-compiler -->
+    <target name="orangepi-cross-compile" if="${orangepi.build}">
+        <pi4j-build-local platform="${orangepi.platform}"
+                          name="${orangepi.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- local build target for NanoPi platform using cross-compiler -->
+    <target name="nanopi-cross-compile" if="${nanopi.build}">
+        <pi4j-build-local platform="${nanopi.platform}"
+                          name="${nanopi.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
+    <!-- ********************************************************************************** -->
+    <!-- MAVEN INITIATED BUILD TARGETS -->
+    <!-- ********************************************************************************** -->
 
     <!-- this target is used when building maven project remotely from your workstation -->
     <target name="build-libpi4j.so-remote">
-
-        <echo message="Building native libpi4j shared library"/>
-
-		<!-- ensure the target directory is empty on the Raspberry Pi -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="true"
-			verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
-
-		<!-- ensure the target directory exists on the Raspberry Pi -->
-		<sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-			password="${pi-password}" trust="true" failonerror="false"
-			verbose="true" command="mkdir --parents ${pi-dirBuildTemp}" />
-
-		<!-- copy all the necessary source files to the Raspberry Pi -->
-		<scp todir="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}"
-			port="${pi-port}" trust="true" verbose="true" failonerror="true">
-			<fileset dir="src/main/native" />
-		</scp>
-
-        <!-- compile the 'lib4j.so' JNI native shared library on each of the supported platforms -->
-        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-                 password="${pi-password}" trust="true" failonerror="true"
-                 verbose="true" command="cd ${pi-dirBuildTemp}; sudo chmod +x build.sh; ./build.sh" />
-
-        <!-- copy the compiled 'lib4j.so' JNI native shared library files back for each supported platform -->
-        <scp
-                file="${pi-user}:${pi-password}@${pi-host}:${pi-dirBuildTemp}/lib/**"
-                todir="${project-build-directory}/native/lib" port="${pi-port}" trust="true"
-                verbose="true" failonerror="true">
-        </scp>
-
-        <!-- remove the temporary target directory from the Raspberry Pi -->
-        <sshexec host="${pi-host}" port="${pi-port}" username="${pi-user}"
-                 password="${pi-password}" trust="true" failonerror="true"
-                 verbose="true" command="rm --recursive --force ${pi-dirBuildTemp}" />
+        <!-- include a remote build target for each supported platform -->
+        <antcall target="raspberrypi-remote"/>
+        <antcall target="odroid-remote"/>
+        <antcall target="bananapi-remote"/>
+        <antcall target="bananapro-remote"/>
+        <antcall target="bpi-remote"/>
+        <antcall target="orangepi-remote"/>
+        <antcall target="nanopi-remote"/>
     </target>
 
-    <!-- this target is used when building maven project directly on the Raspberry Pi -->
+    <!-- this target is used when building maven project directly on a local platform/system -->
     <target name="build-libpi4j.so-local">
-        <echo message="Building native libpi4j shared library"/>
-        <exec command="chmod +x build-local.sh" />
-        <exec executable="/bin/sh">
-            <arg line="build-local.sh"/>
-        </exec>
+
+        <!-- ensure the target directory is empty -->
+        <delete dir="${project.build.directory}/native" includeemptydirs="true" />
+
+        <!-- ensure the target directory exists -->
+        <mkdir dir="${project.build.directory}/native"/>
+        <mkdir dir="${project.build.directory}/native/lib"/>
+
+        <!-- include a local build target for each supported platform -->
+        <antcall target="raspberrypi-local"/>
+        <antcall target="odroid-local"/>
+        <antcall target="bananapi-local"/>
+        <antcall target="bananapro-local"/>
+        <antcall target="bpi-local"/>
+        <antcall target="orangepi-local"/>
+        <antcall target="nanopi-local"/>
     </target>
 
-	<!-- this target is used when building maven project using the RPi cross-compiler -->
+	<!-- this target is used when building maven project using the ARM cross-compiler -->
 	<target name="build-libpi4j.so-cross-compile">
 		<echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
-		<exec command="chmod +x build-local.sh" />
-		<exec executable="/bin/sh">
-			<arg line="build-local-cross-compile.sh"/>
-		</exec>
+
+        <!-- ensure the target directory is empty -->
+        <delete dir="${project.build.directory}/native" includeemptydirs="true" />
+
+        <!-- ensure the target directory exists -->
+        <mkdir dir="${project.build.directory}/native"/>
+        <mkdir dir="${project.build.directory}/native/lib"/>
+
+        <!-- include a local build target for each supported platform -->
+        <antcall target="raspberrypi-cross-compile"/>
+        <antcall target="odroid-cross-compile"/>
+        <antcall target="bananapi-cross-compile"/>
+        <antcall target="bananapro-cross-compile"/>
+        <antcall target="bpi-cross-compile"/>
+        <antcall target="orangepi-cross-compile"/>
+        <antcall target="nanopi-cross-compile"/>
 	</target>
 
 </project>

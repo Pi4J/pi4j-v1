@@ -3,17 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pi4j</groupId>
 	<artifactId>pi4j-parent</artifactId>
-	<version>1.1</version>
+    <version>1.3-SNAPSHOT</version>
 	<name>Pi4J :: Parent POM</name>
 	<description>Parent Maven POM for the Pi4J Project</description>
-	<url>http://www.pi4j.com</url>
+	<url>https://www.pi4j.com</url>
 	<inceptionYear>2012</inceptionYear>
 	<packaging>pom</packaging>
 
 	<!-- ORGANIZATION -->
 	<organization>
 		<name>Pi4J</name>
-		<url>http://www.pi4j.com</url>
+		<url>https://www.pi4j.com</url>
 	</organization>
 
 	<!-- LICENSE -->
@@ -62,7 +62,7 @@
 
 	<!-- DISTRIBUTION REPOSITORIES -->
 	<distributionManagement>
-		<downloadUrl>http://www.pi4j.com/download.html</downloadUrl>
+		<downloadUrl>https://www.pi4j.com/download.html</downloadUrl>
 		<repository>
 			<id>sonatype-oss-staging</id>
 			<name>Sonatype Open Source Maven Repository</name>
@@ -94,74 +94,148 @@
 	<modules>
 		<module>pi4j-core</module>
 		<module>pi4j-example</module>
-		<module>pi4j-service</module>
 		<module>pi4j-gpio-extension</module>
 		<module>pi4j-device</module>
 		<module>pi4j-distribution</module>
 	</modules>
 
+    <!-- PROJECT PREREQUISITES -->
+	<prerequisites>
+		<maven>3.0.5</maven>
+	</prerequisites>
+
 	<!-- BUILD PROPERTIES -->
 	<properties>
 
-		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>192.168.1.100</pi.host>
-		<pi.port>22</pi.port>
-		<pi.user>pi</pi.user>
-		<pi.password>raspberry</pi.password>
+        <!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
+        <pi4j.default.host>192.168.1.100</pi4j.default.host>
+        <pi4j.default.port>22</pi4j.default.port>
+        <pi4j.default.user>pi</pi4j.default.user>
+        <pi4j.default.password>raspberry</pi4j.default.password>
+        <pi4j.default.directory>pi4j-temp</pi4j.default.directory>
 
-		<!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
-		<pi.dirBuildTemp>pi4j-temp</pi.dirBuildTemp>
+        <!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT DEVICE/PLATFORM -->
+        <pi4j.dev.transfer>false</pi4j.dev.transfer>
+        <pi4j.dev.host>${pi4j.default.host}</pi4j.dev.host>
+        <pi4j.dev.port>${pi4j.default.port}</pi4j.dev.port>
+        <pi4j.dev.user>${pi4j.default.user}</pi4j.dev.user>
+        <pi4j.dev.password>${pi4j.default.password}</pi4j.dev.password>
+        <pi4j.dev.directory>pi4j-dev</pi4j.dev.directory>
 
-		<!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
-		<pi.transfer.dev>false</pi.transfer.dev>
-		<pi.host.dev>${pi.host}</pi.host.dev>
-		<pi.port.dev>${pi.port}</pi.port.dev>
-		<pi.user.dev>${pi.user}</pi.user.dev>
-		<pi.password.dev>${pi.password}</pi.password.dev>
-		<pi.dirCopyTo.dev>pi4j-dev</pi.dirCopyTo.dev>
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'RaspberryPi' PLATFORM -->
+        <raspberrypi.build>false</raspberrypi.build>
+        <raspberrypi.platform>raspberrypi</raspberrypi.platform>
+        <raspberrypi.name>RaspberryPi</raspberrypi.name>
+        <raspberrypi.host>${pi4j.default.host}</raspberrypi.host>
+        <raspberrypi.port>${pi4j.default.port}</raspberrypi.port>
+        <raspberrypi.user>${pi4j.default.user}</raspberrypi.user>
+        <raspberrypi.password>${pi4j.default.password}</raspberrypi.password>
+        <raspberrypi.directory>${pi4j.default.directory}</raspberrypi.directory>
 
-		<!-- PROJECT ENCODING PROPERTIES -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'Odroid' PLATFORM -->
+        <odroid.build>false</odroid.build>
+        <odroid.platform>odroid</odroid.platform>
+        <odroid.name>Odroid</odroid.name>
+        <odroid.host>${pi4j.default.host}</odroid.host>
+        <odroid.port>${pi4j.default.port}</odroid.port>
+        <odroid.user>${pi4j.default.user}</odroid.user>
+        <odroid.password>${pi4j.default.password}</odroid.password>
+        <odroid.directory>${pi4j.default.directory}</odroid.directory>
 
-		<!-- GITHUB PROPERTIES -->
-		<github.global.server>github</github.global.server>
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPi' PLATFORM -->
+        <bananapi.build>false</bananapi.build>
+        <bananapi.platform>bananapi</bananapi.platform>
+        <bananapi.name>LeMaker BananaPi</bananapi.name>
+        <bananapi.host>${pi4j.default.host}</bananapi.host>
+        <bananapi.port>${pi4j.default.port}</bananapi.port>
+        <bananapi.user>${pi4j.default.user}</bananapi.user>
+        <bananapi.password>${pi4j.default.password}</bananapi.password>
+        <bananapi.directory>${pi4j.default.directory}</bananapi.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'BananaPro' PLATFORM -->
+        <bananapro.build>false</bananapro.build>
+        <bananapro.platform>bananapro</bananapro.platform>
+        <bananapro.name>LeMaker BananaPro</bananapro.name>
+        <bananapro.host>${pi4j.default.host}</bananapro.host>
+        <bananapro.port>${pi4j.default.port}</bananapro.port>
+        <bananapro.user>${pi4j.default.user}</bananapro.user>
+        <bananapro.password>${pi4j.default.password}</bananapro.password>
+        <bananapro.directory>${pi4j.default.directory}</bananapro.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'SINOVOIP-BPI' PLATFORM -->
+        <bpi.build>false</bpi.build>
+        <bpi.platform>bpi</bpi.platform>
+        <bpi.name>Sinovoip BananaPi</bpi.name>
+        <bpi.host>${pi4j.default.host}</bpi.host>
+        <bpi.port>${pi4j.default.port}</bpi.port>
+        <bpi.user>${pi4j.default.user}</bpi.user>
+        <bpi.password>${pi4j.default.password}</bpi.password>
+        <bpi.directory>${pi4j.default.directory}</bpi.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'OrangePi' PLATFORM -->
+        <orangepi.build>false</orangepi.build>
+        <orangepi.platform>orangepi</orangepi.platform>
+        <orangepi.name>OrangePi</orangepi.name>
+        <orangepi.host>${pi4j.default.host}</orangepi.host>
+        <orangepi.port>${pi4j.default.port}</orangepi.port>
+        <orangepi.user>${pi4j.default.user}</orangepi.user>
+        <orangepi.password>${pi4j.default.password}</orangepi.password>
+        <orangepi.directory>${pi4j.default.directory}</orangepi.directory>
+
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'NanoPi' PLATFORM -->
+        <nanopi.build>false</nanopi.build>
+        <nanopi.platform>nanopi</nanopi.platform>
+        <nanopi.name>NanoPi</nanopi.name>
+        <nanopi.host>${pi4j.default.host}</nanopi.host>
+        <nanopi.port>${pi4j.default.port}</nanopi.port>
+        <nanopi.user>${pi4j.default.user}</nanopi.user>
+        <nanopi.password>${pi4j.default.password}</nanopi.password>
+        <nanopi.directory>${pi4j.default.directory}</nanopi.directory>
+
+        <!-- PROJECT ENCODING PROPERTIES -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- GITHUB PROPERTIES -->
+        <github.global.server>github</github.global.server>
 
         <!-- JAVA COMPILER VERSIONS -->
-        <jdk.source.version>1.7</jdk.source.version>
-        <jdk.target.version>1.7</jdk.target.version>
+        <jdk.source.version>1.8</jdk.source.version>
+        <jdk.target.version>1.8</jdk.target.version>
 
         <!-- DEPENDENCY VERSIONS -->
-        <org.osgi.core.version>4.3.0</org.osgi.core.version>
-        <ant-jsch.version>1.7.1</ant-jsch.version>
-        <jsch.version>0.1.51</jsch.version>
+        <org.osgi.core.version>6.0.0</org.osgi.core.version>
+        <ant-jsch.version>1.9.7</ant-jsch.version>
+        <jsch.version>0.1.53</jsch.version>
         <ant-contrib.version>20020829</ant-contrib.version>
-        <junit.version>4.11</junit.version>
-        <mockito.version>1.9.5</mockito.version>
-        <powermock.version>1.5.2</powermock.version>
+        <junit.version>4.12</junit.version>
+        <mockito.version>1.10.19</mockito.version>
+        <powermock.version>1.6.5</powermock.version>
 
         <!-- PLUGIN VERSIONS -->
-        <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
-        <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <maven-source-plugin.version>2.3</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>2.10.2</maven-javadoc-plugin.version>
-        <maven-site-plugin.version>3.3</maven-site-plugin.version>
-        <maven-assembly-plugin.version>2.4.1</maven-assembly-plugin.version>
-        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
-        <maven-scm-plugin.version>1.9.1</maven-scm-plugin.version>
-        <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-site-plugin.version>3.7</maven-site-plugin.version>
+        <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
+        <maven-bundle-plugin.version>3.2.0</maven-bundle-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <native-maven-plugin.version>1.0-alpha-8</native-maven-plugin.version>
-        <license-maven-plugin.version>1.8</license-maven-plugin.version>
-        <build-helper-maven-plugin.version>1.9</build-helper-maven-plugin.version>
-        <site-maven-plugin.version>0.11</site-maven-plugin.version>
-        <jdeb.version>1.4</jdeb.version>
-        <exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
-        <s3-upload-maven-plugin.version>1.2</s3-upload-maven-plugin.version>
+        <license-maven-plugin.version>1.14</license-maven-plugin.version>
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+        <site-maven-plugin.version>0.12</site-maven-plugin.version>
+        <jdeb.version>1.5</jdeb.version>
+        <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
+        <s3-upload-maven-plugin.version>1.4</s3-upload-maven-plugin.version>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 
         <!-- REPORTS VERSIONS -->
-        <maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
 
         <!-- SPECIAL ACCESS PROPERTIES -->
         <!-- These are only used by project comitters/publishers -->
@@ -229,15 +303,14 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY -->
+		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY FOR ALL PLATFORMS -->
 		<profile>
-			<id>native</id>
+			<id>all-platforms</id>
 			<activation>
 				<property>
 					<name>release-build</name>
@@ -246,6 +319,15 @@
 			<modules>
 				<module>pi4j-native</module>
 			</modules>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+                <bananapi.build>true</bananapi.build>
+                <bananapro.build>true</bananapro.build>
+                <odroid.build>true</odroid.build>
+                <orangepi.build>true</orangepi.build>
+                <bpi.build>true</bpi.build>
+                <nanopi.build>true</nanopi.build>
+            </properties>
 		</profile>
 
 		<!-- SPECIAL PROFILE FOR RELEASE DEPLOYMENT BUILDS -->
@@ -354,7 +436,119 @@
             </build>
         </profile>
 
-	</profiles>
+        <!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
+        <profile>
+            <id>raspberrypi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <raspberrypi.build>true</raspberrypi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE ODROID PLATFORM -->
+        <profile>
+            <id>odroid</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <odroid.build>true</odroid.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE BANANAPI PLATFORM -->
+        <profile>
+            <id>bananapi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <bananapi.build>true</bananapi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE BANANAPRO PLATFORM -->
+        <profile>
+            <id>bananapro</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <bananapro.build>true</bananapro.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE SINOVOIP-BPI PLATFORM -->
+        <profile>
+            <id>bpi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <bpi.build>true</bpi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE ORANGEPI PLATFORM -->
+        <profile>
+            <id>orangepi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <orangepi.build>true</orangepi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE NANOPI PLATFORM -->
+        <profile>
+            <id>nanopi</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <nanopi.build>true</nanopi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+    </profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
@@ -558,6 +752,13 @@
                     <version>${maven-assembly-plugin.version}</version>
                 </plugin>
 
+                <!-- MAVEN ASSEMBLY PLUGIN -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+
                 <!-- EXEC MAVEN PLUGIN -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -644,6 +845,25 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.github.dantwining.whitespace-maven-plugin
+										</groupId>
+										<artifactId>
+											whitespace-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0.4,)
+										</versionRange>
+										<goals>
+											<goal>trim</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -667,6 +887,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
+				<version>${license-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>update-project-license</id>
@@ -711,12 +932,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
 				<inherited>false</inherited>
 				<configuration>
                     <generateProjectInfo>true</generateProjectInfo>
                     <generateReports>true</generateReports>
                     <generateSitemap>true</generateSitemap>
 				</configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                </dependencies>
 			</plugin>
 
 			<!-- ATTACH LICENSE AS ARTIFACT -->

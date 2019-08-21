@@ -8,10 +8,10 @@ package com.pi4j.component.button;
  * FILENAME      :  ButtonBase.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,10 +32,10 @@ package com.pi4j.component.button;
 
 import com.pi4j.component.ComponentListener;
 import com.pi4j.component.ObserveableComponentBase;
+import com.pi4j.io.gpio.GpioFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -111,14 +111,14 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
         }
     }
 
-    final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    final List<ScheduledFuture> holdEventFutures = new ArrayList<>();
+    final ScheduledExecutorService executor = GpioFactory.getExecutorServiceFactory().getScheduledExecutorService();
+    final List<ScheduledFuture<?>> holdEventFutures = new ArrayList<>();
 
     protected synchronized void notifyListeners(final ButtonStateChangeEvent event) {
 
         // cancel any pending hold event futures
         if(!holdEventFutures.isEmpty()) {
-            for (ScheduledFuture future : holdEventFutures) {
+            for (ScheduledFuture<?> future : holdEventFutures) {
                 future.cancel(false);
             }
             holdEventFutures.clear();
@@ -141,7 +141,7 @@ public abstract class ButtonBase extends ObserveableComponentBase implements But
                 final ButtonHoldListenerWrapper wrapper = (ButtonHoldListenerWrapper)listener;
 
                 // register a new hold event future
-                ScheduledFuture scheduledFuture = executor.schedule(new Runnable() {
+                ScheduledFuture<?> scheduledFuture = executor.schedule(new Runnable() {
                     @Override
                     public void run() {
                         wrapper.listener.onButtonHold(event);

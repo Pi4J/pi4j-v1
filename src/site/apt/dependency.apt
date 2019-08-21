@@ -8,14 +8,14 @@
 Dependencies
 
   Pi4J implements a JNI wrapper of the WiringPi library developed by Gordon Henderson.\
-  Pi4J statically compiles against the WiringPi library so there are no additional runtime dependencies or
-  installation prerequisites required.
+  Pi4J dynamically compiles against the WiringPi library so you must have Wiring Pi installed on your target
+  system.  WiringPi is included by default in the latest Raspbian builds.
 
   More information on the WiringPi project can be found here:\
   {{http://wiringpi.com/}}
-  
+
 [./images/dependencies.png]
 
 =====================
 
-  Additional compile-time dependency information can be found here:  {{{./dependency-info.html}Dependency Information Report}} 
+  Additional compile-time dependency information can be found here:  {{{./dependency-info.html}Dependency Information Report}}

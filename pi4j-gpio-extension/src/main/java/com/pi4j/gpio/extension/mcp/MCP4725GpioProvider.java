@@ -18,10 +18,10 @@ import java.io.IOException;
  * FILENAME      :  MCP4725GpioProvider.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -78,7 +78,8 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     // WRITE REGISTER
     // =======================================================================
     private static final int MCP4725_REG_WRITEDAC = 0x40; // Writes data to the DAC
-    private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
+    @SuppressWarnings("unused")
+	private static final int MCP4725_REG_WRITEDAC_EEPROM = 0x60; // not used yet... writes data to the DAC and the EEPROM (persisting the assigned value after reset)
 
     // =======================================================================
     // CONSTRUCTORS
@@ -87,7 +88,7 @@ public class MCP4725GpioProvider extends DacGpioProviderBase implements DacGpioP
     /**
      * This is the default constructor.  If you use this constructor the
      * MCP4725 will be considered the I2C bus owner and will close the
-     * bus communication anytime the class is destroyed and on program
+     * bus communication any time the class is destroyed and on program
      * shutdown.
      *
      * @param busNumber

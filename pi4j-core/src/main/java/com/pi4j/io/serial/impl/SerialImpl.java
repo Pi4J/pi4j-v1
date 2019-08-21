@@ -8,10 +8,10 @@ package com.pi4j.io.serial.impl;
  * FILENAME      :  SerialImpl.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,7 +63,7 @@ import java.util.concurrent.ExecutorService;
  * @see com.pi4j.io.serial.SerialDataEventListener
  * @see com.pi4j.io.serial.SerialFactory
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
@@ -170,6 +170,9 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
         SerialInterrupt.addListener(fileDescriptor, new SerialInterruptListener() {
             @Override
             public void onDataReceive(SerialInterruptEvent event) {
+
+                // ignore any event triggers that are missing data
+                if(event.getLength() <= 0) return;
 
                 try {
                     SerialDataEvent sde = null;
@@ -853,7 +856,8 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
         }
     }
 
-    private class SerialInputStream extends InputStream {
+    @SuppressWarnings("unused")
+	private class SerialInputStream extends InputStream {
 
         @Override
         public int read() throws IOException {

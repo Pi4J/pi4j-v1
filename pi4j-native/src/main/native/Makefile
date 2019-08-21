@@ -8,12 +8,20 @@ TARGET=libpi4j.so
 #DEBUG	     = -g -O0
 DEBUG	     = -O3
 CC	         = gcc
-INCLUDE	     = -I. -IwiringPi/wiringPi                         \
-               -IwiringPi/devLib                               \
-               -I/$(JAVA_HOME)/include                         \
-               -I/$(JAVA_HOME)/include/linux                   \
-               -I/usr/lib/jvm/jdk-7-oracle-armhf/include       \
-               -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux \
+INCLUDE	     = -I. -IwiringPi/wiringPi                           \
+               -IwiringPi/devLib                                 \
+               -I/$(JAVA_HOME)/include                           \
+               -I/$(JAVA_HOME)/include/linux                     \
+               -I/usr/lib/jvm/jdk-7-oracle-armhf/include         \
+               -I/usr/lib/jvm/jdk-7-oracle-armhf/include/linux   \
+               -I/usr/lib/jvm/java-7-openjdk-armhf/include       \
+               -I/usr/lib/jvm/java-7-openjdk-armhf/include/linux \
+               -I/usr/lib/jvm/jdk-8-oracle/include               \
+               -I/usr/lib/jvm/jdk-8-oracle/include/linux         \
+               -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include       \
+               -I/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include/linux \
+               -I/usr/lib/jvm/java-8-openjdk-armhf/include       \
+               -I/usr/lib/jvm/java-8-openjdk-armhf/include/linux \
                -I/usr/local/include -I/usr/local/include/linux
 
 CFLAGS      := $(DEBUG) -Wall $(INCLUDE) -Winline -pipe $(CARGS) -fPIC
@@ -27,11 +35,11 @@ LIBS_DYNAMIC =  -LwiringPi/lib/dynamic $(LIBS)
 
 SRC	=   com_pi4j_jni_AnalogInputMonitor.c \
         com_pi4j_jni_Exception.c      \
-        com_pi4j_jni_I2C.c            \
 	    com_pi4j_jni_Serial.c         \
 	    com_pi4j_jni_SerialInterrupt.c\
 	    com_pi4j_jni_WDT.c            \
 	    com_pi4j_wiringpi_Gpio.c      \
+        com_pi4j_io_file_LinuxFile.c      \
         com_pi4j_wiringpi_Serial.c    \
         com_pi4j_wiringpi_I2C.c       \
         com_pi4j_wiringpi_Lcd.c       \
@@ -51,7 +59,7 @@ OBJ =	$(SRC:.c=.o)
 all:	static
 
 static:	$(OBJ)
-	@echo [LINK with STATICLY linked libraries]
+	@echo [LINK with STATICALLY linked libraries]
 	@$(CC) $(OBJ) -shared -o $(TARGET) $(INCLUDE) $(LIBS_STATIC)
 
 dynamic: $(OBJ)
@@ -86,9 +94,9 @@ uninstall:
 com_pi4j_jni_AnalogInputMonitor.o: com_pi4j_jni_AnalogInputMonitor.h
 com_pi4j_jni_Exception.o: com_pi4j_jni_Exception.h
 com_pi4j_jni_WDT.o: com_pi4j_jni_WDT.h
-com_pi4j_jni_I2C.o: com_pi4j_jni_I2C.h
 com_pi4j_jni_Serial.o: com_pi4j_jni_Serial.h
 com_pi4j_jni_SerialInterrupt.o: com_pi4j_jni_SerialInterrupt.h
+com_pi4j_io_file_LinuxFile.o: com_pi4j_io_file_LinuxFile.h
 com_pi4j_wiringpi_Gpio.o: com_pi4j_wiringpi_Gpio.h
 com_pi4j_wiringpi_GpioPin.o: com_pi4j_wiringpi_GpioPin.h
 com_pi4j_wiringpi_GpioUtil.o: com_pi4j_wiringpi_GpioUtil.h

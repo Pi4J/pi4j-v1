@@ -7,10 +7,10 @@ package bananapi;
  * FILENAME      :  GpioOutputExample.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -175,7 +175,7 @@ public class GpioOutputExample {
         // blink gpio pin state for 1 second between HIGH and LOW states
         console.emptyLine();
         console.println("Blinking output pin state between HIGH and LOW for 3 seconds with a blink rate of 250ms.");
-        Future future = output.blink(250, 3000);
+        Future<?> future = output.blink(250, 3000);
 
         // --------------------------------------------------------------------------
 

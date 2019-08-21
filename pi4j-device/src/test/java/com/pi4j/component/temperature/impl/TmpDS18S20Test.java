@@ -8,10 +8,10 @@ package com.pi4j.component.temperature.impl;
  * FILENAME      :  TmpDS18S20Test.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -85,7 +85,8 @@ public class TmpDS18S20Test {
         return deviceType.create(deviceDir);
     }
 
-    @Test
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
     public void testEquals() throws Exception {
         final W1Device w1Devicea1 = createDevice("10-000801d54852");
         final W1Device w1Devicea2 = createDevice("10-000801d54852");

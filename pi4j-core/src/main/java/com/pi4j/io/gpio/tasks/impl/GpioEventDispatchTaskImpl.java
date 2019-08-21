@@ -8,10 +8,10 @@ package com.pi4j.io.gpio.tasks.impl;
  * FILENAME      :  GpioEventDispatchTaskImpl.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,7 +57,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 PinState state = ((PinDigitalStateChangeEvent) event).getState();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for digital listeners
                 for (GpioPinListener listener : listeners) {
@@ -69,7 +69,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 }
 
                 // create a copy of the triggers collection
-                Collection<GpioTrigger> triggers  = new ArrayList<GpioTrigger>(pin.getTriggers());
+                Collection<GpioTrigger> triggers  = new ArrayList<>(pin.getTriggers());
 
                 // process triggers
                 for (GpioTrigger trigger : triggers) {
@@ -81,7 +81,7 @@ public class GpioEventDispatchTaskImpl implements Runnable {
                 double value = ((PinAnalogValueChangeEvent) event).getValue();
 
                 // create a copy of the listeners collection
-                Collection<GpioPinListener> listeners  = new ArrayList<GpioPinListener>(pin.getListeners());
+                Collection<GpioPinListener> listeners  = new ArrayList<>(pin.getListeners());
 
                 // process event callbacks for analog listeners
                 for (GpioPinListener listener : listeners) {

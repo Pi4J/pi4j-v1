@@ -8,10 +8,10 @@ package com.pi4j.component;
  * FILENAME      :  ObserveableComponentBase.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,11 +31,12 @@ package com.pi4j.component;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ObserveableComponentBase extends ComponentBase implements ObserveableComponent {
 
-    protected final List<ComponentListener> listeners = new ArrayList<ComponentListener>();;
+    protected final List<ComponentListener> listeners = new ArrayList<>();;
 
     protected synchronized void addListener(ComponentListener... listener){
         if (listener == null || listener.length == 0) {
@@ -43,9 +44,7 @@ public class ObserveableComponentBase extends ComponentBase implements Observeab
         }
 
         // add new listeners
-        for (ComponentListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
     }
 
     protected synchronized void removeListener(ComponentListener... listener) {

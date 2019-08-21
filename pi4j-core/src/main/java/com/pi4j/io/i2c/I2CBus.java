@@ -8,10 +8,10 @@ package com.pi4j.io.i2c;
  * FILENAME      :  I2CBus.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,6 +43,11 @@ public interface I2CBus {
     int BUS_2 = 2;
     int BUS_3 = 3;
     int BUS_4 = 4;
+    int BUS_5 = 5;
+    int BUS_6 = 6;
+    int BUS_7 = 7;
+    int BUS_8 = 8;
+    int BUS_9 = 9;
     int BUS_10 = 10;
     int BUS_11 = 11;
     int BUS_12 = 12;

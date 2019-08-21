@@ -6,10 +6,10 @@
  * FILENAME      :  com_pi4j_jni_Serial.c
  * 
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -508,26 +508,13 @@ JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_sendBreak
 JNIEXPORT void JNICALL Java_com_pi4j_jni_Serial_setBreak
   (JNIEnv *env, jclass obj, jint fd, jboolean enabled)
 {
-  if(enabled == JNI_FALSE)
-  {
-     printf("SERIAL SET BREAK - FALSE\n");
-     if(ioctl(fd, TIOCCBRK, NULL) == 0)
-     {
-        printf("SERIAL SET BREAK - SUCCESS\n");
-        return;
-     }
+  if(enabled == JNI_FALSE){
+     if(ioctl(fd, TIOCCBRK, NULL) == 0) return;
   }
-  else
-  {
-     printf("SERIAL SET BREAK - TRUE\n");
-     if(ioctl(fd, TIOCSBRK, NULL) == 0)
-     {
-        printf("SERIAL SET BREAK - SUCCESS\n");
-        return;
-     }
+  else{
+     if(ioctl(fd, TIOCSBRK, NULL) == 0) return;
   }
 
-  printf("SERIAL SET BREAK - ERROR\n");
   // raise IOException if failed
   int err_number = errno;
   char err_message[100];

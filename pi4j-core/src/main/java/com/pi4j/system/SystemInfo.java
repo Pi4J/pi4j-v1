@@ -8,10 +8,10 @@ package com.pi4j.system;
  * FILENAME      :  SystemInfo.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,14 +51,46 @@ public class SystemInfo {
         RaspberryPi_ComputeModule,
         RaspberryPi_2B,
         RaspberryPi_3B,
+        RaspberryPi_3B_Plus,
         RaspberryPi_Zero,
+        RaspberryPi_ComputeModule3,
+        RaspberryPi_ZeroW,
         RaspberryPi_Alpha,
         RaspberryPi_Unknown,
         //------------------------
+        // (LEMAKER BANANAPI)
         BananaPi,
         BananaPro,
         //------------------------
-        Odroid
+        // (SINOVOIP BANANAPI)  (see: https://github.com/BPI-SINOVOIP/WiringPi/blob/master/wiringPi/wiringPi_bpi.c#L1318)
+        Bpi_M1,
+        Bpi_M1P,
+        Bpi_M2,
+        Bpi_M2P,
+        Bpi_M2P_H2_Plus,
+        Bpi_M2P_H5,
+        Bpi_M2U,
+        Bpi_M2U_V40,
+        Bpi_M2M,
+        Bpi_M3,
+        Bpi_R1,
+        Bpi_M64,
+        //------------------------
+        Odroid,
+        //------------------------
+        OrangePi,
+        //------------------------
+        NanoPi_M1,
+        NanoPi_M1_Plus,
+        NanoPi_M3,
+        NanoPi_NEO,
+        NanoPi_NEO2,
+        NanoPi_NEO2_Plus,
+        NanoPi_NEO_Air,
+        NanoPi_S2,
+        NanoPi_A64,
+        NanoPi_K2
+        //------------------------
     }
 
     public static String getProcessor()  throws IOException, InterruptedException, UnsupportedOperationException {

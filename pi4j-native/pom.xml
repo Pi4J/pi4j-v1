@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-		<version>1.1</version>
+        <version>1.3-SNAPSHOT</version>
 	</parent>
 
     <!-- BUILD PROPERTIES -->
@@ -23,7 +23,7 @@
 
         <!-- SPECIAL PROFILE TO DETERMINE IF RUNNING ON THE PI HARDWARE -->
         <profile>
-            <id>rpi-local</id>
+            <id>local-compile</id>
             <activation>
                 <os>
                     <name>linux</name>
@@ -124,7 +124,6 @@
 		</profile>
 	</profiles>
 
-
 	<!-- BUILD INSTRUCTIONS -->
 	<build>
 		<finalName>libpi4j</finalName>
@@ -157,34 +156,161 @@
 						</goals>
 					</execution>
 
-					<!-- copy the native source files and compile them with gcc on the RaspberyPi
-						platform -->
-					<execution>
-						<id>build-native-so</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
-								                  classpathref="maven.plugin.classpath" />
-				                <property name="compile_classpath"
-				                          refid="maven.compile.classpath"/>
-				                <property name="project-build-directory"
-				                          value="${project.build.directory}"/>
-				                <property name="pi-dirBuildTemp" value="${pi.dirBuildTemp}"/>
+                    <!-- copy the native source files and compile them on each of the targeted platforms -->
+                    <execution>
+                        <id>pi4j-build-native-libraries</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target name="pi4j-build-platform-libraries" >
+                                <ant target="${pi4j-native-ant-build-target}" inheritRefs="true">
 
-                                <ant target="${pi4j-native-ant-build-target}" >
-                                    <property name="pi-abi" value="hard-float"/>
-                                    <property name="pi-port" value="${pi.port}"/>
-                                    <property name="pi-host" value="${pi.host}"/>
-                                    <property name="pi-user" value="${pi.user}"/>
-                                    <property name="pi-password" value="${pi.password}"/>
+                                    <!-- WE REDEFINE THE FOLLOWING PROPERTIES TO ALLOW THEM TO BE OVERRIDDEN
+                                         VIA SYSTEM PROPERTIES PROVIDED ON THE MAVEN COMMAND LINE -->
+
+                                    <!-- RaspberryPi Platform Properties -->
+                                    <property name="raspberrypi.name" value="${raspberrypi.name}"/>
+                                    <property name="raspberrypi.host" value="${raspberrypi.host}"/>
+                                    <property name="raspberrypi.port" value="${raspberrypi.port}"/>
+                                    <property name="raspberrypi.user" value="${raspberrypi.user}"/>
+                                    <property name="raspberrypi.password" value="${raspberrypi.password}"/>
+                                    <property name="raspberrypi.directory" value="${raspberrypi.directory}"/>
+
+                                    <!-- Odroid Platform Properties -->
+                                    <property name="odroid.name" value="${odroid.name}"/>
+                                    <property name="odroid.host" value="${odroid.host}"/>
+                                    <property name="odroid.port" value="${odroid.port}"/>
+                                    <property name="odroid.user" value="${odroid.user}"/>
+                                    <property name="odroid.password" value="${odroid.password}"/>
+                                    <property name="odroid.directory" value="${odroid.directory}"/>
+
+                                    <!-- LeMaker BananaPi Platform Properties -->
+                                    <property name="bananapi.name" value="${bananapi.name}"/>
+                                    <property name="bananapi.host" value="${bananapi.host}"/>
+                                    <property name="bananapi.port" value="${bananapi.port}"/>
+                                    <property name="bananapi.user" value="${bananapi.user}"/>
+                                    <property name="bananapi.password" value="${bananapi.password}"/>
+                                    <property name="bananapi.directory" value="${bananapi.directory}"/>
+
+                                    <!-- LeMaker BananaPro Platform Properties -->
+                                    <property name="bananapro.name" value="${bananapro.name}"/>
+                                    <property name="bananapro.host" value="${bananapro.host}"/>
+                                    <property name="bananapro.port" value="${bananapro.port}"/>
+                                    <property name="bananapro.user" value="${bananapro.user}"/>
+                                    <property name="bananapro.password" value="${bananapro.password}"/>
+                                    <property name="bananapro.directory" value="${bananapro.directory}"/>
+
+                                    <!-- SINOVOIP-BPI Platform Properties -->
+                                    <property name="bpi.name" value="${bpi.name}"/>
+                                    <property name="bpi.host" value="${bpi.host}"/>
+                                    <property name="bpi.port" value="${bpi.port}"/>
+                                    <property name="bpi.user" value="${bpi.user}"/>
+                                    <property name="bpi.password" value="${bpi.password}"/>
+                                    <property name="bpi.directory" value="${bpi.directory}"/>
+
+                                    <!-- OrangePi Platform Properties -->
+                                    <property name="orangepi.name" value="${orangepi.name}"/>
+                                    <property name="orangepi.host" value="${orangepi.host}"/>
+                                    <property name="orangepi.port" value="${orangepi.port}"/>
+                                    <property name="orangepi.user" value="${orangepi.user}"/>
+                                    <property name="orangepi.password" value="${orangepi.password}"/>
+                                    <property name="orangepi.directory" value="${orangepi.directory}"/>
+
+                                    <!-- NanoPi Platform Properties -->
+                                    <property name="nanopi.name" value="${nanopi.name}"/>
+                                    <property name="nanopi.host" value="${nanopi.host}"/>
+                                    <property name="nanopi.port" value="${nanopi.port}"/>
+                                    <property name="nanopi.user" value="${nanopi.user}"/>
+                                    <property name="nanopi.password" value="${nanopi.password}"/>
+                                    <property name="nanopi.directory" value="${nanopi.directory}"/>
+
                                 </ant>
-							</tasks>
-						</configuration>
-					</execution>
+                            </target>
+                        </configuration>
+                    </execution>
+
+                    <!-- attach the compiled native libraries for each of the targeted platforms as artifacts -->
+                    <execution>
+                        <id>pi4j-attach-native-library-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target name="pi4j-attach-platform-libraries" >
+                                <taskdef  resource="net/sf/antcontrib/antcontrib.properties"
+                                          classpathref="maven.plugin.classpath"/>
+
+                                <!-- Attach 'libpi4j.so' for RasbperryPi -->
+                                <if>
+                                    <equals arg1="${raspberrypi.build}" arg2="true" />
+                                    <then>
+                                        <!-- NOTE: As of 2018-04-23 Pi4J no longer includes
+                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
+                                        <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so" classifier="raspberrypi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for Odroid -->
+                                <if>
+                                    <equals arg1="${odroid.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/odroid/static/libpi4j.so" classifier="odroid-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/odroid/dynamic/libpi4j.so" classifier="odroid-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for LeMaker BananaPi -->
+                                <if>
+                                    <equals arg1="${bananapi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/static/libpi4j.so" classifier="bananapi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/dynamic/libpi4j.so" classifier="bananapi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for LeMaker BananaPro -->
+                                <if>
+                                    <equals arg1="${bananapro.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/static/libpi4j.so" classifier="bananapro-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so" classifier="bananapro-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for Sinovoip BPI (BananaPi)  -->
+                                <if>
+                                    <equals arg1="${bpi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/bpi/static/libpi4j.so" classifier="bpi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/bpi/dynamic/libpi4j.so" classifier="bpi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for OrangePi -->
+                                <if>
+                                    <equals arg1="${orangepi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/static/libpi4j.so" classifier="orangepi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for NanoPi -->
+                                <if>
+                                    <equals arg1="${nanopi.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/static/libpi4j.so" classifier="nanopi-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/dynamic/libpi4j.so" classifier="nanopi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                            </target>
+                        </configuration>
+                    </execution>
+
 				</executions>
                 <dependencies>
                     <dependency>
@@ -205,68 +331,6 @@
                 </dependencies>
 			</plugin>
 
-            <!-- ATTACH COMPILED NATIVE LIBRARY -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-hard-float-native-artifact</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <!-- LIBPI4J for RASPBERRY-PI -->
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/raspberrypi/static/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>raspberrypi-static</classifier>
-                                </artifact>
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>raspberrypi-dynamic</classifier>
-                                </artifact>
-                                <!-- LIBPI4J for BANANA-PI -->
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/bananapi/static/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>bananapi-static</classifier>
-                                </artifact>
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/bananapi/dynamic/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>bananapi-dynamic</classifier>
-                                </artifact>
-                                <!-- LIBPI4J for BANANA-PRO -->
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/bananapro/static/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>bananapro-static</classifier>
-                                </artifact>
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>bananapro-dynamic</classifier>
-                                </artifact>
-                                <!-- LIBPI4J for ODROID -->
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/odroid/static/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>odroid-static</classifier>
-                                </artifact>
-                                <artifact>
-                                    <file>${project.build.directory}/native/lib/odroid/dynamic/libpi4j.so</file>
-                                    <type>so</type>
-                                    <classifier>odroid-dynamic</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 	</build>
 </project>

@@ -8,10 +8,10 @@ package com.pi4j.io.i2c;
  * FILENAME      :  I2CDevice.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,8 @@ package com.pi4j.io.i2c;
  */
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 /**
  * This is abstraction of an i2c device. It allows data to be read or written to the device.
@@ -152,6 +154,20 @@ public interface I2CDevice {
      * @throws IOException thrown in case byte cannot be read from the i2c device or i2c bus
      */
     int read(int address, byte[] buffer, int offset, int size) throws IOException;
+
+    /**
+     * Runs an ioctl on this device.
+     *
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, int)
+     */
+    void ioctl(long command, int value) throws IOException;
+
+    /**
+     * Runs an ioctl on this device.
+     *
+     * @see com.pi4j.io.file.LinuxFile#ioctl(long, ByteBuffer, IntBuffer)
+     */
+    void ioctl(long command, ByteBuffer data, IntBuffer offsets) throws IOException;
 
     /**
      * This method writes and reads bytes to/from the i2c device in a single method call

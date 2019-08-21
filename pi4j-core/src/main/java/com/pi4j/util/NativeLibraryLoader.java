@@ -8,10 +8,10 @@ package com.pi4j.util;
  * FILENAME      :  NativeLibraryLoader.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,8 @@ package com.pi4j.util;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+import com.pi4j.platform.Platform;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,7 +48,7 @@ import java.util.logging.Logger;
 
 public class NativeLibraryLoader {
 
-	private static final Set<String> loadedLibraries = new TreeSet<String>();
+	private static final Set<String> loadedLibraries = new TreeSet<>();
 	private static final Logger logger = Logger.getLogger(NativeLibraryLoader.class.getName());
 	private static boolean initialized;
 
@@ -89,8 +91,14 @@ public class NativeLibraryLoader {
         //
         // path = /lib/{platform}/{linking:static|dynamic}/{filename}
         //
-        String platform = System.getProperty("pi4j.platform", "raspberrypi");
-        String linking = System.getProperty("pi4j.linking", "static");
+        String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
+
+        // NOTE: As of 2018-04-23, Pi4J no longer includes
+        //       a statically linked wiringPi lib for the Raspberry Pi platform.  The
+        //       default linking for the Raspberry Pi platform should always be "dynamic"
+        String linking = System.getProperty("pi4j.linking",
+                platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+
 		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
 		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 		try {
@@ -98,7 +106,8 @@ public class NativeLibraryLoader {
 			logger.fine("Library [" + fileName + "] loaded successfully using embedded resource file: [" + path + "]");
 		} catch (Exception | UnsatisfiedLinkError e) {
 			logger.log(Level.SEVERE, "Unable to load [" + fileName + "] using path: [" + path + "]", e);
-			// either way, we did what we could, no need to remove now the library from the loaded libraries since we run inside one VM and nothing could possibly change, so there is no point in
+			// either way, we did what we could, no need to remove now the library from the loaded libraries
+            // since we run inside one VM and nothing could possibly change, so there is no point in
 			// trying out this logic again
 		}
 	}
@@ -106,7 +115,8 @@ public class NativeLibraryLoader {
 	/**
 	 * Loads library from classpath
 	 *
-	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted after exiting. Method uses String as filename because the pathname is
+	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is
+     * deleted after exiting. Method uses String as filename because the pathname is
 	 * "abstract", not system-dependent.
 	 *
 	 * @param path
@@ -116,7 +126,8 @@ public class NativeLibraryLoader {
 	 * @throws IllegalArgumentException
 	 *             If source file (param path) does not exist
 	 * @throws IllegalArgumentException
-	 *             If the path is not absolute or if the filename is shorter than three characters (restriction of {@see File#createTempFile(java.lang.String, java.lang.String)}).
+	 *             If the path is not absolute or if the filename is shorter than three characters (restriction
+     *             of {@see File#createTempFile(java.lang.String, java.lang.String)}).
 	 */
 	public static void loadLibraryFromClasspath(String path) throws IOException {
 		Path inputPath = Paths.get(path);

@@ -8,10 +8,10 @@ package com.pi4j.jni;
  * FILENAME      :  SerialInterrupt.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,13 +42,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * registration allowing Java consumers to subscribe to serial data receive events.
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 public class SerialInterrupt {
 
-    private static Map<Integer, SerialInterruptListener> listeners = new ConcurrentHashMap<Integer, SerialInterruptListener>();
+    private static Map<Integer, SerialInterruptListener> listeners = new ConcurrentHashMap<>();
 
     // private constructor
     private SerialInterrupt()  {
@@ -99,7 +99,6 @@ public class SerialInterrupt {
      * @param fileDescriptor the serial file descriptor/handle
      * //@param data byte array of data received on this event from the serial receive buffer
      */
-    @SuppressWarnings("unchecked")
     private static void onDataReceiveCallback(int fileDescriptor, byte[] data) {
 
         // notify event listeners

@@ -8,10 +8,10 @@ package com.pi4j.io.gpio.impl;
  * FILENAME      :  GpioPinImpl.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,17 +38,17 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class GpioPinImpl implements GpioPin,
-                                    GpioPinDigitalInput,
-                                    GpioPinDigitalOutput,
-                                    GpioPinDigitalMultipurpose,
-                                    GpioPinAnalogInput,
-                                    GpioPinAnalogOutput,
-                                    GpioPinPwmOutput,
-                                    GpioPinInput,
-                                    GpioPinOutput
-{
+        GpioPinDigitalInput,
+        GpioPinDigitalOutput,
+        GpioPinDigitalMultipurpose,
+        GpioPinAnalogInput,
+        GpioPinAnalogOutput,
+        GpioPinPwmOutput,
+        GpioPinInput,
+        GpioPinOutput {
 
     @SuppressWarnings("unused")
     private String name = null;
@@ -116,7 +116,7 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public String getProperty(String key, String defaultValue) {
         if (properties.containsKey(key)) {
-            if(properties.get(key) == null || properties.get(key).isEmpty())
+            if (properties.get(key) == null || properties.get(key).isEmpty())
                 return defaultValue;
             else
                 return properties.get(key);
@@ -224,9 +224,19 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> blink(long delay, TimeUnit timeUnit) {
+        return blink(delay, PinState.HIGH, timeUnit);
+    }
+
+    @Override
     public Future<?> blink(long delay, PinState blinkState) {
         // NOTE: a value of 0 milliseconds will stop the blinking
         return blink(delay, 0, blinkState);
+    }
+
+    @Override
+    public Future<?> blink(long delay, PinState blinkState, TimeUnit timeUnit) {
+        return blink(delay, 0, blinkState, timeUnit);
     }
 
     @Override
@@ -235,9 +245,19 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> blink(long delay, long duration, TimeUnit timeUnit) {
+        return blink(delay, duration, PinState.HIGH, timeUnit);
+    }
+
+    @Override
     public Future<?> blink(long delay, long duration, PinState blinkState) {
         // NOTE: a value of 0 milliseconds will stop the blinking
-        return GpioScheduledExecutorImpl.blink(this, delay, duration, blinkState);
+        return GpioScheduledExecutorImpl.blink(this, delay, duration, blinkState, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public Future<?> blink(long delay, long duration, PinState blinkState, TimeUnit timeUnit) {
+        return GpioScheduledExecutorImpl.blink(this, delay, duration, blinkState, timeUnit);
     }
 
     @Override
@@ -246,8 +266,18 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> pulse(long duration, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> pulse(long duration, Callable<Void> callback) {
         return pulse(duration, false, callback);
+    }
+
+    @Override
+    public Future<?> pulse(long duration, Callable<Void> callback, TimeUnit timeUnit) {
+        return pulse(duration, false, callback, timeUnit);
     }
 
     @Override
@@ -256,8 +286,18 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> pulse(long duration, PinState pulseState, TimeUnit timeUnit) {
+        return pulse(duration, pulseState, false, timeUnit);
+    }
+
+    @Override
     public Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback) {
         return pulse(duration, pulseState, false, callback);
+    }
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback, TimeUnit timeUnit) {
+        return pulse(duration, pulseState, false, callback, timeUnit);
     }
 
     @Override
@@ -266,34 +306,48 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
+    public Future<?> pulse(long duration, boolean blocking, TimeUnit timeUnit) {
+        return pulse(duration, PinState.HIGH, blocking, timeUnit);
+    }
+
+    @Override
     public Future<?> pulse(long duration, boolean blocking, Callable<Void> callback) {
         return pulse(duration, PinState.HIGH, blocking, callback);
     }
 
     @Override
-    public Future<?> pulse(long duration, PinState pulseState, boolean blocking) {
-        return pulse(duration, pulseState, blocking, null);
+    public Future<?> pulse(long duration, boolean blocking, Callable<Void> callback, TimeUnit timeUnit) {
+        return pulse(duration, PinState.HIGH, blocking, callback, timeUnit);
     }
 
     @Override
-    public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking) {
+        return pulse(duration, pulseState, blocking, null, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking, TimeUnit timeUnit) {
+        return pulse(duration, pulseState, blocking, null, timeUnit);
+    }
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback, TimeUnit timeUnit) {
 
         // validate duration argument
-        if(duration <= 0)
+        if (duration <= 0)
             throw new IllegalArgumentException("Pulse duration must be greater than 0 milliseconds.");
 
         // if this is a blocking pulse, then execute the pulse
         // and sleep the caller's thread to block the operation
         // until the pulse is complete
-        if(blocking) {
+        if (blocking) {
             // start the pulse state
             setState(pulseState);
 
             // block the current thread for the pulse duration
             try {
                 Thread.sleep(duration);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException("Pulse blocking thread interrupted.", e);
             }
 
@@ -301,7 +355,7 @@ public class GpioPinImpl implements GpioPin,
             setState(PinState.getInverseState(pulseState));
 
             // invoke callback if one was defined
-            if(callback != null){
+            if (callback != null) {
                 try {
                     callback.call();
                 } catch (Exception e) {
@@ -311,13 +365,17 @@ public class GpioPinImpl implements GpioPin,
 
             // we are done; no future is returned for blocking pulses
             return null;
-        }
-        else {
+        } else {
             // if this is not a blocking call, then setup the pulse
             // instruction to be completed in a background worker
             // thread pool using a scheduled executor
-            return GpioScheduledExecutorImpl.pulse(this, duration, pulseState, callback);
+            return GpioScheduledExecutorImpl.pulse(this, duration, pulseState, callback, timeUnit);
         }
+    }
+
+    @Override
+    public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
+        return pulse(duration, pulseState, blocking, callback, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -357,15 +415,15 @@ public class GpioPinImpl implements GpioPin,
 
     @Override
     public int getDebounce(PinState state) {
-        if(debounce.containsKey(state)){
+        if (debounce.containsKey(state)) {
             return debounce.get(state).intValue();
         }
         return NO_DEBOUCE;
     }
 
     @Override
-    public void setDebounce(int debounce, PinState ... state) {
-        for(PinState ps : state) {
+    public void setDebounce(int debounce, PinState... state) {
+        for (PinState ps : state) {
             this.debounce.put(ps, new Integer(debounce));
         }
     }
@@ -381,7 +439,9 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
-    public void setValue(Number value) { setValue(value.doubleValue()); }
+    public void setValue(Number value) {
+        setValue(value.doubleValue());
+    }
 
     @Override
     public double getValue() {
@@ -422,7 +482,6 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     *
      * @param listener gpio pin listener interface
      */
     public synchronized void addListener(GpioPinListener... listener) {
@@ -479,7 +538,7 @@ public class GpioPinImpl implements GpioPin,
 
     public synchronized void removeAllListeners() {
         List<GpioPinListener> listeners_copy = new ArrayList<>(listeners);
-        for (int index = (listeners_copy.size()-1); index >= 0; index --) {
+        for (int index = (listeners_copy.size() - 1); index >= 0; index--) {
             GpioPinListener listener = listeners_copy.get(index);
             removeListener(listener);
         }
@@ -507,7 +566,6 @@ public class GpioPinImpl implements GpioPin,
     }
 
     /**
-     *
      * @param trigger GPIO trigger interface
      */
     public synchronized void removeTrigger(GpioTrigger... trigger) {
@@ -568,8 +626,7 @@ public class GpioPinImpl implements GpioPin,
     }
 
     @Override
-    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance)
-    {
+    public void setShutdownOptions(Boolean unexport, PinState state, PinPullResistance resistance) {
         setShutdownOptions(unexport, state, resistance, null);
     }
 

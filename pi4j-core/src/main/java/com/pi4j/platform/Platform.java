@@ -8,10 +8,10 @@ package com.pi4j.platform;
  * FILENAME      :  Platform.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,27 +29,18 @@ package com.pi4j.platform;
  * #L%
  */
 
-import com.pi4j.io.gpio.BananaPiGpioProvider;
-import com.pi4j.io.gpio.BananaProGpioProvider;
-import com.pi4j.io.gpio.GpioProvider;
-import com.pi4j.io.gpio.OdroidGpioProvider;
-import com.pi4j.io.gpio.RaspiGpioProvider;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CFactoryProvider;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderBananaPi;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderOdroid;
-import com.pi4j.io.i2c.impl.I2CFactoryProviderRaspberryPi;
+import com.pi4j.io.i2c.impl.I2CProviderImpl;
 import com.pi4j.system.SystemInfoProvider;
-import com.pi4j.system.impl.BananaPiSystemInfoProvider;
-import com.pi4j.system.impl.BananaProSystemInfoProvider;
-import com.pi4j.system.impl.OdroidSystemInfoProvider;
-import com.pi4j.system.impl.RaspiSystemInfoProvider;
+import com.pi4j.system.impl.*;
 
 /**
  * <p>
  * This enumeration defines the platforms supported by Pi4J.
  * </p>
  *
- * @see <a href="http://www.pi4j.com/">http://www.pi4j.com/</a>
+ * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
@@ -58,7 +49,11 @@ public enum Platform {
     RASPBERRYPI("raspberrypi", "Raspberry Pi"),
     BANANAPI("bananapi", "BananaPi"),
     BANANAPRO("bananapro", "BananaPro"),
-    ODROID("odroid", "Odroid");
+    BPI("bpi", "Synovoip BPI"),
+    ODROID("odroid", "Odroid"),
+    ORANGEPI("orangepi", "OrangePi"),
+    NANOPI("nanopi", "NanoPi"),
+    SIMULATED("simulated", "Simulated");
 
     // private variables
     protected String platformId = null;
@@ -135,8 +130,20 @@ public enum Platform {
             case BANANAPRO: {
                 return new BananaProGpioProvider();
             }
+            case BPI: {
+                return new BpiGpioProvider();
+            }
             case ODROID: {
                 return new OdroidGpioProvider();
+            }
+            case ORANGEPI: {
+                return new OrangePiGpioProvider();
+            }
+            case NANOPI: {
+                return new NanoPiGpioProvider();
+            }
+            case SIMULATED: {
+                return new SimulatedGpioProvider();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi
@@ -150,25 +157,7 @@ public enum Platform {
     }
 
     public static I2CFactoryProvider getI2CFactoryProvider(Platform platform) {
-        // return the I2C provider based on the provided platform
-        switch(platform) {
-            case RASPBERRYPI: {
-                return new I2CFactoryProviderRaspberryPi();
-            }
-            case BANANAPI: {
-                return new I2CFactoryProviderBananaPi();
-            }
-            case BANANAPRO: {
-                return new I2CFactoryProviderBananaPi();
-            }
-            case ODROID: {
-                return new I2CFactoryProviderOdroid();
-            }
-            default: {
-                // if a platform cannot be determine, then assume it's the default RaspberryPi
-                return new I2CFactoryProviderRaspberryPi();
-            }
-        }
+        return new I2CProviderImpl();
     }
 
     public SystemInfoProvider getSystemInfoProvider() {
@@ -187,8 +176,17 @@ public enum Platform {
             case BANANAPRO: {
                 return new BananaProSystemInfoProvider();
             }
+            case BPI: {
+                return new BpiSystemInfoProvider();
+            }
             case ODROID: {
                 return new OdroidSystemInfoProvider();
+            }
+            case ORANGEPI: {
+                return new OrangePiSystemInfoProvider();
+            }
+            case NANOPI: {
+                return new NanoPiSystemInfoProvider();
             }
             default: {
                 // if a platform cannot be determine, then assume it's the default RaspberryPi

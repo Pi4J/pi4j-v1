@@ -8,10 +8,10 @@ package com.pi4j.component.servo.impl;
  * FILENAME      :  GenericServo.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -78,6 +78,7 @@ public class GenericServo extends ComponentBase implements Servo {
         this.servoDriver = servoDriver;
     }
 
+    @Override
     public ServoDriver getServoDriver() {
         return servoDriver;
     }
@@ -93,6 +94,11 @@ public class GenericServo extends ComponentBase implements Servo {
     @Override
     public float getPosition() {
         return position;
+    }
+
+    @Override
+    public void off() {
+        servoDriver.setServoPulseWidth(0);
     }
 
     protected int getPwmDuration() {
@@ -174,9 +180,10 @@ public class GenericServo extends ComponentBase implements Servo {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Position [" + position + "]");
+        result.append("Position [").append(position).append("]");
         for (Entry<String, String> property : getProperties().entrySet()) {
-            result.append(", " + property.getKey() + " [" + property.getValue() + "]");
+            result.append(", ").append(property.getKey())
+                .append(" [").append(property.getValue()).append("]");
         }
         return result.toString();
     }

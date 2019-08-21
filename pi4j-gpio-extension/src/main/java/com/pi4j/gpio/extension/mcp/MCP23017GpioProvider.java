@@ -25,10 +25,10 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
  * FILENAME      :  MCP23017GpioProvider.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -469,7 +469,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
 	                            // loop over the available pins on port B
 	                            for (Pin pin : MCP23017Pin.ALL_A_PINS) {
-	                                int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
+	                                //int pinAddressA = pin.getAddress() - GPIO_A_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
 	                                //if ((pinInterruptA & pinAddressA) > 0) {
@@ -492,7 +492,7 @@ public class MCP23017GpioProvider extends GpioProviderBase implements GpioProvid
 
 	                            // loop over the available pins on port B
 	                            for (Pin pin : MCP23017Pin.ALL_B_PINS) {
-	                                int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
+	                                //int pinAddressB = pin.getAddress() - GPIO_B_OFFSET;
 
 	                                // is there an interrupt flag on this pin?
 	                                //if ((pinInterruptB & pinAddressB) > 0) {

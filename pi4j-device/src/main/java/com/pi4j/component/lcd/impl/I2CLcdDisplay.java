@@ -7,10 +7,10 @@
  * FILENAME      :  I2CLcdDisplay.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,6 +42,7 @@ import com.pi4j.io.i2c.I2CFactory;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.io.IOException;
 import java.util.BitSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -333,6 +334,19 @@ public class I2CLcdDisplay extends LCDBase implements LCD {
      */
     public void setBacklight(boolean backlight) {
         this.backlight = backlight;
+    }
+
+    /**
+     * @param backlight the backlight to set
+     * @param immediate optionally update the device immediately
+     */
+    public void setBacklight(boolean backlight, boolean immediate) throws IOException {
+        setBacklight(backlight);
+        if(immediate) {
+            dev.write((byte) (backlight
+                    ? 1 << (byte) backlightBit
+                    : 0 << (byte) backlightBit));
+        }
     }
 
     private void setRS(boolean val) {

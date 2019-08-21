@@ -6,10 +6,10 @@
  * FILENAME      :  com_pi4j_wiringpi_GpioPin.c
  * 
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,17 +39,16 @@
 #define GPIO_PIN_EDGE_FILE      GPIO_PIN_DIRECTORY "/edge"
 #define GPIO_PIN_VALUE_FILE     GPIO_PIN_DIRECTORY "/value"
 
-#define ODROIDC1_GPIO_CLASS_DIRECTORY    "/sys/class/aml_gpio"
-#define ODROIDC1_GPIO_EXPORT_FILE        ODROIDC1_GPIO_CLASS_DIRECTORY "/export"
-#define ODROIDC1_GPIO_UNEXPORT_FILE      ODROIDC1_GPIO_CLASS_DIRECTORY "/unexport"
-#define ODROIDC1_GPIO_PIN_DIRECTORY      ODROIDC1_GPIO_CLASS_DIRECTORY "/gpio%d"
-#define ODROIDC1_GPIO_PIN_DIRECTION_FILE ODROIDC1_GPIO_PIN_DIRECTORY "/direction"
-#define ODROIDC1_GPIO_PIN_EDGE_FILE      ODROIDC1_GPIO_PIN_DIRECTORY "/edge"
-#define ODROIDC1_GPIO_PIN_VALUE_FILE     ODROIDC1_GPIO_PIN_DIRECTORY "/value"
-
 int wiringpi_detected_model;
 int wiringpi_detected_revision;
 int wiringpi_detected_maker;
+
+/**
+ * --------------------------------------------------------
+ * GLOBAL WIRING PI MODE STATE
+ * --------------------------------------------------------
+ */
+int wiringpi_init_mode = WPI_MODE_UNINITIALISED;
 
 /**
  * --------------------------------------------------------
@@ -78,11 +77,16 @@ int getEdgePin(int pin)
 	if(pin < 0)
 		return -1;
 
+    // in GPIO mode, the edge pin is the same as the GPIO pin number
+    if(wiringpi_init_mode == WPI_MODE_GPIO){
+      return pin;
+    }
+
 	// validate upper bounds
 	if(pin >= MAX_GPIO_PINS)
 		return -1;
 
-    // check for macro definion for Compute Module, some older versions of WiringPi may be missing this macro.
+    // check for macro definition for Compute Module, some older versions of WiringPi may be missing this macro.
     // (I'm looking at you LeMaker!)
     #ifndef PI_MODEL_CM
     return wpiPinToGpio(pin);
@@ -138,14 +142,7 @@ int isPinValid(int pin)
  */
 int getGpioExportFile(char *file){
 
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_EXPORT_FILE);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_EXPORT_FILE);
 }
 
@@ -161,14 +158,7 @@ int getGpioExportFile(char *file){
  * returned in case of failure.
  */
 int getGpioUnexportFile(char *file){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_UNEXPORT_FILE);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_UNEXPORT_FILE);
 }
 
@@ -185,14 +175,7 @@ int getGpioUnexportFile(char *file){
  * returned in case of failure.
  */
 int getGpioPinDirectory(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTORY, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_DIRECTORY, pin);
 }
 
@@ -209,14 +192,7 @@ int getGpioPinDirectory(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinDirectionFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_DIRECTION_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_DIRECTION_FILE, pin);
 }
 
@@ -233,14 +209,7 @@ int getGpioPinDirectionFile(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinEdgeFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_EDGE_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_EDGE_FILE, pin);
 }
 
@@ -257,14 +226,7 @@ int getGpioPinEdgeFile(char *file, int pin){
  * returned in case of failure.
  */
 int getGpioPinValueFile(char *file, int pin){
-    // if this is an Odroid board, we need to determine if it is a C1/C1+ model
-    #ifdef PI_MODEL_ODROIDC
-    if (wiringpi_detected_model == PI_MODEL_ODROIDC){
-        return sprintf(file, ODROIDC1_GPIO_PIN_VALUE_FILE, pin);
-    }
-    #endif
-
-    // all other platforms and models use default "gpio" class
+    // all platforms and models use default "gpio" class
     return sprintf(file, GPIO_PIN_VALUE_FILE, pin);
 }
 

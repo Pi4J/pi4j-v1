@@ -7,10 +7,10 @@
  * FILENAME      :  LcdExample.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,7 +57,7 @@ public class LcdExample {
         final GpioController gpio = GpioFactory.getInstance();
 
         // initialize LCD
-        final GpioLcdDisplay lcd = new GpioLcdDisplay(LCD_ROWS,          // number of row supported by LCD
+        final GpioLcdDisplay lcd = new GpioLcdDisplay(LCD_ROWS,    // number of row supported by LCD
                                                 LCD_COLUMNS,       // number of columns supported by LCD
                                                 RaspiPin.GPIO_11,  // LCD RS pin
                                                 RaspiPin.GPIO_10,  // LCD strobe pin

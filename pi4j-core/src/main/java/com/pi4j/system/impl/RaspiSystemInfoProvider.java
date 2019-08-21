@@ -8,10 +8,10 @@ package com.pi4j.system.impl;
  * FILENAME      :  RaspiSystemInfoProvider.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  http://www.pi4j.com/
+ * this project can be found here:  https://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2019 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -114,6 +114,9 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
     public static final short RPI_MODEL_UNKNOWN = 7;
     public static final short RPI_MODEL_3B      = 8;
     public static final short RPI_MODEL_ZERO    = 9;
+    public static final short RPI_MODEL_CM3     = 10;
+    public static final short RPI_MODEL_ZERO_W  = 12;
+    public static final short RPI_MODEL_3B_PLUS = 13;
 
     // Raspberry Pi Revision :: Memory
     public static final short RPI_RAM_256       = 0;
@@ -201,7 +204,7 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         // +---+-------+--------------+--------------------------------------------+
         // | A | 00-03 | PCB Revision | (the pcb revision number)                  |
         // | B | 04-11 | Model name   | A, B, A+, B+, B Pi2, Alpha, Compute Module |
-        // |   |       |              | unknown, B Pi3, Zero                       |
+        // |   |       |              | unknown, B Pi3, Zero, CM3, ZeroW, Pi3+     |
         // | C | 12-15 | Processor    | BCM2835, BCM2836, BCM2837                  |
         // | D | 16-19 | Manufacturer | Sony, Egoman, Embest, unknown, Embest      |
         // | E | 20-22 | Memory size  | 256 MB, 512 MB, 1024 MB                    |
@@ -219,8 +222,11 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
         // determine the board info by deciphering the revision number
         long irevision = Long.parseLong(revision, 16);
         long scheme = (irevision >> 23) & 0x1;
-        long ram = (irevision >> 20) & 0x7;
+        @SuppressWarnings("unused")
+		long ram = (irevision >> 20) & 0x7;
+        @SuppressWarnings("unused")
         long manufacturer = (irevision >> 16) & 0xF;
+        @SuppressWarnings("unused")
         long processor = (irevision >> 12) & 0xF;
         long model = (irevision >> 4) & 0xFF;
         long pcbrev = irevision & 0xF;
@@ -246,6 +252,9 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
                 case RPI_MODEL_UNKNOWN: return SystemInfo.BoardType.RaspberryPi_Unknown;
                 case RPI_MODEL_3B:      return SystemInfo.BoardType.RaspberryPi_3B;
                 case RPI_MODEL_ZERO:    return SystemInfo.BoardType.RaspberryPi_Zero;
+                case RPI_MODEL_CM3:     return SystemInfo.BoardType.RaspberryPi_ComputeModule3;
+                case RPI_MODEL_ZERO_W:  return SystemInfo.BoardType.RaspberryPi_ZeroW;
+                case RPI_MODEL_3B_PLUS: return SystemInfo.BoardType.RaspberryPi_3B_Plus;
                 case RPI_MODEL_B: {
                     // for model B, also take into consideration the revision
                     if(pcbrev <= 1)

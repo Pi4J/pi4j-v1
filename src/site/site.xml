@@ -8,7 +8,7 @@
 	<bannerLeft>
 		<name>Pi4J</name>
 		<src>/images/logos/pi4j-header.png</src>
-		<href>http://www.pi4j.com/</href>
+		<href>https://www.pi4j.com/</href>
 	</bannerLeft>
 	<bannerRight>
 		<name>The Pi4J Project</name>
@@ -21,9 +21,7 @@
 	</poweredBy>
 	<body>
 		<head>
-			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
-			<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
-			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2016 Pi4J. All Rights Reserved."/>
+			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2019 Pi4J. All Rights Reserved."/>
 			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io, odroid, bananapi"/>
 			<META NAME="ROBOTS" CONTENT="ALL"/>
 			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
@@ -66,7 +64,7 @@
 			</script>
 		</head>
 		<links>
-			<item name="Home" href="http://www.pi4j.com/" />
+			<item name="Home" href="https://www.pi4j.com/" />
 			<item name="Downloads" href="download.html" />
 			<item name="Github" href="https://github.com/Pi4J/pi4j/" target="pi4j-github" />
 			<item name="Issues" href="https://github.com/Pi4J/pi4j/issues/" target="pi4j-github"/>
@@ -89,19 +87,24 @@
 			<item name="JavaDoc" href="apidocs/index.html" target="pi4j-javadoc"/>
 		</menu>
         <menu name="Pin Numbering">
-            <item name="Raspberry Pi - Model A" href="pins/model-a-rev2.html" />
-            <item name="Raspberry Pi - Model A+" href="pins/model-a-plus.html" />
-            <item name="Raspberry Pi - Model B (Rev 1)" href="pins/model-b-rev1.html" />
-            <item name="Raspberry Pi - Model B (Rev 2)" href="pins/model-b-rev2.html" />
-            <item name="Raspberry Pi - Model B+" href="pins/model-b-plus.html" />
-            <item name="Raspberry Pi - Compute Module" href="pins/model-cm-rev1.html" />
-            <item name="Raspberry Pi 2 - Model B" href="pins/model-2b-rev1.html" />
-            <item name="Raspberry Pi 3 - Model B" href="pins/model-3b-rev1.html" />
-            <item name="Raspberry Pi Zero" href="pins/model-zero-rev1.html" />
-            <item name="Lemaker BananaPi" href="pins/lemaker-bananapi.html" />
-            <item name="Lemaker BananaPro" href="pins/lemaker-bananapro.html" />
-            <item name="Odroid C1/C1+" href="pins/odroid-c1.html" />
-            <item name="Odroid XU4" href="pins/odroid-xu4.html" />
+            <item name="Raspberry Pi - A" href="pins/model-a-rev2.html" />
+            <item name="Raspberry Pi - A+" href="pins/model-a-plus.html" />
+            <item name="Raspberry Pi - B (Rev 1)" href="pins/model-b-rev1.html" />
+            <item name="Raspberry Pi - B (Rev 2)" href="pins/model-b-rev2.html" />
+            <item name="Raspberry Pi - B+" href="pins/model-b-plus.html" />
+            <item name="Raspberry Pi - 2B" href="pins/model-2b-rev1.html" />
+            <item name="Raspberry Pi - 3B" href="pins/model-3b-rev1.html" />
+            <item name="Raspberry Pi - 3B+" href="pins/model-3b-plus-rev1.html" />
+            <item name="Raspberry Pi - 3A+" href="pins/model-3a-plus-rev1.html" />
+            <item name="Raspberry Pi - Zero" href="pins/model-zero-rev1.html" />
+            <item name="Raspberry Pi - Zero W" href="pins/model-zerow-rev1.html" />
+			<item name="Raspberry Pi - CM1 (Compute Module)" href="pins/model-cm-rev1.html" />
+			<item name="Raspberry Pi - CM3 (Compute Module)" href="pins/model-cm3-rev1.html" />
+			<item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/model-cm3-plus-rev1.html" />
+            <item name="Lemaker - BananaPi" href="pins/lemaker-bananapi.html" />
+            <item name="Lemaker - BananaPro" href="pins/lemaker-bananapro.html" />
+            <item name="Odroid - C1/C1+" href="pins/odroid-c1.html" />
+            <item name="Odroid - XU4" href="pins/odroid-xu4.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />
@@ -126,6 +129,13 @@
 		<menu name="Project Development">
 			<item name="Project Information" href="project-info.html" />
 			<item name="Project Reports" href="project-reports.html" />
+		</menu>
+		<menu name="Previous Releases">
+			<item name="Pi4J Version 1.2" href="../1.2" />
+			<item name="Pi4J Version 1.1" href="../1.1" />
+			<item name="Pi4J Version 1.0" href="../1.0" />
+			<item name="Pi4J Version 0.0.5" href="../0.0.5" />
+			<item name="Pi4J Version 0.0.4" href="../0.0.4" />
 		</menu>
 <!-- 		<menu ref="reports" /> -->
 	</body>
