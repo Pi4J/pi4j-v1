@@ -5,20 +5,20 @@
 
 ## PROJECT INFORMATION
 
-Project website: http://www.pi4j.com/ <br />
+Project website: https://www.pi4j.com/ <br />
 Project discussion group: https://groups.google.com/forum/#!forum/pi4j <br />
 Project issues list: https://github.com/Pi4J/pi4j/issues <br />
 <br />
 Release builds are available from 
    *  [Maven Central] http://search.maven.org/#search%7Cga%7C1%7Ccom.pi4j
-   *  [Downloads] http://pi4j.com/download.html
+   *  [Downloads] https://pi4j.com/download.html
 
 Snapshot builds are available from 
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
-   *  [Downloads] http://pi4j.com/download.html
+   *  [Downloads] https://pi4j.com/download.html
    
  
-Copyright (C) 2012-2018 Pi4J
+Copyright (C) 2012-2019 Pi4J
 
 ## LICENSE
  
@@ -37,7 +37,7 @@ Copyright (C) 2012-2018 Pi4J
 
 ## KNOWN ISSUES
 
-2018-04-23 :: 1.2-SNAPSHOT
+2018-04-23 :: 1.2
 
   *  As of 2018-04-23, We have removed support for the Pi4J native library statically compiled against WiringPi.
      for the Raspberry Pi platform.  You must now have WiringPi installed on your target Raspberry Pi system 
@@ -45,7 +45,7 @@ Copyright (C) 2012-2018 Pi4J
      in part because the WiringPi project now requests no static linking and because it would cause Pi4J to fail 
      on newer platforms when we were not able to get a new build released in a reasonable and timely manner.  This 
      change should be of a minimal negative impact now that WiringPi is included with the OS and users will benefit
-     from being able to take advantage of newer WirinPi builds without depending on a new Pi4J build. 
+     from being able to take advantage of newer WiringPi builds without depending on a new Pi4J build. 
 
 2016-07-26 :: 1.1
 
@@ -71,9 +71,15 @@ Copyright (C) 2012-2018 Pi4J
   *  Support for OrangePi and Synovoip BPI platforms is considered experimental and has had limited testing.  Not 
      all Pi4J features may be supported and/or working properly.
 
+
 ## IN DEVELOPMENT
 
-2018-04-23 :: 1.2-SNAPSHOT
+2019-02-27 :: 1.3-SNAPSHOT
+
+
+## RELEASES
+
+2019-02-27 :: 1.2
 
   *  Removed support for statically compiled wiringPi library (for Raspberry Pi).
   *  Added support for Raspberry Pi 3B+ 
@@ -86,6 +92,7 @@ Copyright (C) 2012-2018 Pi4J
   *  Added experimental support for OrangePi platform.
   *  Added experimental support for Synovoip BPI (BananaPi) platform.
   *  Added experimental support for NanoPi platform.
+  *  Fixed #438: ArrayIndex Out of Bounds when pin address address is >= 100  
   *  Fixed #278: wiringPiSetup*: You must only call this once per program run.
   *  Fixed #294; added java runtime and compiler check to pi4j helper script
   *  Fixed #291; W1Device name contains "\n"
@@ -98,8 +105,6 @@ Copyright (C) 2012-2018 Pi4J
   *  Fixed #356; SystemInfoProvider CPU temperature was divided by 1000 on OrangePi
   *  Fixed #272; SerialDataEvent should not fire when event.length() == 0
   *  Fixed #361; SerialFactory isShutdown() state not getting updated on new instance
-
-## RELEASES
 
 2016-07-26 :: 1.1
 

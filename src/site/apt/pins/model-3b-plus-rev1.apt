@@ -34,9 +34,9 @@ Pin Numbering - Raspberry Pi 3B+
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
 
-[../images/j8header-3b.png]
+[../images/j8header-3b-plus.png]
 
-  {{{../images/j8header-3b-large.png}(click here for hi-resolution image)}}
+  {{{../images/j8header-3b-plus-large.png}(click here for hi-resolution image)}}
 
 * Known Issues
 
@@ -55,6 +55,6 @@ Pin Numbering - Raspberry Pi 3B+
 
    * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
 
-   * {{{https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/}Click here for more information on the J8 header.}}
+   * {{{https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/}Click here for more information on the Raspberry Pi Model 3B+.}}
 
    * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}

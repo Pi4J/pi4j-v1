@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-device</artifactId>
 	<name>Pi4J :: Device Abstractions</name>
