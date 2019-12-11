@@ -72,6 +72,11 @@ Copyright (C) 2012-2019 Pi4J
   by the community.  We are removing these to allow Pi4J to focus solely on
   the raw I/O supported by the Raspberry Pi platform.
 
+## Building
+
+To build locally without needing a Raspberry, simple cross-compile:
+
+    RPI_CROSS_COMPILE=true mvn clean install -Prelease -DskipTests -Pall-platforms
 
 ## IN DEVELOPMENT
 
