@@ -548,9 +548,11 @@ public class GpioControllerImpl implements GpioController {
         }
 
         // if an existing pin has been previously created, then throw an error
-        for(GpioPin p : pins) {
-            if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
-                throw new GpioPinExistsException(pin);
+        synchronized(pins) {
+            for(GpioPin p : pins) {
+                if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
+                    throw new GpioPinExistsException(pin);
+                }
             }
         }
 
