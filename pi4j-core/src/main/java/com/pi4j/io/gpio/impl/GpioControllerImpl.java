@@ -27,6 +27,8 @@ package com.pi4j.io.gpio.impl;
  * #L%
  */
 
+import java.util.*;
+
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.exception.GpioPinExistsException;
@@ -34,8 +36,6 @@ import com.pi4j.io.gpio.exception.GpioPinNotProvisionedException;
 import com.pi4j.io.gpio.exception.PinProviderException;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
-
-import java.util.*;
 
 public class GpioControllerImpl implements GpioController {
 
@@ -546,9 +546,11 @@ public class GpioControllerImpl implements GpioController {
         }
 
         // if an existing pin has been previously created, then throw an error
-        for(GpioPin p : pins) {
-            if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
-                throw new GpioPinExistsException(pin);
+        synchronized (pins) {
+            for (GpioPin p : pins) {
+                if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
+                    throw new GpioPinExistsException(pin);
+                }
             }
         }
 
