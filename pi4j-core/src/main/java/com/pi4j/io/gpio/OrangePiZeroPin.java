@@ -57,7 +57,7 @@ public class OrangePiZeroPin extends PinProvider {
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
 
     protected static Pin createDigitalPin(int address, String name) {
-        return createDigitalPin(OrangePiGpioProvider.NAME, address, name);
+        return createDigitalPin(OrangePiZeroGpioProvider.NAME, address, name);
     }
 
     // *override* static method from subclass
