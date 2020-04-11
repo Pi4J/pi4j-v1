@@ -163,9 +163,12 @@ public class SerialPort {
             // ------------------------
             // ORANGEPI
             // ------------------------
-            // TODO : Implement serial for OrangePi boards
-			case OrangePi:
-				break;
+			case OrangePi: {
+				return OrangePiSerial.DEFAULT_COM_PORT;
+			}
+			case OrangePi_Zero: {
+				return OrangePiZeroSerial.DEFAULT_COM_PORT;
+			}
 
             // ------------------------
             // UNKNOWN

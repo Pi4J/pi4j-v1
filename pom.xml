@@ -182,6 +182,16 @@
         <orangepi.password>${pi4j.default.password}</orangepi.password>
         <orangepi.directory>${pi4j.default.directory}</orangepi.directory>
 
+        <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'OrangePiZero' PLATFORM -->
+        <orangepizero.build>false</orangepizero.build>
+        <orangepipizero.platform>orangepizero</orangepipizero.platform>
+        <orangepipizero.name>OrangePiZero</orangepipizero.name>
+        <orangepipizero.host>${pi4j.default.host}</orangepipizero.host>
+        <orangepipizero.port>${pi4j.default.port}</orangepipizero.port>
+        <orangepipizero.user>${pi4j.default.user}</orangepipizero.user>
+        <orangepipizero.password>${pi4j.default.password}</orangepipizero.password>
+        <orangepipizero.directory>${pi4j.default.directory}</orangepipizero.directory>
+
         <!-- DEFAULT Pi4J BUILD PROPERTIES FOR THE 'NanoPi' PLATFORM -->
         <nanopi.build>false</nanopi.build>
         <nanopi.platform>nanopi</nanopi.platform>
@@ -325,6 +335,7 @@
                 <bananapro.build>true</bananapro.build>
                 <odroid.build>true</odroid.build>
                 <orangepi.build>true</orangepi.build>
+                <orangepizero.build>true</orangepizero.build>
                 <bpi.build>true</bpi.build>
                 <nanopi.build>true</nanopi.build>
             </properties>
@@ -526,6 +537,22 @@
             </activation>
             <properties>
                 <orangepi.build>true</orangepi.build>
+            </properties>
+            <modules>
+                <module>pi4j-native</module>
+            </modules>
+        </profile>
+
+        <!-- SPECIAL PROFILE TO INCLUDE ORANGEPIZERO PLATFORM -->
+        <profile>
+            <id>orangepizero</id>
+            <activation>
+                <property>
+                    <name>release-build</name>
+                </property>
+            </activation>
+            <properties>
+                <orangepizero.build>true</orangepizero.build>
             </properties>
             <modules>
                 <module>pi4j-native</module>

@@ -79,6 +79,7 @@ public class SystemInfo {
         Odroid,
         //------------------------
         OrangePi,
+        OrangePi_Zero,
         //------------------------
         NanoPi_M1,
         NanoPi_M1_Plus,

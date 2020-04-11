@@ -1,11 +1,11 @@
-package com.pi4j.io.serial;
+package com.pi4j.io.gpio;
 
 /*
  * #%L
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  OrangePiSerial.java
+ * FILENAME      :  OrangePiZeroGpioProvider.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://www.pi4j.com/
@@ -29,23 +29,36 @@ package com.pi4j.io.serial;
  * #L%
  */
 
+import com.pi4j.platform.Platform;
+import com.pi4j.wiringpi.GpioInterruptListener;
+
 /**
- * This class simply exposed the available UART/serial port
- * address (device file paths) that are exposed on the OrangePi.
+ * OrangePiZero {@link GpioProvider} implementation.
+ *
+ * @author Robert Savage (<a
+ *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ * @author Balazs Matyas
  */
-public class OrangePiSerial {
+@SuppressWarnings("unused")
+public class OrangePiZeroGpioProvider extends WiringPiGpioProviderBase implements GpioProvider, GpioInterruptListener {
 
-    // (UART0)
-    public static final String UART0_COM_PORT = "/dev/ttyS0";
+    public static final String NAME = "OrangePiZero GPIO Provider";
 
-    // (UART2)
-    public static final String UART2_COM_PORT = "/dev/ttyS2";
+    /**
+     * Default Constructor
+     */
+    public OrangePiZeroGpioProvider() {
 
-    // (UART3)
-    public static final String UART3_COM_PORT = "/dev/ttyS3";
+        // configure the Pi4J platform to use the "bananapro" implementation
+        System.setProperty("pi4j.platform", Platform.ORANGEPIZERO.id());
 
-    // (UART7)
-    public static final String UART7_COM_PORT = "/dev/ttyS3";
+        // set wiringPi interface for internal use
+        // we will use the WiringPi pin number scheme with the wiringPi library
+        com.pi4j.wiringpi.Gpio.wiringPiSetup();
+    }
 
-    public static final String DEFAULT_COM_PORT = UART3_COM_PORT;
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }
