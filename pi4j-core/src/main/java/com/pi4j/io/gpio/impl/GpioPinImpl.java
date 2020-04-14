@@ -422,7 +422,7 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public void setDebounce(int debounce, PinState... state) {
         for (PinState ps : state) {
-            this.debounce.put(ps, new Integer(debounce));
+            this.debounce.put(ps, Integer.valueOf(debounce));
         }
     }
 

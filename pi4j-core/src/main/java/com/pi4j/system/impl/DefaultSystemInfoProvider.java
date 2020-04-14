@@ -148,7 +148,7 @@ public abstract class DefaultSystemInfoProvider extends SystemInfoProviderBase i
                     for(String part : parts){
                         part = part.trim();
                         if(!part.isEmpty() && !part.equalsIgnoreCase("Mem:")){
-                            values.add(new Long(part));
+                            values.add(Long.valueOf(part));
                         }
                     }
                 }
