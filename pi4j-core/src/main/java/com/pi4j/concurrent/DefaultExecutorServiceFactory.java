@@ -109,25 +109,6 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     }
 
     /**
-     * return a new instance of a single thread executor service
-     *
-     * This method is deprecated in favor of the getGpioEventExecutorService - which provides better guarantees around resource
-     * management
-     */
-    @Override
-    public ExecutorService newSingleThreadExecutorService() {
-
-        // create new single thread executor service
-        ExecutorService singleThreadExecutorService = Executors.newSingleThreadExecutor(getThreadFactory("pi4j-single-executor-%d"));
-
-        // add new instance to managed collection
-        singleThreadExecutorServices.add(singleThreadExecutorService);
-
-        // return new executor service
-        return singleThreadExecutorService;
-    }
-
-    /**
      * shutdown executor threads
      */
     public void shutdown() {

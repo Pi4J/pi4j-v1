@@ -37,7 +37,5 @@ public interface ExecutorServiceFactory
     public ScheduledExecutorService getScheduledExecutorService();
     public ExecutorService getGpioEventExecutorService();
 
-    @Deprecated
-    public ExecutorService newSingleThreadExecutorService();
     public void shutdown();
 }
