@@ -625,6 +625,7 @@ public class Gpio {
      * @return The return value is -1 if an error occurred (and errno will be set appropriately), 0
      *         if it timed out, or 1 on a successful interrupt event.
      */
+    @Deprecated
     public static native int waitForInterrupt(int pin, int timeout);
 
 
