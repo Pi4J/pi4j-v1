@@ -225,13 +225,6 @@ public class LinuxFile extends RandomAccessFile {
         return "64".equals(archDataModel) ? 8 : 4;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        close();
-
-        super.finalize();
-    }
-
     private synchronized IntBuffer getOffsetsBuffer(int size) {
         final int byteSize = size * 4;
         IntBuffer buf = localOffsetsBuffer.get();
@@ -321,7 +314,7 @@ public class LinuxFile extends RandomAccessFile {
         MappedByteBuffer dbb;
         try {
             dbb = (MappedByteBuffer)directByteBufferConstructor.newInstance(
-                    new Object[] { new Integer(size), new Long(addr), this.getFD(), unmapper });
+                    new Object[] { Integer.valueOf(size), Long.valueOf(addr), this.getFD(), unmapper });
         } catch (InstantiationException e) {
             throw new InternalError(e.getMessage());
         } catch (IllegalAccessException e) {
