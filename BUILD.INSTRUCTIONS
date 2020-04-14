@@ -9,7 +9,7 @@ Use the following command to build the Pi4J Java libraries.
 
 Use the following command to build the Pi4J Java libraries and the JNI native library.
 (Note that building the native code requires a SSH connection to a Raspberry Pi or other
-taregeted platform.  The connection and credentials to access the target platform can be
+targeted platform.  The connection and credentials to access the target platform can be
 defined in your maven settings XML file or included in the command line as shown below.)
 
   {platform-name} = raspberrypi
