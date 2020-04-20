@@ -61,4 +61,38 @@ public class OrangePiZeroGpioProvider extends WiringPiGpioProviderBase implement
     public String getName() {
         return NAME;
     }
+
+    @Override
+    public void export(Pin pin, PinMode mode, PinState defaultState) {
+        // it is not possible to export stat led
+        if (pin.getAddress() == OrangePiZeroPin.STAT_LED.getAddress()) {
+            // set the pin input/output mode
+            setMode(pin, mode);
+
+            return;
+        }
+
+        super.export(pin, mode, defaultState);
+    }
+
+    @Override
+    public boolean isExported(Pin pin) {
+        // it is not possible to export stat led
+        if (pin.getAddress() == OrangePiZeroPin.STAT_LED.getAddress()) {
+            return false;
+        }
+
+        return super.isExported(pin);
+    }
+
+    @Override
+    public void unexport(Pin pin) {
+        // it is not possible to export stat led
+        if (pin.getAddress() == OrangePiZeroPin.STAT_LED.getAddress()) {
+            return;
+        }
+
+        super.unexport(pin);
+    }
+
 }

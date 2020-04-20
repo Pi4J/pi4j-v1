@@ -4,7 +4,7 @@ package orangepizero;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Examples
- * FILENAME      :  GpioInputAllExample.java
+ * FILENAME      :  SoftPwmExample.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://www.pi4j.com/
@@ -34,26 +34,22 @@ import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
-import com.pi4j.util.ConsoleColor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This example code demonstrates how to perform simple GPIO
- * pin state reading on the OrangePiZero platform fro all pins.
+ * <p>
+ * This example code demonstrates how to setup a software emulated PWM pin using the OrangePiZero GPIO pins.
+ * </p>
  *
  * @author Robert Savage
  * @author Balazs Matyas
  */
-public class GpioInputAllExample {
+public class SoftPwmExample {
 
     /**
-     * [ARGUMENT/OPTION "--pull (up|down|off)" | "-l (up|down|off)" | "--up" | "--down" ]
-     * This example program accepts an optional argument for specifying pin pull resistance.
-     * Supported values: "up|down" (or simply "1|0").   If no value is specified in the command
-     * argument, then the pin pull resistance will be set to PULL_UP by default.
-     * -- EXAMPLES: "--pull up", "-pull down", "--pull off", "--up", "--down", "-pull 0", "--pull 1", "-l up", "-l down".
+     * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ]
+     * This example program accepts an optional argument for specifying the GPIO pin (by number)
+     * to use with this GPIO listener example. If no argument is provided, then GPIO #1 will be used.
+     * -- EXAMPLE: "--pin 4" or "-p 0".
      *
      * @param args
      * @throws InterruptedException
@@ -74,7 +70,7 @@ public class GpioInputAllExample {
         final Console console = new Console();
 
         // print program title/header
-        console.title("<-- The Pi4J Project -->", "GPIO Input (ALL PINS) Example");
+        console.title("<-- The Pi4J Project -->", "SoftPWM Example (Software-driven PWM Emulation)");
 
         // allow for user to exit program using CTRL-C
         console.promptForExit();
@@ -82,46 +78,54 @@ public class GpioInputAllExample {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // by default we will use gpio pin PULL-UP; however, if an argument
-        // has been provided, then use the specified pull resistance
-        PinPullResistance pull = CommandArgumentParser.getPinPullResistance(
-                PinPullResistance.PULL_UP,  // default pin pull resistance if no pull argument found
-                args);                      // argument array to search in
-
         // ####################################################################
         //
         // When provisioning a pin, use the OrangePiZeroPin class.
         //
         // ####################################################################
 
-        List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
+        // by default we will use gpio pin #01; however, if an argument
+        // has been provided, then lookup the pin by address
+        Pin pin = CommandArgumentParser.getPin(
+                OrangePiZeroPin.class,    // pin provider class to obtain pin instance from
+                OrangePiZeroPin.GPIO_01,  // default pin if no pin argument found
+                args);                // argument array to search in
 
-        // provision all pins that support digital inputs
-        for (Pin pin : OrangePiZeroPin.allPins(PinMode.DIGITAL_INPUT)) {
-            try {
-                GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
-                provisionedPin.setShutdownOptions(true); // unexport pin on program shutdown
-                provisionedPins.add(provisionedPin);     // add provisioned pin to collection
-            }
-            catch (Exception ex){
-                System.err.println(ex.getMessage());
-            }
-        }
+        // we will provision the pin as a software emulated PWM output
+        // pins that support hardware PWM should be provisioned as normal PWM outputs
+        // each software emulated PWM pin does consume additional overhead in
+        // terms of CPU usage.
+        //
+        // Software emulated PWM pins support a range between 0 (off) and 100 (max) by default.
+        //
+        // Please see: http://wiringpi.com/reference/software-pwm-library/
+        // for more details on software emulated PWM
+        GpioPinPwmOutput pwm = gpio.provisionSoftPwmOutputPin(pin);
+
+        // optionally set the PWM range (100 is default range)
+        pwm.setPwmRange(100);
 
         // prompt user that we are ready
-        console.println(" ... Successfully provisioned all GPIO input pins");
-        console.emptyLine();
-        console.box("The GPIO input pins states will be displayed below.");
+        console.println(" ... Successfully provisioned PWM pin: " + pwm.toString());
         console.emptyLine();
 
-        // display pin states for all pins
-        for(GpioPinDigitalInput input : provisionedPins) {
-            console.println(" [" + input.toString() + "] digital state is: " + ConsoleColor.conditional(
-                    input.getState().isHigh(), // conditional expression
-                    ConsoleColor.GREEN,        // positive conditional color
-                    ConsoleColor.RED,          // negative conditional color
-                    input.getState()));
-        }
+        // set the PWM rate to 100 (FULLY ON)
+        pwm.setPwm(100);
+        console.println("Software emulated PWM rate is: " + pwm.getPwm());
+
+        console.println("Press ENTER to set the PWM to a rate of 50");
+        System.console().readLine();
+
+        // set the PWM rate to 50 (1/2 DUTY CYCLE)
+        pwm.setPwm(50);
+        console.println("Software emulated PWM rate is: " + pwm.getPwm());
+
+        console.println("Press ENTER to set the PWM to a rate to 0 (stop PWM)");
+        System.console().readLine();
+
+        // set the PWM rate to 0 (FULLY OFF)
+        pwm.setPwm(0);
+        console.println("Software emulated PWM rate is: " + pwm.getPwm());
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

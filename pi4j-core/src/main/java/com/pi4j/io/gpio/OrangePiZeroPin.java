@@ -29,6 +29,8 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
+import java.util.EnumSet;
+
 /**
  * OrangePiZero pin definitions for (default) WiringPi pin numbering scheme.
  *
@@ -42,12 +44,14 @@ public class OrangePiZeroPin extends PinProvider {
     public static final Pin GPIO_01 = createDigitalPin(1, "GPIO 1");
     public static final Pin GPIO_02 = createDigitalPin(2, "GPIO 2");
     public static final Pin GPIO_03 = createDigitalPin(3, "GPIO 3");
-    public static final Pin GPIO_04 = createDigitalPin(4, "GPIO 4");
-    public static final Pin GPIO_05 = createDigitalPin(5, "GPIO 5");
+    public static final Pin GPIO_04 = createDigitalOputputPin(4, "GPIO 4"); // this pin is permanently pulled up, i2c1
+    public static final Pin GPIO_05 = createDigitalOputputPin(5, "GPIO 5"); // this pin is permanently pulled up, i2c1
     public static final Pin GPIO_06 = createDigitalPin(6, "GPIO 6");
     public static final Pin GPIO_07 = createDigitalPin(7, "GPIO 7");
-    public static final Pin GPIO_08 = createDigitalPin(8, "GPIO 8");
-    public static final Pin GPIO_09 = createDigitalPin(9, "GPIO 9");
+
+    public static final Pin GPIO_08 = createDigitalOputputPin(8, "GPIO 8"); // this pin is permanently pulled up, i2c0
+    public static final Pin GPIO_09 = createDigitalOputputPin(9, "GPIO 9"); // this pin is permanently pulled up, i2c0
+
     public static final Pin GPIO_10 = createDigitalPin(10, "GPIO 10");
     public static final Pin GPIO_11 = createDigitalPin(11, "GPIO 11");
     public static final Pin GPIO_12 = createDigitalPin(12, "GPIO 12");
@@ -56,8 +60,18 @@ public class OrangePiZeroPin extends PinProvider {
     public static final Pin GPIO_15 = createDigitalPin(15, "GPIO 15");
     public static final Pin GPIO_16 = createDigitalPin(16, "GPIO 16");
 
+    public static final Pin STAT_LED = createDigitalOputputPin(30, "STAT LED");
+
     protected static Pin createDigitalPin(int address, String name) {
         return createDigitalPin(OrangePiZeroGpioProvider.NAME, address, name);
+    }
+
+    protected static Pin createDigitalOputputPin(int address, String name) {
+        return createPin(OrangePiZeroGpioProvider.NAME, address, name,
+                EnumSet.of(PinMode.DIGITAL_OUTPUT, PinMode.SOFT_PWM_OUTPUT),
+                EnumSet.noneOf(PinPullResistance.class),
+                EnumSet.noneOf(PinEdge.class)
+        );
     }
 
     // *override* static method from subclass
