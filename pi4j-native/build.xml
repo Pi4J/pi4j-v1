@@ -158,6 +158,17 @@
                            directory="${orangepi.directory}"/>
     </target>
 
+    <!-- remote build target for OrangePiZero platform -->
+    <target name="orangepizero-remote" if="${orangepizero.build}">
+        <pi4j-build-remote platform="${orangepizero.platform}"
+                           name="${orangepizero.name}"
+                           host="${orangepizero.host}"
+                           port="${orangepizero.port}"
+                           user="${orangepizero.user}"
+                           password="${orangepizero.password}"
+                           directory="${orangepizero.directory}"/>
+    </target>
+
     <!-- remote build target for NanoPi platform -->
     <target name="nanopi-remote" if="${nanopi.build}">
         <pi4j-build-remote platform="${nanopi.platform}"
@@ -208,6 +219,12 @@
     <target name="orangepi-local" if="${orangepi.build}">
         <pi4j-build-local platform="${orangepi.platform}"
                           name="${orangepi.name}"/>
+    </target>
+
+    <!-- local build target for OrangePiZero platform -->
+    <target name="orangepizero-local" if="${orangepizero.build}">
+        <pi4j-build-local platform="${orangepizero.platform}"
+                          name="${orangepizero.name}"/>
     </target>
 
     <!-- local build target for NanoPi platform -->
@@ -262,6 +279,13 @@
                           args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
     </target>
 
+    <!-- local build target for OrangePiZero platform using cross-compiler -->
+    <target name="orangepizero-cross-compile" if="${orangepizero.build}">
+        <pi4j-build-local platform="${orangepizero.platform}"
+                          name="${orangepizero.name}"
+                          args="ARCH=arm CC=arm-linux-gnueabihf-gcc"/>
+    </target>
+
     <!-- local build target for NanoPi platform using cross-compiler -->
     <target name="nanopi-cross-compile" if="${nanopi.build}">
         <pi4j-build-local platform="${nanopi.platform}"
@@ -282,6 +306,7 @@
         <antcall target="bananapro-remote"/>
         <antcall target="bpi-remote"/>
         <antcall target="orangepi-remote"/>
+        <antcall target="orangepizero-remote"/>
         <antcall target="nanopi-remote"/>
     </target>
 
@@ -302,6 +327,7 @@
         <antcall target="bananapro-local"/>
         <antcall target="bpi-local"/>
         <antcall target="orangepi-local"/>
+        <antcall target="orangepizero-local"/>
         <antcall target="nanopi-local"/>
     </target>
 
@@ -323,6 +349,7 @@
         <antcall target="bananapro-cross-compile"/>
         <antcall target="bpi-cross-compile"/>
         <antcall target="orangepi-cross-compile"/>
+        <antcall target="orangepizero-cross-compile"/>
         <antcall target="nanopi-cross-compile"/>
 	</target>
 

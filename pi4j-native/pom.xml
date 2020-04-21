@@ -218,6 +218,14 @@
                                     <property name="orangepi.password" value="${orangepi.password}"/>
                                     <property name="orangepi.directory" value="${orangepi.directory}"/>
 
+                                    <!-- OrangePiZero Platform Properties -->
+                                    <property name="orangepizero.name" value="${orangepizero.name}"/>
+                                    <property name="orangepizero.host" value="${orangepizero.host}"/>
+                                    <property name="orangepizero.port" value="${orangepizero.port}"/>
+                                    <property name="orangepizero.user" value="${orangepizero.user}"/>
+                                    <property name="orangepizero.password" value="${orangepizero.password}"/>
+                                    <property name="orangepizero.directory" value="${orangepizero.directory}"/>
+
                                     <!-- NanoPi Platform Properties -->
                                     <property name="nanopi.name" value="${nanopi.name}"/>
                                     <property name="nanopi.host" value="${nanopi.host}"/>
@@ -295,6 +303,15 @@
                                     <then>
                                         <attachartifact file="${project.build.directory}/native/lib/orangepi/static/libpi4j.so" classifier="orangepi-static" type="so"/>
                                         <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
+                                    </then>
+                                </if>
+
+                                <!-- Attach 'libpi4j.so' for OrangePiZero -->
+                                <if>
+                                    <equals arg1="${orangepizero.build}" arg2="true" />
+                                    <then>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepizero/static/libpi4j.so" classifier="orangepizero-static" type="so"/>
+                                        <attachartifact file="${project.build.directory}/native/lib/orangepizero/dynamic/libpi4j.so" classifier="orangepizero-dynamic" type="so"/>
                                     </then>
                                 </if>
 

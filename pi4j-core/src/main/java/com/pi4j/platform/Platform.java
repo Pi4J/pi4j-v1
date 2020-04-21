@@ -52,6 +52,7 @@ public enum Platform {
     BPI("bpi", "Synovoip BPI"),
     ODROID("odroid", "Odroid"),
     ORANGEPI("orangepi", "OrangePi"),
+    ORANGEPIZERO("orangepizero", "OrangePiZero"),
     NANOPI("nanopi", "NanoPi"),
     SIMULATED("simulated", "Simulated");
 
@@ -139,6 +140,9 @@ public enum Platform {
             case ORANGEPI: {
                 return new OrangePiGpioProvider();
             }
+            case ORANGEPIZERO: {
+                return new OrangePiZeroGpioProvider();
+            }
             case NANOPI: {
                 return new NanoPiGpioProvider();
             }
@@ -184,6 +188,9 @@ public enum Platform {
             }
             case ORANGEPI: {
                 return new OrangePiSystemInfoProvider();
+            }
+            case ORANGEPIZERO: {
+                return new OrangePiZeroSystemInfoProvider();
             }
             case NANOPI: {
                 return new NanoPiSystemInfoProvider();

@@ -162,6 +162,12 @@ public class GpioTest {
                 gpioOutputsTest(pins);
                 break;
 			}
+            case ORANGEPIZERO:{
+                Pin pins[] = OrangePiZeroPin.allPins();
+                Arrays.sort(pins);
+                gpioOutputsTest(pins);
+                break;
+            }
 			default:
 				break;
 	        }

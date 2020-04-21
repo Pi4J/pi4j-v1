@@ -5,7 +5,7 @@ package com.pi4j.io.serial;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  OrangePiSerial.java
+ * FILENAME      :  OrangePiZeroSerial.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  https://www.pi4j.com/
@@ -31,9 +31,9 @@ package com.pi4j.io.serial;
 
 /**
  * This class simply exposed the available UART/serial port
- * address (device file paths) that are exposed on the OrangePi.
+ * address (device file paths) that are exposed on the OrangePiZero.
  */
-public class OrangePiSerial {
+public class OrangePiZeroSerial {
 
     // (UART0)
     public static final String UART0_COM_PORT = "/dev/ttyS0";
