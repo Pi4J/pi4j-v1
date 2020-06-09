@@ -183,7 +183,7 @@ public class SpiDeviceImpl implements SpiDevice {
 
         synchronized (channel) {
                 // write the bytes from the temporary buffer to the SPI channel
-                if (Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) <= 0) {
+                if (Spi.wiringPiSPIDataRW(channel.getChannel(), buffer) < 0) {
                     throw new IOException("Failed to write data to SPI channel: " + channel.getChannel());
                 }
             }
