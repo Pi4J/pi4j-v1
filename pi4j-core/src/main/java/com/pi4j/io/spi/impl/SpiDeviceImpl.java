@@ -33,6 +33,7 @@ import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.SpiMode;
 import com.pi4j.wiringpi.Spi;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,6 +60,12 @@ public class SpiDeviceImpl implements SpiDevice {
     public SpiDeviceImpl(SpiChannel channel, int speed, SpiMode mode) throws IOException {
         this.channel = channel;
         this.mode = mode;
+
+        final File devfs = new File("/dev/spidev0." + channel.getChannel());
+        if (!devfs.exists() || !devfs.canRead() || !devfs.canWrite()) {
+            throw new IOException("SPI port setup failed, no SPI available.");
+        }
+
         try {
             int fd = Spi.wiringPiSPISetupMode(channel.getChannel(), speed, mode.getMode());
             if (fd <= -1) {
