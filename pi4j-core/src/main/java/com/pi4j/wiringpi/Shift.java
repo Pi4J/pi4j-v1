@@ -70,7 +70,7 @@ public class Shift {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**

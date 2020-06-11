@@ -27,14 +27,14 @@ package com.pi4j.jni;
  * #L%
  */
 
-import com.pi4j.util.NativeLibraryLoader;
-
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+
+import com.pi4j.util.NativeLibraryLoader;
 
 /**
  *  THIS IS CURRENTLY A NO-IMPL STUB.
@@ -96,7 +96,7 @@ public class Serial {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**

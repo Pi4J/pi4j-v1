@@ -22,7 +22,15 @@
         <dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-native</artifactId>
-			<classifier>raspberrypi-dynamic</classifier>
+			<classifier>raspberrypi-dynamic-armhf</classifier>
+			<version>${project.version}</version>
+			<type>so</type>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-native</artifactId>
+			<classifier>raspberrypi-dynamic-aarch64</classifier>
 			<version>${project.version}</version>
 			<type>so</type>
 			<scope>provided</scope>
@@ -125,11 +133,21 @@
                                     <groupId>com.pi4j</groupId>
                                     <artifactId>pi4j-native</artifactId>
                                     <version>${project.version}</version>
-                                    <classifier>raspberrypi-dynamic</classifier>
+                                    <classifier>raspberrypi-dynamic-armhf</classifier>
                                     <type>so</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/lib/raspberrypi/dynamic</outputDirectory>
-                                    <destFileName>libpi4j.so</destFileName>
+                                    <destFileName>libpi4j-armhf.so</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.pi4j</groupId>
+                                    <artifactId>pi4j-native</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>raspberrypi-dynamic-aarch64</classifier>
+                                    <type>so</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib/raspberrypi/dynamic</outputDirectory>
+                                    <destFileName>libpi4j-aarch64.so</destFileName>
                                 </artifactItem>
 
 							</artifactItems>

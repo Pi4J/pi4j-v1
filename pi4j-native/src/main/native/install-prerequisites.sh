@@ -30,11 +30,12 @@
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
-if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
+if [[ ! -z "`type apt-get 2>/dev/null;`" ]] ; then
 
   # GCC
   GCC_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc|grep "install ok installed")
   if [[ "" == "$GCC_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'gcc'...";
     sudo apt-get --force-yes --yes install gcc
   else
     echo " [PREREQUISITE] 'gcc' already installed.";
@@ -43,6 +44,7 @@ if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
   # GIT
   GIT_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' git-core|grep "install ok installed")
   if [[ "" == "$GIT_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'git-core'...";
     sudo apt-get --force-yes --yes install git-core
   else
     echo " [PREREQUISITE] 'git-core' already installed.";
@@ -51,8 +53,31 @@ if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
   # TREE
   TREE_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' tree|grep "install ok installed")
   if [[ "" == "$TREE_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'tree'...";
     sudo apt-get --force-yes --yes install tree
   else
     echo " [PREREQUISITE] 'tree' already installed.";
   fi
+
+  if [[ "${CROSS_COMPILE}" == "true" ]] ; then
+
+    # gcc-arm-linux-gnueabihf
+    INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc-arm-linux-gnueabihf)
+    if [[ "$?" == "1" ]] ; then
+      echo " [PREREQUISITE] installing 'gcc-arm-linux-gnueabihf'...";
+      sudo apt-get --force-yes --yes install gcc-arm-linux-gnueabihf
+    else
+      echo " [PREREQUISITE] 'gcc-arm-linux-gnueabihf' already installed.";
+    fi
+
+    # gcc-aarch64-linux-gnu
+    INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc-aarch64-linux-gnu)
+    if [[ "$?" == "1" ]] ; then
+      echo " [PREREQUISITE] installing 'gcc-aarch64-linux-gnu'...";
+      sudo apt-get --force-yes --yes install gcc-aarch64-linux-gnu
+    else
+      echo " [PREREQUISITE] 'gcc-aarch64-linux-gnu' already installed.";
+    fi
+  fi
+
 fi

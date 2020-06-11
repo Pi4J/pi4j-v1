@@ -27,22 +27,18 @@ package com.pi4j.io.file;
  * #L%
  */
 
-import com.pi4j.util.NativeLibraryLoader;
-
-// TODO :: REMOVE JDK INTERNAL REFS
-import jdk.internal.misc.SharedSecrets;
-import jdk.internal.ref.Cleaner;
-
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import com.pi4j.util.NativeLibraryLoader;
+import jdk.internal.misc.SharedSecrets;
 
-import java.nio.*;
+// TODO :: REMOVE JDK INTERNAL REFS
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
@@ -59,36 +55,9 @@ public class LinuxFile extends RandomAccessFile {
     public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<>();
     public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<>();
 
-    private static final Constructor<?> directByteBufferConstructor;
-
-    private static final Field addressField;
-    private static final Field capacityField;
-    private static final Field cleanerField;
-
     static {
-        try {
-            // Load the platform library
-            NativeLibraryLoader.load("libpi4j.so");
-
-            Class<?> dbb = Class.forName("java.nio.DirectByteBuffer");
-
-            addressField = Buffer.class.getDeclaredField("address");
-            capacityField = Buffer.class.getDeclaredField("capacity");
-            cleanerField = dbb.getDeclaredField("cleaner");
-            directByteBufferConstructor = dbb.getDeclaredConstructor(
-                    new Class[] { int.class, long.class, FileDescriptor.class, Runnable.class });
-
-            addressField.setAccessible(true);
-            capacityField.setAccessible(true);
-            cleanerField.setAccessible(true);
-            directByteBufferConstructor.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            throw new InternalError(e.getMessage());
-        } catch (ClassNotFoundException e) {
-            throw new InternalError(e.getMessage());
-        } catch (NoSuchMethodException e) {
-            throw new InternalError(e.getMessage());
-        }
+        // Load the platform library
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**
@@ -266,72 +235,6 @@ public class LinuxFile extends RandomAccessFile {
         return buf;
     }
 
-    /**
-     * Direct memory mapping from a file descriptor.
-     * This is normally possible through the local FileChannel,
-     * but NIO will try to truncate files if they don't report
-     * a correct size. This will avoid that.
-     *
-     *
-     * @param length length of desired mapping
-     * @param prot protocol used for mapping
-     * @param flags flags for mapping
-     * @param offset offset in file for mapping
-     * @return direct mapped ByteBuffer
-     * @throws IOException
-     */
-    public ByteBuffer mmap(int length, MMAPProt prot, MMAPFlags flags, int offset) throws IOException {
-        long pointer = mmap(getFileDescriptor(), length, prot.flag, flags.flag, offset);
-
-        if(pointer == -1)
-            throw new LinuxFileException();
-
-        return newMappedByteBuffer(length, pointer, () -> {
-            munmapDirect(pointer, length);
-        });
-    }
-
-    public static void munmap(ByteBuffer mappedBuffer) throws IOException {
-        if(!mappedBuffer.isDirect())
-            throw new IllegalArgumentException("Must be a mapped direct buffer");
-
-        try {
-            long address = addressField.getLong(mappedBuffer);
-            int capacity = capacityField.getInt(mappedBuffer);
-
-            if(address == 0 || capacity == 0) return;
-
-            //reset address field first
-            addressField.setLong(mappedBuffer, 0);
-            capacityField.setInt(mappedBuffer, 0);
-
-            //reset mark and position to new 0 capacity
-            mappedBuffer.clear();
-
-            //clean object so it doesnt clean on collection
-            ((Cleaner)cleanerField.get(mappedBuffer)).clean();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new InternalError(e.getMessage());
-        }
-    }
-
-    private MappedByteBuffer newMappedByteBuffer(int size, long addr, Runnable unmapper) throws IOException
-    {
-        MappedByteBuffer dbb;
-        try {
-            dbb = (MappedByteBuffer)directByteBufferConstructor.newInstance(
-                    new Object[] { new Integer(size), new Long(addr), this.getFD(), unmapper });
-        } catch (InstantiationException e) {
-            throw new InternalError(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new InternalError(e.getMessage());
-        } catch (InvocationTargetException e) {
-            throw new InternalError(e.getMessage());
-        }
-        return dbb;
-    }
-
     public static class ScratchBufferOverrun extends IllegalArgumentException {
 		private static final long serialVersionUID = -418203522640826177L;
 
@@ -364,44 +267,11 @@ public class LinuxFile extends RandomAccessFile {
         }
     }
 
-    public enum MMAPProt {
-        NONE(0),
-        READ(1),
-        WRITE(2),
-        EXEC(4),
-        RW(READ.flag | WRITE.flag),
-        RX(READ.flag | EXEC.flag),
-        RWX(READ.flag | WRITE.flag | EXEC.flag),
-        WX(WRITE.flag | EXEC.flag);
-
-        public final int flag;
-
-        MMAPProt(int flag) {
-            this.flag = flag;
-        }
-    }
-
-    public enum MMAPFlags {
-        SHARED(1),
-        PRIVATE(2),
-        SHARED_PRIVATE(SHARED.flag | PRIVATE.flag);
-
-        public final int flag;
-
-        MMAPFlags(int flag) {
-            this.flag = flag;
-        }
-    }
-
     public static native int errno();
 
     public static native String strerror(int code);
 
     protected static native int directIOCTL(int fd, long command, int value);
-
-    protected static native long mmap(int fd, int length, int prot, int flags, int offset);
-
-    protected static native int munmapDirect(long address, long capacity);
 
     protected static native int directIOCTLStructure(int fd, long command, ByteBuffer data, int dataOffset, IntBuffer offsetMap, int offsetMapOffset, int offsetCapacity);
 }

@@ -28,10 +28,10 @@ package com.pi4j.wiringpi;
  */
 
 
-import com.pi4j.util.NativeLibraryLoader;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.pi4j.util.NativeLibraryLoader;
 
 /**
  * <[>WiringPi GPIO Control</[>
@@ -184,7 +184,7 @@ public class Gpio {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**

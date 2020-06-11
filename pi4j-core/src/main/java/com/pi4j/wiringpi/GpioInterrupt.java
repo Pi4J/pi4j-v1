@@ -28,9 +28,9 @@ package com.pi4j.wiringpi;
  */
 
 
-import com.pi4j.util.NativeLibraryLoader;
-
 import java.util.Vector;
+
+import com.pi4j.util.NativeLibraryLoader;
 
 /**
  * <p>
@@ -67,7 +67,7 @@ public class GpioInterrupt {
 
     static {
         // Load the platform library
-        NativeLibraryLoader.load("libpi4j.so");
+        NativeLibraryLoader.load("libpi4j");
     }
 
     /**

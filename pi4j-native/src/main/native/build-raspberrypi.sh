@@ -28,6 +28,9 @@
 # #L%
 ###
 
+echo
+echo
+
 # set executable permissions on build scripts
 chmod +x install-prerequisites.sh
 chmod +x wiringpi-build.sh
@@ -37,7 +40,7 @@ chmod +x wiringpi-build.sh
 # ------------------------------------------------------
 ARCHITECTURE=$(uname -m)
 echo "PLATFORM ARCH: $ARCHITECTURE"
-if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
+if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") || ("$ARCHITECTURE" = "aarch64") || ("$CROSS_COMPILE" = "true" ) ]]; then
    echo
    echo "**********************************************************************"
    echo "*                                                                    *"
@@ -88,14 +91,14 @@ export WIRINGPI_STATIC=0
 rm --recursive --force wiringPi
 ./wiringpi-build.sh $@
 
-# compile the 'lib4j.so' JNI native shared library with dynamically linked dependencies
+# compile the 'libpi4j.so' JNI native shared library with dynamically linked dependencies
 echo
 echo "=============================================="
-echo "Building Pi4J JNI library (dynamically linked)"
+echo "Building Pi4J JNI library (dynamically linked) for arch ${ARCH}"
 echo "=============================================="
 echo
 mkdir -p lib/$WIRINGPI_PLATFORM/dynamic
-make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j.so $@
+make clean dynamic TARGET=lib/$WIRINGPI_PLATFORM/dynamic/libpi4j-${ARCH}.so $@
 
 echo
 echo "**********************************************************************"

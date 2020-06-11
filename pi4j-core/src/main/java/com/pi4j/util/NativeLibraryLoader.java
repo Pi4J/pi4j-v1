@@ -27,8 +27,6 @@ package com.pi4j.util;
  * #L%
  */
 
-import com.pi4j.platform.Platform;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +42,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.pi4j.platform.Platform;
+
 public class NativeLibraryLoader {
 
 	private static final Set<String> loadedLibraries = new TreeSet<>();
@@ -55,7 +55,7 @@ public class NativeLibraryLoader {
 		// forbid object construction
 	}
 
-	public static synchronized void load(String fileName) {
+	public static synchronized void load(String libraryName) {
 		// check for debug property; if found enable all logging levels
 		if (!initialized) {
 			initialized = true;
@@ -79,33 +79,45 @@ public class NativeLibraryLoader {
 		}
 
 		// first, make sure that this library has not already been previously loaded
-		if (loadedLibraries.contains(fileName)) {
-			logger.fine("Library [" + fileName + "] has already been loaded; no need to load again.");
+		if (loadedLibraries.contains(libraryName)) {
+			logger.fine("Library [" + libraryName + "] has already been loaded; no need to load again.");
 			return;
 		}
 
-		loadedLibraries.add(fileName);
+		loadedLibraries.add(libraryName);
 
-        //
-        // path = /lib/{platform}/{linking:static|dynamic}/{filename}
-        //
-        String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
+		String osArch = System.getProperty("os.arch");
+		switch (osArch) {
+		case "arm":
+			osArch = "armhf";
+			break;
+		case "aarch64":
+			break;
+		default:
+			throw new IllegalStateException("Unknown os.arch value " + osArch);
+		}
 
-        // NOTE: As of 2018-04-23, Pi4J no longer includes
-        //       a statically linked wiringPi lib for the Raspberry Pi platform.  The
-        //       default linking for the Raspberry Pi platform should always be "dynamic"
-        String linking = System.getProperty("pi4j.linking",
-                platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+		//
+		// path = /lib/{platform}/{linking:static|dynamic}/{filename}-{arch}.so
+		//
+		String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
 
-		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
-		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
+		// NOTE: As of 2018-04-23, Pi4J no longer includes
+		//       a statically linked wiringPi lib for the Raspberry Pi platform.  The
+		//       default linking for the Raspberry Pi platform should always be "dynamic"
+		String linking = System.getProperty("pi4j.linking",
+				platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+
+		String path = "/lib/" + platform + "/" + linking + "/" + libraryName + "-" + osArch + ".so";
+		logger.fine("Attempting to load [" + libraryName + "] using path: [" + path + "]");
 		try {
 			loadLibraryFromClasspath(path);
-			logger.fine("Library [" + fileName + "] loaded successfully using embedded resource file: [" + path + "]");
+			logger.fine(
+					"Library [" + libraryName + "] loaded successfully using embedded resource file: [" + path + "]");
 		} catch (Exception | UnsatisfiedLinkError e) {
-			logger.log(Level.SEVERE, "Unable to load [" + fileName + "] using path: [" + path + "]", e);
+			logger.log(Level.SEVERE, "Unable to load [" + libraryName + "] using path: [" + path + "]", e);
 			// either way, we did what we could, no need to remove now the library from the loaded libraries
-            // since we run inside one VM and nothing could possibly change, so there is no point in
+			// since we run inside one VM and nothing could possibly change, so there is no point in
 			// trying out this logic again
 		}
 	}
@@ -113,19 +125,19 @@ public class NativeLibraryLoader {
 	/**
 	 * Loads library from classpath
 	 *
-	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is
-     * deleted after exiting. Method uses String as filename because the pathname is
-	 * "abstract", not system-dependent.
+	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted
+	 * after exiting. Method uses String as filename because the pathname is "abstract", not system-dependent.
 	 *
 	 * @param path
-	 *            The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 * 		The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+	 *
 	 * @throws IOException
-	 *             If temporary file creation or read/write operation fails
+	 * 		If temporary file creation or read/write operation fails
 	 * @throws IllegalArgumentException
-	 *             If source file (param path) does not exist
+	 * 		If source file (param path) does not exist
 	 * @throws IllegalArgumentException
-	 *             If the path is not absolute or if the filename is shorter than three characters (restriction
-     *             of {@see File#createTempFile(java.lang.String, java.lang.String)}).
+	 * 		If the path is not absolute or if the filename is shorter than three characters (restriction of {@see
+	 *        File#createTempFile(java.lang.String, java.lang.String)}).
 	 */
 	public static void loadLibraryFromClasspath(String path) throws IOException {
 		Path inputPath = Paths.get(path);
@@ -137,7 +149,8 @@ public class NativeLibraryLoader {
 		String fileNameFull = inputPath.getFileName().toString();
 		int dotIndex = fileNameFull.indexOf('.');
 		if (dotIndex < 0 || dotIndex >= fileNameFull.length() - 1) {
-			throw new IllegalArgumentException("The path has to end with a file name and extension, but found: " + fileNameFull);
+			throw new IllegalArgumentException(
+					"The path has to end with a file name and extension, but found: " + fileNameFull);
 		}
 
 		String fileName = fileNameFull.substring(0, dotIndex);
