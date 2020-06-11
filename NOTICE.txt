@@ -3,7 +3,7 @@
    =========================================================================
 
    Pi4J Library
-   Copyright (C) 2012-2019 Pi4J.com
+   Copyright (C) 2012-2020 Pi4J.com
 
    This product includes software developed at:
    The Pi4J Project (https://www.pi4j.com/).

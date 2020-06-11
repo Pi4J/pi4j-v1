@@ -18,7 +18,7 @@ Snapshot builds are available from
    *  [Downloads] https://pi4j.com/download.html
    
  
-Copyright (C) 2012-2019 Pi4J
+Copyright (C) 2012-2020 Pi4J
 
 ## LICENSE
  
@@ -37,6 +37,11 @@ Copyright (C) 2012-2019 Pi4J
 
 ## KNOWN ISSUES
 
+2020-06-11 :: 1.3
+
+  *  Pi4J v1.3 must be compiled using JDK 1.8.  This codebase is not compatible with JDK9 and newer.  Pi4J v1.4 
+     and later will support newer JDKs.
+  
 2018-04-23 :: 1.2
 
   *  As of 2018-04-23, We have removed support for the Pi4J native library statically compiled against WiringPi.
@@ -75,7 +80,7 @@ Copyright (C) 2012-2019 Pi4J
 ## IN DEVELOPMENT
 
 2019-02-27 :: 1.3-SNAPSHOT
-
+ *  Must be compiled using JDK 1.8
 
 ## RELEASES
 
