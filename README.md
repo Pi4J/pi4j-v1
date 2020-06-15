@@ -76,6 +76,11 @@ Copyright (C) 2012-2020 Pi4J
   *  Support for OrangePi and Synovoip BPI platforms is considered experimental and has had limited testing.  Not 
      all Pi4J features may be supported and/or working properly.
 
+## Building
+
+To build locally without needing a Raspberry, simple cross-compile:
+
+    RPI_CROSS_COMPILE=true mvn clean install -Prelease -DskipTests -Pall-platforms
 
 ## IN DEVELOPMENT
 
