@@ -19,7 +19,7 @@ Snapshot builds are available from:
    *  [Downloads] https://pi4j.com/download.html
 
 
-Copyright (C) 2012-2019 Pi4J
+Copyright (C) 2012-2020 Pi4J
 
 ## LICENSE
 
@@ -80,9 +80,10 @@ To build locally without needing a Raspberry, simple cross-compile:
 
 ## IN DEVELOPMENT
 
-2019-07-03 :: 1.4-SNAPSHOT
+2020-06-20 :: 1.4-SNAPSHOT
 
   * Changed project to Apache License, Version 2.0
+  * Added support for 64-bit architecture.
   * Removed `pi4j-device` library.  _(See comments above)_
   * Removed `pi4j-gpio-extension` library.  _(See comments above)_
   * Removed platform support for `Odroid`.  _(See comments above)_
