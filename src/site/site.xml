@@ -21,7 +21,7 @@
 	</poweredBy>
 	<body>
 		<head>
-			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2019 Pi4J. All Rights Reserved."/>
+			<META NAME="COPYRIGHT" CONTENT="Copyright &copy; 2012-2020 Pi4J. All Rights Reserved."/>
 			<META NAME="KEYWORDS" CONTENT="raspberry, pi, raspberrypi, raspi, java, pi4j, java pi, gpio, input, output, io"/>
 			<META NAME="ROBOTS" CONTENT="ALL"/>
 			<META NAME="DESCRIPTION" CONTENT="The Pi4J Project provides Java programmers full IO control of a Raspberry Pi"/>
