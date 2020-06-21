@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- MAVEN ARTIFACT INFORMATION -->
@@ -10,31 +10,17 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.4-SNAPSHOT</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
-    <!-- BUILD PROPERTIES -->
-    <properties>
-        <pi4j-native-ant-build-target>build-libpi4j.so-remote</pi4j-native-ant-build-target>
-    </properties>
+	<!-- BUILD PROPERTIES -->
+	<!-- BY DEFAULT, USE DOCKER CROSS-COMPILER CONTAINER FOR NATIVE BUILDS -->
+	<properties>
+		<pi4j-native-ant-build-target>build-with-docker</pi4j-native-ant-build-target>
+	</properties>
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-
-        <!-- SPECIAL PROFILE TO DETERMINE IF RUNNING ON THE PI HARDWARE -->
-        <profile>
-            <id>local-compile</id>
-            <activation>
-                <os>
-                    <name>linux</name>
-                    <family>unix</family>
-                    <arch>arm</arch>
-                </os>
-            </activation>
-            <properties>
-                <pi4j-native-ant-build-target>build-libpi4j.so-local</pi4j-native-ant-build-target>
-            </properties>
-        </profile>
 
 		<!-- SPECIAL PROFILE TO SUPPORT CROSS-COMPILER BUILDS -->
 		<profile>
@@ -46,7 +32,7 @@
 				</property>
 			</activation>
 			<properties>
-				<pi4j-native-ant-build-target>build-libpi4j.so-cross-compile</pi4j-native-ant-build-target>
+				<pi4j-native-ant-build-target>build-with-cross-compile</pi4j-native-ant-build-target>
 			</properties>
 		</profile>
 
@@ -92,11 +78,11 @@
 
 									<!-- trigger javah execution -->
 									<javahClassNames>
-                                        <javahClassName>com.pi4j.jni.AnalogInputMonitor</javahClassName>
-                                        <javahClassName>com.pi4j.jni.WDT</javahClassName>
+										<javahClassName>com.pi4j.jni.AnalogInputMonitor</javahClassName>
+										<javahClassName>com.pi4j.jni.WDT</javahClassName>
 										<javahClassName>com.pi4j.jni.I2C</javahClassName>
 										<javahClassName>com.pi4j.jni.Serial</javahClassName>
-                                        <javahClassName>com.pi4j.jni.SerialInterrupt</javahClassName>
+										<javahClassName>com.pi4j.jni.SerialInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioUtil</javahClassName>
@@ -156,79 +142,62 @@
 						</goals>
 					</execution>
 
-                    <!-- copy the native source files and compile them on each of the targeted platforms -->
-                    <execution>
-                        <id>pi4j-build-native-libraries</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="pi4j-build-platform-libraries" >
-                                <ant target="${pi4j-native-ant-build-target}" inheritRefs="true">
+					<!-- copy the native source files and compile them on each of the targeted platforms -->
+					<execution>
+						<id>pi4j-build-native-libraries</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="pi4j-build-platform-libraries" >
+								<ant target="${pi4j-native-ant-build-target}" inheritRefs="true"/>
+							</target>
+						</configuration>
+					</execution>
 
-                                    <!-- WE REDEFINE THE FOLLOWING PROPERTIES TO ALLOW THEM TO BE OVERRIDDEN
-                                         VIA SYSTEM PROPERTIES PROVIDED ON THE MAVEN COMMAND LINE -->
+					<!-- attach the compiled native libraries for each of the targeted platforms as artifacts -->
+					<execution>
+						<id>pi4j-attach-native-library-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="pi4j-attach-platform-libraries" >
+								<taskdef  resource="net/sf/antcontrib/antcontrib.properties"
+										  classpathref="maven.plugin.classpath"/>
 
-                                    <!-- RaspberryPi Platform Properties -->
-                                    <property name="raspberrypi.name" value="${raspberrypi.name}"/>
-                                    <property name="raspberrypi.host" value="${raspberrypi.host}"/>
-                                    <property name="raspberrypi.port" value="${raspberrypi.port}"/>
-                                    <property name="raspberrypi.user" value="${raspberrypi.user}"/>
-                                    <property name="raspberrypi.password" value="${raspberrypi.password}"/>
-                                    <property name="raspberrypi.directory" value="${raspberrypi.directory}"/>
-                                </ant>
-                            </target>
-                        </configuration>
-                    </execution>
-
-                    <!-- attach the compiled native libraries for each of the targeted platforms as artifacts -->
-                    <execution>
-                        <id>pi4j-attach-native-library-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="pi4j-attach-platform-libraries" >
-                                <taskdef  resource="net/sf/antcontrib/antcontrib.properties"
-                                          classpathref="maven.plugin.classpath"/>
-
-                                <!-- Attach 'libpi4j.so' for RasbperryPi -->
-                                <if>
-                                    <equals arg1="${raspberrypi.build}" arg2="true" />
-                                    <then>
-                                        <!-- NOTE: As of 2018-04-23 Pi4J no longer includes
-                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
-                                        <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-armhf" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-aarch64.so" classifier="raspberrypi-dynamic-aarch64" type="so"/>
-                                    </then>
-                                </if>
-
-                            </target>
-                        </configuration>
-                    </execution>
+								<!-- Attach 'libpi4j.so' for RasbperryPi -->
+								<!-- NOTE: As of 2018-04-23 Pi4J no longer includes
+								   a statically linked wiringPi lib for the Raspberry Pi platform. -->
+								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-arm" type="so"/>
+								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-armhf" type="so"/>
+								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-aarch64.so" classifier="raspberrypi-dynamic-aarch64" type="so"/>
+							</target>
+						</configuration>
+					</execution>
 
 				</executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>${ant-jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>${jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>ant-contrib</groupId>
-                        <artifactId>ant-contrib</artifactId>
-                        <version>${ant-contrib.version}</version>
-                    </dependency>
-                </dependencies>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>${ant-jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>${jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>${ant-contrib.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
-        </plugins>
+		</plugins>
 	</build>
 </project>
