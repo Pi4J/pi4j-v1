@@ -49,4 +49,4 @@ chmod +x build.sh
 #   FOR ARMv6,ARMv7, ARMv8  32-BIT (ARMHF)
 #   FOR ARMv8               64-BIT (ARM64)
 # -------------------------------------------------------------
-docker run -v $(PWD):/build raspberrypi-compiler:aarch64 $@
+docker run -v $PWD:/build pi4j/raspberrypi-cross-compiler:latest $@
