@@ -71,14 +71,6 @@ else
 fi
 
 # ------------------------------------------------------
-# BUILD NATIVE LIBRARIES FOR ARMv6 32-BIT (ARM)
-# USING THE LOCALLY INSTALLED ARM CROSS-COMPILER
-# ------------------------------------------------------
-export CC=arm-linux-gnueabi-gcc
-export ARCH=arm
-./build-libpi4j.sh
-
-# ------------------------------------------------------
 # BUILD NATIVE LIBRARIES FOR ARMv6,ARMv7,ARMv8 32-BIT (ARMHF)
 # USING THE LOCALLY INSTALLED ARM CROSS-COMPILER
 # ------------------------------------------------------

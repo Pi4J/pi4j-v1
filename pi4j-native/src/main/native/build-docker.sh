@@ -46,7 +46,6 @@ chmod +x build.sh
 
 # -------------------------------------------------------------
 # BUILD NATIVE LIBRARIES USING THE DOCKER CROSS-COMPILER IMAGE
-#   FOR ARMv6               32-BIT (ARM)
 #   FOR ARMv6,ARMv7, ARMv8  32-BIT (ARMHF)
 #   FOR ARMv8               64-BIT (ARM64)
 # -------------------------------------------------------------
