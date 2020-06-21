@@ -171,7 +171,6 @@
 								<!-- Attach 'libpi4j.so' for RasbperryPi -->
 								<!-- NOTE: As of 2018-04-23 Pi4J no longer includes
 								   a statically linked wiringPi lib for the Raspberry Pi platform. -->
-								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-arm" type="so"/>
 								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-armhf" type="so"/>
 								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-aarch64.so" classifier="raspberrypi-dynamic-aarch64" type="so"/>
 							</target>
