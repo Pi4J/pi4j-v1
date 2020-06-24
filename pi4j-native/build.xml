@@ -104,7 +104,7 @@
                 <arg value="--rm"/>
 
                 <!-- use the Pi4J cross-compiler container -->
-                <arg value="pi4j/raspberrypi-cross-compiler:latest"/>
+                <arg value="pi4j/pi4j-builder-native:1.4"/>
             </exec>
 
         </sequential>
