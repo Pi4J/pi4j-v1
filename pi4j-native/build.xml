@@ -81,12 +81,22 @@
 
     <macrodef name="pi4j-native-build-docker">
         <attribute name="args" default=""/>
+        <attribute name="builder.version" default="latest"/>
 
         <sequential>
             <echo message="----------------------------------------------------"/>
             <echo message="Pi4J NATIVE LIBRARY BUILD [INVOKED]"/>
-            <echo message=" -- BUILD USING DOCKER CROSS-COMPILER CONTAINER"/>
+            <echo message=" -- BUILD USING DOCKER CROSS-COMPILER CONTAINER (@{builder.version})"/>
             <echo message="----------------------------------------------------"/>
+
+            <!-- make sure to get the latest pi4j dopcker images from DockerHub -->
+            <exec dir="${project.build.directory}/native" failonerror="true" executable="docker">
+                <!-- perform PULL on the build container -->
+                <arg value="pull"/>
+
+                <!-- get the latest Pi4J cross-compiler container -->
+                <arg value="pi4j/pi4j-builder-native:@{builder.version}"/>
+            </exec>
 
             <!-- perform build using docker command -->
             <exec dir="${project.build.directory}/native" failonerror="true" executable="docker">
@@ -104,7 +114,7 @@
                 <arg value="--rm"/>
 
                 <!-- use the Pi4J cross-compiler container -->
-                <arg value="pi4j/pi4j-builder-native:1.4"/>
+                <arg value="pi4j/pi4j-builder-native:@{builder.version}"/>
             </exec>
 
         </sequential>
@@ -127,12 +137,12 @@
 
     <!-- this target is used when building maven project using the Docker ARM cross-compiler container -->
     <target name="build-with-docker" depends="docker-prep-unix,docker-prep-windows">
-        <echo message="Building native libpi4j shared library using DOCKER-COMPILER"/>
+        <echo message="Building native libpi4j shared library using DOCKER-BUILDER (${pi4j.builder.version})"/>
 
         <!-- prepare build target directory; clean & copy sources -->
         <pi4j-native-prepare-build-target/>
 
         <!-- perform build using docker container -->
-        <pi4j-native-build-docker/>
+        <pi4j-native-build-docker builder.version="${pi4j.builder.version}"/>
     </target>
 </project>
