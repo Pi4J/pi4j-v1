@@ -32,22 +32,17 @@ echo
 echo "**********************************************************************"
 echo "**********************************************************************"
 echo "*                                                                    *"
-echo "*  COMPILE Pi4J NATIVE LIBRARIES USING DOCKER CROSS-COMPILER IMAGE   *"
+echo "*  COMPILE ENTIRE Pi4J PROJECT USING A PRECONFIGURED DOCKER IMAGE    *"
 echo "*                                                                    *"
 echo "**********************************************************************"
 echo "**********************************************************************"
 echo
 
-# set executable permissions on build scripts
-chmod +x install-prerequisites.sh
-chmod +x build-wiringpi.sh
-chmod +x build-libpi4j.sh
-chmod +x build.sh
-
 # -------------------------------------------------------------
-# BUILD NATIVE LIBRARIES USING THE DOCKER CROSS-COMPILER IMAGE
-#   FOR ARMv6,ARMv7, ARMv8  32-BIT (ARMHF)
-#   FOR ARMv8               64-BIT (ARM64)
+# THIS BUILD WILL COMPILE NATIVE LIBRARIES USING THE PI4J
+# DOCKER CROSS-COMPILER BUILDER IMAGE FOR THE FOLLOWING:
+#   -- ARMv6,ARMv7, ARMv8  32-BIT (ARMHF)
+#   -- ARMv8               64-BIT (ARM64)
 # -------------------------------------------------------------
-docker pull pi4j/builder-native:1.4
-docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/builder-native:1.4 $@
+docker pull pi4j/pi4j-builder:1.4
+docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/pi4j-builder:1.4

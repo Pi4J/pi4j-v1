@@ -121,6 +121,23 @@
 				<artifactId>license-maven-plugin</artifactId>
 			</plugin>
 
+			<!-- EXTRACT/PARSE MAJOR & MINOR (semver) VERSION ELEMENTS FROM PROJECT VERSION -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- PERFORM ADDITIONAL BUILD TASKS USING ANT -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -151,6 +168,7 @@
 						</goals>
 						<configuration>
 							<target name="pi4j-build-platform-libraries" >
+								<property name="pi4j.builder.version" value="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"/>
 								<ant target="${pi4j-native-ant-build-target}" inheritRefs="true"/>
 							</target>
 						</configuration>
@@ -176,7 +194,6 @@
 							</target>
 						</configuration>
 					</execution>
-
 				</executions>
 				<dependencies>
 					<dependency>
@@ -196,7 +213,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>
