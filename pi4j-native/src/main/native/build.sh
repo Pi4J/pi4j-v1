@@ -28,21 +28,27 @@
 # #L%
 ###
 
+echo
+echo "**********************************************************************"
+echo "*                                                                    *"
+echo "*                    Pi4J NATIVE BUILD <STARTED>                     *"
+echo "*                                                                    *"
+echo "**********************************************************************"
+echo
+
 # set executable permissions on build scripts
 chmod +x install-prerequisites.sh
-chmod +x wiringpi-build.sh
+chmod +x build-wiringpi.sh
+chmod +x build-libpi4j.sh
 
 # ------------------------------------------------------
 # INSTALL BUILD PREREQUISITES
 # ------------------------------------------------------
 ARCHITECTURE=$(uname -m)
-echo "PLATFORM ARCH: $ARCHITECTURE"
 if [[ ( "$ARCHITECTURE" = "armv7l") || ("$ARCHITECTURE" = "armv6l") ]]; then
    echo
    echo "**********************************************************************"
-   echo "*                                                                    *"
    echo "*                 INSTALLING Pi4J BUILD PREREQUISITES                *"
-   echo "*                                                                    *"
    echo "**********************************************************************"
    echo
    # download and install development prerequisites
@@ -54,9 +60,7 @@ fi
 # ------------------------------------------------------
 echo
 echo "**********************************************************************"
-echo "*                                                                    *"
 echo "*           CHECKING JAVA_HOME ENVIRONMENT VARIABLE                  *"
-echo "*                                                                    *"
 echo "**********************************************************************"
 echo
 if [[ -n "$JAVA_HOME" ]]; then
@@ -66,17 +70,32 @@ else
    echo "'JAVA_HOME' was not defined; attempting to use: $JAVA_HOME";
 fi
 
+# ------------------------------------------------------
+# BUILD NATIVE LIBRARIES FOR ARMv6,ARMv7,ARMv8 32-BIT (ARMHF)
+# USING THE LOCALLY INSTALLED ARM CROSS-COMPILER
+# ------------------------------------------------------
+export CC=arm-linux-gnueabihf-gcc
+export ARCH=armhf
+./build-libpi4j.sh
 
 # ------------------------------------------------------
-# RASPBERRY-PI
+# BUILD NATIVE LIBRARIES FOR ARMv8 64-BIT (ARM64)
+# USING THE LOCALLY INSTALLED ARM64 CROSS-COMPILER
 # ------------------------------------------------------
-./build-raspberrypi.sh $@
+export CC=aarch64-linux-gnu-gcc
+export ARCH=aarch64
+./build-libpi4j.sh
 
 echo
 echo "**********************************************************************"
-echo "*                                                                    *"
-echo "*                       Pi4J JNI BUILD COMPLETE                      *"
-echo "*                                                                    *"
+echo "*                    Pi4J NATIVE LIBRARY ARTIFACTS                   *"
 echo "**********************************************************************"
-echo
 tree lib
+
+echo
+echo "**********************************************************************"
+echo "*                                                                    *"
+echo "*                    Pi4J NATIVE BUILD <FINISHED>                    *"
+echo "*                                                                    *"
+echo "**********************************************************************"
+echo
