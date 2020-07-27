@@ -11,7 +11,7 @@ package com.pi4j.concurrent;
  * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2019 Pi4J
+ * Copyright (C) 2012 - 2020 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     /**
      * return an instance to the thread factory used to create new executor services
      */
-    private static ThreadFactory getThreadFactory(final String nameFormat) {
+    protected static ThreadFactory getThreadFactory(final String nameFormat) {
         final ThreadFactory defaultThreadFactory = Executors.privilegedThreadFactory();
         return new ThreadFactory() {
             final AtomicLong count = (nameFormat != null) ? new AtomicLong(0) : null;
