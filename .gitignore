@@ -31,3 +31,4 @@ Thumbs.db
 *.war
 *.ear
 /nbactions.xml
+/nb-configuration.xml

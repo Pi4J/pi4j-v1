@@ -65,7 +65,6 @@ public class LinuxFile extends RandomAccessFile {
      *
      * @param command ioctl command
      * @param value int ioctl value
-     * @return result of operation. Zero if everything is OK, less than zero if there was an error.
      */
     public void ioctl(long command, int value) throws IOException {
         final int response = directIOCTL(getFileDescriptor(), command, value);

@@ -34,11 +34,11 @@ import java.util.List;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
- * <[>WiringPi GPIO Control</[>
+ * &lt;[&gt;WiringPi GPIO Control&lt;/[&gt;
  *
  * <p>
  * Some of the functions in the WiringPi library are designed to mimic those in the Arduino Wiring
- * system. There are relatively easy to use and should present no problems for anyone used to the
+ * system. They are relatively easy to use and should present no problems for anyone used to the
  * Arduino system, or C programming in-general.
  * </p>
  *
@@ -50,7 +50,7 @@ import com.pi4j.util.NativeLibraryLoader;
  * </p>
  *
  * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
+ * Before using the Pi4J library, you need to ensure that the Java VM is configured with access to
  * the following system libraries:
  * <ul>
  * <li>pi4j</li>

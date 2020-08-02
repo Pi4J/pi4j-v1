@@ -196,11 +196,12 @@
 							com.pi4j.temperature.*,
 							com.pi4j.io.serial.*,
 							com.pi4j.io.gpio.*,
+                            com.pi4j.io.file.*,
 							com.pi4j.io.i2c.*,
                             com.pi4j.io.spi.*,
                             com.pi4j.io.w1.*,
                             com.pi4j.io.wdt.*
-						</Export-Package>
+                        </Export-Package>
                         <Import-Package>!com.pi4j.*</Import-Package>
 					</instructions>
 				</configuration>
@@ -247,7 +248,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
@@ -267,7 +268,7 @@
 										</scp>
 									</then>
 								</if>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

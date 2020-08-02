@@ -37,10 +37,10 @@ import com.pi4j.util.NativeLibraryLoader;
  *
  * <p>
  * Before you can use the I2C interface, you may need to use the gpio utility to load the I2C drivers into the kernel:
- *  > gpio load i2c
+ *  &gt; gpio load i2c
  *
  * If you need a baud rate other than the default 100Kbps, then you can supply this on the command-line:
- *  > gpio load i2c 1000
+ *  &gt; gpio load i2c 1000
  *
  * will set the baud rate to 1000Kbps – ie. 1,000,000 bps. (K here is times 1000) *
  * </p>

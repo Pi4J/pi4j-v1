@@ -15,13 +15,13 @@
 
 	<!-- DEPENDENCIES -->
 	<dependencies>
-<!-- START SNIPPET: maven-dependency-snippet -->
-<dependency>
-	<groupId>com.pi4j</groupId>
-	<artifactId>pi4j-core</artifactId>
-	<version>${project.version}</version>
-</dependency>
-<!-- END SNIPPET: maven-dependency-snippet -->
+        <!-- START SNIPPET: maven-dependency-snippet -->
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- END SNIPPET: maven-dependency-snippet -->
 	</dependencies>
 
 	<!-- BUILD INSTRUCTIONS -->
@@ -83,7 +83,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
@@ -109,7 +109,7 @@
                                         </scp>
 									</then>
 								</if>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

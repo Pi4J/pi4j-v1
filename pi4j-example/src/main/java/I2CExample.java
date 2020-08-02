@@ -46,15 +46,15 @@ import com.pi4j.util.Console;
  * You should get something similar printed in the console
  * when executing this program:
  *
- * > <--Pi4J--> I2C Example ... started.
- * > ... reading ID register from TSL2561
- * > TSL2561 ID = 0x50 (should be 0x50)
- * > ... powering up TSL2561
- * > ... reading DATA registers from TSL2561
- * > TSL2561 DATA 0 = 0x1e
- * > TSL2561 DATA 1 = 0x04
- * > ... powering down TSL2561
- * > Exiting I2CExample
+ * &gt; &lt;--Pi4J--&gt; I2C Example ... started.
+ * &gt; ... reading ID register from TSL2561
+ * &gt; TSL2561 ID = 0x50 (should be 0x50)
+ * &gt; ... powering up TSL2561
+ * &gt; ... reading DATA registers from TSL2561
+ * &gt; TSL2561 DATA 0 = 0x1e
+ * &gt; TSL2561 DATA 1 = 0x04
+ * &gt; ... powering down TSL2561
+ * &gt; Exiting I2CExample
  *
  *
  * @author Robert Savage

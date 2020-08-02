@@ -290,9 +290,9 @@
                         <id>create-target-distro-directories</id>
                         <phase>initialize</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <mkdir dir="${project.build.directory}/distro-contents/bin"/>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -304,11 +304,11 @@
                         <id>ant-fix-line-endings</id>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <fixcrlf srcdir="${project.build.directory}/distro-contents"
                                          eol="unix"
                                          excludes="**/*.jar" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -324,7 +324,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
@@ -343,7 +343,7 @@
 										</scp>
 									</then>
 								</if>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

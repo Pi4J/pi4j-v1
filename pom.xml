@@ -98,11 +98,6 @@
 		<module>pi4j-distribution</module>
 	</modules>
 
-	<!-- PROJECT PREREQUISITES -->
-	<prerequisites>
-		<maven>3.0.5</maven>
-	</prerequisites>
-
 	<!-- BUILD PROPERTIES -->
 	<properties>
 		<!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
@@ -347,6 +342,7 @@
 		<!-- PLUGIN MANAGEMENT -->
 		<pluginManagement>
 			<plugins>
+
 				<!-- JAVA COMPILER -->
                 <plugin>
 					<groupId>org.apache.maven.plugins</groupId>

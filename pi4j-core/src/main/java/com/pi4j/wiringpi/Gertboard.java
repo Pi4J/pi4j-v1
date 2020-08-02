@@ -130,12 +130,12 @@ public class Gertboard {
 
     /**
      * <p> This must be called to initialize the SPI bus to communicate with the Gertboards ADC and DAC
-     * chips. If the return value is < 0 then an error occurred and errno will be set appropriately.
+     * chips. If the return value is &lt; 0 then an error occurred and errno will be set appropriately.
      * </p>
      *
      * @see <a
      *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
-     * @return If the return value is < 0 then an error occurred and errno will be set
+     * @return If the return value is &lt; 0 then an error occurred and errno will be set
      *         appropriately. If the return value is '0' or greater than the call was successful.
      */
     public static native int gertboardSPISetup();
@@ -152,7 +152,7 @@ public class Gertboard {
      * @see <a
      *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @param pinBase pinBase is the base pin that you want the analog ports to appear as
-     * @return If the return value is < 0 then an error occurred and errno will be set
+     * @return If the return value is &lt; 0 then an error occurred and errno will be set
      *         appropriately. If the return value is '0' or greater than the call was successful.
      */
     public static native int gertboardAnalogSetup(int pinBase);

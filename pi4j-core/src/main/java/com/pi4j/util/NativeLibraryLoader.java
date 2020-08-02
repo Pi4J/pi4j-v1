@@ -136,8 +136,8 @@ public class NativeLibraryLoader {
 	 * @throws IllegalArgumentException
 	 * 		If source file (param path) does not exist
 	 * @throws IllegalArgumentException
-	 * 		If the path is not absolute or if the filename is shorter than three characters (restriction of {@see
-	 *        File#createTempFile(java.lang.String, java.lang.String)}).
+	 * 		If the path is not absolute or if the filename is shorter than three characters (restriction of
+     *      {@link Files#createTempFile(java.lang.String, java.lang.String, java.nio.file.attribute.FileAttribute...)}).
 	 */
 	public static void loadLibraryFromClasspath(String path) throws IOException {
 		Path inputPath = Paths.get(path);
