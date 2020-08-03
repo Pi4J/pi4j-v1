@@ -74,9 +74,12 @@ Copyright (C) 2012-2020 Pi4J
 
 ## Building
 
-To build locally without needing a Raspberry, simple cross-compile:
+To build locally without needing a Raspberry, use the Docker process:
 
-    RPI_CROSS_COMPILE=true mvn clean install -Prelease -DskipTests -Pall-platforms
+```
+docker pull pi4j/pi4j-builder:1.4
+docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/pi4j-builder:1.4
+```
 
 ## IN DEVELOPMENT
 
