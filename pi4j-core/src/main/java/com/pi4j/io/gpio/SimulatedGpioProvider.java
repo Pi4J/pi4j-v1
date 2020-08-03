@@ -43,7 +43,7 @@ import java.util.Map;
  * A second environment variable that defines the platform that is to be
  * simulated.
  *
- * SimulatedPlatform=<Real Platform's Name>
+ * SimulatedPlatform={Real Platform's Name}
  *
  * e.g.
  *
