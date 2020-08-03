@@ -32,8 +32,8 @@ import com.pi4j.util.NativeLibraryLoader;
 
 /**
  * <p>
- * The Gertboard has an on-board Digital to Analog (DAC) converter and an Analog to Digital (ADC)
- * converters. These are connected via the SPI bus back to the Raspberry Pi host.
+ * The Gertboard has an on-board Digital to Analog (DAC) converter and an Analog to Digital (ADC) converters. These are
+ * connected via the SPI bus back to the Raspberry Pi host.
  * </p>
  *
  * <p>
@@ -41,24 +41,22 @@ import com.pi4j.util.NativeLibraryLoader;
  * </p>
  *
  * <p>
- * The DAC has a resolution of 8 bits and produces an output voltage between 0 and 2.047 volts, the
- * ADC has a resolution of 10 bits and can take an input voltage between 0 and 3.3 volts.
+ * The DAC has a resolution of 8 bits and produces an output voltage between 0 and 2.047 volts, the ADC has a resolution
+ * of 10 bits and can take an input voltage between 0 and 3.3 volts.
  * </p>
  *
  * <p>
- * Part of the wiringPi library includes code to setup and drive these chips in an easy to use
- * manner.
+ * Part of the wiringPi library includes code to setup and drive these chips in an easy to use manner.
  * </p>
  *
  * <p>
- * To use in a program, first you need to make sure that the 5 SPI jumpers are present on the
- * Gertboard (there are 7 in total, 5 for the SPI, 2 to connect the serial to the ATmega), the
- * photo below shows all 7 jumpers in-place.
+ * To use in a program, first you need to make sure that the 5 SPI jumpers are present on the Gertboard (there are 7 in
+ * total, 5 for the SPI, 2 to connect the serial to the ATmega), the photo below shows all 7 jumpers in-place.
  * </p>
  *
  * <p>
- * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to
- * the following system libraries:
+ * Before using the Pi4J library, you need to ensure that the Java VM in configured with access to the following system
+ * libraries:
  * <ul>
  * <li>pi4j</li>
  * <li>wiringPi</li>
@@ -68,11 +66,9 @@ import com.pi4j.util.NativeLibraryLoader;
  * </blockquote>
  * </p>
  *
+ * @author Robert Savage (<a href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
- * @see <a
- *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
- * @author Robert Savage (<a
- *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
+ * @see <a href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
  */
 public class Gertboard {
 
@@ -97,17 +93,17 @@ public class Gertboard {
      * <pre>
      * vOut = value / 255 * 2.047
      * </pre>
-     *
+     * <p>
      * or to find the value for a given voltage:
      *
      * <pre>
      * value = vOut / 2.047 * 255
      * </pre>
      * </p>
-     * @see <a
-     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
+     *
      * @param chan  Analog channel to write to (0 or 1).
      * @param value The output value (0-255) supplied to the given channel (0 or 1).
+     * @see <a href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      */
     public static native void gertboardAnalogWrite(int chan, int value);
 
@@ -120,40 +116,35 @@ public class Gertboard {
      * </pre>
      * </p>
      *
-     * @see <a
-     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @param chan Analog channel to read from (0 or 1).
-     * @return This returns a value from 0 to 1023 representing the value on the supplied channel (0
-     *         or 1).
+     * @return This returns a value from 0 to 1023 representing the value on the supplied channel (0 or 1).
+     * @see <a href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      */
     public static native int gertboardAnalogRead(int chan);
 
     /**
      * <p> This must be called to initialize the SPI bus to communicate with the Gertboards ADC and DAC
-     * chips. If the return value is < 0 then an error occurred and errno will be set appropriately.
+     * chips. If the return value is smaller than 0 then an error occurred and errno will be set appropriately.
      * </p>
      *
-     * @see <a
-     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
-     * @return If the return value is < 0 then an error occurred and errno will be set
-     *         appropriately. If the return value is '0' or greater than the call was successful.
+     * @return If the return value is smaller than 0 then an error occurred and errno will be set appropriately. If the
+     * return value is '0' or greater than the call was successful.
+     * @see <a href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      */
     public static native int gertboardSPISetup();
-
 
 
     /**
      * <p>
      * This setup routine allocates 2 pins and overlays the analog to digital input pins with the digital to analog
-     * output pins. So reading channel pinBase + 0 reads the first analog input channel (pin DA0 on the Gertboard),
-     * and writing pinBase + 0 outputs to the first analog output channel. (Pin AD0).
+     * output pins. So reading channel pinBase + 0 reads the first analog input channel (pin DA0 on the Gertboard), and
+     * writing pinBase + 0 outputs to the first analog output channel. (Pin AD0).
      * </p>
      *
-     * @see <a
-     *      href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      * @param pinBase pinBase is the base pin that you want the analog ports to appear as
-     * @return If the return value is < 0 then an error occurred and errno will be set
-     *         appropriately. If the return value is '0' or greater than the call was successful.
+     * @return If the return value is smaller than 0 then an error occurred and errno will be set appropriately. If the return
+     * value is '0' or greater than the call was successful.
+     * @see <a href="http://wiringpi.com/dev-lib/gertboard-analog/">http://wiringpi.com/dev-lib/gertboard-analog/</a>
      */
     public static native int gertboardAnalogSetup(int pinBase);
 }

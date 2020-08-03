@@ -43,19 +43,18 @@ import com.pi4j.util.Console;
  * Data Sheet:
  * https://www.adafruit.com/datasheets/TSL256x.pdf
  *
- * You should get something similar printed in the console
- * when executing this program:
+ * <p>You should get something similar printed in the console
+ * when executing this program:</p>
  *
- * > <--Pi4J--> I2C Example ... started.
- * > ... reading ID register from TSL2561
- * > TSL2561 ID = 0x50 (should be 0x50)
- * > ... powering up TSL2561
- * > ... reading DATA registers from TSL2561
- * > TSL2561 DATA 0 = 0x1e
- * > TSL2561 DATA 1 = 0x04
- * > ... powering down TSL2561
- * > Exiting I2CExample
- *
+ * <p>&gt; &lt;--Pi4J--&gt; I2C Example ... started.</p>
+ * <p>&gt; ... reading ID register from TSL2561</p>
+ * <p>&gt; TSL2561 ID = 0x50 (should be 0x50)</p>
+ * <p>&gt; ... powering up TSL2561</p>
+ * <p>&gt; ... reading DATA registers from TSL2561</p>
+ * <p>&gt; TSL2561 DATA 0 = 0x1e</p>
+ * <p>&gt; TSL2561 DATA 1 = 0x04</p>
+ * <p>&gt; ... powering down TSL2561</p>
+ * <p>&gt; Exiting I2CExample</p>
  *
  * @author Robert Savage
  */
