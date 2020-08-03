@@ -36,21 +36,17 @@ import com.pi4j.util.NativeLibraryLoader;
  * </p>
  *
  * <p>
- * Before you can use the I2C interface, you may need to use the gpio utility to load the I2C drivers into the kernel:
- *  > gpio load i2c
- *
- * If you need a baud rate other than the default 100Kbps, then you can supply this on the command-line:
- *  > gpio load i2c 1000
- *
- * will set the baud rate to 1000Kbps – ie. 1,000,000 bps. (K here is times 1000) *
+ * Before you can use the I2C interface, you may need to use the gpio utility to load the I2C drivers into the kernel: </p>
+ * <p>$ gpio load i2c </p>
+ * <p></p>
+ * <p>If you need a baud rate other than the default 100Kbps, then you can supply this on the command-line: </p>
+ * <p>$ gpio load i2c 1000 </p>
  * </p>
- *
- * <p>
- * <blockquote> This library depends on the wiringPi native system library. (developed by
- * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
- * </blockquote>
+ * which will set the baud rate to 1000Kbps – ie. 1,000,000 bps. (K here is times 1000)
  * </p>
- *
+ * <p></p>
+ * <blockquote>This library depends on the wiringPi native system library. (developed by
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)</blockquote>
  * @see <a href="https://www.pi4j.com">https://www.pi4j.com</a>
  * @see <a
  *      href="http://wiringpi.com/reference/i2c-library/">http://wiringpi.com/reference/i2c-library</a>

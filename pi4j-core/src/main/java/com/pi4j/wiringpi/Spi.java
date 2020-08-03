@@ -36,13 +36,12 @@ import com.pi4j.util.NativeLibraryLoader;
  * </p>
  *
  * <p>
- * Before you can use SPI interface, you may need to use the gpio utility to load the SPI drivers into the kernel:
- *  > gpio load spi
- *
- * If you need a buffer size of greater than 4KB, then you can specify the size (in KB) on the command line:
- *  > gpio load spi 100
- *
- * will allocate a 100KB buffer. (You should rarely need this though, the default is more than enough
+ * Before you can use SPI interface, you may need to use the gpio utility to load the SPI drivers into the kernel:</p>
+ * <p>$ gpio load spi</p>
+ * <p></p>
+ * <p>If you need a buffer size of greater than 4KB, then you can specify the size (in KB) on the command line:</p>
+ * <p>$ gpio load spi 100</p>
+ * <p>will allocate a 100KB buffer. (You should rarely need this though, the default is more than enough
  * for most applications).
  * </p>
  *
