@@ -56,21 +56,15 @@ public class MicrochipPotentiometerDeviceControllerStaticTest {
 	@Test
 	public void testCreation() throws IOException {
 
-		// wrong parameter
-
-		try {
-
-			new MicrochipPotentiometerDeviceController(null);
-			fail("Got no RuntimeException on constructing "
-					+ "a DeviceController using a null-i2cDevice");
-
-		} catch (RuntimeException e) {
-			// expected expection
-		}
-
-		// correct parameter
-
 		new MicrochipPotentiometerDeviceController(i2cDevice);
+		assertNotNull(i2cDevice);
+
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testCreationExceptionNullI2cDevice() throws IOException {
+
+		new MicrochipPotentiometerDeviceController(null);
 
 	}
 
