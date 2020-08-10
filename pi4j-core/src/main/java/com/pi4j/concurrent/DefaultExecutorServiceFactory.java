@@ -76,7 +76,7 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     /**
      * return an instance to the thread factory used to create new executor services
      */
-    private static ThreadFactory getThreadFactory(final String nameFormat) {
+    protected static ThreadFactory getThreadFactory(final String nameFormat) {
         final ThreadFactory defaultThreadFactory = Executors.privilegedThreadFactory();
         return new ThreadFactory() {
             final AtomicLong count = (nameFormat != null) ? new AtomicLong(0) : null;
