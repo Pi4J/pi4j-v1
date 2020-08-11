@@ -133,6 +133,15 @@ int monitorPinInterrupt(void *threadarg)
 	int compareLastKnown = strncmp(rdbuf, "1", 1); // only compare the first character; rdbuff may have more junk chars
 	monitorData->lastKnownState = compareLastKnown;
 
+  // get attached JVM
+  JNIEnv *env;
+  if ((*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL) != JNI_OK)
+  {
+    perror("AttachCurrentThread()");
+    close(fd);
+    return 5;
+  }
+
 	// continuous thread loop
 	for(;;)
 	{
@@ -189,10 +198,6 @@ int monitorPinInterrupt(void *threadarg)
 				// ensure the callback class and method are available
 				if (gpio_callback_class != NULL && gpio_callback_method != NULL)
 				{
-					// get attached JVM
-					JNIEnv *env;
-					(*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL);
-
 					// ensure that the JVM exists
 					if(gpio_callback_jvm != NULL)
 					{
@@ -202,13 +207,18 @@ int monitorPinInterrupt(void *threadarg)
 						else
 							(*env)->CallStaticVoidMethod(env, gpio_callback_class, gpio_callback_method, (jint)pin, (jboolean)0);
 					}
-
-                    // detach from thread
-                    (*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm);
 				}
 			}
 		}
 	}
+
+	// detach from thread
+  if ((*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm) != JNI_OK)
+  {
+    perror("DetachCurrentThread()");
+    close(fd);
+    return 8;
+  }
 
 	// if we reached this code (unlikely),
 	// then close the data file and exit the thread
