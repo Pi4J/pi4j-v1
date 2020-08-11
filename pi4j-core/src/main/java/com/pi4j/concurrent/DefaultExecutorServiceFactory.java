@@ -72,6 +72,18 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
     private static ExecutorService getGpioEventExecutorServiceWrapper() {
         return GpioEventExecutorServiceWrapperHolder.heldWrapper;
     }
+    private static class EventExecutorServiceHolder {
+        static final ExecutorService heldExecutor = Executors.newCachedThreadPool(getThreadFactory("pi4j-event-executor-%d"));
+    }
+    private static ExecutorService getInternalEventExecutorService() {
+        return EventExecutorServiceHolder.heldExecutor;
+    }
+    private static class EventExecutorServiceWrapperHolder {
+        static final ExecutorService heldWrapper = new ShutdownDisabledExecutorWrapper(getInternalEventExecutorService());
+    }
+    private static ExecutorService getEventExecutorServiceWrapper() {
+        return EventExecutorServiceWrapperHolder.heldWrapper;
+    }
 
     /**
      * return an instance to the thread factory used to create new executor services
@@ -108,6 +120,13 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
         return getGpioEventExecutorServiceWrapper();
     }
 
+    @Override
+    public ExecutorService getEventExecutorService() {
+        // we return the protected wrapper to prevent any consumers from
+        // being able to shutdown the scheduled executor service
+        return getEventExecutorServiceWrapper();
+    }
+
     /**
      * return a new instance of a single thread executor service
      *
@@ -139,10 +158,11 @@ public class DefaultExecutorServiceFactory implements ExecutorServiceFactory {
         // shutdown scheduled executor instance
         shutdownExecutor(getInternalScheduledExecutorService());
         shutdownExecutor(getInternalGpioExecutorService());
+        shutdownExecutor(getInternalEventExecutorService());
 
     }
 
-    private void shutdownExecutor(ExecutorService executor) {
+    protected void shutdownExecutor(ExecutorService executor) {
         if (executor != null) {
             if (!executor.isShutdown()) {
                 // this is a forceful shutdown;

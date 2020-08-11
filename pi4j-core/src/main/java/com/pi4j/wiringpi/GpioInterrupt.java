@@ -27,9 +27,14 @@ package com.pi4j.wiringpi;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import java.util.Vector;
-
+import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.util.NativeLibraryLoader;
 
 /**
@@ -57,15 +62,24 @@ import com.pi4j.util.NativeLibraryLoader;
  */
 public class GpioInterrupt {
 
-    private static Vector<GpioInterruptListener> listeners = new Vector<>();
-    private Object lock;
+    private static final Object mutex;
+    private static final LinkedBlockingQueue<GpioEvent> events;
+	private static final List<GpioInterruptListener> listeners;
 
-    // private constructor
+	private static boolean run;
+	private static ExecutorService eventExecutor;
+	private static Future<?> eventTask;
+
+	// private constructor
     private GpioInterrupt()  {
         // forbid object construction
     }
 
     static {
+		mutex = new Object();
+		events = new LinkedBlockingQueue<>();
+		listeners = Collections.synchronizedList(new ArrayList<>());
+
         // Load the platform library
         NativeLibraryLoader.load("libpi4j");
     }
@@ -113,26 +127,15 @@ public class GpioInterrupt {
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @param state New GPIO pin state.
      */
-    @SuppressWarnings("unchecked")
     private static void pinStateChangeCallback(int pin, boolean state) {
-
-        Vector<GpioInterruptListener> listenersClone;
-        listenersClone = (Vector<GpioInterruptListener>) listeners.clone();
-
-        for (int i = 0; i < listenersClone.size(); i++) {
-            GpioInterruptListener listener = listenersClone.elementAt(i);
-            if(listener != null) {
-                GpioInterruptEvent event = new GpioInterruptEvent(listener, pin, state);
-                listener.pinStateChange(event);
-            }
-        }
-
-        //System.out.println("GPIO PIN [" + pin + "] = " + state);
+		synchronized (mutex) {
+			events.add(new GpioEvent(pin, state));
+		}
     }
 
     /**
      * <p>
-     * Java consumer code can all this method to register itself as a listener for pin state
+     * Java consumer code can call this method to register itself as a listener for pin state
      * changes.
      * </p>
      *
@@ -141,13 +144,18 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void addListener(GpioInterruptListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.addElement(listener);
-        }
+    public static void addListener(GpioInterruptListener listener) {
+    	synchronized (mutex) {
+			if (!listeners.contains(listener)) {
+				listeners.add(listener);
+
+				if (!run)
+					enableEventExecutor();
+			}
+		}
     }
 
-    /**
+	/**
      * <p>
      * Java consumer code can all this method to unregister itself as a listener for pin state
      * changes.
@@ -158,14 +166,16 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void removeListener(GpioInterruptListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.removeElement(listener);
-        }
+    public static void removeListener(GpioInterruptListener listener) {
+		synchronized (mutex) {
+			listeners.remove(listener);
+
+			if (run && listeners.isEmpty())
+				disableEventExecutor();
+		}
     }
 
-
-    /**
+	/**
      * <p>
      * Returns true if the listener is already registered for event callbacks.
      * </p>
@@ -175,7 +185,56 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized boolean hasListener(GpioInterruptListener listener) {
-        return listeners.contains(listener);
+    public static boolean hasListener(GpioInterruptListener listener) {
+		synchronized (mutex) {
+			return listeners.contains(listener);
+		}
+    }
+
+	private static synchronized void enableEventExecutor() {
+		if (!run) {
+			run = true;
+			if (eventExecutor == null)
+				eventExecutor = GpioFactory.getExecutorServiceFactory().getEventExecutorService();
+			eventTask = eventExecutor.submit(GpioInterrupt::handleEvents);
+		}
+	}
+
+	private static void disableEventExecutor() {
+		if (run) {
+			run = false;
+			if (eventTask != null)
+				eventTask.cancel(true);
+		}
+	}
+
+	private static void handleEvents() {
+		try {
+			while(run) {
+				GpioEvent event = events.take();
+
+				List<GpioInterruptListener> listenersClone;
+				synchronized (mutex) {
+					listenersClone = new ArrayList<>(listeners);
+				}
+
+				for (GpioInterruptListener listener : listenersClone) {
+					GpioInterruptEvent interruptEvent = new GpioInterruptEvent(listener, event.pin, event.state);
+					listener.pinStateChange(interruptEvent);
+				}
+			}
+		} catch (InterruptedException e) {
+			System.err.println("GpioInterrupt.handleEvents(): Interrupted while waiting for new events!");
+		}
+	}
+
+    public static class GpioEvent {
+        private final int pin;
+        private final boolean state;
+
+        public GpioEvent(int pin, boolean state) {
+            this.pin = pin;
+            this.state = state;
+        }
     }
 }
