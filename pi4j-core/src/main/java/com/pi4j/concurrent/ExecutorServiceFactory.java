@@ -36,6 +36,7 @@ public interface ExecutorServiceFactory
 {
     public ScheduledExecutorService getScheduledExecutorService();
     public ExecutorService getGpioEventExecutorService();
+    public ExecutorService getEventExecutorService();
 
     @Deprecated
     public ExecutorService newSingleThreadExecutorService();

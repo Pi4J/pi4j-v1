@@ -61,4 +61,10 @@ public class SingleThreadGpioExecutorServiceFactory extends DefaultExecutorServi
 		// being able to shutdown the scheduled executor service
 		return getGpioEventExecutorServiceWrapper();
 	}
+
+	@Override
+	public void shutdown() {
+		shutdownExecutor(getInternalGpioExecutorService());
+		super.shutdown();
+	}
 }
