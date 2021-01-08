@@ -56,6 +56,11 @@ public class SystemInfo {
         RaspberryPi_ComputeModule3,
         RaspberryPi_ZeroW,
         RaspberryPi_Alpha,
+        RaspberryPi_3A_Plus,
+        RaspberryPi_ComputeModule3_Plus,
+        RaspberryPi_4B,
+        RaspberryPi_400,
+        RaspberryPi_ComputeModule4,
         RaspberryPi_Unknown,
         //------------------------
         // (LEMAKER BANANAPI)
