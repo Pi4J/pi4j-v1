@@ -77,12 +77,18 @@ case $1 in
    -version) ;&
    --version)
       shift
+      WIRINGPI_PATH=`whereis libwiringPi`
+      WIRINGPI_FILENAME=`readlink $WIRINGPI_PATH`
+      WIRINGPI_VERSION=${WIRINGPI_FILENAME#*.so.}
       echo
       echo "--------------------------------------------"
       echo "            THE Pi4J PROJECT"
       echo "--------------------------------------------"
-      echo "   VERSION   : %PROJECT_VERSION%"
-      echo "   TIMESTAMP : %PROJECT_TIMESTAMP%"
+      echo "   PI4J.VERSION     : %PROJECT_VERSION%"
+      echo "   PI4J.TIMESTAMP   : %PROJECT_TIMESTAMP%"
+      echo "  ----------------------------------------  "
+      echo "   WIRINGPI.PATH    : ${WIRINGPI_PATH#*: }"
+      echo "   WIRINGPI.VERSION : $WIRINGPI_VERSION"
       echo "--------------------------------------------"
       echo
       ;;
