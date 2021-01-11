@@ -541,32 +541,35 @@ public class GpioControllerImpl implements GpioController {
 
     @Override
     public GpioPin provisionPin(GpioProvider provider, Pin pin, String name, PinMode mode, PinState defaultState) {
+        GpioPin gpioPin;
 
         // if the provider does not match the pin's provider then throw an error
         if (!Objects.equals(provider.getName(), pin.getProvider())) {
             throw new PinProviderException(provider, pin);
         }
 
-        // if an existing pin has been previously created, then throw an error
-        for(GpioPin p : pins) {
-            if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
-                throw new GpioPinExistsException(pin);
+        synchronized(this) {
+            // if an existing pin has been previously created, then throw an error
+            for (GpioPin p : pins) {
+                if (Objects.equals(p.getProvider(), provider) && Objects.equals(p.getPin(), pin)) {
+                    throw new GpioPinExistsException(pin);
+                }
             }
+
+            // create new GPIO pin instance
+            gpioPin = new GpioPinImpl(this, provider, pin);
+
+            // set the gpio pin name
+            if (name != null) {
+                gpioPin.setName(name);
+            }
+
+            // export this pin
+            gpioPin.export(mode, defaultState);
+
+            // add this new pin instance to the managed collection
+            pins.add(gpioPin);
         }
-
-        // create new GPIO pin instance
-        GpioPin gpioPin = new GpioPinImpl(this, provider, pin);
-
-        // set the gpio pin name
-        if (name != null) {
-            gpioPin.setName(name);
-        }
-
-        // export this pin
-        gpioPin.export(mode, defaultState);
-
-        // add this new pin instance to the managed collection
-        pins.add(gpioPin);
 
         // return new new pin instance
         return gpioPin;
@@ -916,14 +919,17 @@ public class GpioControllerImpl implements GpioController {
             if (!pins.contains(p)) {
                 throw new GpioPinNotProvisionedException(p.getPin());
             }
-            // remove all listeners and triggers
-            if (p instanceof GpioPinInput) {
-                ((GpioPinInput)p).removeAllListeners();
-                ((GpioPinInput)p).removeAllTriggers();
-            }
 
-            // remove this pin instance from the managed collection
-            pins.remove(p);
+            synchronized (this) {
+                // remove all listeners and triggers
+                if (p instanceof GpioPinInput) {
+                    ((GpioPinInput) p).removeAllListeners();
+                    ((GpioPinInput) p).removeAllTriggers();
+                }
+
+                // remove this pin instance from the managed collection
+                pins.remove(p);
+            }
         }
     }
 
