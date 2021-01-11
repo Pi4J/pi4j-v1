@@ -1022,6 +1022,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${maven-project-info-reports-plugin.version}</version>
+                <configuration>
+                    <artifactId>pi4j-core</artifactId>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
