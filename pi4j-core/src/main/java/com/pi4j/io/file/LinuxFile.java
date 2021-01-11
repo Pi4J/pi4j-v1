@@ -69,7 +69,7 @@ public class LinuxFile extends RandomAccessFile {
     static {
         try {
             // Load the platform library
-            NativeLibraryLoader.load("libpi4j.so");
+            NativeLibraryLoader.load("libpi4j.so", "pi4j");
 
             Class<?> dbb = Class.forName("java.nio.DirectByteBuffer");
 
