@@ -68,7 +68,7 @@ public class RaspiPin extends PinProvider {
     public static final Pin GPIO_19 = createDigitalPin(19, "GPIO 19"); // requires B rev2 or newer model (P5 header)
     public static final Pin GPIO_20 = createDigitalPin(20, "GPIO 20"); // requires B rev2 or newer model (P5 header)
 
-    // the following GPIO pins are only available on the Raspberry Pi Model A+, B+, Model 2B, Model 3B, Zero
+    // the following GPIO pins are only available on the Raspberry Pi Model A+, B+, Model 2B, Model 3B, Zero, Model 4B, Model 400
     public static final Pin GPIO_21 = createDigitalPin(21, "GPIO 21"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
     public static final Pin GPIO_22 = createDigitalPin(22, "GPIO 22"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header)
     public static final Pin GPIO_23 = createDigitalAndPwmPin(23, "GPIO 23"); // requires 3B, 2B, Zero, A+, B+ or newer model (40 pin header) : supports PWM1 [ALT0]
@@ -159,7 +159,7 @@ public class RaspiPin extends PinProvider {
             pins.add(RaspiPin.GPIO_20);
         }
 
-        // add pins exclusive to Models A+, B+, 2B, 3B, and Zero
+        // add pins exclusive to Models A+, B+, 2B, 3B, 4B, 400 and Zero
         else{
             pins.add(RaspiPin.GPIO_21);
             pins.add(RaspiPin.GPIO_22);
