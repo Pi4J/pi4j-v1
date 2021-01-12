@@ -96,11 +96,14 @@
             <item name="Raspberry Pi - 3B" href="pins/model-3b-rev1.html" />
             <item name="Raspberry Pi - 3B+" href="pins/model-3b-plus-rev1.html" />
             <item name="Raspberry Pi - 3A+" href="pins/model-3a-plus-rev1.html" />
+			<item name="Raspberry Pi - 4B" href="pins/model-4b-rev1.html" />
+			<item name="Raspberry Pi - 400" href="pins/model-400-rev1.html" />
             <item name="Raspberry Pi - Zero" href="pins/model-zero-rev1.html" />
             <item name="Raspberry Pi - Zero W" href="pins/model-zerow-rev1.html" />
 			<item name="Raspberry Pi - CM1 (Compute Module)" href="pins/model-cm-rev1.html" />
 			<item name="Raspberry Pi - CM3 (Compute Module)" href="pins/model-cm3-rev1.html" />
 			<item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/model-cm3-plus-rev1.html" />
+			<item name="Raspberry Pi - CM4 (Compute Module)" href="pins/model-cm4-rev1.html" />
             <item name="Lemaker - BananaPi" href="pins/lemaker-bananapi.html" />
             <item name="Lemaker - BananaPro" href="pins/lemaker-bananapro.html" />
             <item name="Odroid - C1/C1+" href="pins/odroid-c1.html" />

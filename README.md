@@ -43,6 +43,11 @@ Copyright (C) 2012-2021 Pi4J
      and later will support newer JDKs.
   *  Make sure you install the latest version of WiringPi to support RaspberryPi 4B and newer systems.
      (http://wiringpi.com/wiringpi-updated-to-2-52-for-the-raspberry-pi-4b/)
+  *  Please note that the Pi4J v1.x codebase is no longer being actively developed. Pi4J v1.x will only be maintained 
+     and updated for major bug fixes. This codebase has been largely stable for several years and is compatible across 
+     a wide variety of Raspberry Pi SoCs and you are welcome to continue using it.  However, for new projects, it 
+     is highly recommended to migrate to the Pi4J Version 2.x codebase.  See https://v2.pi4j.com for more information.
+
   
 2018-04-23 :: 1.2
 

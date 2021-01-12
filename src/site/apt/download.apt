@@ -17,15 +17,15 @@ Download
 
   <<RELEASE BUILDS>>
 
-     * {{{https://pi4j.com/download/pi4j-1.2.deb}pi4j-1.2.deb}} <<<Debian Installer Package>>>
+     * {{{https://pi4j.com/download/pi4j-1.3.deb}pi4j-1.3.deb}} <<<Debian Installer Package>>>
 
-     * {{{https://pi4j.com/download/pi4j-1.2.zip}pi4j-1.2.zip}} <<<Compressed ZIP Archive>>>
+     * {{{https://pi4j.com/download/pi4j-1.3.zip}pi4j-1.3.zip}} <<<Compressed ZIP Archive>>>
 
   <<LATEST SNAPSHOT BUILDS>>
 
-     * {{{https://pi4j.com/download/pi4j-1.3-SNAPSHOT.deb}pi4j-1.3-SNAPSHOT.deb}} <<<Debian Installer Package>>>
+     * {{{https://pi4j.com/download/pi4j-1.4-SNAPSHOT.deb}pi4j-1.4-SNAPSHOT.deb}} <<<Debian Installer Package>>>
 
-     * {{{https://pi4j.com/download/pi4j-1.3-SNAPSHOT.zip}pi4j-1.3-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
+     * {{{https://pi4j.com/download/pi4j-1.4-SNAPSHOT.zip}pi4j-1.4-SNAPSHOT.zip}} <<<Compressed ZIP Archive>>>
 
 * Maven Repository
 
@@ -39,7 +39,7 @@ Download
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.1</version>
+   <version>1.3</version>
 </dependency>
 +---------------------
 
@@ -59,7 +59,7 @@ Download
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.3-SNAPSHOT</version>
+   <version>1.3</version>
 </dependency>
 +---------------------
 

@@ -37,6 +37,7 @@
 				<role>architect</role>
 				<role>developer</role>
 			</roles>
+            <timezone>-5</timezone>
 		</developer>
 		<developer>
 			<name>Daniel Sendula</name>
@@ -45,6 +46,21 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+        <developer>
+            <name>Frank Delporte</name>
+            <email>frank@pi4j.com</email>
+            <url>https://webtechie.be</url>
+            <properties>
+                <blog>https://webtechie.be</blog>
+                <linikedin>https://www.linkedin.com/in/frankdelporte/</linikedin>
+                <twitter>https://twitter.com/FrankDelporte</twitter>
+            </properties>
+            <roles>
+                <role>facilitator</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
 		<developer>
 			<id>eitch</id>
 			<name>Robert von Burg</name>

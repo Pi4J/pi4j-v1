@@ -14,43 +14,41 @@ Welcome to Pi4J!
 
 * News / Announcements
 
-  [2019-02-26]
+  [2020-01-11]
 
-  Version 1.2 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
-  This is the active development version where you can find the latest fixes and updates.
+  Version 1.3 has been released and is now available for download. ({{{./download.html}Downloads}} | {{{./install.html}Installation}})
 
   Latest Development Updates:
 
-    * Added support for {{{./pins/model-3a-plus-rev1.html}Raspberry Pi 3A+}}
+    * Added support for {{{./pins/model-4b-rev1.html}Raspberry Pi 4B}}
 
-    * Added support for {{{./pins/model-3b-plus-rev1.html}Raspberry Pi 3B+}}
+    * Added support for {{{./pins/model-400-rev1.html}Raspberry Pi 400}}
 
-    * Added support for {{{./pins/model-zerow-rev1.html}Raspberry Pi Zero W}}
+    * Added support for {{{./pins/model-cm4-rev1.html}Raspberry Pi Compute Module 4}}
 
-    * Added support for {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi Compute Module 3+}}
-
-    * Added support for {{{./pins/model-cm3-rev1.html}Raspberry Pi Compute Module 3}}
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/230}OrangePi}} platform.
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/337}Synovoip BPI (BananaPi)}} platform.
-
-    * Added experimental support for {{{https://github.com/Pi4J/pi4j/issues/279}NanoPi}} platform.
-
-    * Updated to Java 8 runtime
+    * Various improvements and bug fixes listed here: {{{https://github.com/Pi4J/pi4j/issues?q=is%3Amilestone%3A%22RELEASE+1.3}GitHub Issues (v1.3)}}
 
    Additional details can be found in the project's {{{https://github.com/Pi4J/pi4j/blob/master/README.md}README}}.
 
 * Project Status
 
-  Please note that this project is continually under development but has been very stable for several years.  The
-  functionality is very stable but improvements and bug fixes are continually committed into the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch in
+  Please note that the Version 1.x codebase for this project is no longer being actively developed.  The Version 1.x
+  codebase will only be maintained and updated for major bug fixes. This codebase has been largely stable for several
+  years and is compatible across a wide variety of Raspberry Pi SoCs and you are welcome to continue using it. However,
+  for new projects, it is highly recommended to migrate to the {{{https://v2.pi4j.com/}Pi4J Version 2.x}} codebase.
+
+  Bug fixes are maintained in the '{{{https://github.com/Pi4J/pi4j/tree/master}master}}' branch in
   the Pi4J GitHub repository and SNAPSHOT builds are published in the {{{./download.html#Maven_Repository}Sonatype OSS repository}}.
 
-  You are welcome to start using and integrating this library in your project.  Please provide any feedback good, bad
-  or ugly.  <(Well maybe keep the ugly feedback to a minimum.)>
+  Visit the {{{./download.html}Downloads}} page to download the latest Pi4J v1.x library builds.
 
-  Visit the {{{./download.html}Downloads}} page to download the latest Pi4J library builds.
+* Prerequisites
+
+  * {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}} - The Java 8 runtime
+  environment must be installed and configured on your SoC platform.
+
+  * {{{http://wiringpi.com/wiringpi-updated-to-2-52-for-the-raspberry-pi-4b/}WiringPi}} - The latest version of WiringPi
+  (2.52) must be installed on your SoC platform.
 
 * Supported Hardware
 
@@ -72,6 +70,10 @@ Welcome to Pi4J!
 
   * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi - 3A+}}
 
+  * {{{./pins/model-4b-rev1.html}Raspberry Pi - 4B}}
+
+  * {{{./pins/model-400-rev1.html}Raspberry Pi - 400}}
+
   * {{{./pins/model-zero-rev1.html}Raspberry Pi - Zero}}
 
   * {{{./pins/model-zerow-rev1.html}Raspberry Pi - Zero W}}
@@ -81,6 +83,8 @@ Welcome to Pi4J!
   * {{{./pins/model-cm3-rev1.html}Raspberry Pi - CM3 (Compute Module)}}
 
   * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
+
+  * {{{./pins/model-cm4-rev1.html}Raspberry Pi - CM4 (Compute Module)}}
 
   * {{{./pins/lemaker-bananapi.html}LeMaker - BananaPi}}
 
