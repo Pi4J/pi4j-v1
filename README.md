@@ -37,12 +37,13 @@ Copyright (C) 2012-2021 Pi4J
 
 ## KNOWN ISSUES
 
-2021-01-08 :: 1.3
+2021-01-12 :: 1.3
 
   *  Pi4J v1.3 must be compiled using JDK 1.8.  This codebase is not compatible with JDK9 and newer.  Pi4J v1.4 
      and later will support newer JDKs.
-  *  Make sure you install the latest version of WiringPi to support RaspberryPi 4B and newer systems.
-     (http://wiringpi.com/wiringpi-updated-to-2-52-for-the-raspberry-pi-4b/)
+  *  The original WiringPi library has been **DEPRECATED**. _(See: http://wiringpi.com/wiringpi-deprecated/)_
+  *  To support RaspberryPi 4B and newer systems you must install the latest *unofficial* WiringPi version which is 
+     maintained here: https://github.com/WiringPi/WiringPi.  _(As of 2021-01-12, this is version 2.60.)_
   *  Please note that the Pi4J v1.x codebase is no longer being actively developed. Pi4J v1.x will only be maintained 
      and updated for major bug fixes. This codebase has been largely stable for several years and is compatible across 
      a wide variety of Raspberry Pi SoCs and you are welcome to continue using it.  However, for new projects, it 
@@ -57,12 +58,14 @@ Copyright (C) 2012-2021 Pi4J
      in part because the WiringPi project now requests no static linking and because it would cause Pi4J to fail 
      on newer platforms when we were not able to get a new build released in a reasonable and timely manner.  This 
      change should be of a minimal negative impact now that WiringPi is included with the OS and users will benefit
-     from being able to take advantage of newer WiringPi builds without depending on a new Pi4J build. 
+     from being able to take advantage of newer WiringPi builds without depending on a new Pi4J build.   **Note**: for 
+     RaspberryPi 4B/400 and newer systems, you must install the latest *unofficial* WiringPi version which is
+     maintained here: https://github.com/WiringPi/WiringPi.  _(As of 2021-01-12, this is version 2.60.)_
 
 2016-07-26 :: 1.1
 
   *  On the Raspberry Pi Model 3B the hardware-based serial/UART device `/dev/ttyAMA0` has been re-purposed to   
-     communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
+     communicate with the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the GPIO 
      header.  Instead, a new serial port "/dev/ttyS0" has been provided which is implemented with a software-based UART 
      (miniUART).  This software-based UART ("/dev/ttyS0") does not support PARITY and some have experienced some 
      stability issues using this port at higher speeds.  If you don't need the Bluetooth modem functionality, you can 
