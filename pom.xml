@@ -439,22 +439,81 @@
             <id>deploy-site</id>
             <build>
                 <plugins>
-                    <!-- DEPLOY GITHUB SITE DOCUMENTATION -->
+                    <!-- DEPLOY Pi4J.COM SITE CONTENT/DOCUMENTATION FOR THIS VERSION -->
                     <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
-                        <inherited>false</inherited>
+                        <groupId>com.bazaarvoice.maven.plugins</groupId>
+                        <artifactId>s3-upload-maven-plugin</artifactId>
                         <configuration>
-                            <message>Generating site content for ${project.version}</message>
-                            <repositoryOwner>Pi4J</repositoryOwner>
-                            <repositoryName>pi4j</repositoryName>
+                            <recursive>false</recursive>
+                            <bucketName>pi4j.com</bucketName>
+                            <accessKey>${pi4j.aws.access.key}</accessKey>
+                            <secretKey>${pi4j.aws.secret.key}</secretKey>
                         </configuration>
                         <executions>
                             <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
+                                <id>deploy-pi4-gpg-public-key</id>
                                 <phase>site</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.reporting.outputDirectory}/${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</source>
+                                    <destination>${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</destination>
+                                    <recursive>true</recursive>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>publish-site</id>
+            <build>
+                <plugins>
+                    <!-- CREATE RELEASE VERSIONED Pi4J.COM SITE INDEX -->
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>maven-replacer-plugin</artifactId>
+                        <version>1.4.1</version>
+                        <executions>
+                            <execution>
+                                <id>scss-replacement</id>
+                                <phase>site</phase> <goals>
+                                <goal>replace</goal>
+                            </goals> <configuration>
+                                <file>src/site/root/index.html</file>
+                                <token>\$\{VERSION\}</token>
+                                <value>${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</value>
+                                <outputFile>${project.reporting.outputDirectory}/index.html</outputFile>
+                            </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- DEPLOY Pi4J.COM SITE INDEX FOR THIS VERSION -->
+                    <plugin>
+                        <groupId>com.bazaarvoice.maven.plugins</groupId>
+                        <artifactId>s3-upload-maven-plugin</artifactId>
+                        <configuration>
+                            <recursive>false</recursive>
+                            <bucketName>pi4j.com</bucketName>
+                            <accessKey>${pi4j.aws.access.key}</accessKey>
+                            <secretKey>${pi4j.aws.secret.key}</secretKey>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-pi4-gpg-public-key</id>
+                                <phase>site</phase>
+                                <goals>
+                                    <goal>s3-upload</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.reporting.outputDirectory}/index.html</source>
+                                    <destination>index.html</destination>
+                                    <recursive>true</recursive>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -964,6 +1023,7 @@
                     <generateProjectInfo>true</generateProjectInfo>
                     <generateReports>true</generateReports>
                     <generateSitemap>true</generateSitemap>
+                    <outputDirectory>${project.reporting.outputDirectory}/${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</outputDirectory>
 				</configuration>
                 <dependencies>
                     <dependency>
