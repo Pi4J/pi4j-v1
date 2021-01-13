@@ -53,13 +53,42 @@ public class SerialPort {
      *
      * @param board hardware board type
      * @return com port device path
+	 *
+	 * REF:  https://www.raspberrypi.org/documentation/configuration/uart.md
+	 *
+	 *   By default, only UART0 is enabled.
+	 *   The following table summarises the assignment of the first two UARTs:
+	 *
+	 *     ----------------------------------------------------------------
+	 *     Model	              |  first PL011 (UART0)   | mini UART
+	 *     ----------------------------------------------------------------
+	 *     Raspberry Pi Zero       primary                 secondary
+	 *     Raspberry Pi Zero W     secondary (Bluetooth)   primary
+	 *     Raspberry Pi 1          primary                 secondary
+	 *     Raspberry Pi 2          primary                 secondary
+	 *     Raspberry Pi 3          secondary (Bluetooth)   primary
+	 *     Raspberry Pi 4          secondary (Bluetooth)   primary
+	 *     ----------------------------------------------------------------
+	 *     Note: the mini UART is disabled by default, whether it is designated
+	 *           primary or secondary UART.
+	 *
+	 *   Linux devices on Raspberry Pi OS:
+	 *     ----------------------------------------------------------
+	 *     Linux device	       Description
+	 *     ----------------------------------------------------------
+	 *     /dev/ttyS0          mini UART
+	 *     /dev/ttyAMA0        first PL011 (UART0)
+	 *     /dev/serial0        primary UART
+	 *     /dev/serial1        secondary UART
+	 *     ----------------------------------------------------------
+	 *     Note: /dev/serial0 and /dev/serial1 are symbolic links which point
+	 *           to either /dev/ttyS0 or /dev/ttyAMA0.
      */
     public static String getDefaultPort(SystemInfo.BoardType board) throws UnsupportedBoardType {
         switch (board){
-            // ------------------------
-            // ALL RASPBERRY PI MODELS
-            // (except Model 3B)
-            // ------------------------
+			// -------------------------------------------------------------
+            // LEGACY RASPBERRY PI MODELS: 1A, 1B, 1A+, 1B+, CM1, 2B, Zero
+			// -------------------------------------------------------------
             case RaspberryPi_A:
             case RaspberryPi_B_Rev1:
             case RaspberryPi_B_Rev2:
@@ -69,17 +98,20 @@ public class SerialPort {
             case RaspberryPi_2B:
             case RaspberryPi_Zero:
             case RaspberryPi_ComputeModule3:
-            case RaspberryPi_ZeroW:
             case RaspberryPi_Alpha:
             case RaspberryPi_Unknown: {
                 return RaspberryPiSerial.DEFAULT_COM_PORT;
             }
 
-            // ---------------------------
-            // RASPBERRY PI MODEL 3B, 3B+
-            // ---------------------------
+			// --------------------------------------------------------
+            // NEWER RASPBERRY PI MODELS: ZeroW, 3B, 3B+, 4B, 400, CM4
+            // --------------------------------------------------------
+			case RaspberryPi_ZeroW:
             case RaspberryPi_3B:
-            case RaspberryPi_3B_Plus: {
+            case RaspberryPi_3B_Plus:
+			case RaspberryPi_4B:
+			case RaspberryPi_400:
+			case RaspberryPi_ComputeModule4:{
                 // if the /dev/ttyS0 port exists, then use it as the default serial port
                 File s0ComPort = new File(RaspberryPiSerial.S0_COM_PORT);
                 if((s0ComPort.exists())){

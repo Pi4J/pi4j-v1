@@ -70,6 +70,11 @@ public interface Serial extends SerialDataReader, SerialDataWriter, AutoCloseabl
     public static final String FIRST_USB_COM_PORT = "/dev/ttyUSB0";
     public static final String SECOND_USB_COM_PORT = "/dev/ttyUSB1";
 
+    // REF: https://www.raspberrypi.org/documentation/configuration/uart.md
+    // added new symbolic device links included in Raspberry Pi OS.
+    public static final String PRIMARY_COM_PORT = "/dev/serial0";
+    public static final String SECONDARY_COM_PORT = "/dev/serial1";
+
     /**
      * <p>
      * This opens and initializes the serial port/device and sets the communication parameters.
