@@ -84,8 +84,10 @@ public class GpioInputAllExample {
 
         // get a collection of raw pins based on the board type (model)
         SystemInfo.BoardType board = SystemInfo.getBoardType();
-        if(board == SystemInfo.BoardType.RaspberryPi_ComputeModule) {
-            // get all pins for compute module
+        if(board == SystemInfo.BoardType.RaspberryPi_ComputeModule ||
+           board == SystemInfo.BoardType.RaspberryPi_ComputeModule3 ||
+           board == SystemInfo.BoardType.RaspberryPi_ComputeModule3_Plus) {
+            // get all pins for compute module 1 & 3 (CM4 uses 'RaspiPin' pin provider)
             pins = RCMPin.allPins();
         }
         else {
