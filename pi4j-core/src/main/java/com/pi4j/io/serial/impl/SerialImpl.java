@@ -197,7 +197,17 @@ public class SerialImpl extends AbstractSerialDataReaderWriter implements Serial
 
                     // add a new serial data event notification to the thread pool for *immediate* execution
                     // we notify the event listeners on a separate thread to prevent blocking the native monitoring thread
-                    executor.execute(new SerialDataEventDispatchTaskImpl(sde, listeners));
+                    if(!listeners.isEmpty() && isOpen()) {
+                        // don't add event if executor has been shutdown or terminated
+                        if(!executor.isTerminated() && !executor.isShutdown()) {
+                            try {
+                                executor.execute(new SerialDataEventDispatchTaskImpl(sde, listeners));
+                            }
+                            catch(java.util.concurrent.RejectedExecutionException e){
+                                // do nothing, we are most likely in a shutdown
+                            }
+                        }
+                    }
                 }
                 catch (IOException e) {
                     e.printStackTrace();

@@ -119,8 +119,8 @@ int monitorSerialInterrupt(void *threadarg)
 	// set the running state of the instance monitor data structure
 	monitor->running = 1;
 
-	// continuous thread loop
-	for(;;)
+	// continuous thread loop while running state is enabled
+	while(monitor->running)
 	{
         // wait for input
         int ret = epoll_wait(epfd, &events, 1, SERIAL_POLL_TIMEOUT);
@@ -207,8 +207,7 @@ int monitorSerialInterrupt(void *threadarg)
        }
     }
 
-	// if we reached this code (unlikely),
-	// then close the epoll file descriptor and exit the thread
+	// close the epoll file descriptor and exit the monitoring thread
 	close(epfd);
 	return 0;
 }
@@ -308,10 +307,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_SerialInterrupt_disableSerialDataReceiv
 		// kill the monitoring thread
 		if(serial_monitor_data_array[index].running > 0)
 		{
-			pthread_cancel(serial_monitor_threads[index]);
-
-            // reset running flag
+            // set running flag to exit monitoring thread
             serial_monitor_data_array[index].running = 0;
+
+            // reset file descriptor flag
             serial_monitor_data_array[index].fileDescriptor = 0;
 
 			// return '1' when a thread was actively killed
@@ -398,8 +397,8 @@ void SerialInterrupt_JNI_OnUnload(JavaVM *jvm)
 	int index = 0;
 	for(index = 0; index < SERIAL_MAX_LISTENERS; index++)
 	{
-		if(serial_monitor_data_array[index].running > 0)
-			pthread_cancel(serial_monitor_threads[index]);
+        // set running flag to exit monitoring thread
+        serial_monitor_data_array[index].running = 0;
 	}
 
 	// destroy cached java references
