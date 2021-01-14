@@ -116,7 +116,7 @@ public class GpioOutputExample {
 
         // --------------------------------------------------------------------------
 
-        // tset gpio pin state to LOW
+        // set gpio pin state to LOW
         console.emptyLine();
         console.println("Setting output pin state is set to LOW.");
         output.low(); // or ... output.setState(PinState.LOW);
@@ -126,7 +126,7 @@ public class GpioOutputExample {
 
         // --------------------------------------------------------------------------
 
-        // tset gpio pin state to HIGH
+        // set gpio pin state to HIGH
         console.emptyLine();
         console.println("Setting output pin state from LOW to HIGH.");
         output.setState(PinState.HIGH); // or ... output.high();
