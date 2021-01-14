@@ -267,7 +267,7 @@ public class GpioPinImpl implements GpioPin,
 
     @Override
     public Future<?> pulse(long duration, TimeUnit timeUnit) {
-        return null;
+        return pulse(duration, false, timeUnit);
     }
 
     @Override
@@ -376,6 +376,38 @@ public class GpioPinImpl implements GpioPin,
     @Override
     public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
         return pulse(duration, pulseState, blocking, callback, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void pulseSync(long duration) throws InterruptedException{
+        pulseSync(duration, PinState.HIGH, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void pulseSync(long duration, TimeUnit timeUnit) throws InterruptedException{
+        pulseSync(duration, PinState.HIGH, timeUnit);
+    }
+
+    @Override
+    public void pulseSync(long duration, PinState pulseState) throws InterruptedException{
+        pulseSync(duration, pulseState, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void pulseSync(long duration, PinState pulseState, TimeUnit timeUnit) throws InterruptedException{
+
+        // validate duration argument
+        if (duration <= 0)
+            throw new IllegalArgumentException("Pulse duration must be greater than 0 milliseconds.");
+
+        // start the pulse state
+        setState(pulseState);
+
+        // block the current thread for the pulse duration
+        Thread.sleep(duration);
+
+        // end the pulse state
+        setState(PinState.getInverseState(pulseState));
     }
 
     @Override

@@ -177,7 +177,7 @@ public class GpioOutputExample {
         // pulse gpio pin state for 1 second HIGH and then return to LOW
         console.emptyLine();
         console.println("Pulsing output pin state HIGH for 1 second.");
-        output.pulse(1000, true); // set second argument to 'true' use a blocking call
+        output.pulseSync(1000);
         Thread.sleep(50);
 
         // --------------------------------------------------------------------------

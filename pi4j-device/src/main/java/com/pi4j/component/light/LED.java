@@ -37,5 +37,6 @@ public interface LED extends Light {
     Future<?> blink(long delay);
     Future<?> blink(long delay, long duration);
     Future<?> pulse(long duration);
-    Future<?> pulse(long duration, boolean blocking);
+    @Deprecated Future<?> pulse(long duration, @Deprecated boolean blocking);
+    void pulseSync(long duration) throws InterruptedException;
 }

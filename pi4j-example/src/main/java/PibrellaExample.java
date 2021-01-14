@@ -87,13 +87,13 @@ public class PibrellaExample {
 
             // step up the ladder
             for(int index = PibrellaLed.RED.getIndex(); index <= PibrellaLed.GREEN.getIndex(); index++) {
-                pibrella.getLed(index).pulse(pulseRate, true);
+                pibrella.getLed(index).pulseSync(pulseRate);
                 //Thread.sleep(pulseRate);
             }
 
             // step down the ladder
             for(int index = PibrellaLed.GREEN.getIndex(); index >= PibrellaLed.RED.getIndex(); index--) {
-                pibrella.getLed(index).pulse(pulseRate, true);
+                pibrella.getLed(index).pulseSync(pulseRate);
                 //Thread.sleep(pulseRate);
             }
         }

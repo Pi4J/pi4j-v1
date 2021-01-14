@@ -134,7 +134,14 @@ public class GpioLEDComponent extends LEDBase {
     }
 
     @Override
-    public Future<?> pulse(long duration, boolean blocking){
+    @Deprecated
+    public Future<?> pulse(long duration, @Deprecated boolean blocking){
         return pin.pulse(duration, onState, blocking);
     }
+
+    @Override
+    public void pulseSync(long duration) throws InterruptedException {
+        pin.pulseSync(duration, onState);
+    }
+
 }

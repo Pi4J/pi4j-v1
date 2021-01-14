@@ -185,7 +185,7 @@ public class GpioOutputAllExample {
             }
             else if(arg.startsWith("P")){   // PULSE (pulse starting with inverse of current state)
                 selectedOutput.blink(0);
-                selectedOutput.pulse(1000, PinState.getInverseState(selectedOutput.getState()));
+                selectedOutput.pulseSync(1000, PinState.getInverseState(selectedOutput.getState()));
             }
             else if(arg.startsWith("Q")){   // QUIT
                 console.exit();
