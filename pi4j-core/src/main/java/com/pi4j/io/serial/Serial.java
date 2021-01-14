@@ -217,7 +217,6 @@ public interface Serial extends SerialDataReader, SerialDataWriter, AutoCloseabl
     /**
      * <p>
      *     Forces the transmission of any remaining data in the serial port transmit buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @throws IllegalStateException thrown if the serial port is not already open.
@@ -228,7 +227,6 @@ public interface Serial extends SerialDataReader, SerialDataWriter, AutoCloseabl
     /**
      * <p>
      *     Discards any data in the serial receive (input) buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @throws IllegalStateException thrown if the serial port is not already open.
@@ -239,7 +237,6 @@ public interface Serial extends SerialDataReader, SerialDataWriter, AutoCloseabl
     /**
      * <p>
      *     Discards any data in the serial transmit (output) buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @throws IllegalStateException thrown if the serial port is not already open.
