@@ -57,8 +57,8 @@ int wiringpi_init_mode = WPI_MODE_UNINITIALISED;
  * AUTO DETECTED THE BOARD IDENTIFICATION INFO
  */
 void GpioPin_Init(){
-    // some wiringPi ports are old and don't support the 'piBoardId()' method; I'm looking at you LeMaker BananaPi!
-    #ifdef PI_MODEL_UNKNOWN
+    // some wiringPi ports don't support the 'piBoardId()' method; I'm looking at you LeMaker BananaPi!
+    #ifdef PI_MODEL_CM
     int mem, overVolted ;
 
 	// get the board identifier that we are running on
@@ -94,7 +94,11 @@ int getEdgePin(int pin)
 
 	// return the edge pin index
 	// (will return -1 for invalid pin)
-    if (wiringpi_detected_model == PI_MODEL_CM){
+	// simply return the pin index for RaspberryPi Compute Module 1, 3 and 3+
+	// because the GPIO pin and edge is the same as the pin number a
+    if (wiringpi_detected_model == PI_MODEL_CM ||
+        wiringpi_detected_model == PI_MODEL_CM3 ||
+        wiringpi_detected_model == PI_MODEL_CM3P){
         return pin;
     }
     else{
