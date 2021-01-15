@@ -112,6 +112,19 @@ public class PCA9685GpioProvider extends GpioProviderBase implements GpioProvide
         setFrequency(targetFrequency, frequencyCorrectionFactor);
     }
 
+    @Override
+    public void export(Pin pin, PinMode mode) {
+        // make sure to set the pin mode
+        super.export(pin, mode);
+        setMode(pin, mode);
+    }
+
+    @Override
+    public void unexport(Pin pin) {
+        super.unexport(pin);
+        setMode(pin, PinMode.PWM_OUTPUT);
+    }
+
     /**
      * Target frequency (accuracy is around +/- 5%!)
      *
