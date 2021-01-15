@@ -80,8 +80,9 @@ echo
 WIRINGPI_PLATFORM=raspberrypi
 
 # build wiringPi
-#export WIRINGPI_REPO=git://git.drogon.net/wiringPi
-export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
+#export WIRINGPI_REPO=git://git.drogon.net/wiringPi        <-- DEPRECATED
+#export WIRINGPI_REPO=https://github.com/Pi4J/wiringPi     <-- DEPRECATED
+export WIRINGPI_REPO=https://github.com/WiringPi/WiringPi
 export WIRINGPI_BRANCH=master
 export WIRINGPI_DIRECTORY=wiringPi
 export WIRINGPI_STATIC=0
