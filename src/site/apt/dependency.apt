@@ -7,12 +7,36 @@
 
 Dependencies
 
-  Pi4J implements a JNI wrapper of the WiringPi library developed by Gordon Henderson.\
+  Pi4J implements a JNI wrapper of the WiringPi library (originally) developed by Gordon Henderson.\
   Pi4J dynamically compiles against the WiringPi library so you must have Wiring Pi installed on your target
-  system.  WiringPi is included by default in the latest Raspbian builds.
+  system.  WiringPi is included by default in the latest Raspbian builds; however, it may not be the latest version.
 
   More information on the WiringPi project can be found here:\
   {{http://wiringpi.com/}}
+
+  <<NOTE>>: The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and
+  is no longer maintained.\
+  To support RaspberryPi 4B/400 and newer systems you must install the latest *unofficial*
+  WiringPi version which is maintained here: {{https://github.com/WiringPi/WiringPi}}.
+
+  If you have Pi4J installed on your RaspberryPi, you can use the following script command to download, build and
+  install the latest <unofficial> build of WiringPi.
+
+----------------------------------------
+pi4j --wiringpi
+----------------------------------------
+
+  Alternatively, you can use the following shell commands to download, build and install the latest <unofficial>
+  build of WiringPi.
+
+----------------------------------------
+sudo apt-get remove wiringpi -y
+sudo apt-get --yes install git-core gcc make
+cd ~
+git clone https://github.com/WiringPi/WiringPi --branch master --single-branch wiringpi
+cd ~/wiringpi
+sudo ./build
+----------------------------------------
 
 [./images/dependencies.png]
 

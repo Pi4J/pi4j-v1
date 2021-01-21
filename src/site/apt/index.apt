@@ -71,8 +71,13 @@ Welcome to Pi4J!
   * {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}} - The Java 8 runtime
   environment must be installed and configured on your SoC platform.
 
-  * {{{http://wiringpi.com/wiringpi-updated-to-2-52-for-the-raspberry-pi-4b/}WiringPi}} - The latest version of WiringPi
-  (2.52) must be installed on your SoC platform.
+  * {{{https://github.com/WiringPi/WiringPi}WiringPi}} - The original WiringPi library has been
+  **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and is no longer maintained.  To support RaspberryPi
+  4B/400 and newer systems you must install the latest *unofficial* WiringPi version which is maintained
+  here: {{https://github.com/WiringPi/WiringPi}}. (As of 2021-01-12, this is version 2.60.)
+
+  \
+  See {{{./dependency.html}Dependencies}} for additional information.
 
 * Supported Hardware
 
@@ -108,7 +113,7 @@ Welcome to Pi4J!
 
   * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
 
-  * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
+  * {{{./pins/model-cm4-rev1.html}Raspberry Pi - CM4 (Compute Module)}}
 
 * Features
 
