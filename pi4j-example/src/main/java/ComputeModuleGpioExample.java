@@ -32,8 +32,16 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 /**
- * This example code demonstrates how to perform simple state
- * control of a GPIO pin on the Raspberry Pi.
+ * This example code demonstrates how to setup a listener
+ * for all available GPIO pins on the following boards:
+ *
+ *  - RaspberryPi Compute Module 1      (CM1)
+ *  - RaspberryPi Compute Module 3      (CM3)
+ *  - RaspberryPi Compute Module 3 Plus (CM3+)
+ *
+ *  NOTE: THE COMPUTE MODULE 4 (CM4) DOES NOT SUPPORT THE
+ *        SAME 45 GPIO PINS PROVIDED BY 'RCMPin'.  THE CM4
+ *        SHOULD USE THE STANDARD 'RaspiPin' SET.
  *
  * @author Robert Savage
  */
@@ -73,7 +81,7 @@ public class ComputeModuleGpioExample {
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_13, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_14, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_15, PinPullResistance.PULL_DOWN),
-                // gpio.provisionDigitalInputPin(RCMPin.GPIO_16, PinPullResistance.PULL_DOWN), (error exporting GPIO 16?)
+                gpio.provisionDigitalInputPin(RCMPin.GPIO_16, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_17, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_18, PinPullResistance.PULL_DOWN),
                 gpio.provisionDigitalInputPin(RCMPin.GPIO_19, PinPullResistance.PULL_DOWN),
