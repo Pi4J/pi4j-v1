@@ -46,6 +46,16 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>eitch</id>
+			<name>Robert von Burg</name>
+			<email>eitch@eitchnet.ch</email>
+			<url>http://strolch.li</url>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 
 	<!-- SOURCE CONTROL -->
@@ -98,7 +108,7 @@
 		<module>pi4j-distribution</module>
 	</modules>
 
-	<!-- PROJECT PREREQUISITES -->
+    <!-- PROJECT PREREQUISITES -->
 	<prerequisites>
 		<maven>3.0.5</maven>
 	</prerequisites>
