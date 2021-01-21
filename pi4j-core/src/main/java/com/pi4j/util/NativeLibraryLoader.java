@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,72 +55,127 @@ public class NativeLibraryLoader {
         // forbid object construction
     }
 
-    public static synchronized void load(String libraryName) {
-        // check for debug property; if found enable all logging levels
-        if (!initialized) {
-            initialized = true;
-            if (System.getProperty("pi4j.debug") != null) {
-                logger.setLevel(Level.ALL);
-                try {
-                    // create an appending file handler
-                    FileHandler fileHandler = new FileHandler("pi4j.log");
-                    fileHandler.setLevel(Level.ALL);
-                    ConsoleHandler consoleHandler = new ConsoleHandler();
-                    consoleHandler.setLevel(Level.ALL);
+	public static synchronized void load(String fileName, String libName) {
+		// check for debug property; if found enable all logging levels
+		if (!initialized) {
+			initialized = true;
+			if (System.getProperty("pi4j.debug") != null) {
+				logger.setLevel(Level.ALL);
+				try {
+					// create an appending file handler
+					FileHandler fileHandler = new FileHandler("pi4j.log");
+					fileHandler.setLevel(Level.ALL);
+					ConsoleHandler consoleHandler = new ConsoleHandler();
+					consoleHandler.setLevel(Level.ALL);
 
-                    // add to the desired loggers
-                    logger.addHandler(fileHandler);
-                    logger.addHandler(consoleHandler);
-                } catch (IOException e) {
-                    System.err.println("Unable to setup logging to debug. No logging will be done. Error: ");
-                    e.printStackTrace();
-                }
-            }
-        }
+					// add to the desired loggers
+					logger.addHandler(fileHandler);
+					logger.addHandler(consoleHandler);
+				} catch (IOException e) {
+					System.err.println("Unable to setup logging to debug. No logging will be done. Error: ");
+					e.printStackTrace();
+				}
+			}
+		}
 
-        // first, make sure that this library has not already been previously loaded
-        if (loadedLibraries.contains(libraryName)) {
-            logger.fine("Library [" + libraryName + "] has already been loaded; no need to load again.");
-            return;
-        }
+		// first, make sure that this library has not already been previously loaded
+		if (loadedLibraries.contains(fileName)) {
+			logger.fine("Library [" + fileName + "] has already been loaded; no need to load again.");
+			return;
+		}
 
-        loadedLibraries.add(libraryName);
+		// cache loaded library
+		loadedLibraries.add(fileName);
 
-        String osArch = System.getProperty("os.arch");
-        switch (osArch) {
-            case "arm":
-                osArch = "armhf";
-                break;
-            case "aarch64":
-                break;
-            default:
-                throw new IllegalStateException("Unknown os.arch value " + osArch);
-        }
+		// determine if there is an overriding library path defined for native libraries
+		String libPath = System.getProperty("pi4j.library.path");
+		if(StringUtil.isNotNullOrEmpty(libPath, true)) {
 
-        //
-        // path = /lib/{platform}/{linking:static|dynamic}/{filename}-{arch}.so
-        //
-        String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
+			// if the overriding library path is set to "system", then attempt to use the system resolved library paths
+			if (libPath.equalsIgnoreCase("system")) {
+				logger.fine("Attempting to load library using {pi4j.library.path} system resolved library name: [" + libName + "]");
+				try {
+					// load library from JVM system library path; based on library name
+					System.loadLibrary(libName);
+				} catch (Exception ex) {
+					//throw this error
+					throw new UnsatisfiedLinkError("Pi4J was unable load the native library [" +
+							libName + "] from the system defined library path.  The system property 'pi4j.library.path' is defined as [" +
+							libPath + "]. You can alternatively define the 'pi4j.library.path' " +
+							"system property to override this behavior and specify an absolute library path." +
+							"; UNDERLYING EXCEPTION: [" + ex.getClass().getName() + "]=" + ex.getMessage());
+				}
+			}
 
-        // NOTE: As of 2018-04-23, Pi4J no longer includes
-        //       a statically linked wiringPi lib for the Raspberry Pi platform.  The
-        //       default linking for the Raspberry Pi platform should always be "dynamic"
-        String linking = System.getProperty("pi4j.linking",
-                platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+			// if the overriding library path is set to "local", then attempt to use the JAR local path to resolve library
+			else if (libPath.equalsIgnoreCase("local")) {
+				// get local directory path of JAR file
+				try {
+					libPath = NativeLibraryLoader.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+				} catch (URISyntaxException e) {
+					logger.severe(e.getMessage());
+					libPath = ".";
+				}
+				// build path based on lib directory and lib filename
+				String path = Paths.get(libPath, fileName).toString();
+				logger.fine("Attempting to load library using {pi4j.library.path} defined path: [" + path + "]");
+				try {
+					// load library from local path of this JAR file
+					System.load(path);
+				} catch (Exception ex) {
+					//throw this error
+					throw new UnsatisfiedLinkError("Pi4J was unable load the native library [" +
+							libName + "] from the user defined library path.  The system property 'pi4j.library.path' is defined as [" +
+							libPath + "]. Please make sure the defined the 'pi4j.library.path' " +
+							"system property contains the correct absolute library path." +
+							"; UNDERLYING EXCEPTION: [" + ex.getClass().getName() + "]=" + ex.getMessage());
+				}
+			}
 
-        String path = "/lib/" + platform + "/" + linking + "/" + libraryName + "-" + osArch + ".so";
-        logger.fine("Attempting to load [" + libraryName + "] using path: [" + path + "]");
-        try {
-            loadLibraryFromClasspath(path);
-            logger.fine(
-                    "Library [" + libraryName + "] loaded successfully using embedded resource file: [" + path + "]");
-        } catch (Exception | UnsatisfiedLinkError e) {
-            logger.log(Level.SEVERE, "Unable to load [" + libraryName + "] using path: [" + path + "]", e);
-            // either way, we did what we could, no need to remove now the library from the loaded libraries
-            // since we run inside one VM and nothing could possibly change, so there is no point in
-            // trying out this logic again
-        }
-    }
+			// if the overriding library path is set to something else, then attempt to use the defined path to resolve library
+			else {
+				// build path based on lib directory and lib filename
+				String path = Paths.get(libPath, fileName).toString();
+				logger.fine("Attempting to load library using {pi4j.library.path} defined path: [" + path + "]");
+				try {
+					// load library from user defined absolute path provided via pi4j.library.path}
+					System.load(path);
+				} catch (Exception ex) {
+					//throw this error
+					throw new UnsatisfiedLinkError("Pi4J was unable load the native library [" +
+							libName + "] from the user defined library path.  The system property 'pi4j.library.path' is defined as [" +
+							libPath + "]. Please make sure the defined the 'pi4j.library.path' " +
+							"system property contains the correct absolute library path." +
+							"; UNDERLYING EXCEPTION: [" + ex.getClass().getName() + "]=" + ex.getMessage());
+				}
+			}
+		}
+		// if there is no overriding library path defined, then attempt to load native library from embedded resource
+		else {
+			//
+			// path = /lib/{platform}/{linking:static|dynamic}/{filename}
+			//
+			String platform = System.getProperty("pi4j.platform", Platform.RASPBERRYPI.getId());
+
+			// NOTE: As of 2018-04-23, Pi4J no longer includes
+			//       a statically linked wiringPi lib for the Raspberry Pi platform.  The
+			//       default linking for the Raspberry Pi platform should always be "dynamic"
+			String linking = System.getProperty("pi4j.linking",
+					platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
+
+			String path = "/lib/" + platform + "/" + linking + "/" + fileName;
+			logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
+			try {
+				loadLibraryFromClasspath(path);
+				logger.fine("Library [" + fileName + "] loaded successfully using embedded resource file: [" + path + "]");
+			} catch (Exception | UnsatisfiedLinkError e) {
+				logger.log(Level.SEVERE, "Unable to load [" + fileName + "] using path: [" + path + "]", e);
+				// either way, we did what we could, no need to remove now the library from the loaded libraries
+				// since we run inside one VM and nothing could possibly change, so there is no point in
+				// trying out this logic again
+			}
+		}
+	}
 
     /**
      * Loads library from classpath
