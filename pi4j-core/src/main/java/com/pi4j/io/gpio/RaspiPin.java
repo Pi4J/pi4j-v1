@@ -37,6 +37,17 @@ import java.util.List;
 /**
  * Raspberry Pi pin definitions for (default) WiringPi pin numbering scheme.
  *
+ * This pin provider should be used for Raspberry Pi models:
+ *  - RaspberryPi A, A+
+ *  - RaspberryPi B, B+
+ *  - RaspberryPi 2B,
+ *  - RaspberryPi 3A+
+ *  - RaspberryPi 3B, 3B+
+ *  - RaspberryPi Zero, Zero-W
+ *  - RaspberryPi 4B,
+ *  - RaspberryPi 400,
+ *  - RaspberryPi ComputeModule4
+ *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */

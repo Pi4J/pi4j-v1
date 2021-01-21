@@ -27,9 +27,18 @@ package com.pi4j.io.gpio;
  * #L%
  */
 
-
 /**
- * Raspberry Pi Compute Module (CM1, CM3-Lite, CM3) pin definitions.
+ * Raspberry Pi Compute Module pin definitions.
+ *
+ * This pin provider should be used for Raspberry Pi models:
+ *  - RaspberryPi CM
+ *  - RaspberryPi CM3
+ *  - RaspberryPi CM3 Lite
+ *  - RaspberryPi CM3+
+ *
+ * NOTE:  Unlike the older models, the Raspberry Pi CM4 only exposes 28 GPIO pins which correspond to the
+ *        GPIO pins on the Raspberry Pi 4.  Thus for the CM4 you should not use the RCMPin pin provider,
+ *        but rather use the traditional 'RaspiPin' pin provider just like you would for a RPi 4B.
  *
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
