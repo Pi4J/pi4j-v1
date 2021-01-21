@@ -349,7 +349,9 @@ public abstract class GpioProviderBase implements GpioProvider {
         // if the pin listeners map contains this pin, then dispatch event
         if (listeners.containsKey(pin)) {
             // dispatch this event to all listener handlers
-            for (PinListener listener : listeners.get(pin)) {
+            // iterate over all listener pins in the map
+            List<PinListener> listeners_copy = new ArrayList<>(listeners.get(pin));
+            for (PinListener listener : listeners_copy) {
                 listener.handlePinEvent(new PinDigitalStateChangeEvent(this, pin, state));
             }
         }
@@ -359,7 +361,9 @@ public abstract class GpioProviderBase implements GpioProvider {
         // if the pin listeners map contains this pin, then dispatch event
         if (listeners.containsKey(pin)) {
             // dispatch this event to all listener handlers
-            for (PinListener listener : listeners.get(pin)) {
+            // iterate over all listener pins in the map
+            List<PinListener> listeners_copy = new ArrayList<>(listeners.get(pin));
+            for (PinListener listener : listeners_copy) {
                 listener.handlePinEvent(new PinAnalogValueChangeEvent(this, pin, value));
             }
         }
