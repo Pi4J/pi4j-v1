@@ -27,10 +27,13 @@
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
+import com.pi4j.platform.PlatformManager;
+import com.pi4j.system.SystemInfo;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.util.ConsoleColor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class GpioInputAllExample {
      * @throws InterruptedException
      * @throws PlatformAlreadyAssignedException
      */
-    public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException {
+    public static void main(String[] args) throws InterruptedException, PlatformAlreadyAssignedException, IOException {
 
         // create Pi4J console wrapper/helper
         // (This is a utility class to abstract some of the boilerplate code)
@@ -75,9 +78,21 @@ public class GpioInputAllExample {
                 args);                      // argument array to search in
 
         List<GpioPinDigitalInput> provisionedPins = new ArrayList<>();
+        Pin[] pins;
 
-        // provision GPIO input pins
-        for (Pin pin : RaspiPin.allPins()) {
+        // get a collection of raw pins based on the board type (model)
+        SystemInfo.BoardType board = SystemInfo.getBoardType();
+        if(board == SystemInfo.BoardType.RaspberryPi_ComputeModule) {
+            // get all pins for compute module
+            pins = RCMPin.allPins();
+        }
+        else {
+            // get exclusive set of pins based on RaspberryPi model (board type)
+            pins = RaspiPin.allPins(board);
+        }
+
+        // provision GPIO input pins for the target platform and SoC board/system
+        for (Pin pin : pins) {
             try {
                 GpioPinDigitalInput provisionedPin = gpio.provisionDigitalInputPin(pin, pull);
                 provisionedPin.setShutdownOptions(true); // unexport pin on program shutdown
