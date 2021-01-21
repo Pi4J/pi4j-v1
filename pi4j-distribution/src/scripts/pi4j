@@ -79,7 +79,7 @@ case $1 in
       shift
       WIRINGPI_PATH=`whereis libwiringPi`
       WIRINGPI_FILENAME=`readlink $WIRINGPI_PATH`
-      WIRINGPI_VERSION=${WIRINGPI_FILENAME#*.so.}
+      WIRINGPI_VERSION=${WIRINGPI_FILENAME##*so.}
       echo
       echo "--------------------------------------------"
       echo "            THE Pi4J PROJECT"
@@ -101,6 +101,46 @@ case $1 in
       echo "--------------------------------------------"
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pi4j.list"  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install pi4j
+      ;;
+   -WPI) ;&
+   -wpi) ;&
+   -wiringpi) ;&
+   --wpi) ;&
+   --wiringpi)
+      shift
+      echo "--------------------------------------------"
+      echo "Pi4J - INSTALL LATEST WIRINGPI LIBRARY"
+      echo "--------------------------------------------"
+      echo "Are you sure you want to install the latest WiringPi library from:"
+      read -p "  (https://github.com/WiringPi/WiringPi)? <y/n> " -n 1 -r
+      echo    # (optional) move to a new line
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "--------------------------------------------"
+        echo "Uninstalling any existing WiringPi versions "
+        echo "--------------------------------------------"
+        sudo apt-get remove wiringpi -y
+        sudo apt-get --force-yes --yes install git-core gcc make
+        echo "--------------------------------------------"
+        echo "Cloning latest WiringPi sources from repo   "
+        echo "--------------------------------------------"
+        cd /opt/pi4j
+        git clone https://github.com/WiringPi/WiringPi --branch master --single-branch wiringpi
+        cd /opt/pi4j/wiringpi
+        echo "--------------------------------------------"
+        echo "Building and installing WiringPi library"
+        echo "--------------------------------------------"
+        sudo ./build uninstall
+        sudo ./build clean
+        sudo ./build
+        WIRINGPI_PATH=`whereis libwiringPi`
+        WIRINGPI_FILENAME=`readlink $WIRINGPI_PATH`
+        WIRINGPI_VERSION=${WIRINGPI_FILENAME##*so.}
+        echo
+        echo "--------------------------------------------"
+        echo "   WIRINGPI.PATH    : ${WIRINGPI_PATH#*: }"
+        echo "   WIRINGPI.VERSION : $WIRINGPI_VERSION"
+        echo "--------------------------------------------"
+      fi
       ;;
    -U) ;&
    -uninstall) ;&
