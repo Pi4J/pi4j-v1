@@ -77,7 +77,7 @@ public class BroadcomPinNumberingGpioExample {
 
         // turn on gpio pin #01 for 1 second and then off
         System.out.println("--> GPIO state should be: ON for only 1 second");
-        pin.pulse(1000, true); // set second argument to 'true' use a blocking call
+        pin.pulseSync(1000);
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

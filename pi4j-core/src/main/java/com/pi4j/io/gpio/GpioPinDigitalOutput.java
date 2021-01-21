@@ -55,18 +55,24 @@ public interface GpioPinDigitalOutput extends GpioPinDigital, GpioPinOutput {
     Future<?> pulse(long duration, TimeUnit timeUnit);
     Future<?> pulse(long duration, Callable<Void> callback);
     Future<?> pulse(long duration, Callable<Void> callback, TimeUnit timeUnit);
-    Future<?> pulse(long duration, boolean blocking);
-    Future<?> pulse(long duration, boolean blocking, TimeUnit timeUnit);
-    Future<?> pulse(long duration, boolean blocking, Callable<Void> callback);
-    Future<?> pulse(long duration, boolean blocking, Callable<Void> callback, TimeUnit timeUnit);
+    @Deprecated Future<?> pulse(long duration, @Deprecated boolean blocking);
+    @Deprecated Future<?> pulse(long duration, @Deprecated boolean blocking, TimeUnit timeUnit);
+    @Deprecated Future<?> pulse(long duration, @Deprecated boolean blocking, Callable<Void> callback);
+    @Deprecated Future<?> pulse(long duration, @Deprecated boolean blocking, Callable<Void> callback, TimeUnit timeUnit);
     Future<?> pulse(long duration, PinState pulseState);
     Future<?> pulse(long duration, PinState pulseState, TimeUnit timeUnit);
     Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback);
     Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback, TimeUnit timeUnit);
-    Future<?> pulse(long duration, PinState pulseState, boolean blocking);
-    Future<?> pulse(long duration, PinState pulseState, boolean blocking, TimeUnit timeUnit);
-    Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback);
-    Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback, TimeUnit timeUnit);
+    @Deprecated Future<?> pulse(long duration, PinState pulseState, @Deprecated boolean blocking);
+    @Deprecated Future<?> pulse(long duration, PinState pulseState, @Deprecated boolean blocking, TimeUnit timeUnit);
+    @Deprecated Future<?> pulse(long duration, PinState pulseState, @Deprecated boolean blocking, Callable<Void> callback);
+    @Deprecated Future<?> pulse(long duration, PinState pulseState, @Deprecated boolean blocking, Callable<Void> callback, TimeUnit timeUnit);
+
+    void pulseSync(long duration) throws InterruptedException;
+    void pulseSync(long duration, TimeUnit timeUnit) throws InterruptedException;
+    void pulseSync(long duration, PinState pulseState) throws InterruptedException;
+    void pulseSync(long duration, PinState pulseState, TimeUnit timeUnit) throws InterruptedException;
+
     void setState(PinState state);
     void setState(boolean state);
 

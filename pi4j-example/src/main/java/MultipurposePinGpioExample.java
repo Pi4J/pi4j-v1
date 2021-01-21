@@ -72,8 +72,8 @@ public class MultipurposePinGpioExample {
             pin.setMode(PinMode.DIGITAL_OUTPUT);
 
             // perform the pin output operation
-            System.out.println(" --> GPIO PIN - RECONFIGURED AS OUPUT PIN");
-            pin.pulse(1000, true);
+            System.out.println(" --> GPIO PIN - RECONFIGURED AS OUTPUT PIN");
+            pin.pulseSync(1000);
 
             // reconfigure the pin back to an input pin
             pin.setMode(PinMode.DIGITAL_INPUT);
