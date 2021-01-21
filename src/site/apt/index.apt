@@ -68,8 +68,13 @@ Welcome to Pi4J!
 
 * Prerequisites
 
-  * {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}} - The Java 8 runtime
+  * {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}} - The <<Java 8>> runtime
   environment must be installed and configured on your SoC platform.
+
+  \
+  <<ATTENTION:>> \
+  If you require a newer Java Virtual Machine for your project, please review the following Pi4J projects:
+  {{{https://pi4j.com/1.4}Pi4J v1.4}} or {{{https://v2.pi4j.com/}Pi4J v2.x}}
 
   * {{{https://github.com/WiringPi/WiringPi}WiringPi}} -The latest WiringPi library must be installed on your RaspberryPi.
 
@@ -85,39 +90,39 @@ Welcome to Pi4J!
 
 * Supported Hardware
 
-  * {{{./pins/model-a-rev2.html}Raspberry Pi - A}}
+  * {{{./pins/rpi-1a.html}Raspberry Pi - 1A}}
 
-  * {{{./pins/model-b-rev1.html}Raspberry Pi - B (Revision 1)}}
+  * {{{./pins/rpi-1b-rev1.html}Raspberry Pi - 1B (Revision 1)}}
 
-  * {{{./pins/model-b-rev2.html}Raspberry Pi - B (Revision 2)}}
+  * {{{./pins/rpi-1b-rev2.html}Raspberry Pi - 1B (Revision 2)}}
 
-  * {{{./pins/model-a-plus.html}Raspberry Pi - A+}}
+  * {{{./pins/rpi-1ap.html}Raspberry Pi - 1A+}}
 
-  * {{{./pins/model-b-plus.html}Raspberry Pi - B+}}
+  * {{{./pins/rpi-1bp.html}Raspberry Pi - 1B+}}
 
-  * {{{./pins/model-2b-rev1.html}Raspberry Pi - 2B}}
+  * {{{./pins/rpi-2b.html}Raspberry Pi - 2B}}
 
-  * {{{./pins/model-3b-rev1.html}Raspberry Pi - 3B}}
+  * {{{./pins/rpi-3b.html}Raspberry Pi - 3B}}
 
-  * {{{./pins/model-3b-plus-rev1.html}Raspberry Pi - 3B+}}
+  * {{{./pins/rpi-3bp.html}Raspberry Pi - 3B+}}
 
-  * {{{./pins/model-3a-plus-rev1.html}Raspberry Pi - 3A+}}
+  * {{{./pins/rpi-3ap.html}Raspberry Pi - 3A+}}
 
-  * {{{./pins/model-4b-rev1.html}Raspberry Pi - 4B}}
+  * {{{./pins/rpi-4b.html}Raspberry Pi - 4B}}
 
-  * {{{./pins/model-400-rev1.html}Raspberry Pi - 400}}
+  * {{{./pins/rpi-400.html}Raspberry Pi - 400}}
 
-  * {{{./pins/model-zero-rev1.html}Raspberry Pi - Zero}}
+  * {{{./pins/rpi-zero.html}Raspberry Pi - Zero}}
 
-  * {{{./pins/model-zerow-rev1.html}Raspberry Pi - Zero W}}
+  * {{{./pins/rpi-zerow.html}Raspberry Pi - Zero W}}
 
-  * {{{./pins/model-cm-rev1.html}Raspberry Pi - CM1 (Compute Module)}}
+  * {{{./pins/rpi-cm1.html}Raspberry Pi - CM1 (Compute Module)}}
 
-  * {{{./pins/model-cm3-rev1.html}Raspberry Pi - CM3 (Compute Module)}}
+  * {{{./pins/rpi-cm3.html}Raspberry Pi - CM3 (Compute Module)}}
 
-  * {{{./pins/model-cm3-plus-rev1.html}Raspberry Pi - CM3+ (Compute Module)}}
+  * {{{./pins/rpi-cm3p.html}Raspberry Pi - CM3+ (Compute Module)}}
 
-  * {{{./pins/model-cm4-rev1.html}Raspberry Pi - CM4 (Compute Module)}}
+  * {{{./pins/rpi-cm4.html}Raspberry Pi - CM4 (Compute Module)}}
 
 * Features
 

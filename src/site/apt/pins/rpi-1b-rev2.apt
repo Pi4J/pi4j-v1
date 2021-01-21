@@ -1,0 +1,59 @@
+            ------
+            Pin Numbering - Raspberry Pi Model B (Revision 2.0)
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering - Raspberry Pi Model B (Revision 2.0)
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Numbering Scheme
+
+  Pi4J (by default) uses an abstract pin numbering scheme to help insulate software from hardware changes.\
+  Pi4J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}} enumeration that is used to manage the accessible GPIO pins.
+
+  (NOTE:  Pi4J also can be configured to use the Broadcom Pin numbering scheme.)
+
+  Please see this page for more information on both the WiringPi and Broadcom pin numbering schemes: \
+  >> {{{../pin-numbering-scheme.html}Pin Numbering Schemes}}
+
+
+* Expansion Header
+
+  The Raspberry Pi Model B board revision 2.0 contains both a 26-pin expansion header labeled as 'P1' providing access to 17 GPIO pins and an 8-pin expansion header labeled as 'P5' providing an additional 4 GPIO pins for a total of 21 GPIO pins.
+
+[../images/pi4j-rpi-1b-rev2-header.png]
+
+* P1 Pinout (26-pin Header)
+
+  The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme for the P1 header pins.
+
+[../images/pi4j-rpi-1b-pinout-small.png]
+
+  {{{../images/pi4j-rpi-1b-pinout.png}(click here for hi-resolution image)}}
+
+
+* P5 Pinout (8-pin header)
+
+  The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme for the P5 header pins.  The P6 header does not have any header pins pre-soldered.  If you want to make use of these pins, you will need to install and solder the header pins to the board.
+  (NOTE: The P5 header is only available on (model A and B) board revisions 2.0 and newer.)
+
+[../images/pi4j-rpi-1b-p5-small.png]
+
+  {{{../images/pi4j-rpi-1b-p5.png}(click here for hi-resolution image)}}
+
+
+* Additional Resources
+
+   * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
+
+   * {{{http://elinux.org/RPi_Low-level_peripherals#General_Purpose_Input.2FOutput_.28GPIO.29}Click here for more information on the P1 header.}}
+
+   * {{{http://elinux.org/RPi_Low-level_peripherals#P5_header}Click here for more information on the P5 header.}}
+
+   * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}

@@ -1,0 +1,57 @@
+            ------
+            Pin Numbering - Raspberry Pi Compute Module (CM3+, CM3+ Lite)
+            ------
+            ------
+             YYYY-MM-DD
+            ------
+
+Pin Numbering - Raspberry Pi Compute Module (CM3+, CM3+ Lite)
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+* Numbering Scheme
+
+  Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
+  Pi4J implements the same pin number scheme as the Wiring Pi project.
+  More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
+
+  Pi4J provides a {{{../apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}} enumeration that is used to manage the accessible GPIO pins.
+
+
+* Expansion Header
+
+  The Raspberry Pi Compute Module development board contains two banks with 60-pin expansion headers labeled as 'J5' and 'J6' providing access to 46 GPIO pins.
+
+[../images/pi4j-rpi-cm3p-header-small.png]
+
+  {{{../images/pi4j-rpi-cm3p-header.png}(click here for hi-resolution image)}}
+
+* J5 Pinout  (60-pin Header)
+
+  The diagram below illustrates the (BANK0) GPIO pinout using the Broadcom GPIO numbering scheme.
+
+[../images/pi4j-rpi-cm3p-pinout-j5-small.png]
+
+  {{{../images/pi4j-rpi-cm3p-pinout-j5.png}(click here for hi-resolution image)}}
+
+* J6 Pinout  (60-pin Header)
+
+  The diagram below illustrates the (BANK1) J6 GPIO pinout using the Broadcom GPIO numbering scheme.
+
+[../images/pi4j-rpi-cm3p-pinout-j6-small.png]
+
+  {{{../images/pi4j-rpi-cm3p-pinout-j6.png}(click here for hi-resolution image)}}
+
+* Examples/Sample Code
+
+   * {{{https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/ComputeModuleGpioExample.java}ComputeModuleGpioExample.java}}
+
+* Additional Resources
+
+   * Please visit the {{{../usage.html}usage}} page for additional details on how to control these pins using Pi4J.
+
+   * {{{https://www.raspberrypi.org/products/compute-module-3-plus/}Click here for more information on the Raspberry Pi Compute Module 3 Plus (CM3+).}}
+
+   * {{{https://www.raspberrypi.org/products/compute-module-io-board-v3/}Click here for more information on the Raspberry Pi Compute Module 1/3/3+ I/O Board.}}
+
+   * {{{http://elinux.org/RPi_BCM2835_GPIOs}Click here for more information the Raspberry Pi pin functions.}}

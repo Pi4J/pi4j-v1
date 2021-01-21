@@ -87,23 +87,23 @@
 			<item name="JavaDoc" href="apidocs/index.html" target="pi4j-javadoc"/>
 		</menu>
         <menu name="Pin Numbering">
-            <item name="Raspberry Pi - A" href="pins/model-a-rev2.html" />
-            <item name="Raspberry Pi - A+" href="pins/model-a-plus.html" />
-            <item name="Raspberry Pi - B (Rev 1)" href="pins/model-b-rev1.html" />
-            <item name="Raspberry Pi - B (Rev 2)" href="pins/model-b-rev2.html" />
-            <item name="Raspberry Pi - B+" href="pins/model-b-plus.html" />
-            <item name="Raspberry Pi - 2B" href="pins/model-2b-rev1.html" />
-            <item name="Raspberry Pi - 3B" href="pins/model-3b-rev1.html" />
-            <item name="Raspberry Pi - 3B+" href="pins/model-3b-plus-rev1.html" />
-            <item name="Raspberry Pi - 3A+" href="pins/model-3a-plus-rev1.html" />
-			<item name="Raspberry Pi - 4B" href="pins/model-4b-rev1.html" />
-			<item name="Raspberry Pi - 400" href="pins/model-400-rev1.html" />
-            <item name="Raspberry Pi - Zero" href="pins/model-zero-rev1.html" />
-            <item name="Raspberry Pi - Zero W" href="pins/model-zerow-rev1.html" />
-            <item name="Raspberry Pi - CM1 (Compute Module)" href="pins/model-cm-rev1.html" />
-            <item name="Raspberry Pi - CM3 (Compute Module)" href="pins/model-cm3-rev1.html" />
-            <item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/model-cm3-plus-rev1.html" />
-			<item name="Raspberry Pi - CM4 (Compute Module)" href="pins/model-cm4-rev1.html" />
+            <item name="Raspberry Pi - 1A" href="pins/rpi-1a.html" />
+            <item name="Raspberry Pi - 1A+" href="pins/rpi-1ap.html" />
+            <item name="Raspberry Pi - 1B (Rev 1)" href="pins/rpi-1b-rev1.html" />
+            <item name="Raspberry Pi - 1B (Rev 2)" href="pins/rpi-1b-rev2.html" />
+            <item name="Raspberry Pi - 1B+" href="pins/rpi-1bp.html" />
+            <item name="Raspberry Pi - 2B" href="pins/rpi-2b.html" />
+            <item name="Raspberry Pi - 3B" href="pins/rpi-3b.html" />
+            <item name="Raspberry Pi - 3B+" href="pins/rpi-3bp.html" />
+            <item name="Raspberry Pi - 3A+" href="pins/rpi-3ap.html" />
+			<item name="Raspberry Pi - 4B" href="pins/rpi-4b.html" />
+			<item name="Raspberry Pi - 400" href="pins/rpi-400.html" />
+            <item name="Raspberry Pi - Zero" href="pins/rpi-zero.html" />
+            <item name="Raspberry Pi - Zero W" href="pins/rpi-zerow.html" />
+			<item name="Raspberry Pi - CM1 (Compute Module)" href="pins/rpi-cm1.html" />
+			<item name="Raspberry Pi - CM3 (Compute Module)" href="pins/rpi-cm3.html" />
+			<item name="Raspberry Pi - CM3+ (Compute Module)" href="pins/rpi-cm3p.html" />
+			<item name="Raspberry Pi - CM4 (Compute Module)" href="pins/rpi-cm4.html" />
         </menu>
 		<menu name="GPIO Examples">
 			<item name="Control GPIO" href="example/control.html" />
