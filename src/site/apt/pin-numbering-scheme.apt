@@ -17,7 +17,7 @@ Pin Numbering Schemes
   The WiringPi pin numbering scheme is an abstract pin numbering scheme to help insulate software from hardware changes.
   More information about the WiringPi pin number scheme can be found here: {{http://wiringpi.com/pins/}}
 
-  * <<For Models A, A+, B, B+, 2B, 3B, 3B+, 3A+, Zero and Zero W>>
+  * <<For Models A, A+, B, B+, 2B, 3B, 3B+, 3A+, 4B, 400, CM4, Zero and Zero W>>
 
     Pi4J uses an abstract pin numbering scheme to help insulate software from hardware changes.\
     Pi4J implements the same pin number scheme as the Wiring Pi project.
