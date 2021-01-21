@@ -172,4 +172,9 @@ public class Console {
     public synchronized boolean isRunning(){
         return !exiting;
     }
+
+    public synchronized void exit(){
+        exiting = true;
+        goodbye();
+    }
 }
