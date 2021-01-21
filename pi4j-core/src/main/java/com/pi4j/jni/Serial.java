@@ -288,7 +288,6 @@ public class Serial {
     /**
      * <p>
      *     Discards all data in the serial receive and transmit buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @param fd
@@ -299,7 +298,6 @@ public class Serial {
     /**
      * <p>
      *     Discards all data in the serial transmit buffer.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @param fd
@@ -310,7 +308,6 @@ public class Serial {
     /**
      * <p>
      *     Discards all data in the serial transmit and receive buffers.
-     *     Please note that this does not force the transmission of data, it discards it!
      * </p>
      *
      * @param fd
