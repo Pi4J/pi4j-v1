@@ -84,26 +84,31 @@ int getEdgePin(int pin)
 	if(pin >= MAX_GPIO_PINS)
 		return -1;
 
-    // check for macro definition for Compute Module, some older versions of WiringPi may be missing this macro.
-    // (I'm looking at you LeMaker!)
-    #ifndef PI_MODEL_CM
-    return wpiPinToGpio(pin);
-    #else
+	//----------------------------------------------------------------------------------
+	// SPECIAL CASE FOR COMPUTE MODULES 1, 3 and 3+   (this logic does not apply to CM4)
+	//----------------------------------------------------------------------------------
+	// simply return the pin index for RaspberryPi Compute Module 1, 3 and 3+
+	// because the GPIO pin and edge is the same as the pin number
+	// (using compiler directives as some WiringPi variants don't include these model definitions.)
+    #ifdef PI_MODEL_CM
+    if (wiringpi_detected_model == PI_MODEL_CM){
+        return pin;
+    }
+    #endif
+    #ifdef PI_MODEL_CM3
+    if (wiringpi_detected_model == PI_MODEL_CM3){
+        return pin;
+    }
+    #endif
+    #ifdef PI_MODEL_CM3P
+    if (wiringpi_detected_model == PI_MODEL_CM3P){
+        return pin;
+    }
+    #endif
 
 	// return the edge pin index
 	// (will return -1 for invalid pin)
-	// simply return the pin index for RaspberryPi Compute Module 1, 3 and 3+
-	// because the GPIO pin and edge is the same as the pin number a
-    if (wiringpi_detected_model == PI_MODEL_CM ||
-        wiringpi_detected_model == PI_MODEL_CM3 ||
-        wiringpi_detected_model == PI_MODEL_CM3P){
-        return pin;
-    }
-    else{
-        return wpiPinToGpio(pin);
-    }
-
-    #endif
+    return wpiPinToGpio(pin);
 }
 
 
