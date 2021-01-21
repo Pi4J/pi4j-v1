@@ -107,6 +107,7 @@ public class SerialPort {
 			case RaspberryPi_ZeroW:
             case RaspberryPi_3B:
             case RaspberryPi_3B_Plus:
+			case RaspberryPi_3A_Plus:
 			case RaspberryPi_4B:
 			case RaspberryPi_400:
 			case RaspberryPi_ComputeModule4:{
