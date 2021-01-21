@@ -54,11 +54,13 @@ public class GpioScheduledExecutorImpl {
             // if a task is found, then cancel all pending tasks immediately and remove them
             CopyOnWriteArrayList<ScheduledFuture<?>> tasks = pinTaskQueue.get(pin);
             if (tasks != null && !tasks.isEmpty()) {
-                for (int index =  (tasks.size() - 1); index >= 0; index--) {
+                // iterate tasks and cancel any
+                for (int index = (tasks.size() - 1); index >= 0; index--) {
                     ScheduledFuture<?> task = tasks.get(index);
                     task.cancel(true);
-                    tasks.remove(index);
                 }
+                // clear the tasks queue for this pin
+                tasks.clear();
             }
 
             // if no remaining future tasks are remaining, then remove this pin from the tasks queue
@@ -76,14 +78,20 @@ public class GpioScheduledExecutorImpl {
             public Object call() throws Exception {
                 for (Entry<GpioPinDigitalOutput, CopyOnWriteArrayList<ScheduledFuture<?>>> item : pinTaskQueue.entrySet()) {
                     CopyOnWriteArrayList<ScheduledFuture<?>> remainingTasks = item.getValue();
+                    ArrayList<ScheduledFuture<?>> purgeTasks = new ArrayList<>();
 
-                    // if a task is found, then cancel all pending tasks immediately and remove them
+                    // if there are pending tasks in queue, then lets look for any that can be removed
                     if (remainingTasks != null && !remainingTasks.isEmpty()) {
+                        // build up a purge list of tasks that are canceled or already complete
                         for (int index = (remainingTasks.size() - 1); index >= 0; index--) {
                             ScheduledFuture<?> remainingTask = remainingTasks.get(index);
                             if (remainingTask.isCancelled() || remainingTask.isDone()) {
-                                remainingTasks.remove(index);
+                                purgeTasks.add(remainingTask);
                             }
+                        }
+                        // purge the completed and canceled tasks on the purge list now
+                        for(ScheduledFuture<?> task : purgeTasks){
+                            if(remainingTasks.contains(task)) remainingTasks.remove(task);
                         }
 
                         // if no remaining future tasks are remaining, then remove this pin from the tasks queue
