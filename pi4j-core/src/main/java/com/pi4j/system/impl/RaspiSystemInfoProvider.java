@@ -102,19 +102,24 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
     }
 
     // Raspberry Pi Revision :: Model
-    public static final short RPI_MODEL_A       = 0;
-    public static final short RPI_MODEL_B       = 1;
-    public static final short RPI_MODEL_A_PLUS  = 2;
-    public static final short RPI_MODEL_B_PLUS  = 3;
-    public static final short RPI_MODEL_2B      = 4;
-    public static final short RPI_MODEL_ALPHA   = 5;
-    public static final short RPI_MODEL_CM      = 6;
-    public static final short RPI_MODEL_UNKNOWN = 7;
-    public static final short RPI_MODEL_3B      = 8;
-    public static final short RPI_MODEL_ZERO    = 9;
-    public static final short RPI_MODEL_CM3     = 10;
-    public static final short RPI_MODEL_ZERO_W  = 12;
-    public static final short RPI_MODEL_3B_PLUS = 13;
+    public static final short RPI_MODEL_A        = 0;
+    public static final short RPI_MODEL_B        = 1;
+    public static final short RPI_MODEL_A_PLUS   = 2;
+    public static final short RPI_MODEL_B_PLUS   = 3;
+    public static final short RPI_MODEL_2B       = 4;
+    public static final short RPI_MODEL_ALPHA    = 5;
+    public static final short RPI_MODEL_CM       = 6;
+    public static final short RPI_MODEL_UNKNOWN  = 7;
+    public static final short RPI_MODEL_3B       = 8;
+    public static final short RPI_MODEL_ZERO     = 9;
+    public static final short RPI_MODEL_CM3      = 10;
+    public static final short RPI_MODEL_ZERO_W   = 12;
+    public static final short RPI_MODEL_3B_PLUS  = 13;
+    public static final short RPI_MODEL_3A_PLUS  = 14;
+    public static final short RPI_MODEL_CM3_PLUS = 16;
+    public static final short RPI_MODEL_4B       = 17;
+    public static final short RPI_MODEL_400      = 19;
+    public static final short RPI_MODEL_CM4      = 20;
 
     // Raspberry Pi Revision :: Memory
     public static final short RPI_RAM_256       = 0;
@@ -241,18 +246,23 @@ public class RaspiSystemInfoProvider extends DefaultSystemInfoProvider implement
             // a new revision scheme was provided with the release of Raspberry Pi 2
             // if the scheme bit is enabled, then use the new revision numbering scheme
             switch((int)model) {
-                case RPI_MODEL_A:       return SystemInfo.BoardType.RaspberryPi_A;
-                case RPI_MODEL_A_PLUS:  return SystemInfo.BoardType.RaspberryPi_A_Plus;
-                case RPI_MODEL_B_PLUS:  return SystemInfo.BoardType.RaspberryPi_B_Plus;
-                case RPI_MODEL_2B:      return SystemInfo.BoardType.RaspberryPi_2B;
-                case RPI_MODEL_ALPHA:   return SystemInfo.BoardType.RaspberryPi_Alpha;
-                case RPI_MODEL_CM:      return SystemInfo.BoardType.RaspberryPi_ComputeModule;
-                case RPI_MODEL_UNKNOWN: return SystemInfo.BoardType.RaspberryPi_Unknown;
-                case RPI_MODEL_3B:      return SystemInfo.BoardType.RaspberryPi_3B;
-                case RPI_MODEL_ZERO:    return SystemInfo.BoardType.RaspberryPi_Zero;
-                case RPI_MODEL_CM3:     return SystemInfo.BoardType.RaspberryPi_ComputeModule3;
-                case RPI_MODEL_ZERO_W:  return SystemInfo.BoardType.RaspberryPi_ZeroW;
-                case RPI_MODEL_3B_PLUS: return SystemInfo.BoardType.RaspberryPi_3B_Plus;
+                case RPI_MODEL_A:        return SystemInfo.BoardType.RaspberryPi_A;
+                case RPI_MODEL_A_PLUS:   return SystemInfo.BoardType.RaspberryPi_A_Plus;
+                case RPI_MODEL_B_PLUS:   return SystemInfo.BoardType.RaspberryPi_B_Plus;
+                case RPI_MODEL_2B:       return SystemInfo.BoardType.RaspberryPi_2B;
+                case RPI_MODEL_ALPHA:    return SystemInfo.BoardType.RaspberryPi_Alpha;
+                case RPI_MODEL_CM:       return SystemInfo.BoardType.RaspberryPi_ComputeModule;
+                case RPI_MODEL_UNKNOWN:  return SystemInfo.BoardType.RaspberryPi_Unknown;
+                case RPI_MODEL_3B:       return SystemInfo.BoardType.RaspberryPi_3B;
+                case RPI_MODEL_ZERO:     return SystemInfo.BoardType.RaspberryPi_Zero;
+                case RPI_MODEL_CM3:      return SystemInfo.BoardType.RaspberryPi_ComputeModule3;
+                case RPI_MODEL_ZERO_W:   return SystemInfo.BoardType.RaspberryPi_ZeroW;
+                case RPI_MODEL_3B_PLUS:  return SystemInfo.BoardType.RaspberryPi_3B_Plus;
+                case RPI_MODEL_3A_PLUS:  return SystemInfo.BoardType.RaspberryPi_3A_Plus;
+                case RPI_MODEL_CM3_PLUS: return SystemInfo.BoardType.RaspberryPi_ComputeModule3_Plus;
+                case RPI_MODEL_4B:       return SystemInfo.BoardType.RaspberryPi_4B;
+                case RPI_MODEL_400:      return SystemInfo.BoardType.RaspberryPi_400;
+                case RPI_MODEL_CM4:      return SystemInfo.BoardType.RaspberryPi_ComputeModule4;
                 case RPI_MODEL_B: {
                     // for model B, also take into consideration the revision
                     if(pcbrev <= 1)
