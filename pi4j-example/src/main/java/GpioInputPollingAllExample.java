@@ -28,14 +28,11 @@
  */
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
-import com.pi4j.platform.PlatformManager;
 import com.pi4j.system.SystemInfo;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.util.ConsoleColor;
-import com.sun.glass.ui.PlatformFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
