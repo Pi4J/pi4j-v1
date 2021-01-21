@@ -25,29 +25,32 @@ Pin Numbering - Raspberry Pi 400
 
 * Expansion Header
 
-  The Raspberry Pi 400 board contains a single 40-pin expansion header labeled as 'J8' providing access to 28 GPIO pins.\
-  (Pins 1, 2, 39 & 40 are also labeled below.)
+  The Raspberry Pi 400 contains a single 40-pin expansion header located on the back of the
+  keyboard housing providing access to 28 unique GPIO pins.\
 
-[../images/j8header-photo.png]
+[../images/pi4j-rpi400-gpio-header-small.png]
 
-* J8 Pinout (40-pin Header)
+  {{{../images/pi4j-rpi400-gpio-header.png}(click here for hi-resolution image)}}
+
+* GPIO Pinout (40-pin Header)
 
   The diagram below illustrates the GPIO pinout using the Pi4J/WiringPi GPIO numbering scheme.
 
-[../images/j8header-3b-plus.png]
+[../images/pi4j-rpi400-pinout-small.png]
 
-  {{{../images/j8header-3b-plus-large.png}(click here for hi-resolution image)}}
+  {{{../images/pi4j-rpi400-pinout.png}(click here for hi-resolution image)}}
 
 * Known Issues
 
-  On the Raspberry Pi Model 400 the hardware-based serial/UART device /dev/ttyAMA0 has been re-purposed to
-  communicate with the the built-in Bluetooth modem and is no longer mapped to the serial RX/TX pins on the
-  GPIO header.  Instead, a new serial port "/dev/ttyS0" has been provided which is implemented with a
-  software-based UART (miniUART). This software-based UART ("/dev/ttyS0") does not support PARITY and some
-  have experienced some stability issues using this port at higher speeds. If you don't need Bluetooth
-  functionality, you can disable the BT modem and configure the RPi to use a device-tree overlay to re-map the
-  hardware-based serial UART ("/dev/ttyAMA0") back to the GPIO header pins for TX/RX. See the instructions on
-  this page for details on how to configure the device-tree overlay and disable the bluetooth modem/service: \
+  On Raspberry Pi models starting with model 3B (including Raspberry Pi Model 400) the hardware-based
+  serial/UART device /dev/ttyAMA0 has been re-purposed to communicate with the the built-in Bluetooth
+  modem and is no longer mapped to the serial RX/TX pins on the GPIO header.  Instead, a new serial port
+  "/dev/ttyS0" has been provided which is implemented with a software-based UART (miniUART). This
+  software-based UART ("/dev/ttyS0") does not support PARITY and some have experienced some stability
+  issues using this port at higher speeds. If you don't need Bluetooth functionality, you can disable
+  the BT modem and configure the RPi to use a device-tree overlay to re-map the hardware-based serial
+  UART ("/dev/ttyAMA0") back to the GPIO header pins for TX/RX. See the instructions on this page for
+  details on how to configure the device-tree overlay and disable the bluetooth modem/service: \
   {{{https://openenergymonitor.org/emon/node/12311}Disable Bluetooth Modem}}
 
 

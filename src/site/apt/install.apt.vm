@@ -38,7 +38,7 @@ Pi4J Installation
 
   The Pi4J native library is dynamically linked to WiringPi and thus you must have WiringPi installed on your target Raspberry Pi system.
 
-  <<NOTE>>: The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and
+  <<ATTENTION>>: The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and
   is no longer maintained.\
   To support RaspberryPi 4B/400 and newer systems you must install the latest *unofficial*
   WiringPi version which is maintained here: {{https://github.com/WiringPi/WiringPi}}.

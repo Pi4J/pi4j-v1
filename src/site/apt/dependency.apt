@@ -14,9 +14,9 @@ Dependencies
   More information on the WiringPi project can be found here:\
   {{http://wiringpi.com/}}
 
-  <<NOTE>>: The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and
+  <<ATTENTION>>: The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and
   is no longer maintained.\
-  To support RaspberryPi 4B/400 and newer systems you must install the latest *unofficial*
+  To support RaspberryPi 4B/400/CM4 and newer systems you must install the latest *unofficial*
   WiringPi version which is maintained here: {{https://github.com/WiringPi/WiringPi}}.
 
   If you have Pi4J installed on your RaspberryPi, you can use the following script command to download, build and
@@ -38,7 +38,9 @@ cd ~/wiringpi
 sudo ./build
 ----------------------------------------
 
-[./images/dependencies.png]
+[./images/pi4j-dependencies-small.png]
+
+  {{{./images/pi4j-dependencies.png}(click here for hi-resolution image)}}
 
 =====================
 
