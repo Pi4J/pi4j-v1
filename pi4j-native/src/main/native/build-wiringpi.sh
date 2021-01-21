@@ -31,7 +31,7 @@
 # -- RASPBERRY PI --
 # set default wiringPi repository URL if not already defined
 if [ -z $WIRINGPI_REPO ]; then
-    WIRINGPI_REPO=https://github.com/Pi4J/wiringPi
+    WIRINGPI_REPO=https://github.com/WiringPi/WiringPi
 fi
 # set default wiringPi repository branch if not already defined
 if [ -z $WIRINGPI_BRANCH ]; then
