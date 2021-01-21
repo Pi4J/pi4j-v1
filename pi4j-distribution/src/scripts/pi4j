@@ -57,12 +57,14 @@ case $1 in
       echo "  -U, --uninstall         :  uninstall Pi4J"
       echo "  -c, --compile  <FILE>   :  exec javac with pi4j in classpath"
       echo "  -r, --run      <CLASS>  :  exec java with pi4j in classpath"
+      echo "  -WPI, --wiringpi        :  download, build and install latest WiringPi library"
       echo
       echo " EXAMPLES:"
       echo " ---------"
       echo "  pi4j --version                       (display Pi4J version)"
       echo "  pi4j --update                        (update Pi4J installation)"
       echo "  pi4j --uninstall                     (uninstall Pi4J package)"
+      echo "  pi4j --wiringpi                      (download, build and install WiringPi library)"
       echo
       echo "  pi4j --compile HelloWorld.java       (compile 'HelloWorld.java' sources)"
       echo "  pi4j -c HelloWorld.java              (compile 'HelloWorld.java' sources)"

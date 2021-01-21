@@ -37,12 +37,14 @@ Pi4J Utility Script
    -U, --uninstall        :  uninstall Pi4J
    -c, --compile  <FILE>  :  exec javac with pi4j in classpath
    -r, --run      <FILE>  :  exec java with pi4j in classpath
+   -WPI, --wiringpi       :  download, build and install WiringPi library
 
   EXAMPLES:
   =========
    pi4j --version                       (display Pi4J version)
    pi4j --update                        (update Pi4J installation)
    pi4j --uninstall                     (uninstall Pi4J package)
+   pi4j --wiringpi                      (download, build and install WiringPi library)
 
    pi4j --compile HelloWorld.java       (compile 'HelloWorld.java' sources)
    pi4j -c HelloWorld.java              (compile 'HelloWorld.java' sources)
@@ -112,5 +114,15 @@ Pi4J Utility Script
 
   You can use the <<<--uninstall>>> command line option to uninstall the Pi4J package from your RaspberryPi. To
   use this command option you must have originally installed Pi4J using the {{{../install.html#Installation}'easy'}} method.
+
+  <<<pi4j --uninstall>>>
+
+=====================
+
+** --wiringpi | -WPI
+
+  You can use the <<<--wiringpi>>> command line option to download the latest WiringPi source code from the unofficial
+  WiringPi GitHub repository (https://github.com/WiringPi/WiringPi), compile the source code and install the compiled
+  WiringPi library on your Raspberry Pi SoC.  The WiringPi library is required to use Pi4J on a Raspberry Pi device.
 
   <<<pi4j --uninstall>>>
