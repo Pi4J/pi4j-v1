@@ -17,9 +17,9 @@ Release builds are available from:
 Snapshot builds are available from:
    *  [Sonatype OSS] https://oss.sonatype.org/index.html#nexus-search;quick~pi4j
    *  [Downloads] https://pi4j.com/download.html
-
-
-Copyright (C) 2012-2020 Pi4J
+   
+ 
+Copyright (C) 2012-2021 Pi4J
 
 ## LICENSE
 

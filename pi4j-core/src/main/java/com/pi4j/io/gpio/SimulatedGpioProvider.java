@@ -13,7 +13,7 @@ import java.util.Map;
  * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2020 Pi4J
+ * Copyright (C) 2012 - 2021 Pi4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
