@@ -17,9 +17,9 @@ Download
 
   <<RELEASE BUILDS>>
 
-     * {{{https://pi4j.com/download/pi4j-1.2.deb}pi4j-1.2.deb}} <<<Debian Installer Package>>>
+     * {{{https://pi4j.com/download/pi4j-1.3.deb}pi4j-1.3.deb}} <<<Debian Installer Package>>>
 
-     * {{{https://pi4j.com/download/pi4j-1.2.zip}pi4j-1.2.zip}} <<<Compressed ZIP Archive>>>
+     * {{{https://pi4j.com/download/pi4j-1.3.zip}pi4j-1.3.zip}} <<<Compressed ZIP Archive>>>
 
   <<LATEST SNAPSHOT BUILDS>>
 
@@ -39,7 +39,7 @@ Download
 <dependency>
     <groupId>com.pi4j</groupId>
     <artifactId>pi4j-core</artifactId>
-   <version>1.2</version>
+   <version>1.4</version>
 </dependency>
 +---------------------
 
