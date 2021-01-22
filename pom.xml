@@ -178,24 +178,24 @@
         <powermock.version>1.6.5</powermock.version>
 
 		<!-- PLUGIN VERSIONS -->
-		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
-		<maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-		<maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+		<maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-		<maven-scm-plugin.version>1.11.1</maven-scm-plugin.version>
-		<maven-bundle-plugin.version>3.5.0</maven-bundle-plugin.version>
-		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-		<maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-		<maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+		<maven-scm-plugin.version>1.11.2</maven-scm-plugin.version>
+		<maven-bundle-plugin.version>4.2.1</maven-bundle-plugin.version>
+		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version> <!-- TODO :: UPDATE PLUGIN TO v3.0.0 -->
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+		<maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
 		<native-maven-plugin.version>1.0-alpha-9</native-maven-plugin.version>
-		<license-maven-plugin.version>1.19</license-maven-plugin.version>
-		<build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+		<license-maven-plugin.version>2.0.0</license-maven-plugin.version>
+		<build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
 		<jdeb.version>1.7</jdeb.version>
-		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+		<exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
 		<s3-upload-maven-plugin.version>1.4</s3-upload-maven-plugin.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 
