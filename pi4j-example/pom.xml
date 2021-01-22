@@ -83,7 +83,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
@@ -109,7 +109,7 @@
                                         </scp>
 									</then>
 								</if>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

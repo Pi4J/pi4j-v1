@@ -147,12 +147,12 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<mkdir dir="target" />
 								<mkdir dir="target/classes" />
 								<mkdir dir="target/native" />
 								<mkdir dir="target/native/lib" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>

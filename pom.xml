@@ -191,7 +191,7 @@
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 		<maven-scm-plugin.version>1.11.2</maven-scm-plugin.version>
 		<maven-bundle-plugin.version>4.2.1</maven-bundle-plugin.version>
-		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version> <!-- TODO :: UPDATE PLUGIN TO v3.0.0 -->
+		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version> <!-- TODO :: UPDATE PLUGIN TO v3.0.0 -->
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
 		<native-maven-plugin.version>1.0-alpha-9</native-maven-plugin.version>
