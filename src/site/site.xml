@@ -5,6 +5,31 @@
 		<artifactId>maven-fluido-skin</artifactId>
 		<version>1.5</version>
 	</skin>
+	<custom>
+		<fluidoSkin>
+			<gitHub>
+				<projectId>Pi4J/pi4j</projectId>
+				<ribbonOrientation>right</ribbonOrientation>
+				<ribbonColor>black</ribbonColor>
+			</gitHub>
+<!--			<twitter>-->
+<!--				<user>pi4j</user>-->
+<!--				<showUser>true</showUser>-->
+<!--				<showFollowers>true</showFollowers>-->
+<!--			</twitter>-->
+<!--			<facebookLike>-->
+<!--				<shareButton>true</shareButton>-->
+<!--				<recommend>true</recommend>-->
+<!--				<layout>button</layout>-->
+<!--			</facebookLike>-->
+<!--			<googleSearch/>-->
+			<topBarEnabled>false</topBarEnabled>
+			<sideBarEnabled>true</sideBarEnabled>
+			<navBarStyle>navbar-inverse</navBarStyle>
+			<topBarContainerStyle>width: 90%;</topBarContainerStyle>
+			<sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+		</fluidoSkin>
+	</custom>
 	<bannerLeft>
 		<name>Pi4J</name>
 		<src>/images/logos/pi4j-header.png</src>
