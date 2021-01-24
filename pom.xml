@@ -51,11 +51,6 @@
             <name>Frank Delporte</name>
             <email>frank@pi4j.com</email>
             <url>https://webtechie.be</url>
-            <properties>
-                <blog>https://webtechie.be</blog>
-                <linikedin>https://www.linkedin.com/in/frankdelporte/</linikedin>
-                <twitter>https://twitter.com/FrankDelporte</twitter>
-            </properties>
             <roles>
                 <role>facilitator</role>
                 <role>developer</role>
