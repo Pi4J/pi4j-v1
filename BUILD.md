@@ -108,10 +108,10 @@ native library builds.
 ### BUILD Pi4J JAVA LIBRARIES ONLY
 
 Use the following command to build only the Pi4J Java libraries (JARs).  This build command will not build 
-the Pi4J native libraries. Instead, it will use locally cached compiled native libraries or if not found, it  
-will download pre-compiled copies from the Maven repository.
+the Pi4J native libraries. Instead, it will use locally cached compiled native libraries or if not found, it will 
+download pre-compiled copies from the Maven repository.
 
-> `mvn clean install`
+`mvn clean install`
 
 ---
 
@@ -142,33 +142,33 @@ If changes or additions are made to the Java JNI classes, then you may need to r
 Use the following Maven command to regenerate the .H header source file.
 (**NOTE:**  _This command must be executed inside the pi4j-native project, not at the parent project level._)
 
-> `mvn generate-sources --projects pi4j-native -P generate-jni-headers`
+`mvn generate-sources --projects pi4j-native -P generate-jni-headers`
 
 
 ### DEPLOY Pi4J PACKAGES (Downloadable Artifacts) TO Pi4J CONTENT SERVERS
 
 Use the following Maven command to deploy the downloadable artifacts to the Pi4J downloads page.
 
-> `mvn deploy -Drelease-build --projects pi4j-distribution`
+`mvn deploy -Drelease-build --projects pi4j-distribution`
 
 
 ### DEPLOY Pi4J WEBSITE CONTENT TO Pi4J CONTENT SERVERS
 
 Use the following Maven command to locally generate project site documentation:
 
-> `mvn -N clean site`
+`mvn -N clean site`
 
 Use the following Maven command to generate and deploy the project site documentation to Pi4J content servers.
 (Note, you must have a `pi4j.aws.access.key` and `pi4j.aws.access.secret` credentials defined in your private 
 Maven settings.xml file.
 
-> `mvn -N clean site -Pdeploy-site`
+`mvn -N clean site -Pdeploy-site`
 
 
 During an official release, include the `publish-site` profile to not only deploy the new site content but to also 
 replace the root site `index.html` file to default to the new release version website content.
 
-> `mvn -N clean site -Pdeploy-site,publish-site`
+`mvn -N clean site -Pdeploy-site,publish-site`
 
 
 ---
@@ -195,6 +195,7 @@ mvn -N clean site -Pdeploy-site
 >  - In order to upload artifacts and site content, the `pi4j.aws.access.key` and `pi4j.aws.secret.key` must be
 >    configured in your maven `settings.xml` file or must be included as arguments on the build command line.
 
+---
 
 ## PUBLIC RELEASE DEPLOYMENT NOTES
 
@@ -212,6 +213,7 @@ will perform the following:
  - upload generated website content to Pi4J content servers
  - upload Pi4J root site index.html to default to this version/distribution
 
+### STEPS:
 
 1.  First, remove "-SNAPSHOT" from all project pom.xml files prior to official release.
 2.  Execute the following build commands:
