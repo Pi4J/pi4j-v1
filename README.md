@@ -98,12 +98,7 @@ Copyright (C) 2012-2021 Pi4J
 
 ## Building
 
-To build locally without needing a Raspberry, use the Docker process:
-
-```
-docker pull pi4j/pi4j-builder:1.4
-docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/pi4j-builder:1.4
-```
+Please see the [BUILD.md](BUILD.md) instructions for details on how to compile/build this project.
 
 ## IN DEVELOPMENT
 

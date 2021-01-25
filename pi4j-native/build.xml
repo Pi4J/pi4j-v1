@@ -89,7 +89,7 @@
             <echo message=" -- BUILD USING DOCKER CROSS-COMPILER CONTAINER (@{builder.version})"/>
             <echo message="----------------------------------------------------"/>
 
-            <!-- make sure to get the latest pi4j dopcker images from DockerHub -->
+            <!-- make sure to get the latest pi4j docker images from DockerHub -->
             <exec dir="${project.build.directory}/native" failonerror="true" executable="docker">
                 <!-- perform PULL on the build container -->
                 <arg value="pull"/>
@@ -126,7 +126,7 @@
 
     <!-- this target is used when building maven project using the ARM cross-compiler -->
     <target name="build-with-cross-compile">
-        <echo message="Building native libpi4j shared library using CROSS-COMPILER"/>
+        <echo message="Building native libpi4j shared library using CROSS-COMPILER (${pi4j.builder.version})"/>
 
         <!-- prepare build target directory; clean & copy sources -->
         <pi4j-native-prepare-build-target/>

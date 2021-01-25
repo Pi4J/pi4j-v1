@@ -131,6 +131,53 @@
 
 	<!-- BUILD PROPERTIES -->
 	<properties>
+		<!-- =================================================================== -->
+		<!-- SELECT THE PROPER COMPILER OPTION FOR THE NATIVE LIBRARY BUILDS     -->
+		<!-- The supported options are:                                          -->
+		<!--    "CROSS-COMPILER"  for cross-compiling on your host with a cross  -->
+		<!--                      compiler environment setup for 64-bit (aarch64)-->
+		<!--                      and 32-bit (armhf) platforms.  The host must   -->
+		<!--                      be a Linux-based system with an Intel/AMD or   -->
+		<!--                      ARM 64-bit CPU and Operating System.  The host -->
+		<!--                      can be a RaspberryPi 3B or 4B that is running  -->
+		<!--                      Pi OS 64-bit. (Unable to cross-compile for     -->
+		<!--                      64-bit library on 32-bit only hosts.)          -->
+		<!--                      [THIS IS THE DEFAULT IF NOT SPECIFIED]         -->
+		<!--                                                                     -->
+		<!--    "DOCKER-COMPILER" for cross-compiling inside a Docker container  -->
+		<!--                      best option when compiling on MacOS or Windows -->
+		<!--                      This option is also suitable for a Linux-based -->
+		<!--                      system where you would prefer not to install   -->
+		<!--                      ARM-based cross-compilers and other build      -->
+		<!--                      environment requirements like Java/JDK and     -->
+		<!--                      Maven.  This option only requires that you     -->
+		<!--                      have Docker (https://www.docker.com/) or       -->
+		<!--                      Docker Desktop installed and running on a      -->
+		<!--                      64-bit Intel/AMD or ARM host system.           -->
+		<!--                                                                     -->
+		<!-- (Note: you should override these options in a custom active profile -->
+		<!--        in your local M2 settings.xml file or use one of the         -->
+		<!--        associated profiles with the '-P' flag.  -->
+		<!-- =================================================================== -->
+
+		<!-- YOU CAN DEFINE ONE OF THE FOLLOWING AS A CUSTOM ACTIVE PROFILE
+             IN YOUR ~/.m2/settings.xml file TO PERMANENTLY APPLY THE DESIRED
+             COMPILER BEHAVIOR -->
+		<!-- <pi4j.native.compiler>CROSS-COMPILER</pi4j.native.compiler> -->
+		<!-- <pi4j.native.compiler>DOCKER-COMPILER</pi4j.native.compiler> -->
+
+		<!-- OR YOU CAN DEFINE THE PROPERTY VALUE USING THE '-D' FLAG ON YOUR MAVEN COMMAND -->
+		<!-- i.e.:   mvn clean install -Pnative -Dpi4j.native.compiler=CROSS-COMPILER -->
+		<!-- i.e.:   mvn clean install -Pnative -Dpi4j.native.compiler=DOCKER-COMPILER -->
+
+		<!-- OR YOU CAN DEFINE THE ASSOCIATED PROFILE VALUE USING THE '-P' FLAG ON YOUR MAVEN COMMAND -->
+		<!-- i.e.:   mvn clean install -Pnative -Pcross-compile -->
+		<!-- i.e.:   mvn clean install -Pnative -Pdocker -->
+
+		<!-- used internally; do not change value here -->
+		<!-- BY DEFAULT, ENABLE THE 'CROSS-COMPILER' FOR NATIVE BUILDS -->
+		<pi4j.native.compiler.effective>CROSS-COMPILER</pi4j.native.compiler.effective>
+
 		<!-- DEFAULT SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON A REMOTE PLATFORM -->
 		<pi4j.default.host>192.168.1.100</pi4j.default.host>
 		<pi4j.default.port>22</pi4j.default.port>
@@ -185,6 +232,7 @@
 		<maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+		<maven-resource-plugin.version>3.2.0</maven-resource-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-site-plugin.version>3.9.1</maven-site-plugin.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
@@ -279,22 +327,6 @@
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-		<!-- SPECIAL PROFILE TO INCLUDE JNI NATIVE LIBRARY FOR ALL PLATFORMS -->
-		<profile>
-			<id>all-platforms</id>
-			<activation>
-				<property>
-					<name>release-build</name>
-				</property>
-			</activation>
-			<modules>
-				<module>pi4j-native</module>
-			</modules>
-			<properties>
-				<raspberrypi.build>true</raspberrypi.build>
-			</properties>
-		</profile>
-
 		<!-- SPECIAL PROFILE FOR RELEASE DEPLOYMENT BUILDS -->
 		<profile>
 			<id>release</id>
@@ -323,6 +355,10 @@
 									-->
 									<keyname>${pi4j.gpg.key}</keyname>
 									<passphrase>${pi4j.gpg.passphrase}</passphrase>
+									<gpgArguments>
+										<gpgArgument>--pinentry-mode</gpgArgument>
+										<gpgArgument>loopback</gpgArgument>
+									</gpgArguments>
 								</configuration>
 							</execution>
 						</executions>
@@ -432,9 +468,9 @@
 			</build>
 		</profile>
 
-        <!-- SPECIAL PROFILE TO INCLUDE RASPBERRY PI PLATFORM -->
+        <!-- SPECIAL PROFILE TO INCLUDE NATIVE LIBRARY BUILDS FOR RASPBERRY PI -->
         <profile>
-            <id>raspberrypi</id>
+            <id>native</id>
             <activation>
                 <property>
                     <name>release-build</name>
@@ -447,6 +483,61 @@
                 <module>pi4j-native</module>
             </modules>
         </profile>
+
+		<!-- SPECIAL PROFILE TO ENABLE DOCKER-COMPILER NATIVE BUILDS BY DEFAULT IF RUNNING ON MACOS -->
+		<profile>
+			<id>mac</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<pi4j.native.compiler.effective>DOCKER-COMPILER</pi4j.native.compiler.effective>
+			</properties>
+		</profile>
+
+		<!-- SPECIAL PROFILE TO ENABLE DOCKER-COMPILER NATIVE BUILDS BY DEFAULT IF RUNNING ON WINDOWS -->
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<pi4j.native.compiler.effective>DOCKER-COMPILER</pi4j.native.compiler.effective>
+			</properties>
+		</profile>
+
+		<!-- SPECIAL PROFILE TO SUPPORT DOCKER-COMPILER NATIVE BUILDS -->
+		<profile>
+			<id>docker</id>
+			<activation>
+				<property>
+					<name>pi4j.native.compiler</name>
+					<value>DOCKER-COMPILER</value>
+				</property>
+			</activation>
+			<properties>
+				<pi4j.native.compiler.effective>DOCKER-COMPILER</pi4j.native.compiler.effective>
+			</properties>
+		</profile>
+
+		<!-- SPECIAL PROFILE TO SUPPORT CROSS-COMPILER NATIVE BUILDS -->
+		<profile>
+			<id>cross-compile</id>
+			<activation>
+				<property>
+					<name>pi4j.native.compiler</name>
+					<value>CROSS-COMPILER</value>
+				</property>
+			</activation>
+			<properties>
+				<pi4j.native.compiler.effective>CROSS-COMPILER</pi4j.native.compiler.effective>
+			</properties>
+		</profile>
+
     </profiles>
 
 	<!-- BUILD INSTRUCTIONS -->
@@ -497,7 +588,6 @@
 					<version>${maven-jar-plugin.version}</version>
 				</plugin>
 
-
 				<!-- INCLUDE SOURCE JAR -->
 				<plugin>
  					<groupId>org.apache.maven.plugins</groupId>
@@ -511,6 +601,16 @@
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+
+				<!-- INCLUDE RESOURCES -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resource-plugin.version}</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
 				</plugin>
 
 				<!-- INCLUDE JAVADOC JAR -->

@@ -13,28 +13,8 @@
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
-	<!-- BUILD PROPERTIES -->
-	<!-- BY DEFAULT, USE DOCKER CROSS-COMPILER CONTAINER FOR NATIVE BUILDS -->
-	<properties>
-		<pi4j-native-ant-build-target>build-with-docker</pi4j-native-ant-build-target>
-	</properties>
-
 	<!-- BUILD PROFILES -->
 	<profiles>
-
-		<!-- SPECIAL PROFILE TO SUPPORT CROSS-COMPILER BUILDS -->
-		<profile>
-			<id>cross-compile</id>
-			<activation>
-				<property>
-					<name>env.RPI_CROSS_COMPILE</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<properties>
-				<pi4j-native-ant-build-target>build-with-cross-compile</pi4j-native-ant-build-target>
-			</properties>
-		</profile>
 
 		<!-- This profile is used to dynamically rebuild the native library .H
 			header files from the defined JNI jar classes. This profile should only be
@@ -169,7 +149,30 @@
 						<configuration>
 							<target name="pi4j-build-platform-libraries" >
 								<property name="pi4j.builder.version" value="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"/>
-								<ant target="${pi4j-native-ant-build-target}" inheritRefs="true"/>
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+										 classpathref="maven.plugin.classpath" />
+								<if>
+									<!-- check for DOCKER-COMPILER setting in the 'pi4j.native.compiler' property -->
+									<equals arg1="${pi4j.native.compiler.effective}" arg2="DOCKER-COMPILER" />
+									<then>
+										<!-- perform native build using Pi4J Docker Builder Image for native cross-compiling -->
+										<ant target="build-with-docker" inheritRefs="true"/>
+									</then>
+									<else>
+										<if>
+											<!-- check for CROSS-COMPILER setting in the 'pi4j.native.compiler' property -->
+											<equals arg1="${pi4j.native.compiler.effective}" arg2="CROSS-COMPILER" />
+											<then>
+												<!-- perform native build using cross-compiler toolchains directly on host -->
+												<ant target="build-with-cross-compile" inheritRefs="true"/>
+											</then>
+											<else>
+												<fail message="NATIVE BUILD FAILED/ABORTED; Missing or invalid 'pi4j.native.compiler' property. [${pi4j.native.compiler}]; Expected 'CROSS-COMPILER|DOCKER-COMPILER'"/>
+											</else>
+										</if>
+									</else>
+								</if>
+
 							</target>
 						</configuration>
 					</execution>
