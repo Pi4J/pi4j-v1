@@ -96,7 +96,7 @@ public interface I2CDevice {
     void write(int address, byte[] buffer, int offset, int size) throws IOException;
 
     /**
-     * This method writes all bytes included in the given buffer directoy to the register address on the i2c device
+     * This method writes all bytes included in the given buffer directory to the register address on the i2c device
      *
      * @param address local address in the i2c device
      * @param buffer buffer of data to be written to the i2c device in one go
