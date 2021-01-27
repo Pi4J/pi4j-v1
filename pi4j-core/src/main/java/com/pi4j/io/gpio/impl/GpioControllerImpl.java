@@ -36,6 +36,7 @@ import com.pi4j.io.gpio.exception.GpioPinNotProvisionedException;
 import com.pi4j.io.gpio.exception.PinProviderException;
 import com.pi4j.io.gpio.exception.UnsupportedPinEventsException;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
+import com.pi4j.wiringpi.GpioInterrupt;
 
 public class GpioControllerImpl implements GpioController {
 
@@ -1061,6 +1062,9 @@ public class GpioControllerImpl implements GpioController {
         // NOTE: we are not permitted to access the shutdown() method of the individual
         // executor services, we must perform the shutdown with the factory
         GpioFactory.getExecutorServiceFactory().shutdown();
+
+        // shutdown interrupts
+        GpioInterrupt.shutdown();
 
         // set is shutdown tracking variable
         isshutdown = true;

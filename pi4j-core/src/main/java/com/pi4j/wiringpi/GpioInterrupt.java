@@ -208,9 +208,13 @@ public class GpioInterrupt {
 		}
 	}
 
+	public static void shutdown() {
+		disableEventExecutor();
+	}
+
 	private static void handleEvents() {
-		try {
-			while(run) {
+		while (run) {
+			try {
 				GpioEvent event = events.take();
 
 				List<GpioInterruptListener> listenersClone;
@@ -222,9 +226,11 @@ public class GpioInterrupt {
 					GpioInterruptEvent interruptEvent = new GpioInterruptEvent(listener, event.pin, event.state);
 					listener.pinStateChange(interruptEvent);
 				}
+			} catch (InterruptedException e) {
+				if (!run) {
+					return;
+				}
 			}
-		} catch (InterruptedException e) {
-			System.err.println("GpioInterrupt.handleEvents(): Interrupted while waiting for new events!");
 		}
 	}
 
