@@ -19,18 +19,22 @@ Pi4J Installation
 
 ** Java Runtime (JRE/JDK)
 
-  If you are using a recent build of Raspbian, then an Oracle Java runtime environment is pre-installed.  Nothing more to do.
+  {{{https://openjdk.java.net/projects/jdk/11/}Java 11 JRE/JDK}} - The <<Java 11>> runtime environment must be installed and
+  configured on your Raspberry Pi.\
+  You can use the following shell command on your Raspberry Pi to download
+  and install the OpenJDK (11) JDK distribution.
 
-  If you are using an older Raspbian build that does not already include a Java runtime environment, please see the following article for a complete set of installation instructions for installing the Oracle JDK.\
-  {{http://www.savagehomeautomation.com/pi-jdk}}
+----------------------------------------
+sudo apt-get install openjdk-11-jdk
+----------------------------------------
 
-  <<NOTE:>> As of v1.3, Pi4J requires {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}}. The Java 8 runtime
-  environment must be installed and configured on your system. \
-
+  <<ATTENTION:>> \
+  This project requires Java 11 (JDK) to build; however, it fails to compile using the latest Oracle JDKs.  The
+  project will successfully compile using OpenJDK, Liberica, Zulu and AdoptOpenJDK distributions.
 
 ** WiringPi Native Library
 
-  Pi4J depends on the WiringPi native library originally created by by Gordon Henderson.  Please see the following page for more information on WiringPi. \
+  Pi4J depends on the WiringPi native library originally created by by Gordon Henderson.  Please see the following page for more information on WiringPi.\
   {{http://wiringpi.com/}}
 
   The Pi4J native library is dynamically linked to WiringPi and thus you must have WiringPi installed on your target Raspberry Pi system.

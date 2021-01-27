@@ -79,14 +79,21 @@ Copyright (C) 2012-2021 Pi4J
      _(See: http://wiringpi.com/wiringpi-deprecated/)_
 
      > **NOTE:**  To support RaspberryPi 4B and newer systems you must install the latest *unofficial* WiringPi version which is 
-     maintained here: https://github.com/WiringPi/WiringPi.  _(As of 2021-01-12, this is version 2.60.)_ 
+     maintained here: https://github.com/WiringPi/WiringPi.  _(As of 2021-01-12, this is version 2.60.)_
      
-     
+     Example installation commands on a RaspberryPi:
+     ```
+     sudo apt-get remove wiringpi -y
+     sudo apt-get --yes install git-core gcc make
+     cd ~
+     git clone https://github.com/WiringPi/WiringPi --branch master --single-branch wiringpi
+     cd ~/wiringpi
+     sudo ./build
+     ```
   *  Please note that the Pi4J v1.x codebase is no longer being actively developed. Pi4J v1.x will only be maintained
      and updated for major bug fixes. This codebase has been largely stable for several years and is compatible across
      a wide variety of Raspberry Pi SoCs and you are welcome to continue using it.  However, for new projects, it
      is highly recommended to migrate to the Pi4J Version 2.x codebase.  See https://v2.pi4j.com for more information.
-
 
   *  This project requires Java 11 (JDK) to build; however, it fails to compile using the following Oracle JDKs.  The 
      project will successfully compile using OpenJDK, Liberica, Zulu and AdoptOpenJDK distributions.
@@ -95,6 +102,12 @@ Copyright (C) 2012-2021 Pi4J
      - Oracle JDK 11.0.09
      - Oracle JDK 11.0.10
      - Oracle JDK 11.0.10 (_and possibly newer_)
+    
+     \
+     Example installation command on a RaspberryPi:
+     ```
+     sudo apt-get install openjdk-11-jdk
+     ```
 
 ## Building
 

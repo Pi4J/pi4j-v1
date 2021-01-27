@@ -65,25 +65,22 @@ Welcome to Pi4J!
 
 * Prerequisites
 
-  * {{{https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html}Java 8 JRE/JDK}} - The <<Java 8>> runtime
+  * {{{https://openjdk.java.net/projects/jdk/11/}Java 11 JRE/JDK}} - The <<Java 11>> runtime
   environment must be installed and configured on your SoC platform.
 
-  \
-  <<ATTENTION:>> \
-  If you require a newer Java Virtual Machine for your project, please review the following Pi4J projects:
-  {{{https://pi4j.com/1.4}Pi4J v1.4}} or {{{https://v2.pi4j.com/}Pi4J v2.x}}
+    * This project requires Java 11 (JDK) to build; however, it fails to compile using the latest Oracle JDKs.
+
+    * The project will successfully compile using OpenJDK, Liberica, Zulu and AdoptOpenJDK distributions.
 
   * {{{https://github.com/WiringPi/WiringPi}WiringPi}} -The latest WiringPi library must be installed on your RaspberryPi.
 
-  \
-  <<ATTENTION:>> \
-  The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and is no longer maintained.  \
-  To support RaspberryPi 4B/400/CM4 and newer systems you must install the latest *unofficial* WiringPi version which is
-  maintained here: {{https://github.com/WiringPi/WiringPi}}.\
-  <(As of 2021-01-12, this is version 2.60.)>
+    * The original WiringPi library has been **{{{http://wiringpi.com/wiringpi-deprecated/}DEPRECATED}}** and is no longer maintained.
+
+    * To support RaspberryPi 4B/400/CM4 and newer systems you must install the latest *unofficial* WiringPi version which is
+      maintained here: {{https://github.com/WiringPi/WiringPi}}. <(As of 2021-01-12, this is version 2.60.)>
 
   \
-  See {{{./dependency.html}Dependencies}} for additional information.
+  See {{{.//install.html#Prerequisites}Install/Prerequisites}} and {{{./dependency.html}Dependencies}} for additional information.
 
 * Supported Hardware
 
