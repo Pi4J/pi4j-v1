@@ -163,7 +163,22 @@ public class NativeLibraryLoader {
 			String linking = System.getProperty("pi4j.linking",
 					platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
 
-			String path = "/lib/" + platform + "/" + linking + "/" + fileName;
+			String osArch = System.getProperty("os.arch");
+			switch (osArch) {
+				case "arm":
+					osArch = "armhf";
+					break;
+				case "aarch64":
+					break;
+				default:
+					throw new IllegalStateException("Unknown os.arch value " + osArch);
+			}
+
+			// remove file extension from filename
+			fileName = fileName.substring(0, fileName.lastIndexOf(".so"));
+
+			// construct the full file path including the OS architecture
+			String path = "/lib/" + platform + "/" + linking + "/" + fileName + "-" + osArch + ".so";
 			logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 			try {
 				loadLibraryFromClasspath(path);
