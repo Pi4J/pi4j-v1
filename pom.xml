@@ -51,11 +51,6 @@
             <name>Frank Delporte</name>
             <email>frank@pi4j.com</email>
             <url>https://webtechie.be</url>
-            <properties>
-                <blog>https://webtechie.be</blog>
-                <linikedin>https://www.linkedin.com/in/frankdelporte/</linikedin>
-                <twitter>https://twitter.com/FrankDelporte</twitter>
-            </properties>
             <roles>
                 <role>facilitator</role>
                 <role>developer</role>
@@ -234,6 +229,7 @@
 		<maven-source-plugin.version>3.2.0</maven-source-plugin.version>
 		<maven-resource-plugin.version>3.2.0</maven-resource-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-replacer-plugin.version>1.4.1</maven-replacer-plugin.version>
 		<maven-site-plugin.version>3.9.1</maven-site-plugin.version>
 		<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -423,18 +419,20 @@
 					<plugin>
 						<groupId>com.google.code.maven-replacer-plugin</groupId>
 						<artifactId>maven-replacer-plugin</artifactId>
-						<version>1.4.1</version>
+						<version>${maven-replacer-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>scss-replacement</id>
-								<phase>site</phase> <goals>
-								<goal>replace</goal>
-							</goals> <configuration>
-								<file>src/site/root/index.html</file>
-								<token>\$\{VERSION\}</token>
-								<value>${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</value>
-								<outputFile>${project.reporting.outputDirectory}/index.html</outputFile>
-							</configuration>
+								<phase>site</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+								<configuration>
+									<file>src/site/root/index.html</file>
+									<token>\$\{VERSION\}</token>
+									<value>${project.artifact.selectedVersion.majorVersion}.${project.artifact.selectedVersion.minorVersion}</value>
+									<outputFile>${project.reporting.outputDirectory}/index.html</outputFile>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -983,7 +981,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.4</version>
+				<version>${maven-site-plugin.version}</version>
 				<inherited>false</inherited>
 				<configuration>
                     <generateProjectInfo>true</generateProjectInfo>
@@ -1086,5 +1084,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>
