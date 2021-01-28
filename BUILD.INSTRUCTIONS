@@ -92,7 +92,7 @@ Use the following series of instructions to publish a public deployment of a rel
 
 - remove "-SNAPSHOT" from all project pom.xml files
 
-> mvn clean deploy -Drelease-build -Dgpg.passphrase=your-passphrase
+> mvn clean deploy -Drelease-build -Dgpg.passphrase=your-passphrase -Pdeploy-apt-package
 > mvn -N clean site -Pdeploy-site,publish-site
 
 - create source tag for release
