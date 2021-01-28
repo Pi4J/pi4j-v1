@@ -47,7 +47,7 @@ Download
   <<SNAPSHOT BUILDS>>
 
   Snapshots will be hosted in the following Sonatype OSS repository.\
-  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.3-SNAPSHOT~~}}
+  {{https://oss.sonatype.org/index.html#nexus-search;gav~com.pi4j~pi4j-*~1.4-SNAPSHOT~~}}
 
   To download SNAPSHOT builds in your Maven project, you must include the following repository definition in your POM.XML file.
 

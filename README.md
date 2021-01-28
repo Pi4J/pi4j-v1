@@ -87,17 +87,17 @@ Copyright (C) 2012-2021 Pi4J
      all Pi4J features may be supported and/or working properly.
 
 
-## IN DEVELOPMENT
-
-2021-01-08 :: 1.3-SNAPSHOT
- *  Must be compiled using JDK 1.8
- *  Install WiringPi v2.52 or later to support RaspberryPi 4B and newer systems.
-    (http://wiringpi.com/wiringpi-updated-to-2-52-for-the-raspberry-pi-4b/)
- *  Added support for RaspberryPi 4B 
- *  Added support for RaspberryPi 400
- *  Added support for RaspberryPi Compute Module 4
-
 ## RELEASES
+
+2021-01-28 :: 1.3
+
+  *  Must be compiled using JDK 1.8
+  *  Install WiringPi v2.60 or later to support RaspberryPi 4B and newer systems.\
+     (https://pi4j.com/1.3/dependency.html)
+  *  Added support for RaspberryPi 4B
+  *  Added support for RaspberryPi 400
+  *  Added support for RaspberryPi Compute Module 4
+  *  Bug Fixes: https://github.com/Pi4J/pi4j/milestone/10?closed=1
 
 2019-02-27 :: 1.2
 
