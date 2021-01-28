@@ -384,6 +384,10 @@
                                     -->
 									<keyname>${pi4j.gpg.key}</keyname>
                                     <passphrase>${pi4j.gpg.passphrase}</passphrase>
+                                    <gpgArguments>
+                                        <gpgArgument>--pinentry-mode</gpgArgument>
+                                        <gpgArgument>loopback</gpgArgument>
+                                    </gpgArguments>
 								</configuration>
 							</execution>
 						</executions>
