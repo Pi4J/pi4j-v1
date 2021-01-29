@@ -23,7 +23,7 @@ Dependencies
   install the latest <unofficial> build of WiringPi.
 
 ----------------------------------------
-pi4j --wiringpi
+sudo pi4j --wiringpi
 ----------------------------------------
 
   Alternatively, you can use the following shell commands to download, build and install the latest <unofficial>
