@@ -1,9 +1,6 @@
             ------
             Usage
             ------
-            ------
-             YYYY-MM-DD
-            ------
 
 Usage
 
@@ -37,7 +34,7 @@ Usage
 
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RaspiPin.html}RaspiPin}}>>> enumeration that is used to manage the accessible GPIO pins for all models except the Compute Module.
 
-  * <<For the CM1, CM3, CM3+ (Compute Modul)e>>
+  * <<For the CM1, CM3, CM3+ (Compute Module)>>
 
     Pi4J uses the Broadcom GPIO pin numbering scheme for the Raspberry Compute Module.\
     Pi4J provides a <<<{{{./apidocs/index.html?com/pi4j/io/gpio/RCMPin.html}RCMPin}}>>> enumeration that is used to manage the accessible GPIO pins for the Compute Module.
@@ -59,7 +56,7 @@ Usage
 
        * {{{./pins/rpi-2b.html}Raspberry Pi - 2B}}
 
-       * {{{./pins/rpi-3b.html}Raspberry Pi - 3B}}
+       * {{{./pins/model-2b-rev1.html}Raspberry Pi - 2B}}
 
        * {{{./pins/rpi-3bp.html}Raspberry Pi - 3B+}}
 
@@ -81,17 +78,9 @@ Usage
 
        * {{{./pins/rpi-cm4.html}Raspberry Pi - CM4 (Compute Module)}}
 
-       * {{{./pins/lemaker-bananapi.html}Lemaker - BananaPi}}
-
-       * {{{./pins/lemaker-bananapro.html}Lemaker - BananaPro}}
-
-       * {{{./pins/odroid-c1.html}Odroid - C1/C1+}}
-
-       * {{{./pins/odroid-xu4.html}Odroid - XU4}}
-
     \
     {{{http://www.raspberrypi-spy.co.uk/2012/09/raspberry-pi-board-revisions/}(Click here if you need help identifying which model/revision that you have.)}}
-
+    \
 
   * << Broadcom Pin Numbering Scheme>> (ALTERNATIVE PIN NUMBERING)
 

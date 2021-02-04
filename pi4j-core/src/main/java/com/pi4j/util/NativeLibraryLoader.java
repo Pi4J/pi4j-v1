@@ -8,29 +8,26 @@ package com.pi4j.util;
  * FILENAME      :  NativeLibraryLoader.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  https://www.pi4j.com/
+ * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2021 Pi4J
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 
 import com.pi4j.platform.Platform;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,14 +46,14 @@ import java.util.logging.Logger;
 
 public class NativeLibraryLoader {
 
-	private static final Set<String> loadedLibraries = new TreeSet<>();
-	private static final Logger logger = Logger.getLogger(NativeLibraryLoader.class.getName());
-	private static boolean initialized;
+    private static final Set<String> loadedLibraries = new TreeSet<>();
+    private static final Logger logger = Logger.getLogger(NativeLibraryLoader.class.getName());
+    private static boolean initialized;
 
-	// private constructor
-	private NativeLibraryLoader() {
-		// forbid object construction
-	}
+    // private constructor
+    private NativeLibraryLoader() {
+        // forbid object construction
+    }
 
 	public static synchronized void load(String fileName, String libName) {
 		// check for debug property; if found enable all logging levels
@@ -154,7 +151,7 @@ public class NativeLibraryLoader {
 			}
 		}
 		// if there is no overriding library path defined, then attempt to load native library from embedded resource
-        else {
+		else {
 			//
 			// path = /lib/{platform}/{linking:static|dynamic}/{filename}
 			//
@@ -166,7 +163,22 @@ public class NativeLibraryLoader {
 			String linking = System.getProperty("pi4j.linking",
 					platform.equalsIgnoreCase(Platform.RASPBERRYPI.getId()) ? "dynamic" : "static");
 
-			String path = "/lib/" + platform + "/" + linking + "/" + fileName;
+			String osArch = System.getProperty("os.arch");
+			switch (osArch) {
+				case "arm":
+					osArch = "armhf";
+					break;
+				case "aarch64":
+					break;
+				default:
+					throw new IllegalStateException("Unknown os.arch value " + osArch);
+			}
+
+			// remove file extension from filename
+			fileName = fileName.substring(0, fileName.lastIndexOf(".so"));
+
+			// construct the full file path including the OS architecture
+			String path = "/lib/" + platform + "/" + linking + "/" + fileName + "-" + osArch + ".so";
 			logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 			try {
 				loadLibraryFromClasspath(path);
@@ -180,50 +192,47 @@ public class NativeLibraryLoader {
 		}
 	}
 
-	/**
-	 * Loads library from classpath
-	 *
-	 * The file from classpath is copied into system temporary directory and then loaded. The temporary file is
-     * deleted after exiting. Method uses String as filename because the pathname is
-	 * "abstract", not system-dependent.
-	 *
-	 * @param path
-	 *            The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
-	 * @throws IOException
-	 *             If temporary file creation or read/write operation fails
-	 * @throws IllegalArgumentException
-	 *             If source file (param path) does not exist
-	 * @throws IllegalArgumentException
-	 *             If the path is not absolute or if the filename is shorter than three characters (restriction
-     *             of {@see File#createTempFile(java.lang.String, java.lang.String)}).
-	 */
-	public static void loadLibraryFromClasspath(String path) throws IOException {
-		Path inputPath = Paths.get(path);
+    /**
+     * Loads library from classpath
+     * <p>
+     * The file from classpath is copied into system temporary directory and then loaded. The temporary file is deleted
+     * after exiting. Method uses String as filename because the pathname is "abstract", not system-dependent.
+     *
+     * @param path The file path in classpath as an absolute path, e.g. /package/File.ext (could be inside jar)
+     * @throws IOException              If temporary file creation or read/write operation fails
+     * @throws IllegalArgumentException If source file (param path) does not exist
+     * @throws IllegalArgumentException If the path is not absolute or if the filename is shorter than three characters
+     *                                  (restriction of {@link Files#createTempFile(java.lang.String, java.lang.String,
+     *                                  java.nio.file.attribute.FileAttribute...)}).
+     */
+    public static void loadLibraryFromClasspath(String path) throws IOException {
+        Path inputPath = Paths.get(path);
 
-		if (!inputPath.isAbsolute()) {
-			throw new IllegalArgumentException("The path has to be absolute, but found: " + inputPath);
-		}
+        if (!inputPath.isAbsolute()) {
+            throw new IllegalArgumentException("The path has to be absolute, but found: " + inputPath);
+        }
 
-		String fileNameFull = inputPath.getFileName().toString();
-		int dotIndex = fileNameFull.indexOf('.');
-		if (dotIndex < 0 || dotIndex >= fileNameFull.length() - 1) {
-			throw new IllegalArgumentException("The path has to end with a file name and extension, but found: " + fileNameFull);
-		}
+        String fileNameFull = inputPath.getFileName().toString();
+        int dotIndex = fileNameFull.indexOf('.');
+        if (dotIndex < 0 || dotIndex >= fileNameFull.length() - 1) {
+            throw new IllegalArgumentException(
+                    "The path has to end with a file name and extension, but found: " + fileNameFull);
+        }
 
-		String fileName = fileNameFull.substring(0, dotIndex);
-		String extension = fileNameFull.substring(dotIndex);
+        String fileName = fileNameFull.substring(0, dotIndex);
+        String extension = fileNameFull.substring(dotIndex);
 
-		Path target = Files.createTempFile(fileName, extension);
-		File targetFile = target.toFile();
-		targetFile.deleteOnExit();
+        Path target = Files.createTempFile(fileName, extension);
+        File targetFile = target.toFile();
+        targetFile.deleteOnExit();
 
-		try (InputStream source = NativeLibraryLoader.class.getResourceAsStream(inputPath.toString())) {
-			if (source == null) {
-				throw new FileNotFoundException("File " + inputPath + " was not found in classpath.");
-			}
-			Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-		}
-		// Finally, load the library
-		System.load(target.toAbsolutePath().toString());
-	}
+        try (InputStream source = NativeLibraryLoader.class.getResourceAsStream(inputPath.toString())) {
+            if (source == null) {
+                throw new FileNotFoundException("File " + inputPath + " was not found in classpath.");
+            }
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+        // Finally, load the library
+        System.load(target.toAbsolutePath().toString());
+    }
 }

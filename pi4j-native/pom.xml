@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- MAVEN ARTIFACT INFORMATION -->
@@ -10,45 +10,11 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
-
-    <!-- BUILD PROPERTIES -->
-    <properties>
-        <pi4j-native-ant-build-target>build-libpi4j.so-remote</pi4j-native-ant-build-target>
-    </properties>
 
 	<!-- BUILD PROFILES -->
 	<profiles>
-
-        <!-- SPECIAL PROFILE TO DETERMINE IF RUNNING ON THE PI HARDWARE -->
-        <profile>
-            <id>local-compile</id>
-            <activation>
-                <os>
-                    <name>linux</name>
-                    <family>unix</family>
-                    <arch>arm</arch>
-                </os>
-            </activation>
-            <properties>
-                <pi4j-native-ant-build-target>build-libpi4j.so-local</pi4j-native-ant-build-target>
-            </properties>
-        </profile>
-
-		<!-- SPECIAL PROFILE TO SUPPORT CROSS-COMPILER BUILDS -->
-		<profile>
-			<id>cross-compile</id>
-			<activation>
-				<property>
-					<name>env.RPI_CROSS_COMPILE</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<properties>
-				<pi4j-native-ant-build-target>build-libpi4j.so-cross-compile</pi4j-native-ant-build-target>
-			</properties>
-		</profile>
 
 		<!-- This profile is used to dynamically rebuild the native library .H
 			header files from the defined JNI jar classes. This profile should only be
@@ -92,11 +58,11 @@
 
 									<!-- trigger javah execution -->
 									<javahClassNames>
-                                        <javahClassName>com.pi4j.jni.AnalogInputMonitor</javahClassName>
-                                        <javahClassName>com.pi4j.jni.WDT</javahClassName>
+										<javahClassName>com.pi4j.jni.AnalogInputMonitor</javahClassName>
+										<javahClassName>com.pi4j.jni.WDT</javahClassName>
 										<javahClassName>com.pi4j.jni.I2C</javahClassName>
 										<javahClassName>com.pi4j.jni.Serial</javahClassName>
-                                        <javahClassName>com.pi4j.jni.SerialInterrupt</javahClassName>
+										<javahClassName>com.pi4j.jni.SerialInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.Gpio</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioInterrupt</javahClassName>
 										<javahClassName>com.pi4j.wiringpi.GpioUtil</javahClassName>
@@ -135,6 +101,23 @@
 				<artifactId>license-maven-plugin</artifactId>
 			</plugin>
 
+			<!-- EXTRACT/PARSE MAJOR & MINOR (semver) VERSION ELEMENTS FROM PROJECT VERSION -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- PERFORM ADDITIONAL BUILD TASKS USING ANT -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -144,193 +127,95 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<mkdir dir="target" />
 								<mkdir dir="target/classes" />
 								<mkdir dir="target/native" />
 								<mkdir dir="target/native/lib" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
 						</goals>
 					</execution>
 
-                    <!-- copy the native source files and compile them on each of the targeted platforms -->
-                    <execution>
-                        <id>pi4j-build-native-libraries</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="pi4j-build-platform-libraries" >
-                                <ant target="${pi4j-native-ant-build-target}" inheritRefs="true">
+					<!-- copy the native source files and compile them on each of the targeted platforms -->
+					<execution>
+						<id>pi4j-build-native-libraries</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="pi4j-build-platform-libraries" >
+								<property name="pi4j.builder.version" value="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}"/>
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
+										 classpathref="maven.plugin.classpath" />
+								<if>
+									<!-- check for DOCKER-COMPILER setting in the 'pi4j.native.compiler' property -->
+									<equals arg1="${pi4j.native.compiler.effective}" arg2="DOCKER-COMPILER" />
+									<then>
+										<!-- perform native build using Pi4J Docker Builder Image for native cross-compiling -->
+										<ant target="build-with-docker" inheritRefs="true"/>
+									</then>
+									<else>
+										<if>
+											<!-- check for CROSS-COMPILER setting in the 'pi4j.native.compiler' property -->
+											<equals arg1="${pi4j.native.compiler.effective}" arg2="CROSS-COMPILER" />
+											<then>
+												<!-- perform native build using cross-compiler toolchains directly on host -->
+												<ant target="build-with-cross-compile" inheritRefs="true"/>
+											</then>
+											<else>
+												<fail message="NATIVE BUILD FAILED/ABORTED; Missing or invalid 'pi4j.native.compiler' property. [${pi4j.native.compiler}]; Expected 'CROSS-COMPILER|DOCKER-COMPILER'"/>
+											</else>
+										</if>
+									</else>
+								</if>
 
-                                    <!-- WE REDEFINE THE FOLLOWING PROPERTIES TO ALLOW THEM TO BE OVERRIDDEN
-                                         VIA SYSTEM PROPERTIES PROVIDED ON THE MAVEN COMMAND LINE -->
+							</target>
+						</configuration>
+					</execution>
 
-                                    <!-- RaspberryPi Platform Properties -->
-                                    <property name="raspberrypi.name" value="${raspberrypi.name}"/>
-                                    <property name="raspberrypi.host" value="${raspberrypi.host}"/>
-                                    <property name="raspberrypi.port" value="${raspberrypi.port}"/>
-                                    <property name="raspberrypi.user" value="${raspberrypi.user}"/>
-                                    <property name="raspberrypi.password" value="${raspberrypi.password}"/>
-                                    <property name="raspberrypi.directory" value="${raspberrypi.directory}"/>
+					<!-- attach the compiled native libraries for each of the targeted platforms as artifacts -->
+					<execution>
+						<id>pi4j-attach-native-library-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="pi4j-attach-platform-libraries" >
+								<taskdef  resource="net/sf/antcontrib/antcontrib.properties"
+										  classpathref="maven.plugin.classpath"/>
 
-                                    <!-- Odroid Platform Properties -->
-                                    <property name="odroid.name" value="${odroid.name}"/>
-                                    <property name="odroid.host" value="${odroid.host}"/>
-                                    <property name="odroid.port" value="${odroid.port}"/>
-                                    <property name="odroid.user" value="${odroid.user}"/>
-                                    <property name="odroid.password" value="${odroid.password}"/>
-                                    <property name="odroid.directory" value="${odroid.directory}"/>
-
-                                    <!-- LeMaker BananaPi Platform Properties -->
-                                    <property name="bananapi.name" value="${bananapi.name}"/>
-                                    <property name="bananapi.host" value="${bananapi.host}"/>
-                                    <property name="bananapi.port" value="${bananapi.port}"/>
-                                    <property name="bananapi.user" value="${bananapi.user}"/>
-                                    <property name="bananapi.password" value="${bananapi.password}"/>
-                                    <property name="bananapi.directory" value="${bananapi.directory}"/>
-
-                                    <!-- LeMaker BananaPro Platform Properties -->
-                                    <property name="bananapro.name" value="${bananapro.name}"/>
-                                    <property name="bananapro.host" value="${bananapro.host}"/>
-                                    <property name="bananapro.port" value="${bananapro.port}"/>
-                                    <property name="bananapro.user" value="${bananapro.user}"/>
-                                    <property name="bananapro.password" value="${bananapro.password}"/>
-                                    <property name="bananapro.directory" value="${bananapro.directory}"/>
-
-                                    <!-- SINOVOIP-BPI Platform Properties -->
-                                    <property name="bpi.name" value="${bpi.name}"/>
-                                    <property name="bpi.host" value="${bpi.host}"/>
-                                    <property name="bpi.port" value="${bpi.port}"/>
-                                    <property name="bpi.user" value="${bpi.user}"/>
-                                    <property name="bpi.password" value="${bpi.password}"/>
-                                    <property name="bpi.directory" value="${bpi.directory}"/>
-
-                                    <!-- OrangePi Platform Properties -->
-                                    <property name="orangepi.name" value="${orangepi.name}"/>
-                                    <property name="orangepi.host" value="${orangepi.host}"/>
-                                    <property name="orangepi.port" value="${orangepi.port}"/>
-                                    <property name="orangepi.user" value="${orangepi.user}"/>
-                                    <property name="orangepi.password" value="${orangepi.password}"/>
-                                    <property name="orangepi.directory" value="${orangepi.directory}"/>
-
-                                    <!-- NanoPi Platform Properties -->
-                                    <property name="nanopi.name" value="${nanopi.name}"/>
-                                    <property name="nanopi.host" value="${nanopi.host}"/>
-                                    <property name="nanopi.port" value="${nanopi.port}"/>
-                                    <property name="nanopi.user" value="${nanopi.user}"/>
-                                    <property name="nanopi.password" value="${nanopi.password}"/>
-                                    <property name="nanopi.directory" value="${nanopi.directory}"/>
-
-                                </ant>
-                            </target>
-                        </configuration>
-                    </execution>
-
-                    <!-- attach the compiled native libraries for each of the targeted platforms as artifacts -->
-                    <execution>
-                        <id>pi4j-attach-native-library-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="pi4j-attach-platform-libraries" >
-                                <taskdef  resource="net/sf/antcontrib/antcontrib.properties"
-                                          classpathref="maven.plugin.classpath"/>
-
-                                <!-- Attach 'libpi4j.so' for RasbperryPi -->
-                                <if>
-                                    <equals arg1="${raspberrypi.build}" arg2="true" />
-                                    <then>
-                                        <!-- NOTE: As of 2018-04-23 Pi4J no longer includes
-                                           a statically linked wiringPi lib for the Raspberry Pi platform. -->
-                                        <attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j.so" classifier="raspberrypi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for Odroid -->
-                                <if>
-                                    <equals arg1="${odroid.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/odroid/static/libpi4j.so" classifier="odroid-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/odroid/dynamic/libpi4j.so" classifier="odroid-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for LeMaker BananaPi -->
-                                <if>
-                                    <equals arg1="${bananapi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/static/libpi4j.so" classifier="bananapi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapi/dynamic/libpi4j.so" classifier="bananapi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for LeMaker BananaPro -->
-                                <if>
-                                    <equals arg1="${bananapro.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/static/libpi4j.so" classifier="bananapro-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bananapro/dynamic/libpi4j.so" classifier="bananapro-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for Sinovoip BPI (BananaPi)  -->
-                                <if>
-                                    <equals arg1="${bpi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/bpi/static/libpi4j.so" classifier="bpi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/bpi/dynamic/libpi4j.so" classifier="bpi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for OrangePi -->
-                                <if>
-                                    <equals arg1="${orangepi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/static/libpi4j.so" classifier="orangepi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/orangepi/dynamic/libpi4j.so" classifier="orangepi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                                <!-- Attach 'libpi4j.so' for NanoPi -->
-                                <if>
-                                    <equals arg1="${nanopi.build}" arg2="true" />
-                                    <then>
-                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/static/libpi4j.so" classifier="nanopi-static" type="so"/>
-                                        <attachartifact file="${project.build.directory}/native/lib/nanopi/dynamic/libpi4j.so" classifier="nanopi-dynamic" type="so"/>
-                                    </then>
-                                </if>
-
-                            </target>
-                        </configuration>
-                    </execution>
-
+								<!-- Attach 'libpi4j.so' for RasbperryPi -->
+								<!-- NOTE: As of 2018-04-23 Pi4J no longer includes
+								   a statically linked wiringPi lib for the Raspberry Pi platform. -->
+								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-armhf.so" classifier="raspberrypi-dynamic-armhf" type="so"/>
+								<attachartifact file="${project.build.directory}/native/lib/raspberrypi/dynamic/libpi4j-aarch64.so" classifier="raspberrypi-dynamic-aarch64" type="so"/>
+							</target>
+						</configuration>
+					</execution>
 				</executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant-jsch</artifactId>
-                        <version>${ant-jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>${jsch.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>ant-contrib</groupId>
-                        <artifactId>ant-contrib</artifactId>
-                        <version>${ant-contrib.version}</version>
-                    </dependency>
-                </dependencies>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>${ant-jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.jcraft</groupId>
+						<artifactId>jsch</artifactId>
+						<version>${jsch.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>${ant-contrib.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-
-        </plugins>
+		</plugins>
 	</build>
 </project>

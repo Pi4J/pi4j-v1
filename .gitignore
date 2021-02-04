@@ -1,8 +1,7 @@
 # Build files
 out
-target
+target/
 gen
-bin
 
 # IntelliJ files
 .idea
@@ -16,6 +15,9 @@ bin
 .metadata
 maven-eclipse.xml
 
+# UltraEdit .bak files
+*.bak
+
 # Vim files
 *.swp
 
@@ -26,9 +28,6 @@ maven-eclipse.xml
 Thumbs.db
 
 # Package Files #
-*.jar
 *.war
 *.ear
-*.zip
-*.deb
 /nbactions.xml

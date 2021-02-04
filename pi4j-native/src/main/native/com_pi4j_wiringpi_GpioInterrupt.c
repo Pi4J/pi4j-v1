@@ -6,24 +6,22 @@
  * FILENAME      :  com_pi4j_wiringpi_GpioInterrupt.c
  * 
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  https://www.pi4j.com/
+ * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2021 Pi4J
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 #include <stdio.h>
@@ -135,6 +133,15 @@ int monitorPinInterrupt(void *threadarg)
 	int compareLastKnown = strncmp(rdbuf, "1", 1); // only compare the first character; rdbuff may have more junk chars
 	monitorData->lastKnownState = compareLastKnown;
 
+  // get attached JVM
+  JNIEnv *env;
+  if ((*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL) != JNI_OK)
+  {
+    perror("AttachCurrentThread()");
+    close(fd);
+    return 5;
+  }
+
 	// continuous thread loop
 	for(;;)
 	{
@@ -191,10 +198,6 @@ int monitorPinInterrupt(void *threadarg)
 				// ensure the callback class and method are available
 				if (gpio_callback_class != NULL && gpio_callback_method != NULL)
 				{
-					// get attached JVM
-					JNIEnv *env;
-					(*gpio_callback_jvm)->AttachCurrentThread(gpio_callback_jvm, (void **)&env, NULL);
-
 					// ensure that the JVM exists
 					if(gpio_callback_jvm != NULL)
 					{
@@ -204,13 +207,18 @@ int monitorPinInterrupt(void *threadarg)
 						else
 							(*env)->CallStaticVoidMethod(env, gpio_callback_class, gpio_callback_method, (jint)pin, (jboolean)0);
 					}
-
-                    // detach from thread
-                    (*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm);
 				}
 			}
 		}
 	}
+
+	// detach from thread
+  if ((*gpio_callback_jvm)->DetachCurrentThread(gpio_callback_jvm) != JNI_OK)
+  {
+    perror("DetachCurrentThread()");
+    close(fd);
+    return 8;
+  }
 
 	// if we reached this code (unlikely),
 	// then close the data file and exit the thread

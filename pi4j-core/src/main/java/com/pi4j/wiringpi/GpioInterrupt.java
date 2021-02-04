@@ -8,31 +8,34 @@ package com.pi4j.wiringpi;
  * FILENAME      :  GpioInterrupt.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  https://www.pi4j.com/
+ * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2021 Pi4J
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.util.NativeLibraryLoader;
-
-import java.util.Vector;
 
 /**
  * <p>
@@ -48,26 +51,35 @@ import java.util.Vector;
  * <li>pi4j</li>
  * <li>wiringPi</li>
  * </ul>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
+ * <blockquote> This library depends on the wiringPi native system library. (developed by
  * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
  * </blockquote>
  * </p>
  *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com/</a>
+ * @see <a href="https://pi4j.com/">https://pi4j.com/</a>
  * @author Robert Savage (<a
  *         href="http://www.savagehomeautomation.com">http://www.savagehomeautomation.com</a>)
  */
 public class GpioInterrupt {
 
-    private static Vector<GpioInterruptListener> listeners = new Vector<>();
-    private Object lock;
+    private static final Object mutex;
+    private static final LinkedBlockingQueue<GpioEvent> events;
+	private static final List<GpioInterruptListener> listeners;
 
-    // private constructor
+	private static boolean run;
+	private static ExecutorService eventExecutor;
+	private static Future<?> eventTask;
+
+	// private constructor
     private GpioInterrupt()  {
         // forbid object construction
     }
 
     static {
+		mutex = new Object();
+		events = new LinkedBlockingQueue<>();
+		listeners = Collections.synchronizedList(new ArrayList<>());
+
         // Load the platform library
         NativeLibraryLoader.load("libpi4j.so", "pi4j");
     }
@@ -115,26 +127,15 @@ public class GpioInterrupt {
      * @param pin GPIO pin number (not header pin number; not wiringPi pin number)
      * @param state New GPIO pin state.
      */
-    @SuppressWarnings("unchecked")
     private static void pinStateChangeCallback(int pin, boolean state) {
-
-        Vector<GpioInterruptListener> listenersClone;
-        listenersClone = (Vector<GpioInterruptListener>) listeners.clone();
-
-        for (int i = 0; i < listenersClone.size(); i++) {
-            GpioInterruptListener listener = listenersClone.elementAt(i);
-            if(listener != null) {
-                GpioInterruptEvent event = new GpioInterruptEvent(listener, pin, state);
-                listener.pinStateChange(event);
-            }
-        }
-
-        //System.out.println("GPIO PIN [" + pin + "] = " + state);
+		synchronized (mutex) {
+			events.add(new GpioEvent(pin, state));
+		}
     }
 
     /**
      * <p>
-     * Java consumer code can all this method to register itself as a listener for pin state
+     * Java consumer code can call this method to register itself as a listener for pin state
      * changes.
      * </p>
      *
@@ -143,13 +144,18 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void addListener(GpioInterruptListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.addElement(listener);
-        }
+    public static void addListener(GpioInterruptListener listener) {
+    	synchronized (mutex) {
+			if (!listeners.contains(listener)) {
+				listeners.add(listener);
+
+				if (!run)
+					enableEventExecutor();
+			}
+		}
     }
 
-    /**
+	/**
      * <p>
      * Java consumer code can all this method to unregister itself as a listener for pin state
      * changes.
@@ -160,14 +166,16 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized void removeListener(GpioInterruptListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.removeElement(listener);
-        }
+    public static void removeListener(GpioInterruptListener listener) {
+		synchronized (mutex) {
+			listeners.remove(listener);
+
+			if (run && listeners.isEmpty())
+				disableEventExecutor();
+		}
     }
 
-
-    /**
+	/**
      * <p>
      * Returns true if the listener is already registered for event callbacks.
      * </p>
@@ -177,7 +185,62 @@ public class GpioInterrupt {
      *
      * @param listener A class instance that implements the GpioInterruptListener interface.
      */
-    public static synchronized boolean hasListener(GpioInterruptListener listener) {
-        return listeners.contains(listener);
+    public static boolean hasListener(GpioInterruptListener listener) {
+		synchronized (mutex) {
+			return listeners.contains(listener);
+		}
+    }
+
+	private static synchronized void enableEventExecutor() {
+		if (!run) {
+			run = true;
+			if (eventExecutor == null)
+				eventExecutor = GpioFactory.getExecutorServiceFactory().getEventExecutorService();
+			eventTask = eventExecutor.submit(GpioInterrupt::handleEvents);
+		}
+	}
+
+	private static void disableEventExecutor() {
+		if (run) {
+			run = false;
+			if (eventTask != null)
+				eventTask.cancel(true);
+		}
+	}
+
+	public static void shutdown() {
+		disableEventExecutor();
+	}
+
+	private static void handleEvents() {
+		while (run) {
+			try {
+				GpioEvent event = events.take();
+
+				List<GpioInterruptListener> listenersClone;
+				synchronized (mutex) {
+					listenersClone = new ArrayList<>(listeners);
+				}
+
+				for (GpioInterruptListener listener : listenersClone) {
+					GpioInterruptEvent interruptEvent = new GpioInterruptEvent(listener, event.pin, event.state);
+					listener.pinStateChange(interruptEvent);
+				}
+			} catch (InterruptedException e) {
+				if (!run) {
+					return;
+				}
+			}
+		}
+	}
+
+    public static class GpioEvent {
+        private final int pin;
+        private final boolean state;
+
+        public GpioEvent(int pin, boolean state) {
+            this.pin = pin;
+            this.state = state;
+        }
     }
 }

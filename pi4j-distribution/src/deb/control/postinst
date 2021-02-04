@@ -17,16 +17,6 @@ esac
 
 # SET EXECUTABLE PERMISSIONS FOR EXAMPLE BUILD SCRIPTS
 chmod -f -R a+x /opt/pi4j/examples/build
-chmod -f -R a+x /opt/pi4j/examples/bananapi/build
-chmod -f -R a+x /opt/pi4j/examples/bananapro/build
-chmod -f -R a+x /opt/pi4j/examples/odroid/c1/build
-chmod -f -R a+x /opt/pi4j/examples/odroid/xu4/build
-chmod -f -R a+x /opt/pi4j/examples/orangepi/build
 
 # SET EXECUTABLE PERMISSIONS FOR EXAMPLE RUN SCRIPTS
 chmod -f -R a+x /opt/pi4j/examples/run
-chmod -f -R a+x /opt/pi4j/examples/bananapi/run
-chmod -f -R a+x /opt/pi4j/examples/bananapro/run
-chmod -f -R a+x /opt/pi4j/examples/odroid/c1/run
-chmod -f -R a+x /opt/pi4j/examples/odroid/xu4/run
-chmod -f -R a+x /opt/pi4j/examples/orangepi/run

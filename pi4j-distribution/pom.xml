@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pi4j</groupId>
 		<artifactId>pi4j-parent</artifactId>
-        <version>1.3</version>
+        <version>1.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>pi4j-distribution</artifactId>
 	<name>Pi4J :: Distribution</name>
@@ -28,40 +28,6 @@
 		<dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-core</artifactId>
-			<version>${project.version}</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-device</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-device</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-device</artifactId>
-			<version>${project.version}</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-gpio-extension</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-gpio-extension</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.pi4j</groupId>
-			<artifactId>pi4j-gpio-extension</artifactId>
 			<version>${project.version}</version>
 			<classifier>javadoc</classifier>
 		</dependency>
@@ -275,16 +241,6 @@
                             <dst>/opt/pi4j/lib/pi4j-core.jar</dst>
                         </data>
                         <data>
-                            <src>${project.build.directory}/distro-contents/lib/pi4j-device.jar</src>
-                            <type>file</type>
-                            <dst>/opt/pi4j/lib/pi4j-device.jar</dst>
-                        </data>
-                        <data>
-                            <src>${project.build.directory}/distro-contents/lib/pi4j-gpio-extension.jar</src>
-                            <type>file</type>
-                            <dst>/opt/pi4j/lib/pi4j-gpio-extension.jar</dst>
-                        </data>
-                        <data>
                             <src>${project.build.directory}/distro-contents/bin/pi4j</src>
                             <type>file</type>
                             <dst>/opt/pi4j/bin/pi4j</dst>
@@ -302,97 +258,24 @@
                                 <filemode>666</filemode>
                             </mapper>
                         </data>
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/build</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/build</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/bananapi/build</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/bananapi/build</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/bananapro/build</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/bananapro/build</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/odroid/c1/build</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/odroid/c1/build</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/odroid/xu4/build</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/odroid/xu4/build</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/run</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/run</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/bananapi/run</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/bananapi/run</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/bananapro/run</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/bananapro/run</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/odroid/c1/run</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/odroid/c1/run</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-                        <!--<data>-->
-                            <!--<src>${project.build.directory}/distro-contents/examples/odroid/xu4/run</src>-->
-                            <!--<type>file</type>-->
-                            <!--<dst>/opt/pi4j/examples/odroid/xu4/run</dst>-->
-                            <!--<mapper>-->
-                                <!--<type>perm</type>-->
-                                <!--<filemode>755</filemode>-->
-                            <!--</mapper>-->
-                        <!--</data>-->
-
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/build</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/build</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
+                        <data>
+                            <src>${project.build.directory}/distro-contents/examples/run</src>
+                            <type>file</type>
+                            <dst>/opt/pi4j/examples/run</dst>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
+                        </data>
                     </dataSet>
                 </configuration>
 			</plugin>
@@ -407,9 +290,9 @@
                         <id>create-target-distro-directories</id>
                         <phase>initialize</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <mkdir dir="${project.build.directory}/distro-contents/bin"/>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -421,11 +304,11 @@
                         <id>ant-fix-line-endings</id>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <fixcrlf srcdir="${project.build.directory}/distro-contents"
                                          eol="unix"
                                          excludes="**/*.jar" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
@@ -441,7 +324,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"
 									classpathref="maven.plugin.classpath" />
 								<if>
@@ -460,7 +343,7 @@
 										</scp>
 									</then>
 								</if>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
@@ -564,8 +447,8 @@
             </build>
         </profile>
 
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO pi4j.com -->
-        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO repository.pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE INSTALL/UNINSTALL SCRIPT TO https://pi4j.com -->
+        <!-- BUILDING THIS PROFILE WILL DEPLOY THE APT PACKAGE TO https://pi4j.com -->
         <profile>
             <id>deploy-apt-package</id>
             <!--<activation>-->

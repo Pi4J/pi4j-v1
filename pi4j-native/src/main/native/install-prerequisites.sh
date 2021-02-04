@@ -7,34 +7,35 @@
 # FILENAME      :  install-prerequisites.sh
 #
 # This file is part of the Pi4J project. More information about
-# this project can be found here:  https://www.pi4j.com/
+# this project can be found here:  https://pi4j.com/
 # **********************************************************************
 # %%
 # Copyright (C) 2012 - 2021 Pi4J
 # %%
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Lesser Public License for more details.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# You should have received a copy of the GNU General Lesser Public
-# License along with this program.  If not, see
-# <http://www.gnu.org/licenses/lgpl-3.0.html>.
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 # #L%
 ###
 # ----------------------------------
 # install prerequisites
 # ----------------------------------
-if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
+if [[ ! -z "`type apt-get 2>/dev/null;`" ]] ; then
 
   # GCC
   GCC_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc|grep "install ok installed")
   if [[ "" == "$GCC_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'gcc'...";
     sudo apt-get --force-yes --yes install gcc
   else
     echo " [PREREQUISITE] 'gcc' already installed.";
@@ -43,6 +44,7 @@ if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
   # GIT
   GIT_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' git-core|grep "install ok installed")
   if [[ "" == "$GIT_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'git-core'...";
     sudo apt-get --force-yes --yes install git-core
   else
     echo " [PREREQUISITE] 'git-core' already installed.";
@@ -51,8 +53,31 @@ if [ ! -z "`type apt-get 2>/dev/null;`" ]; then
   # TREE
   TREE_INSTALLED=$(dpkg-query -W --showformat='${Status}\n' tree|grep "install ok installed")
   if [[ "" == "$TREE_INSTALLED" ]]; then
+    echo " [PREREQUISITE] installing 'tree'...";
     sudo apt-get --force-yes --yes install tree
   else
     echo " [PREREQUISITE] 'tree' already installed.";
   fi
+
+  if [[ "${CROSS_COMPILE}" == "true" ]] ; then
+
+    # gcc-arm-linux-gnueabihf
+    INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc-arm-linux-gnueabihf)
+    if [[ "$?" == "1" ]] ; then
+      echo " [PREREQUISITE] installing 'gcc-arm-linux-gnueabihf'...";
+      sudo apt-get --force-yes --yes install gcc-arm-linux-gnueabihf
+    else
+      echo " [PREREQUISITE] 'gcc-arm-linux-gnueabihf' already installed.";
+    fi
+
+    # gcc-aarch64-linux-gnu
+    INSTALLED=$(dpkg-query -W --showformat='${Status}\n' gcc-aarch64-linux-gnu)
+    if [[ "$?" == "1" ]] ; then
+      echo " [PREREQUISITE] installing 'gcc-aarch64-linux-gnu'...";
+      sudo apt-get --force-yes --yes install gcc-aarch64-linux-gnu
+    else
+      echo " [PREREQUISITE] 'gcc-aarch64-linux-gnu' already installed.";
+    fi
+  fi
+
 fi

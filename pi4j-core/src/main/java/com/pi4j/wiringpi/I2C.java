@@ -8,24 +8,22 @@ package com.pi4j.wiringpi;
  * FILENAME      :  I2C.java
  *
  * This file is part of the Pi4J project. More information about
- * this project can be found here:  https://www.pi4j.com/
+ * this project can be found here:  https://pi4j.com/
  * **********************************************************************
  * %%
  * Copyright (C) 2012 - 2021 Pi4J
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 
@@ -38,22 +36,18 @@ import com.pi4j.util.NativeLibraryLoader;
  * </p>
  *
  * <p>
- * Before you can use the I2C interface, you may need to use the gpio utility to load the I2C drivers into the kernel:
- *  > gpio load i2c
- *
- * If you need a baud rate other than the default 100Kbps, then you can supply this on the command-line:
- *  > gpio load i2c 1000
- *
- * will set the baud rate to 1000Kbps – ie. 1,000,000 bps. (K here is times 1000) *
+ * Before you can use the I2C interface, you may need to use the gpio utility to load the I2C drivers into the kernel: </p>
+ * <p>$ gpio load i2c </p>
+ * <p></p>
+ * <p>If you need a baud rate other than the default 100Kbps, then you can supply this on the command-line: </p>
+ * <p>$ gpio load i2c 1000 </p>
  * </p>
- *
- * <p>
- * <blockquote> This library depends on the wiringPi native system library.</br> (developed by
- * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)
- * </blockquote>
+ * which will set the baud rate to 1000Kbps – ie. 1,000,000 bps. (K here is times 1000)
  * </p>
- *
- * @see <a href="https://www.pi4j.com/">https://www.pi4j.com</a>
+ * <p></p>
+ * <blockquote>This library depends on the wiringPi native system library. (developed by
+ * Gordon Henderson @ <a href="http://wiringpi.com/">http://wiringpi.com/</a>)</blockquote>
+ * @see <a href="https://www.pi4j.com">https://www.pi4j.com</a>
  * @see <a
  *      href="http://wiringpi.com/reference/i2c-library/">http://wiringpi.com/reference/i2c-library</a>
  * @author Robert Savage (<a
