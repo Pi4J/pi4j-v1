@@ -137,3 +137,41 @@ int directIOCTLStructure
 
     return ioctl(fd, command, data + headOffset);
 }
+
+
+/*
+ * Class:       com_pi4j_io_file_LinuxFile
+ * Method:      getFD
+ * Signature:   (Ljava.io.FileDescriptor;)I
+ *
+ * Extracts POSIX File Descriptor from a Java FileDescriptor object.
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_getPosixFD
+  (JNIEnv *env, jclass obj, jobject fileDescriptorObj)
+{
+    jfieldID  fdFieldID;
+    jclass    fdClass;
+    int       fd = -1;
+
+    // Get Class and Field information.
+    fdClass = (*env)->FindClass(env, "java/io/FileDescriptor");
+
+    if ( fdClass == NULL )
+    {
+        // Unable to obtain Class information
+        return -2;
+    }
+
+    fdFieldID = (*env)->GetFieldID(env, fdClass, "fd", "I");
+
+    if ( fdFieldID == NULL )
+    {
+        // Unable to obtain Field information
+        return -3;
+    }
+
+    // Extract POSIX File Descriptor from Java FileDescriptor object
+    fd = (*env)->GetIntField(env, fileDescriptorObj, fdFieldID);
+
+    return fd;
+}
