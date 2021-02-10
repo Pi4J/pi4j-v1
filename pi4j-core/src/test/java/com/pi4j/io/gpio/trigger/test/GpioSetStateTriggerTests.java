@@ -85,6 +85,7 @@ public class GpioSetStateTriggerTests {
     @Test
     public void testTriggerHigh() throws InterruptedException {
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
+        Thread.sleep(10);
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
 
         // wait before continuing test
@@ -97,6 +98,7 @@ public class GpioSetStateTriggerTests {
     @Test
     public void testTriggerLow() throws InterruptedException {
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.HIGH);
+        Thread.sleep(10);
         provider.setMockState(MockPin.DIGITAL_INPUT_PIN, PinState.LOW);
 
         // wait before continuing test

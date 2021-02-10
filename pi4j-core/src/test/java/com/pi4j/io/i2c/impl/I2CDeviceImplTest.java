@@ -171,19 +171,19 @@ public class I2CDeviceImplTest {
     @Before
     public void setUp() throws Exception {
 
-        // simple run runnable and return result. the original method
-        // adds locking but we want to test I2CDeviceImpl not I2CBusImpl!
-        when(bus.runBusLockedDeviceAction(any(), any(Callable.class))).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callable<Object> action = (Callable<Object>) invocation.getArguments()[0];
-                try {
-                    return action.call();
-                } catch (IOException e) {
-                    throw e;
-                }
-            }
-        });
+//        // simple run runnable and return result. the original method
+//        // adds locking but we want to test I2CDeviceImpl not I2CBusImpl!
+//        when(bus.runBusLockedDeviceAction(any(), any(Callable.class))).thenAnswer(new Answer<Object>() {
+//            @Override
+//            public Object answer(InvocationOnMock invocation) throws Throwable {
+//                Callable<Object> action = (Callable<Object>) invocation.getArguments()[0];
+//                try {
+//                    return action.call();
+//                } catch (IOException e) {
+//                    throw e;
+//                }
+//            }
+//        });
 
         device = new I2CDeviceImpl(bus, ADDRESS);
 
