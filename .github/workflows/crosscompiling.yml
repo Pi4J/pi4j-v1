@@ -1,0 +1,30 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get latest Docker image
+        run: docker pull pi4j/pi4j-builder:1.4
+      - name: Cross-compile in Docker
+        run: docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/pi4j-builder:1.4
+      - name: Make staging directory
+        run: mkdir staging
+      - name: Copy core to staging
+        run: |
+          cp -r pi4j-core/target/*.jar staging
+      - name: Copy distribution to staging
+        run: |
+          cp -r pi4j-distribution/target/*.zip staging
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: pi4j-v1-dist
+          path: staging
