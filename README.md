@@ -1,7 +1,7 @@
 
  Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
-![GitHub Action](https://github.com/Pi4J/pi4j/workflows/crosscompiling/badge.svg)
+[![GitHub Action](https://github.com/Pi4J/pi4j/workflows/crosscompiling/badge.svg)](https://github.com/Pi4J/pi4j/actions?query=workflow%3Acrosscompiling)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core) 
 ![Snyk Security Badge](https://snyk-widget.herokuapp.com/badge/mvn/com.pi4j/pi4j-core/badge.svg)
 
