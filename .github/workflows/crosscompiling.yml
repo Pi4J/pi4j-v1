@@ -17,11 +17,9 @@ jobs:
         run: docker run --user "$(id -u):$(id -g)" --rm --volume $(pwd):/build pi4j/pi4j-builder:1.4
       - name: Make staging directory
         run: mkdir staging
-      - name: Copy core to staging
-        run: |
-          cp -r pi4j-core/target/*.jar staging
       - name: Copy distribution to staging
         run: |
+          cp -r pi4j-distribution/target/*.deb staging
           cp -r pi4j-distribution/target/*.zip staging
       - name: Upload
         uses: actions/upload-artifact@v2
