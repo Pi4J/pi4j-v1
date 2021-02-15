@@ -27,6 +27,7 @@ package com.pi4j.io.file;
  * #L%
  */
 
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -36,9 +37,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import com.pi4j.util.NativeLibraryLoader;
-import jdk.internal.misc.SharedSecrets;
-
-// TODO :: REMOVE JDK INTERNAL REFS
 
 /**
  * Extends RandomAccessFile to provide access to Linux ioctl.
@@ -179,7 +177,7 @@ public class LinuxFile extends RandomAccessFile {
      * Gets the real POSIX file descriptor for use by custom jni calls.
      */
     private int getFileDescriptor() throws IOException {
-		final int fd = SharedSecrets.getJavaIOFileDescriptorAccess().get(getFD());
+		final int fd = getPosixFD(getFD());
 
         if(fd < 1)
             throw new IOException("failed to get POSIX file descriptor!");
@@ -273,4 +271,6 @@ public class LinuxFile extends RandomAccessFile {
     protected static native int directIOCTL(int fd, long command, int value);
 
     protected static native int directIOCTLStructure(int fd, long command, ByteBuffer data, int dataOffset, IntBuffer offsetMap, int offsetMapOffset, int offsetCapacity);
+
+    protected static native int getPosixFD(FileDescriptor fileDescriptor);
 }

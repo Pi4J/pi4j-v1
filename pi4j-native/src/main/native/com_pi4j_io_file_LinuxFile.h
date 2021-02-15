@@ -82,6 +82,14 @@ JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_munmapDirect
 JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_directIOCTLStructure
   (JNIEnv *env, jclass obj, jint fd, jlong command, jobject data, jint dataOffset, jobject offsetMap, jint offsetMapOffset, jint offsetCapacity);
 
+/*
+ * Class:      com_pi4j_io_file_LinuxFile
+ * Method:     getFD
+ * Signature:  (Ljava.io.FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_com_pi4j_io_file_LinuxFile_getPosixFD
+  (  JNIEnv *env, jclass obj, jobject  fileDescriptor );
+
 #ifdef __cplusplus
 }
 #endif
