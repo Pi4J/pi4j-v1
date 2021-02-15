@@ -100,7 +100,7 @@ public class I2CBusImpl implements I2CBus {
     /**
      * Returns i2c device implementation ({@link I2CDeviceImpl}).
      *
-     * @param address address of i2c device
+     * @param address address of i2c device (7-bit address only: 0-127)
      *
      * @return implementation of i2c device with given address
      *
@@ -108,6 +108,9 @@ public class I2CBusImpl implements I2CBus {
      */
     @Override
     public I2CDevice getDevice(int address) throws IOException {
+        // check to make sure I2C device address is in 7-bit range
+        if(address < 0 || address > 127)
+            throw new IOException("I2C device address is out of bounds; valid range=(0-127); ADDRESS=" + address);
         return new I2CDeviceImpl(this, address);
     }
 
