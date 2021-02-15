@@ -57,7 +57,7 @@ public interface I2CBus {
 
     /**
      * Returns i2c device.
-     * @param address i2c device's address (7-bit address only: 0-177)
+     * @param address i2c device's address (7-bit address only: 0-127)
      * @return i2c device
      *
      * @throws IOException thrown in case this bus cannot return i2c device.
