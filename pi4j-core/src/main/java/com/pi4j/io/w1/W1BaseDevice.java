@@ -60,6 +60,23 @@ public abstract class W1BaseDevice implements W1Device {
             // FIXME logging
             deviceName = deviceDir.getName();
         }
+
+        // sanitize device name (remove any <LEADING> NULL, CR, LF, TAB, or SPACES)
+        while(deviceName.startsWith(" ") ||      // SPACE
+                deviceName.startsWith("\r") ||   // CR
+                deviceName.startsWith("\n") ||   // LF
+                deviceName.startsWith("\t") ||   // TAB
+                deviceName.startsWith("\0"))     // NULL
+            deviceName = deviceName.substring(1);
+
+        // sanitize device name (remove any <TRAILING> NULL, CR, LF, TAB, or SPACES)
+        while(deviceName.endsWith(" ") ||      // SPACE
+                deviceName.endsWith("\r") ||   // CR
+                deviceName.endsWith("\n") ||   // LF
+                deviceName.endsWith("\t") ||   // TAB
+                deviceName.endsWith("\0"))     // NULL
+
+        // assign "name" and "id" attributes from device name
         name = deviceName;
         id = deviceName;
         this.deviceDir = deviceDir;
