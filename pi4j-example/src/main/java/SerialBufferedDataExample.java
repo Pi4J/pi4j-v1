@@ -130,10 +130,13 @@ public class SerialBufferedDataExample {
                         System.out.println("[NO DATA AVAILABLE]");
                     }
                 }
-                catch(IllegalStateException ex){
+                catch(Exception ex){
                     ex.printStackTrace();
                 }
             }
+
+            // we are done; close serial port
+            serial.close();
         }
         catch(IOException ex) {
             console.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());

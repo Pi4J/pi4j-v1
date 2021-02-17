@@ -161,6 +161,8 @@ public class SerialExample {
                 Thread.sleep(1000);
             }
 
+            // we are done; close serial port
+            serial.close();
         }
         catch(IOException ex) {
             console.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
