@@ -57,24 +57,11 @@ public abstract class W1BaseDevice implements W1Device {
         try {
             deviceName = new String(Files.readAllBytes(new File(deviceDir, "name").toPath()));
         } catch (IOException e) {
-            // FIXME logging
             deviceName = deviceDir.getName();
         }
 
-        // sanitize device name (remove any <LEADING> NULL, CR, LF, TAB, or SPACES)
-        while(deviceName.startsWith(" ") ||      // SPACE
-                deviceName.startsWith("\r") ||   // CR
-                deviceName.startsWith("\n") ||   // LF
-                deviceName.startsWith("\t") ||   // TAB
-                deviceName.startsWith("\0"))     // NULL
-            deviceName = deviceName.substring(1);
-
-        // sanitize device name (remove any <TRAILING> NULL, CR, LF, TAB, or SPACES)
-        while(deviceName.endsWith(" ") ||      // SPACE
-                deviceName.endsWith("\r") ||   // CR
-                deviceName.endsWith("\n") ||   // LF
-                deviceName.endsWith("\t") ||   // TAB
-                deviceName.endsWith("\0"))     // NULL
+        // sanitize device name (remove any leading or trailing spaces (CR,LF,NULL,TAB,etc))
+        deviceName = deviceName.trim();
 
         // assign "name" and "id" attributes from device name
         name = deviceName;
