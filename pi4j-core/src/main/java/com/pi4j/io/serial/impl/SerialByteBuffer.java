@@ -89,10 +89,9 @@ public class SerialByteBuffer {
         return (buffer.length - (readIndex - writeIndex));
     }
 
-    private void resize(int length) {
-
+    private synchronized void resize(int length) {
         int min_capacity = buffer.length + length;
-        int new_capacity = buffer.length;
+        int new_capacity = buffer.length * DEFAULT_BUFFER_SCALE_FACTOR;
 
         // double the capacity until the buffer is large enough to accommodate the new demand
         while (new_capacity < min_capacity) {
@@ -102,19 +101,72 @@ public class SerialByteBuffer {
         // create a new buffer that can hold the newly determined
         // capacity and copy the bytes from the old buffer into the new buffer
         byte[] new_buffer = new byte[new_capacity];
-        System.arraycopy(buffer, readIndex, new_buffer, 0, writeIndex);
 
-        // update pointers
-        buffer = new_buffer; // old buffer should get garbage collected
-        readIndex = 0;
-        writeIndex = available();
+        // 0123456789012345678901234567890123
+        //              R
+        //              W
+        // -------------|--------------------
+
+        // if the write index equals the read index, then there is no data in the old buffer that
+        // is un-read and there is no need to copy any data from the old buffer to the new resized
+        // buffer ... we can simply reset both the read index and write index to the zero position
+        // in the new buffer
+        if (writeIndex == readIndex) {
+            readIndex = 0;  // reset READ pointer
+            writeIndex = 0; // reset WRITE pointer
+        }
+
+        // 0123456789012345678901234567890123
+        //        R     W
+        // -------|XXXXX|--------------------
+
+        // if the write index is greater than the read index, then the write data has not wrapped
+        // back to the beginning of the circular buffer ... we can simply copy the remaining un-read
+        // data in the original buffer to the new buffer and reset the read buffer to the zero index
+        // and adjust the write buffer to the new position in the new buffer
+        else if (writeIndex > readIndex) {
+            // copy single payload (non-wrapping) from original buffer
+            System.arraycopy(buffer, readIndex, new_buffer, 0, writeIndex-readIndex);
+            readIndex = 0;                     // reset READ pointer
+            writeIndex = writeIndex-readIndex; // adjust WRITE pointer
+        }
+
+        // 0123456789012345678901234567890123
+        //        W                     R
+        // XXXXXXX|---------------------|XXXX
+
+        // it is possible that the write index can be a lower value than the read index; this happens
+        // when a write operation on the circular buffer has wrapped the end of the buffer and started
+        // writing bytes at the beginning free space ... in this case we need to copy both the un-read
+        // data from the read index to the end of the buffer and data at the beginning of the buffer
+        // up to the write index
+        else {
+            // copy two payloads (wrapping) from original circular buffer
+            int dataLength = buffer.length - readIndex;
+            System.arraycopy(buffer, readIndex, new_buffer, 0, dataLength); // copy end buffer data to new buffer
+            System.arraycopy(buffer, 0, new_buffer, dataLength, writeIndex); // copy start buffer data to new buffer
+            readIndex = 0;                      // reset READ pointer
+            writeIndex = dataLength+writeIndex; // adjust WRITE pointer
+        }
+
+//        System.out.println(" - READ INDEX   - " + readIndex);
+//        System.out.println(" - WRITE INDEX  - " + writeIndex);
+//        System.out.println(" - NEW LENGTH   - " + length);
+//        System.out.println(" - MIN CAPACITY - " + min_capacity);
+//        System.out.println(" - NEW CAPACITY - " + new_capacity);
+//        System.out.println(" - OLD BUFFER   - " + new String(buffer));
+//        System.out.println(" - NEW BUFFER   - " + new String(new_buffer));
+
+        // update buffer object reference
+        // old buffer should get garbage collected
+        buffer = new_buffer;
     }
 
-    public  void write(byte[] data) throws IOException, BufferOverflowException {
+    public void write(byte[] data) throws IOException, BufferOverflowException {
         write(data, 0, data.length);
     }
 
-    public  void write(byte[] data, int offset, int length) throws IOException {
+    public void write(byte[] data, int offset, int length) throws IOException {
         while (length > 0) {
             int remaining_space = remaining();
             if(remaining_space < length) {

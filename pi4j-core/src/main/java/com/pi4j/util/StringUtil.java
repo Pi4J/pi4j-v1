@@ -234,4 +234,42 @@ public class StringUtil {
         }
         return sb.toString();
     }
+
+    public static String byteArrayToHex(byte[] data) {
+        return byteArrayToHex(data, ",");
+    }
+
+    public static String byteArrayToHex(byte[] data, CharSequence delimiter) {
+        return byteArrayToHex(data, delimiter, "0x");
+    }
+
+    public static String byteArrayToHex(byte[] data, CharSequence delimiter, CharSequence prefix) {
+
+        // calculate the size needed for the string builder and create a new string builder
+        int length = (data.length * 2) + (data.length * delimiter.length()) + (data.length * prefix.length());
+        StringBuilder sb = new StringBuilder(length);
+
+        // determine if delimiter and prefix are present
+        boolean has_delimiter = delimiter.length() > 0;
+        boolean has_prefix = prefix.length() > 0;
+        int byte_count = 0;
+
+        // iterate over all the bytes in the byte array
+        for(byte b: data) {
+            // append delimiter if previous bytes have already been included in the string builder
+            if(has_delimiter && byte_count > 0) sb.append(delimiter);
+
+            // append prefix
+            if(has_prefix) sb.append(prefix);
+
+            // append HEX representation of byte
+            sb.append(String.format("%02X", b));
+
+            // increment byte count
+            byte_count++;
+        }
+
+        // return HEX string
+        return sb.toString();
+    }
 }
