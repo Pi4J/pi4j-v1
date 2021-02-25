@@ -30,13 +30,13 @@ package com.pi4j.io.file.test;
 import com.pi4j.IntegrationTests;
 import com.pi4j.io.file.ExposedLinuxFile;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.File;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Category(IntegrationTests.class)
@@ -61,16 +61,17 @@ public class LinuxFileIntegrationTest {
 
     @After
     public void cleanup() throws Exception {
-        // Close and delete the file.
+        // close and delete the file.
         if (myFile != null) {
             myFile.close();
 
+            // create new file object
             File tempFile = new File(myFileName);
 
+            // if file exists, then delete it now
             if (tempFile.exists()) {
                 tempFile.delete();
             }
-
         }
     }
 
@@ -78,27 +79,27 @@ public class LinuxFileIntegrationTest {
     public void fileDescriptorTest() throws Exception {
         int fd = -1;
 
+        // validate file name
         if (myFileName == null || myFileName.isEmpty()) {
-            assertTrue("Failed to generate temp file name.  LinuxFileTest", true);
+            Assert.fail("Failed to generate temp file name.  LinuxFileTest");
         }
 
+        // validate file exists
         if (myFile == null) {
-            String msg = "File: " + myFileName + "Not Found/Open.  LinuxFileTest";
-
-            assertTrue(msg, true);
+            Assert.fail("File: " + myFileName + "Not Found/Open.  LinuxFileTest");
         }
 
+        // validate POSIX file descriptor access
         try {
             fd = myFile.getMyFD();
         } catch (Exception exc) {
-            String msg = "Exception during getPosixFD(): " + exc.getMessage() +
-                    " For File: " + myFileName + " - LinuxFileTest";
-            assertTrue(msg, true);
+            Assert.fail("Exception during getPosixFD(): "
+                    + exc.getMessage() + " For File: " + myFileName + " - LinuxFileTest");
         }
 
-        String msg = "File: " + myFileName + ", File Descriptor: " + String.valueOf(fd) +
-                " - LinuxFileTest";
-
-        assertFalse(msg, (fd > 0));
+        // validate POSIX file descriptor value; must be a positive integer
+        assertTrue("File: " + myFileName + ", File Descriptor: " + String.valueOf(fd) +
+                " - LinuxFileTest",
+                (fd > 0));
     }
 }
