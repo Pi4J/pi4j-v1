@@ -237,6 +237,7 @@
 		<maven-bundle-plugin.version>4.2.1</maven-bundle-plugin.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version> <!-- TODO :: UPDATE PLUGIN TO v3.0.0 -->
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
 		<maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
 		<native-maven-plugin.version>1.0-alpha-9</native-maven-plugin.version>
 		<license-maven-plugin.version>2.0.0</license-maven-plugin.version>
