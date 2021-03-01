@@ -561,6 +561,7 @@
                                         <argument>--access-key-id=${pi4j.aws.access.key}</argument>
                                         <argument>--secret-access-key=${pi4j.aws.secret.key}</argument>
                                         <argument>--bucket=repository.pi4j.com</argument>
+                                        <argument>--gpg-options="--pinentry-mode=loopback"</argument>
                                         <argument>${project.build.directory}/pi4j-${project.version}.deb</argument>
                                     </arguments>
                                 </configuration>
