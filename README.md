@@ -115,12 +115,13 @@ Copyright (C) 2012-2021 Pi4J
 
 Please see the [BUILD.md](BUILD.md) instructions for details on how to compile/build this project.
 
-## IN DEVELOPMENT
+## CURRENT RELEASE
 
-2020-06-20 :: 1.4-SNAPSHOT
+2021-03-01 :: 1.4
 
   * Changed project to Apache License, Version 2.0
   * Added support for 64-bit architecture.
+  * Bug Fixes: https://github.com/Pi4J/pi4j/milestone/9?closed=1
   * Removed `pi4j-device` library.  _(See comments above)_
   * Removed `pi4j-gpio-extension` library.  _(See comments above)_
   * Removed platform support for `Odroid`.  _(See comments above)_
@@ -128,7 +129,6 @@ Please see the [BUILD.md](BUILD.md) instructions for details on how to compile/b
   * Removed platform support for `BPi`.  _(See comments above)_
   * Removed platform support for `NanoPi`.  _(See comments above)_
   * Removed platform support for `OrangePi`.  _(See comments above)_
-
 
 ## PREVIOUS RELEASES
 
