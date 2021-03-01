@@ -27,8 +27,6 @@ package com.pi4j.io.file.test;
  * #L%
  */
 
-import com.pi4j.io.file.ExposedLinuxFile;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

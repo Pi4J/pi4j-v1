@@ -28,7 +28,6 @@ package com.pi4j.io.file.test;
  */
 
 import com.pi4j.IntegrationTests;
-import com.pi4j.io.file.ExposedLinuxFile;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

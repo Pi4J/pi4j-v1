@@ -1,4 +1,4 @@
-package com.pi4j.io.file;
+package com.pi4j.io.file.test;
 
 /*
  * #%L
@@ -26,6 +26,8 @@ package com.pi4j.io.file;
  * limitations under the License.
  * #L%
  */
+
+ import com.pi4j.io.file.LinuxFile;
 
  import  java.io.FileNotFoundException;
  import  java.io.IOException;
