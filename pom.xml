@@ -615,9 +615,6 @@
 					<version>${maven-javadoc-plugin.version}</version>
 					<configuration>
 						<additionalOptions>
-							<!-- TODO :: ELIMINATE JDK INTERNAL REFS -->
-							<additionalOption>--add-exports java.base/jdk.internal.misc=ALL-UNNAMED</additionalOption>
-							<additionalOption>--add-exports java.base/jdk.internal.ref=ALL-UNNAMED</additionalOption>
                             <additionalOption>-Xdoclint:none</additionalOption>
 						</additionalOptions>
 					</configuration>
@@ -1040,7 +1037,7 @@
                 <version>${maven-javadoc-plugin.version}</version>
                 <reportSets>
                     <reportSet>
-                        <id>non-aggregate</id>
+                        <id>non-aggregate2</id>
                         <configuration>
                             <verbose>false</verbose>
                             <linksource>true</linksource>
