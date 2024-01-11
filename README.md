@@ -1,12 +1,12 @@
+# DEPRECATION NOTICE
+Pi4J Version 1.x is now DEPRECATED and thus this repository is archived. [Pi4J V2.0](https://github.com/Pi4J/pi4j-v2) is the version to use for newer JDKs and Raspberry Pis. Look here for more information: https://pi4j.com/about/new-in-v2/
 
  Pi4J :: Java I/O Library for Raspberry Pi
 ==========================================================================
-[![GitHub Action](https://github.com/Pi4J/pi4j/workflows/crosscompiling/badge.svg)](https://github.com/Pi4J/pi4j/actions?query=workflow%3Acrosscompiling)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.pi4j/pi4j-core) 
 ![Snyk Security Badge](https://snyk-widget.herokuapp.com/badge/mvn/com.pi4j/pi4j-core/badge.svg)
 
 ## PROJECT INFORMATION
-
 Project website: https://pi4j.com/ <br />
 Pi4J Community Forum (*new*): https://forum.pi4j.com/ <br />
 Version 2.0 Project Discussions (*new*): https://forum.pi4j.com/category/6/version-2-0 <br />
